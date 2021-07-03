@@ -1,1 +1,253 @@
-import{c9 as e,fw as t,d0 as r,cW as i,a0 as n,fx as s,fy as o,co as l,fn as a,br as u,bo as c,bp as f,fz as p,fA as m,bq as y,fB as R,fC as S,bc as d,cI as g,bb as h,dh as b,fD as w,fE as I,aa as N,bs as v,bi as G}from"./vendor.74d5941c.js";import{p as P,y as M}from"./projectionSupport.62084d5a.js";const A=new e({esriSRUnit_Meter:"meters",esriSRUnit_Kilometer:"kilometers",esriSRUnit_Foot:"feet",esriSRUnit_StatuteMile:"miles",esriSRUnit_NauticalMile:"nautical-miles",esriSRUnit_USNauticalMile:"us-nautical-miles"}),F=Object.freeze({}),E=new u,j=new u,O=new u,T={esriGeometryPoint:m,esriGeometryPolyline:y,esriGeometryPolygon:R,esriGeometryMultipoint:S};function U(e,t,r,i=e.hasZ,n=e.hasM){const s=e.hasZ&&i,o=e.hasM&&n;if(r){const l=f(O,t,e.hasZ,e.hasM,"esriGeometryPoint",r,i,n);return m(l,s,o)}return m(t,s,o)}function C(e,t,r,i,n,s,o=t,l=r){const a=t&&o,u=r&&l,m=i?"coords"in i?i:i.geometry:null;if(!m)return null;if(n){let i=c(j,m,t,r,e,n,o,l);return s&&(i=f(O,i,a,u,e,s)),T[e](i,a,u)}if(s){const i=f(O,m,t,r,e,s,o,l);return T[e](i,a,u)}return p(E,m,t,r,o,l),T[e](E,a,u)}async function _(e,t,r){const{outFields:i,orderByFields:n,groupByFieldsForStatistics:s,outStatistics:o}=e;if(i)for(let l=0;l<i.length;l++)i[l]=i[l].trim();if(n)for(let l=0;l<n.length;l++)n[l]=n[l].trim();if(s)for(let l=0;l<s.length;l++)s[l]=s[l].trim();if(o)for(let l=0;l<o.length;l++)o[l].onStatisticField&&(o[l].onStatisticField=o[l].onStatisticField.trim());return e.geometry&&!e.outSR&&(e.outSR=e.geometry.spatialReference),q(e,t,r)}async function q(e,u,c){if(!e)return null;let{where:f}=e;if(e.where=f=f&&f.trim(),(!f||/^1 *= *1$/.test(f)||u&&u===f)&&(e.where=null),!e.geometry)return e;let p=await async function(e){const{geometry:t,distance:r,units:i}=e;if(null==r||"vertexAttributes"in t)return t;const n=t.spatialReference,u=i?A.fromJSON(i):s(n),c=n&&(o(n)||l(n))?t:await P(n,a).then((()=>M(t,a)));return(await async function(){return(await import("./geometryEngineJSON.100cb9da.js")).geodesicBuffer}())(c.spatialReference,c,r,u)}(e);if(e.distance=0,e.units=null,"esriSpatialRelEnvelopeIntersects"===e.spatialRel){const{spatialReference:r}=e.geometry;p=t(p),p.spatialReference=r}e.geometry=p,await P(p.spatialReference,c);const m=(await r(i(p)))[0];if(n(m))throw F;const y=m.toJSON(),R=await M(y,y.spatialReference,c);if(!R)throw F;return R.spatialReference=c,e.geometry=R,e}function x(e){return e&&J in e?JSON.parse(JSON.stringify(e,B)):e}const J="_geVersion",B=(e,t)=>e!==J?t:void 0;function D(e,t){return e?t?4:3:t?3:2}function V(e,t,r,i,n){if(!e)return!1;const s=D(t,r),{coords:o,lengths:l}=e;let a=!1,u=0;for(const c of l)a=W(a,o,s,u,c,i,n),u+=c*s;return a}function W(e,t,r,i,n,s,o){let l=e,a=i;for(let u=i,c=i+n*r;u<c;u+=r){a=u+r,a===c&&(a=i);const e=t[u],n=t[u+1],f=t[a],p=t[a+1];(n<o&&p>=o||p<o&&n>=o)&&e+(o-n)/(p-n)*(f-e)<s&&(l=!l)}return l}const Z="feature-store:unsupported-query",z={esriSpatialRelIntersects:"intersects",esriSpatialRelContains:"contains",esriSpatialRelCrosses:"crosses",esriSpatialRelDisjoint:"disjoint",esriSpatialRelEnvelopeIntersects:"intersects",esriSpatialRelIndexIntersects:null,esriSpatialRelOverlaps:"overlaps",esriSpatialRelTouches:"touches",esriSpatialRelWithin:"within",esriSpatialRelRelation:null},Y={esriSpatialRelIntersects:!0,esriSpatialRelContains:!0,esriSpatialRelWithin:!0,esriSpatialRelCrosses:!0,esriSpatialRelDisjoint:!0,esriSpatialRelTouches:!0,esriSpatialRelOverlaps:!0,esriSpatialRelEnvelopeIntersects:!0,esriSpatialRelIndexIntersects:!1,esriSpatialRelRelation:!1},k={esriGeometryPoint:!0,esriGeometryMultipoint:!0,esriGeometryPolyline:!0,esriGeometryPolygon:!0,esriGeometryEnvelope:!0},K={esriGeometryPoint:!0,esriGeometryMultipoint:!0,esriGeometryPolyline:!0,esriGeometryPolygon:!0,esriGeometryEnvelope:!1};function $(e,t,r,i,n){if(d(t)&&"esriGeometryPoint"===r&&("esriSpatialRelIntersects"===e||"esriSpatialRelContains"===e)){const e=g(new u,t,!1,!1);return Promise.resolve((t=>function(e,t,r,i){return V(e,t,r,i.coords[0],i.coords[1])}(e,!1,!1,t)))}if(d(t)&&"esriGeometryMultipoint"===r){const r=g(new u,t,!1,!1);if("esriSpatialRelContains"===e)return Promise.resolve((e=>function(e,t,r,i,n,s){const o=D(n,s),{coords:l,lengths:a}=i;if(!a)return!1;for(let u=0,c=0;u<a.length;u++,c+=o)if(!V(e,t,r,l[c],l[c+1]))return!1;return!0}(r,!1,!1,e,i,n)))}if(h(t)&&"esriGeometryPoint"===r&&("esriSpatialRelIntersects"===e||"esriSpatialRelContains"===e))return Promise.resolve((e=>b(t,C(r,i,n,e))));if(h(t)&&"esriGeometryMultipoint"===r&&"esriSpatialRelContains"===e)return Promise.resolve((e=>w(t,C(r,i,n,e))));if(h(t)&&"esriSpatialRelIntersects"===e){const e=I(r);return Promise.resolve((s=>e(t,C(r,i,n,s))))}return import("./geometryEngineJSON.100cb9da.js").then((s=>{const o=s[z[e]].bind(null,t.spatialReference,t);return e=>o(C(r,i,n,e))}))}async function H(e,t,r){const{spatialRel:i,geometry:n}=e;if(n){if(!0!==Y[i])throw new N(Z,"Unsupported query spatial relationship",{query:e});if(v(n.spatialReference)&&v(r)){if(!function(e){return!0===k[G(e)]}(n))throw new N(Z,"Unsupported query geometry type",{query:e});if(!function(e){return!0===K[e]}(t))throw new N(Z,"Unsupported layer geometry type",{query:e});if(e.outSR)return P(e.geometry&&e.geometry.spatialReference,e.outSR)}}}function L(e){if(h(e))return!0;if(d(e)){for(const t of e.rings){if(5!==t.length)return!1;if(t[0][0]!==t[1][0]||t[0][0]!==t[4][0]||t[2][0]!==t[3][0]||t[0][1]!==t[3][1]||t[0][1]!==t[4][1]||t[1][1]!==t[2][1])return!1}return!0}return!1}function Q(e,t){if(!e)return null;const r=t.featureAdapter,{startTimeField:i,endTimeField:n}=e;let s=Number.POSITIVE_INFINITY,o=Number.NEGATIVE_INFINITY;if(i&&n)t.forEach((e=>{const t=r.getAttribute(e,i),l=r.getAttribute(e,n);null==t||isNaN(t)||(s=Math.min(s,t)),null==l||isNaN(l)||(o=Math.max(o,l))}));else{const e=i||n;t.forEach((t=>{const i=r.getAttribute(t,e);null==i||isNaN(i)||(s=Math.min(s,i),o=Math.max(o,i))}))}return{start:s,end:o}}function X(e,t,r){if(!t||!e)return null;const{startTimeField:i,endTimeField:n}=e;if(!i&&!n)return null;const{start:s,end:o}=t;return null===s&&null===o?null:void 0===s&&void 0===o?()=>!1:i&&n?function(e,t,r,i,n){return null!=i&&null!=n?s=>{const o=e.getAttribute(s,t),l=e.getAttribute(s,r);return(null==o||o<=n)&&(null==l||l>=i)}:null!=i?t=>{const n=e.getAttribute(t,r);return null==n||n>=i}:null!=n?r=>{const i=e.getAttribute(r,t);return null==i||i<=n}:void 0}(r,i,n,s,o):function(e,t,r,i){return null!=r&&null!=i&&r===i?i=>e.getAttribute(i,t)===r:null!=r&&null!=i?n=>{const s=e.getAttribute(n,t);return s>=r&&s<=i}:null!=r?i=>e.getAttribute(i,t)>=r:null!=i?r=>e.getAttribute(r,t)<=i:void 0}(r,i||n,s,o)}export{L as I,_ as J,U as N,H as P,C as _,q as a,F as j,X as n,Q as t,$ as v,x};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { c9 as t$2, fw as l$1, d0 as L, cW as p$1, a0 as t$3, fx as L$1, fy as R$1, co as u$1, fn as I$1, br as t$4, bo as le, bp as ce, fz as ge, fA as w$1, bq as A, fB as $, fC as V, bc as y$1, cI as C, bb as u$2, dh as t$5, fD as r$1, fE as G$2, aa as s, bs as s$1, bi as d } from "./vendor.74d5941c.js";
+import { p, y } from "./projectionSupport.62084d5a.js";
+const w = new t$2({ esriSRUnit_Meter: "meters", esriSRUnit_Kilometer: "kilometers", esriSRUnit_Foot: "feet", esriSRUnit_StatuteMile: "miles", esriSRUnit_NauticalMile: "nautical-miles", esriSRUnit_USNauticalMile: "us-nautical-miles" }), j$1 = Object.freeze({}), U = new t$4(), M = new t$4(), F = new t$4(), G$1 = { esriGeometryPoint: w$1, esriGeometryPolyline: A, esriGeometryPolygon: $, esriGeometryMultipoint: V };
+function N(e2, t2, r2, i = e2.hasZ, o2 = e2.hasM) {
+  const n2 = e2.hasZ && i, s2 = e2.hasM && o2;
+  if (r2) {
+    const a = ce(F, t2, e2.hasZ, e2.hasM, "esriGeometryPoint", r2, i, o2);
+    return w$1(a, n2, s2);
+  }
+  return w$1(t2, n2, s2);
+}
+function _(e2, t2, r2, i, o2, n2, s2 = t2, a = r2) {
+  const l2 = t2 && s2, m = r2 && a, u2 = i ? "coords" in i ? i : i.geometry : null;
+  if (!u2)
+    return null;
+  if (o2) {
+    let i2 = le(M, u2, t2, r2, e2, o2, s2, a);
+    return n2 && (i2 = ce(F, i2, l2, m, e2, n2)), G$1[e2](i2, l2, m);
+  }
+  if (n2) {
+    const i2 = ce(F, u2, t2, r2, e2, n2, s2, a);
+    return G$1[e2](i2, l2, m);
+  }
+  return ge(U, u2, t2, r2, s2, a), G$1[e2](U, l2, m);
+}
+function J(e2, t2, r2) {
+  return __async(this, null, function* () {
+    const { outFields: i, orderByFields: o2, groupByFieldsForStatistics: n2, outStatistics: s2 } = e2;
+    if (i)
+      for (let a = 0; a < i.length; a++)
+        i[a] = i[a].trim();
+    if (o2)
+      for (let a = 0; a < o2.length; a++)
+        o2[a] = o2[a].trim();
+    if (n2)
+      for (let a = 0; a < n2.length; a++)
+        n2[a] = n2[a].trim();
+    if (s2)
+      for (let a = 0; a < s2.length; a++)
+        s2[a].onStatisticField && (s2[a].onStatisticField = s2[a].onStatisticField.trim());
+    return e2.geometry && !e2.outSR && (e2.outSR = e2.geometry.spatialReference), v$1(e2, t2, r2);
+  });
+}
+function v$1(t2, r2, i) {
+  return __async(this, null, function* () {
+    if (!t2)
+      return null;
+    let { where: o2 } = t2;
+    if (t2.where = o2 = o2 && o2.trim(), (!o2 || /^1 *= *1$/.test(o2) || r2 && r2 === o2) && (t2.where = null), !t2.geometry)
+      return t2;
+    let a = yield Z(t2);
+    if (t2.distance = 0, t2.units = null, t2.spatialRel === "esriSpatialRelEnvelopeIntersects") {
+      const { spatialReference: e2 } = t2.geometry;
+      a = l$1(a), a.spatialReference = e2;
+    }
+    t2.geometry = a, yield p(a.spatialReference, i);
+    const m = (yield L(p$1(a)))[0];
+    if (t$3(m))
+      throw j$1;
+    const c2 = m.toJSON(), u2 = yield y(c2, c2.spatialReference, i);
+    if (!u2)
+      throw j$1;
+    return u2.spatialReference = i, t2.geometry = u2, t2;
+  });
+}
+function Z(e2) {
+  return __async(this, null, function* () {
+    const { geometry: t2, distance: n2, units: s2 } = e2;
+    if (n2 == null || "vertexAttributes" in t2)
+      return t2;
+    const l2 = t2.spatialReference, m = s2 ? w.fromJSON(s2) : L$1(l2), c2 = l2 && (R$1(l2) || u$1(l2)) ? t2 : yield p(l2, I$1).then(() => y(t2, I$1));
+    return (yield b())(c2.spatialReference, c2, n2, m);
+  });
+}
+function b() {
+  return __async(this, null, function* () {
+    return (yield import("./geometryEngineJSON.100cb9da.js")).geodesicBuffer;
+  });
+}
+function x(e2) {
+  return e2 && z in e2 ? JSON.parse(JSON.stringify(e2, B)) : e2;
+}
+const z = "_geVersion", B = (e2, t2) => e2 !== z ? t2 : void 0;
+function n$1(n2, t2) {
+  return n2 ? t2 ? 4 : 3 : t2 ? 3 : 2;
+}
+function t$1(n2, t2, r2, e2) {
+  return o(n2, t2, r2, e2.coords[0], e2.coords[1]);
+}
+function r(t2, r2, e2, c2, u2, f) {
+  const s2 = n$1(u2, f), { coords: i, lengths: l2 } = c2;
+  if (!l2)
+    return false;
+  for (let n2 = 0, d2 = 0; n2 < l2.length; n2++, d2 += s2)
+    if (!o(t2, r2, e2, i[d2], i[d2 + 1]))
+      return false;
+  return true;
+}
+function o(t2, r2, o2, c2, u2) {
+  if (!t2)
+    return false;
+  const f = n$1(r2, o2), { coords: s2, lengths: i } = t2;
+  let l2 = false, d2 = 0;
+  for (const n2 of i)
+    l2 = e$1(l2, s2, f, d2, n2, c2, u2), d2 += n2 * f;
+  return l2;
+}
+function e$1(n2, t2, r2, o2, e2, c2, u2) {
+  let f = n2, s2 = o2;
+  for (let i = o2, l2 = o2 + e2 * r2; i < l2; i += r2) {
+    s2 = i + r2, s2 === l2 && (s2 = o2);
+    const n3 = t2[i], e3 = t2[i + 1], d2 = t2[s2], g2 = t2[s2 + 1];
+    (e3 < u2 && g2 >= u2 || g2 < u2 && e3 >= u2) && n3 + (u2 - e3) / (g2 - e3) * (d2 - n3) < c2 && (f = !f);
+  }
+  return f;
+}
+const c = "feature-store:unsupported-query", R = { esriSpatialRelIntersects: "intersects", esriSpatialRelContains: "contains", esriSpatialRelCrosses: "crosses", esriSpatialRelDisjoint: "disjoint", esriSpatialRelEnvelopeIntersects: "intersects", esriSpatialRelIndexIntersects: null, esriSpatialRelOverlaps: "overlaps", esriSpatialRelTouches: "touches", esriSpatialRelWithin: "within", esriSpatialRelRelation: null }, S = { spatialRelationship: { esriSpatialRelIntersects: true, esriSpatialRelContains: true, esriSpatialRelWithin: true, esriSpatialRelCrosses: true, esriSpatialRelDisjoint: true, esriSpatialRelTouches: true, esriSpatialRelOverlaps: true, esriSpatialRelEnvelopeIntersects: true, esriSpatialRelIndexIntersects: false, esriSpatialRelRelation: false }, queryGeometry: { esriGeometryPoint: true, esriGeometryMultipoint: true, esriGeometryPolyline: true, esriGeometryPolygon: true, esriGeometryEnvelope: true }, layerGeometry: { esriGeometryPoint: true, esriGeometryMultipoint: true, esriGeometryPolyline: true, esriGeometryPolygon: true, esriGeometryEnvelope: false } };
+function G(e2) {
+  return S.spatialRelationship[e2] === true;
+}
+function g(e2) {
+  return S.queryGeometry[d(e2)] === true;
+}
+function j(e2) {
+  return S.layerGeometry[e2] === true;
+}
+function h() {
+  return import("./geometryEngineJSON.100cb9da.js");
+}
+function v(e2, r$2, l2, y2, c2) {
+  if (y$1(r$2) && l2 === "esriGeometryPoint" && (e2 === "esriSpatialRelIntersects" || e2 === "esriSpatialRelContains")) {
+    const e3 = C(new t$4(), r$2, false, false);
+    return Promise.resolve((r2) => t$1(e3, false, false, r2));
+  }
+  if (y$1(r$2) && l2 === "esriGeometryMultipoint") {
+    const t2 = C(new t$4(), r$2, false, false);
+    if (e2 === "esriSpatialRelContains")
+      return Promise.resolve((e3) => r(t2, false, false, e3, y2, c2));
+  }
+  if (u$2(r$2) && l2 === "esriGeometryPoint" && (e2 === "esriSpatialRelIntersects" || e2 === "esriSpatialRelContains"))
+    return Promise.resolve((e3) => t$5(r$2, _(l2, y2, c2, e3)));
+  if (u$2(r$2) && l2 === "esriGeometryMultipoint" && e2 === "esriSpatialRelContains")
+    return Promise.resolve((e3) => r$1(r$2, _(l2, y2, c2, e3)));
+  if (u$2(r$2) && e2 === "esriSpatialRelIntersects") {
+    const e3 = G$2(l2);
+    return Promise.resolve((t2) => e3(r$2, _(l2, y2, c2, t2)));
+  }
+  return h().then((t2) => {
+    const i = t2[R[e2]].bind(null, r$2.spatialReference, r$2);
+    return (e3) => i(_(l2, y2, c2, e3));
+  });
+}
+function P(t2, i, s$2) {
+  return __async(this, null, function* () {
+    const { spatialRel: o2, geometry: n2 } = t2;
+    if (n2) {
+      if (!G(o2))
+        throw new s(c, "Unsupported query spatial relationship", { query: t2 });
+      if (s$1(n2.spatialReference) && s$1(s$2)) {
+        if (!g(n2))
+          throw new s(c, "Unsupported query geometry type", { query: t2 });
+        if (!j(i))
+          throw new s(c, "Unsupported layer geometry type", { query: t2 });
+        if (t2.outSR)
+          return p(t2.geometry && t2.geometry.spatialReference, t2.outSR);
+      }
+    }
+  });
+}
+function I(e2) {
+  if (u$2(e2))
+    return true;
+  if (y$1(e2)) {
+    for (const r2 of e2.rings) {
+      if (r2.length !== 5)
+        return false;
+      if (r2[0][0] !== r2[1][0] || r2[0][0] !== r2[4][0] || r2[2][0] !== r2[3][0] || r2[0][1] !== r2[3][1] || r2[0][1] !== r2[4][1] || r2[1][1] !== r2[2][1])
+        return false;
+    }
+    return true;
+  }
+  return false;
+}
+function t(t2, n2) {
+  if (!t2)
+    return null;
+  const e2 = n2.featureAdapter, { startTimeField: u2, endTimeField: l2 } = t2;
+  let r2 = Number.POSITIVE_INFINITY, i = Number.NEGATIVE_INFINITY;
+  if (u2 && l2)
+    n2.forEach((t3) => {
+      const n3 = e2.getAttribute(t3, u2), o2 = e2.getAttribute(t3, l2);
+      n3 == null || isNaN(n3) || (r2 = Math.min(r2, n3)), o2 == null || isNaN(o2) || (i = Math.max(i, o2));
+    });
+  else {
+    const t3 = u2 || l2;
+    n2.forEach((n3) => {
+      const u3 = e2.getAttribute(n3, t3);
+      u3 == null || isNaN(u3) || (r2 = Math.min(r2, u3), i = Math.max(i, u3));
+    });
+  }
+  return { start: r2, end: i };
+}
+function n(t2, n2, r2) {
+  if (!n2 || !t2)
+    return null;
+  const { startTimeField: i, endTimeField: o2 } = t2;
+  if (!i && !o2)
+    return null;
+  const { start: s2, end: a } = n2;
+  return s2 === null && a === null ? null : s2 === void 0 && a === void 0 ? l() : i && o2 ? e(r2, i, o2, s2, a) : u(r2, i || o2, s2, a);
+}
+function e(t2, n2, e2, u2, l2) {
+  return u2 != null && l2 != null ? (r2) => {
+    const i = t2.getAttribute(r2, n2), o2 = t2.getAttribute(r2, e2);
+    return (i == null || i <= l2) && (o2 == null || o2 >= u2);
+  } : u2 != null ? (n3) => {
+    const l3 = t2.getAttribute(n3, e2);
+    return l3 == null || l3 >= u2;
+  } : l2 != null ? (e3) => {
+    const u3 = t2.getAttribute(e3, n2);
+    return u3 == null || u3 <= l2;
+  } : void 0;
+}
+function u(t2, n2, e2, u2) {
+  return e2 != null && u2 != null && e2 === u2 ? (u3) => t2.getAttribute(u3, n2) === e2 : e2 != null && u2 != null ? (l2) => {
+    const r2 = t2.getAttribute(l2, n2);
+    return r2 >= e2 && r2 <= u2;
+  } : e2 != null ? (u3) => t2.getAttribute(u3, n2) >= e2 : u2 != null ? (e3) => t2.getAttribute(e3, n2) <= u2 : void 0;
+}
+function l() {
+  return () => false;
+}
+export { I, J, N, P, _, v$1 as a, j$1 as j, n, t, v, x };

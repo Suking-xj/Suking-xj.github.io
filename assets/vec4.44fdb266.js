@@ -1,1 +1,107 @@
-import{fV as t,fW as n}from"./vendor.74d5941c.js";function r(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[3],t}function a(t,n,r,a,u){return t[0]=n,t[1]=r,t[2]=a,t[3]=u,t}function u(t,n,r){return t[0]=n[0]+r[0],t[1]=n[1]+r[1],t[2]=n[2]+r[2],t[3]=n[3]+r[3],t}function o(t,n,r){return t[0]=n[0]-r[0],t[1]=n[1]-r[1],t[2]=n[2]-r[2],t[3]=n[3]-r[3],t}function e(t,n,r){return t[0]=n[0]*r[0],t[1]=n[1]*r[1],t[2]=n[2]*r[2],t[3]=n[3]*r[3],t}function c(t,n,r){return t[0]=n[0]/r[0],t[1]=n[1]/r[1],t[2]=n[2]/r[2],t[3]=n[3]/r[3],t}function i(t,n,r){return t[0]=n[0]*r,t[1]=n[1]*r,t[2]=n[2]*r,t[3]=n[3]*r,t}function s(t,n){const r=n[0]-t[0],a=n[1]-t[1],u=n[2]-t[2],o=n[3]-t[3];return Math.sqrt(r*r+a*a+u*u+o*o)}function h(t,n){const r=n[0]-t[0],a=n[1]-t[1],u=n[2]-t[2],o=n[3]-t[3];return r*r+a*a+u*u+o*o}function M(t){const n=t[0],r=t[1],a=t[2],u=t[3];return Math.sqrt(n*n+r*r+a*a+u*u)}function f(t){const n=t[0],r=t[1],a=t[2],u=t[3];return n*n+r*r+a*a+u*u}function l(t,n){const r=n[0],a=n[1],u=n[2],o=n[3];let e=r*r+a*a+u*u+o*o;return e>0&&(e=1/Math.sqrt(e),t[0]=r*e,t[1]=a*e,t[2]=u*e,t[3]=o*e),t}function d(t,n){return t[0]*n[0]+t[1]*n[1]+t[2]*n[2]+t[3]*n[3]}function m(t,n,r,a){const u=n[0],o=n[1],e=n[2],c=n[3];return t[0]=u+a*(r[0]-u),t[1]=o+a*(r[1]-o),t[2]=e+a*(r[2]-e),t[3]=c+a*(r[3]-c),t}function b(t,n,r){const a=n[0],u=n[1],o=n[2],e=n[3];return t[0]=r[0]*a+r[4]*u+r[8]*o+r[12]*e,t[1]=r[1]*a+r[5]*u+r[9]*o+r[13]*e,t[2]=r[2]*a+r[6]*u+r[10]*o+r[14]*e,t[3]=r[3]*a+r[7]*u+r[11]*o+r[15]*e,t}function x(t,n){return t[0]===n[0]&&t[1]===n[1]&&t[2]===n[2]&&t[3]===n[3]}function q(n,r){const a=n[0],u=n[1],o=n[2],e=n[3],c=r[0],i=r[1],s=r[2],h=r[3];return Math.abs(a-c)<=t*Math.max(1,Math.abs(a),Math.abs(c))&&Math.abs(u-i)<=t*Math.max(1,Math.abs(u),Math.abs(i))&&Math.abs(o-s)<=t*Math.max(1,Math.abs(o),Math.abs(s))&&Math.abs(e-h)<=t*Math.max(1,Math.abs(e),Math.abs(h))}const p=o,v=e,_=c,g=s,j=h,w=M,y=f;Object.freeze({__proto__:null,copy:r,set:a,add:u,subtract:o,multiply:e,divide:c,ceil:function(t,n){return t[0]=Math.ceil(n[0]),t[1]=Math.ceil(n[1]),t[2]=Math.ceil(n[2]),t[3]=Math.ceil(n[3]),t},floor:function(t,n){return t[0]=Math.floor(n[0]),t[1]=Math.floor(n[1]),t[2]=Math.floor(n[2]),t[3]=Math.floor(n[3]),t},min:function(t,n,r){return t[0]=Math.min(n[0],r[0]),t[1]=Math.min(n[1],r[1]),t[2]=Math.min(n[2],r[2]),t[3]=Math.min(n[3],r[3]),t},max:function(t,n,r){return t[0]=Math.max(n[0],r[0]),t[1]=Math.max(n[1],r[1]),t[2]=Math.max(n[2],r[2]),t[3]=Math.max(n[3],r[3]),t},round:function(t,n){return t[0]=Math.round(n[0]),t[1]=Math.round(n[1]),t[2]=Math.round(n[2]),t[3]=Math.round(n[3]),t},scale:i,scaleAndAdd:function(t,n,r,a){return t[0]=n[0]+r[0]*a,t[1]=n[1]+r[1]*a,t[2]=n[2]+r[2]*a,t[3]=n[3]+r[3]*a,t},distance:s,squaredDistance:h,length:M,squaredLength:f,negate:function(t,n){return t[0]=-n[0],t[1]=-n[1],t[2]=-n[2],t[3]=-n[3],t},inverse:function(t,n){return t[0]=1/n[0],t[1]=1/n[1],t[2]=1/n[2],t[3]=1/n[3],t},normalize:l,dot:d,lerp:m,random:function(t,r){let a,u,o,e,c,i;r=r||1;do{a=2*n()-1,u=2*n()-1,c=a*a+u*u}while(c>=1);do{o=2*n()-1,e=2*n()-1,i=o*o+e*e}while(i>=1);const s=Math.sqrt((1-c)/i);return t[0]=r*a,t[1]=r*u,t[2]=r*o*s,t[3]=r*e*s,t},transformMat4:b,transformQuat:function(t,n,r){const a=n[0],u=n[1],o=n[2],e=r[0],c=r[1],i=r[2],s=r[3],h=s*a+c*o-i*u,M=s*u+i*a-e*o,f=s*o+e*u-c*a,l=-e*a-c*u-i*o;return t[0]=h*s+l*-e+M*-i-f*-c,t[1]=M*s+l*-c+f*-e-h*-i,t[2]=f*s+l*-i+h*-c-M*-e,t[3]=n[3],t},str:function(t){return"vec4("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")"},exactEquals:x,equals:q,sub:p,mul:v,div:_,dist:g,sqrDist:j,len:w,sqrLen:y});export{x as D,q as E,d as _,r as a,l as g,m as j,i as l,f as q,a as r,u as s,M as x,b as y};
+import { fV as a$1, fW as t } from "./vendor.74d5941c.js";
+function a(t2, n) {
+  return t2[0] = n[0], t2[1] = n[1], t2[2] = n[2], t2[3] = n[3], t2;
+}
+function r(t2, n, a2, r2, s2) {
+  return t2[0] = n, t2[1] = a2, t2[2] = r2, t2[3] = s2, t2;
+}
+function s(t2, n, a2) {
+  return t2[0] = n[0] + a2[0], t2[1] = n[1] + a2[1], t2[2] = n[2] + a2[2], t2[3] = n[3] + a2[3], t2;
+}
+function u(t2, n, a2) {
+  return t2[0] = n[0] - a2[0], t2[1] = n[1] - a2[1], t2[2] = n[2] - a2[2], t2[3] = n[3] - a2[3], t2;
+}
+function o(t2, n, a2) {
+  return t2[0] = n[0] * a2[0], t2[1] = n[1] * a2[1], t2[2] = n[2] * a2[2], t2[3] = n[3] * a2[3], t2;
+}
+function e(t2, n, a2) {
+  return t2[0] = n[0] / a2[0], t2[1] = n[1] / a2[1], t2[2] = n[2] / a2[2], t2[3] = n[3] / a2[3], t2;
+}
+function c(t2, n) {
+  return t2[0] = Math.ceil(n[0]), t2[1] = Math.ceil(n[1]), t2[2] = Math.ceil(n[2]), t2[3] = Math.ceil(n[3]), t2;
+}
+function i(t2, n) {
+  return t2[0] = Math.floor(n[0]), t2[1] = Math.floor(n[1]), t2[2] = Math.floor(n[2]), t2[3] = Math.floor(n[3]), t2;
+}
+function h(t2, n, a2) {
+  return t2[0] = Math.min(n[0], a2[0]), t2[1] = Math.min(n[1], a2[1]), t2[2] = Math.min(n[2], a2[2]), t2[3] = Math.min(n[3], a2[3]), t2;
+}
+function M(t2, n, a2) {
+  return t2[0] = Math.max(n[0], a2[0]), t2[1] = Math.max(n[1], a2[1]), t2[2] = Math.max(n[2], a2[2]), t2[3] = Math.max(n[3], a2[3]), t2;
+}
+function f(t2, n) {
+  return t2[0] = Math.round(n[0]), t2[1] = Math.round(n[1]), t2[2] = Math.round(n[2]), t2[3] = Math.round(n[3]), t2;
+}
+function l(t2, n, a2) {
+  return t2[0] = n[0] * a2, t2[1] = n[1] * a2, t2[2] = n[2] * a2, t2[3] = n[3] * a2, t2;
+}
+function m(t2, n, a2, r2) {
+  return t2[0] = n[0] + a2[0] * r2, t2[1] = n[1] + a2[1] * r2, t2[2] = n[2] + a2[2] * r2, t2[3] = n[3] + a2[3] * r2, t2;
+}
+function d(t2, n) {
+  const a2 = n[0] - t2[0], r2 = n[1] - t2[1], s2 = n[2] - t2[2], u2 = n[3] - t2[3];
+  return Math.sqrt(a2 * a2 + r2 * r2 + s2 * s2 + u2 * u2);
+}
+function b(t2, n) {
+  const a2 = n[0] - t2[0], r2 = n[1] - t2[1], s2 = n[2] - t2[2], u2 = n[3] - t2[3];
+  return a2 * a2 + r2 * r2 + s2 * s2 + u2 * u2;
+}
+function x(t2) {
+  const n = t2[0], a2 = t2[1], r2 = t2[2], s2 = t2[3];
+  return Math.sqrt(n * n + a2 * a2 + r2 * r2 + s2 * s2);
+}
+function q(t2) {
+  const n = t2[0], a2 = t2[1], r2 = t2[2], s2 = t2[3];
+  return n * n + a2 * a2 + r2 * r2 + s2 * s2;
+}
+function p(t2, n) {
+  return t2[0] = -n[0], t2[1] = -n[1], t2[2] = -n[2], t2[3] = -n[3], t2;
+}
+function v(t2, n) {
+  return t2[0] = 1 / n[0], t2[1] = 1 / n[1], t2[2] = 1 / n[2], t2[3] = 1 / n[3], t2;
+}
+function g(t2, n) {
+  const a2 = n[0], r2 = n[1], s2 = n[2], u2 = n[3];
+  let o2 = a2 * a2 + r2 * r2 + s2 * s2 + u2 * u2;
+  return o2 > 0 && (o2 = 1 / Math.sqrt(o2), t2[0] = a2 * o2, t2[1] = r2 * o2, t2[2] = s2 * o2, t2[3] = u2 * o2), t2;
+}
+function _(t2, n) {
+  return t2[0] * n[0] + t2[1] * n[1] + t2[2] * n[2] + t2[3] * n[3];
+}
+function j(t2, n, a2, r2) {
+  const s2 = n[0], u2 = n[1], o2 = n[2], e2 = n[3];
+  return t2[0] = s2 + r2 * (a2[0] - s2), t2[1] = u2 + r2 * (a2[1] - u2), t2[2] = o2 + r2 * (a2[2] - o2), t2[3] = e2 + r2 * (a2[3] - e2), t2;
+}
+function w(t$1, a2) {
+  let r2, s2, u2, o2, e2, c2;
+  a2 = a2 || 1;
+  do {
+    r2 = 2 * t() - 1, s2 = 2 * t() - 1, e2 = r2 * r2 + s2 * s2;
+  } while (e2 >= 1);
+  do {
+    u2 = 2 * t() - 1, o2 = 2 * t() - 1, c2 = u2 * u2 + o2 * o2;
+  } while (c2 >= 1);
+  const i2 = Math.sqrt((1 - e2) / c2);
+  return t$1[0] = a2 * r2, t$1[1] = a2 * s2, t$1[2] = a2 * u2 * i2, t$1[3] = a2 * o2 * i2, t$1;
+}
+function y(t2, n, a2) {
+  const r2 = n[0], s2 = n[1], u2 = n[2], o2 = n[3];
+  return t2[0] = a2[0] * r2 + a2[4] * s2 + a2[8] * u2 + a2[12] * o2, t2[1] = a2[1] * r2 + a2[5] * s2 + a2[9] * u2 + a2[13] * o2, t2[2] = a2[2] * r2 + a2[6] * s2 + a2[10] * u2 + a2[14] * o2, t2[3] = a2[3] * r2 + a2[7] * s2 + a2[11] * u2 + a2[15] * o2, t2;
+}
+function z(t2, n, a2) {
+  const r2 = n[0], s2 = n[1], u2 = n[2], o2 = a2[0], e2 = a2[1], c2 = a2[2], i2 = a2[3], h2 = i2 * r2 + e2 * u2 - c2 * s2, M2 = i2 * s2 + c2 * r2 - o2 * u2, f2 = i2 * u2 + o2 * s2 - e2 * r2, l2 = -o2 * r2 - e2 * s2 - c2 * u2;
+  return t2[0] = h2 * i2 + l2 * -o2 + M2 * -c2 - f2 * -e2, t2[1] = M2 * i2 + l2 * -e2 + f2 * -o2 - h2 * -c2, t2[2] = f2 * i2 + l2 * -c2 + h2 * -e2 - M2 * -o2, t2[3] = n[3], t2;
+}
+function A(t2) {
+  return "vec4(" + t2[0] + ", " + t2[1] + ", " + t2[2] + ", " + t2[3] + ")";
+}
+function D(t2, n) {
+  return t2[0] === n[0] && t2[1] === n[1] && t2[2] === n[2] && t2[3] === n[3];
+}
+function E(n, a2) {
+  const r2 = n[0], s2 = n[1], u2 = n[2], o2 = n[3], e2 = a2[0], c2 = a2[1], i2 = a2[2], h2 = a2[3];
+  return Math.abs(r2 - e2) <= a$1 * Math.max(1, Math.abs(r2), Math.abs(e2)) && Math.abs(s2 - c2) <= a$1 * Math.max(1, Math.abs(s2), Math.abs(c2)) && Math.abs(u2 - i2) <= a$1 * Math.max(1, Math.abs(u2), Math.abs(i2)) && Math.abs(o2 - h2) <= a$1 * Math.max(1, Math.abs(o2), Math.abs(h2));
+}
+const L = u, k = o, B = e, C = d, F = b, G = x, H = q;
+Object.freeze({ __proto__: null, copy: a, set: r, add: s, subtract: u, multiply: o, divide: e, ceil: c, floor: i, min: h, max: M, round: f, scale: l, scaleAndAdd: m, distance: d, squaredDistance: b, length: x, squaredLength: q, negate: p, inverse: v, normalize: g, dot: _, lerp: j, random: w, transformMat4: y, transformQuat: z, str: A, exactEquals: D, equals: E, sub: L, mul: k, div: B, dist: C, sqrDist: F, len: G, sqrLen: H });
+export { D, E, _, a, g, j, l, q, r, s, x, y };

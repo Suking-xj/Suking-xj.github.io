@@ -1,1 +1,17 @@
-import{ae as e,af as t,ag as o,gf as r}from"./vendor.74d5941c.js";let s=class extends r{initialize(){}destroy(){}get supportsTileUpdates(){return!1}get spatialReference(){const e=this.get("tileStore.tileScheme.spatialReference");return e&&e.toJSON()||null}};e([t({readOnly:!0})],s.prototype,"supportsTileUpdates",null),e([t({constructOnly:!0})],s.prototype,"remoteClient",void 0),e([t({constructOnly:!0})],s.prototype,"service",void 0),e([t()],s.prototype,"spatialReference",null),e([t({constructOnly:!0})],s.prototype,"tileInfo",void 0),e([t({constructOnly:!0})],s.prototype,"tileStore",void 0),s=e([o("esri.views.2d.layers.features.processors.BaseProcessor")],s);var l=s;export{l as p};
+import { ae as e, af as y, ag as i, gf as d } from "./vendor.74d5941c.js";
+let s = class extends d {
+  initialize() {
+  }
+  destroy() {
+  }
+  get supportsTileUpdates() {
+    return false;
+  }
+  get spatialReference() {
+    const e2 = this.get("tileStore.tileScheme.spatialReference");
+    return e2 && e2.toJSON() || null;
+  }
+};
+e([y({ readOnly: true })], s.prototype, "supportsTileUpdates", null), e([y({ constructOnly: true })], s.prototype, "remoteClient", void 0), e([y({ constructOnly: true })], s.prototype, "service", void 0), e([y()], s.prototype, "spatialReference", null), e([y({ constructOnly: true })], s.prototype, "tileInfo", void 0), e([y({ constructOnly: true })], s.prototype, "tileStore", void 0), s = e([i("esri.views.2d.layers.features.processors.BaseProcessor")], s);
+var p = s;
+export { p };

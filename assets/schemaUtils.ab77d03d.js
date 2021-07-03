@@ -1,1 +1,1128 @@
-var e=Object.defineProperty,t=Object.defineProperties,i=Object.getOwnPropertyDescriptors,s=Object.getOwnPropertySymbols,n=Object.prototype.hasOwnProperty,r=Object.prototype.propertyIsEnumerable,a=(t,i,s)=>i in t?e(t,i,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[i]=s,o=(e,t)=>{for(var i in t||(t={}))n.call(t,i)&&a(e,i,t[i]);if(s)for(var i of s(t))r.call(t,i)&&a(e,i,t[i]);return e},l=(e,s)=>t(e,i(s));import{bV as u,at as c,bW as h,bX as f,bY as d,bZ as p,as as m,aI as g,aG as y,aH as b,aF as x,b_ as v,bA as w,b6 as M,b$ as S,c0 as T,c1 as z,c2 as _,a9 as E,c3 as F,b9 as V,be as I,bu as C,b7 as R,ae as O,af as L,c4 as B,ag as N,c5 as k,c6 as P,bT as A,a4 as j,ai as W,a0 as $,c7 as D,aa as H,c8 as G,c9 as J,a5 as K,ca as q,ay as U,cb as Y}from"./vendor.74d5941c.js";import{x as X}from"./MD5.1ef35834.js";import{m as Z,A as Q,E as ee,S as te}from"./Utils.3f1577e5.js";import{f as ie,A as se}from"./MaterialKey.3bc4aaea.js";import{o as ne}from"./visualVariablesUtils.cb58e4df.js";import{k as re}from"./definitions.6737c10c.js";import{h as ae,t as oe}from"./CIMSymbolHelper.6546a069.js";import{t as le}from"./Rect.b51904ac.js";import{C as ue}from"./BidiEngine.9b392b22.js";const ce=new ue;function he(e){if(!ce.hasBidiChar(e))return[e,!1];let t;return t="rtl"===ce.checkContextual(e)?"IDNNN":"ICNNN",[ce.bidiTransform(e,t,"VLYSN"),!0]}var fe,de,pe;function me(e){switch(e){case"left":return fe.Left;case"right":return fe.Right;case"center":case"justify":return fe.Center}}function ge(e){switch(e){case"top":return de.Top;case"middle":return de.Center;case"baseline":return de.Baseline;case"bottom":return de.Bottom}}function ye(e){switch(e){case"above-left":return[fe.Right,de.Bottom];case"above-center":case"above-along":return[fe.Center,de.Bottom];case"above-right":return[fe.Left,de.Bottom];case"center-left":return[fe.Right,de.Center];case"center-center":case"center-along":return[fe.Center,de.Center];case"center-right":return[fe.Left,de.Center];case"below-left":return[fe.Right,de.Top];case"below-center":case"below-along":return[fe.Center,de.Top];case"below-right":return[fe.Left,de.Top];case"always-horizontal":return[fe.Center,de.Baseline];default:return console.debug(`Found invalid placement type ${e}`),[fe.Center,de.Center]}}function be(e){switch(e){case fe.Right:return-1;case fe.Center:return 0;case fe.Left:return 1;default:return console.debug(`Found invalid horizontal alignment ${e}`),0}}function xe(e){switch(e){case de.Top:return 1;case de.Center:return 0;case de.Bottom:case de.Baseline:return-1;default:return console.debug(`Found invalid vertical alignment ${e}`),0}}function ve(e){switch(e){case"left":return fe.Left;case"right":return fe.Right;case"center":case"justify":return fe.Center}}(pe=fe||(fe={}))[pe.Left=-1]="Left",pe[pe.Center=0]="Center",pe[pe.Right=1]="Right",function(e){e[e.Top=1]="Top",e[e.Center=0]="Center",e[e.Bottom=-1]="Bottom",e[e.Baseline=2]="Baseline"}(de||(de={}));class we{constructor(e,t,i,s){this.center=u(e,t),this.centerT=c(),this.halfWidth=i/2,this.halfHeight=s/2,this.width=i,this.height=s}get x(){return this.center[0]}get y(){return this.center[1]}get blX(){return this.center[0]+this.halfWidth}get blY(){return this.center[1]+this.halfHeight}get trX(){return this.center[0]-this.halfWidth}get trY(){return this.center[1]-this.halfHeight}get xmin(){return this.x-this.halfWidth}get xmax(){return this.x+this.halfWidth}get ymin(){return this.y-this.halfHeight}get ymax(){return this.y+this.halfHeight}set x(e){this.center[0]=e}set y(e){this.center[1]=e}clone(){return new we(this.x,this.y,this.width,this.height)}serialize(e){return e.writeF32(this.center[0]),e.writeF32(this.center[1]),e.push(this.width),e.push(this.height),e}findCollisionDelta(e,t=4){const i=Math.abs(e.centerT[0]-this.centerT[0]),s=Math.abs(e.centerT[1]-this.centerT[1]),n=(e.halfWidth+this.halfWidth+t)/i,r=(e.halfHeight+this.halfHeight+t)/s,a=Math.min(n,r);return h(a)}extend(e){const t=Math.min(this.xmin,e.xmin),i=Math.min(this.ymin,e.ymin),s=Math.max(this.xmax,e.xmax)-t,n=Math.max(this.ymax,e.ymax)-i,r=t+s/2,a=i+n/2;this.width=s,this.height=n,this.halfWidth=s/2,this.halfHeight=n/2,this.x=r,this.y=a}static deserialize(e){const t=e.readF32(),i=e.readF32(),s=e.readInt32(),n=e.readInt32();return new we(t,i,s,n)}}const Me=Math.PI/180;class Se{constructor(e,t,i,s){this._rotationT=d(),this._xBounds=0,this._yBounds=0,this.minZoom=0,this.maxZoom=255,this._bounds=null;const n=i.rect,r=new Float32Array(8);e*=s,t*=s;const a=i.code?n.width*s:i.metrics.width,o=i.code?n.height*s:i.metrics.height;r[0]=e,r[1]=t,r[2]=e+a,r[3]=t,r[4]=e,r[5]=t+o,r[6]=e+a,r[7]=t+o,this._data=r,this._setTextureCoords(n),this._scale=s,this._mosaic=i,this.x=e,this.y=t,this.maxOffset=Math.max(e+a,t+o)}get width(){return this._mosaic.metrics.width*this._scale}get mosaic(){return this._mosaic}set angle(e){this._angle=e,x(this._rotationT),b(this._rotationT,this._rotationT,-e),this._setOffsets(this._data)}get angle(){return this._angle}get xTopLeft(){return this._data[0]}get yTopLeft(){return this._data[1]}get xBottomRight(){return this._data[6]}get yBottomRight(){return this._data[7]}get texcoords(){return this._texcoords}get textureBinding(){return this._mosaic.textureBinding}get offsets(){return this._offsets||this._setOffsets(this._data),this._offsets}get char(){return String.fromCharCode(this._mosaic.code)}get code(){return this._mosaic.code}get bounds(){if(!this._bounds){const{height:e,width:t}=this._mosaic.metrics,i=t*this._scale,s=Math.abs(e)*this._scale,n=new Float32Array(8);n[0]=this.x,n[1]=this.y,n[2]=this.x+i,n[3]=this.y,n[4]=this.x,n[5]=this.y+s,n[6]=this.x+i,n[7]=this.y+s;const r=p(d(),this._rotationT,this._T);v(n,n,r);let a=1/0,o=1/0,l=0,u=0;for(let d=0;d<4;d++){const e=n[2*d],t=n[2*d+1];a=Math.min(a,e),o=Math.min(o,t),l=Math.max(l,e),u=Math.max(u,t)}const c=l-a,h=u-o,f=a+c/2,m=o+h/2;this._bounds=new we(f,m,c,h)}return this._bounds}setTransform(e){this._T=e,this._offsets=null}_setOffsets(e){this._offsets||(this._offsets={upperLeft:0,upperRight:0,lowerLeft:0,lowerRight:0});const t=this._offsets,i=new Float32Array(8),s=p(d(),this._rotationT,this._T);v(i,e,s),t.upperLeft=Z(8*i[0],8*i[1]),t.upperRight=Z(8*i[2],8*i[3]),t.lowerLeft=Z(8*i[4],8*i[5]),t.lowerRight=Z(8*i[6],8*i[7])}_setTextureCoords({x:e,y:t,width:i,height:s}){this._texcoords={upperLeft:Z(e,t),upperRight:Z(e+i,t),lowerLeft:Z(e,t+s),lowerRight:Z(e+i,t+s)}}}const Te=(e,t)=>({code:0,page:0,sdf:!0,rect:new le(0,0,11,8),textureBinding:t,metrics:{advance:0,height:4,width:e,left:0,top:0}});class ze{constructor(e,t,i){this._rotation=0,this._decorate(e,t,i),this.glyphs=e,this.bounds=this._createBounds(e),this.isMultiline=t.length>1,this._hasRotation=0!==i.angle,this._T=this._createGlyphTransform(this.bounds,i);for(const s of e)s.setTransform(this._T)}setRotation(e){if(0===e&&0===this._rotation)return;this._rotation=e;const t=this._T,i=f(d(),e);p(t,i,t);for(const s of this.glyphs)s.setTransform(this._T)}_decorate(e,t,i){if(!i.decoration||"none"===i.decoration||!e.length)return;const s=i.scale,n="underline"===i.decoration?30:20,r=e[0].textureBinding;for(const a of t){const t=a.startX*s,i=a.startY*s,o=(a.width+a.glyphWidthEnd)*s;e.push(new Se(t,i+n*s,Te(o,r),1))}}get boundsT(){const e=this.bounds,t=m(c(),e.x,e.y);if(g(t,t,this._T),this._hasRotation){const i=Math.max(e.width,e.height);return new we(t[0],t[1],i,i)}return new we(t[0],t[1],e.width,e.height)}_createBounds(e){let t=1/0,i=1/0,s=0,n=0;for(const o of e)t=Math.min(t,o.xTopLeft),i=Math.min(i,o.yTopLeft),s=Math.max(s,o.xTopLeft+o.width),n=Math.max(n,o.yBottomRight);const r=s-t,a=n-i;return new we(t+r/2,i+a/2,r,a)}_createGlyphTransform(e,t){const i=Me*t.angle,s=d(),n=c();return y(s,s,m(n,t.xOffset,-t.yOffset)),t.isCIM?b(s,s,i):(y(s,s,m(n,e.x,e.y)),b(s,s,i),y(s,s,m(n,-e.x,-e.y))),s}}class _e{constructor(e,t,i,s,n,r){this.glyphWidthEnd=0,this.startX=0,this.startY=0,this.start=Math.max(0,Math.min(t,i)),this.end=Math.max(0,Math.max(t,i)),this.end<e.length&&(this.glyphWidthEnd=e[this.end].metrics.width),this.width=s,this.yMin=n,this.yMax=r}}const Ee=e=>10===e,Fe=e=>32===e;function Ve(e,t,i){const s=i.scale,n=new Array,r=function(e,t,i){const s=new Array,n=1/i.scale,r=i.maxLineWidth*n,a=t?e.length-1:0,o=t?-1:e.length,l=t?-1:1;let u=a,c=0,h=0,f=u,d=f,p=0,m=1/0,g=0;for(;u!==o;){const{code:t,metrics:i}=e[u],n=Math.abs(i.top);if(Ee(t)||Fe(t)||(m=Math.min(m,n),g=Math.max(g,n+i.height)),Ee(t))u!==a&&(s.push(new _e(e,f,u-l,c,m,g)),m=1/0,g=0),c=0,f=u+l,d=u+l,h=0;else if(Fe(t))d=u+l,h=0,p=i.advance,c+=i.advance;else if(c>r){if(d!==f){const t=d-2*l;c-=p,s.push(new _e(e,f,t,c-h,m,g)),m=1/0,g=0,f=d,c=h}else s.push(new _e(e,f,u-l,c,m,g)),m=1/0,g=0,f=u,d=u,c=0;c+=i.advance,h+=i.advance}else c+=i.advance,h+=i.advance;u+=l}const y=new _e(e,f,u-l,c,m,g);return y.start>=0&&y.end<e.length&&s.push(y),s}(e,t,i),a=function(e,t){let i=0;for(let r=0;r<e.length;r++){const{width:t}=e[r];i=Math.max(t,i)}const s="underline"===t.decoration?4:0,n=e[0].yMin;return{x:0,y:n,height:e[e.length-1].yMax+t.lineHeight*(e.length-1)+s-n,width:i}}(r,i),{vAlign:o,hAlign:l}=i,u=o===de.Baseline?1:0,c=u?0:o-1,h=(1-u)*-a.y+c*(a.height/2)+-26*(u?1:0);for(let f=0;f<r.length;f++){const{start:t,end:a,width:o}=r[f];let u=-1*(l+1)*(o/2)-3;const c=f*i.lineHeight+h-3;r[f].startX=u,r[f].startY=c;for(let i=t;i<=a;i++){const t=e[i];if(Ee(t.code))continue;const r=new Se(u+t.metrics.left,c-t.metrics.top,t,s);u+=t.metrics.advance,n.push(r)}}return new ze(n,r,i)}const Ie=Math.PI/180,Ce=d(),Re=c(),Oe=512,Le=50;function Be(e,t){if(!t.isWrappable)return null;const[i,s]=w(t);return e[2]>s?[M([e[0],e[1],s,e[3]]),M([i,e[1],i+e[2]-s,e[3]])]:e[0]<i?[M([i,e[1],e[2],e[3]]),M([s-(i-e[0]),e[1],s,e[3]])]:null}function Ne(e,t,i,s,n,r,a){if(!s||!i.symbol)return e[0]=e[1]=e[2]=e[3]=0,t[0]=t[1]=t[2]=t[3]=0,e;const o=s;if(!V(o)){I(e,o);let s=t[0];0===s&&(s=Xe(i),t[0]=s);const r=n*s/2;return e[0]-=r,e[1]-=r,e[2]+=r,e[3]+=r,e}{const s=o.x,l=o.y;"esriTS"===i.symbol.type&&0===t[2]&&0===t[3]&&Ze(t,i.symbol,i.mosaicItem),function(e,t,i,s,n,r,a,o){let l;switch(s.type){case"esriSMS":case"esriPMS":l=qe(t,i,s,r,a,0);break;case"esriTS":l=Ye(t,i,s,n,r,0);break;case"cim":case"CIMSymbolReference":case"expanded-cim":l=Ue(t,i,s,r,a,0)}let u,c,h=0;for(let p=0;p<l.rings[0].length-1;p++)c=l.rings[0][p],u=(t-c[0])*(t-c[0])+(i-c[1])*(i-c[1]),h=Math.max(h,u);h=Math.sqrt(h);let f=C(t-h,o),d=C(t+h,o);if(f>d){const e=R(o);if(e){const[t,i]=e.valid;f=t,d=i}}e[0]=f,e[1]=i-h,e[2]=d,e[3]=i+h}(e,s,l,i.symbol,t,n,r,a)}return e}function ke(e){return"text"===e||"esriTS"===e}function Pe(e){return"simple-marker"===e||"picture-marker"===e||"esriSMS"===e||"esriPMS"===e}function Ae(e){switch(S(e.geometry).type){case"point":case"multipoint":return 0;case"polyline":return 1;case"polygon":case"extent":return 2}return 0}const je=c(),We=c(),$e=c(),De=c(),He=c(),Ge=c(),Je=c();function Ke(e,t,i,s){m($e,t,i);const n=e.paths;let r,a,o,l,u,c,h,f,d,p=1/0;for(let g=0;g<n.length;g++){const e=n[g];if(!(e.length<2))for(let n=1;n<e.length;n++)r=e[n-1][0],o=e[n-1][1],a=e[n][0],l=e[n][1],u=Math.min(r,a)-s,c=Math.min(o,l)-s,h=Math.max(r,a)+s,f=Math.max(o,l)+s,t<u||t>h||i<c||i>f||(m(je,r,o),m(We,a,l),T(De,We,je),T(He,je,$e),z(Ge,De,_(De,He)/_(De,De)),T(Je,He,Ge),d=_(Je,Je),p>d&&(p=d))}return Math.sqrt(p)<=s}function qe(e,t,i,s,n,r){let a,o;const l=E(i.xoffset),u=E(i.yoffset),c=Ie*i.angle,h=Ie*r;switch(i.type){case"esriSMS":a=o=E(i.size);break;case"esriPMS":a=E(i.width),o=E(i.height)}n<.04&&(s=.04*s/n);const f=x(Ce);y(f,f,m(Re,e,t)),b(f,f,h-c),F(f,f,m(Re,s,-s)),y(f,f,m(Re,l,-u));const d=[0,0];g(d,m(Re,-.5*a,-.5*o),f);const p=[0,0];g(p,m(Re,-.5*a,.5*o),f);const v=[0,0];g(v,m(Re,.5*a,-.5*o),f);const w=[0,0];return g(w,m(Re,.5*a,.5*o),f),{rings:[[d,v,w,p,d]]}}function Ue(e,t,i,s,n,r){const a=ae.getEnvelope(i.data);if(!a)return null;n<.04&&(s=.04*s/n);const o=E(a.width),l=E(a.height),u=E(a.x),c=E(a.y),h=0*Ie,f=Ie*r,d=x(Ce);y(d,d,m(Re,e,t)),b(d,d,f-h),F(d,d,m(Re,s,s));const p=[0,0];g(p,m(Re,u,c+l),d);const v=[0,0];g(v,m(Re,u,c),d);const w=[0,0];g(w,m(Re,u+o,c+l),d);const M=[0,0];return g(M,m(Re,u+o,c),d),{rings:[[p,w,M,v,p]]}}function Ye(e,t,i,s,n,r){const a=E(i.xoffset),o=E(i.yoffset),l=Ie*i.angle,u=Ie*r,c=x(Ce);y(c,c,m(Re,e,t)),b(c,c,u),F(c,c,m(Re,n,-n));const h=s[0]+s[2]/2,f=s[1]+s[3]/2;y(c,c,m(Re,a,-o)),y(c,c,m(Re,h,f)),b(c,c,l),y(c,c,m(Re,-h,-f));const d=[0,0];g(d,m(Re,s[0],s[1]),c);const p=[0,0];g(p,m(Re,s[0],s[1]+s[3]),c);const v=[0,0];g(v,m(Re,s[0]+s[2],s[1]),c);const w=[0,0];return g(w,m(Re,s[0]+s[2],s[1]+s[3]),c),{rings:[[d,v,w,p,d]]}}function Xe(e){switch(e.symbol.type){case"esriSFS":case"esriPFS":{const t=e.symbol.outline;return t?t.width:0}case"esriSLS":return E(e.symbol.width);case"esriSMS":return E(e.symbol.size);case"esriPMS":return E(Math.max(e.symbol.width,e.symbol.height));case"esriTS":{const t=[0,0,0,0];Ze(t,e.symbol,e.mosaicItem);const i=Math.max(Math.abs(t[0]),Math.abs(t[1]));return Math.max(t[2],t[3])+i}case"expanded-cim":{const t=ae.getEnvelope(e.symbol.data);return t.width!==-1/0&&t.height!==-1/0||(t.width=10,t.height=10,t.x=0,t.y=0),E(Math.sqrt(t.width*t.width+t.height*t.height))}case"composite-symbol":{if(!e.symbol.layers.length)return 0;const t=e.symbol.layers.length-1;return Xe({symbol:e.symbol.layers[t],mosaicItem:null})}case"label":default:return 0}}function Ze(e,t,i){if(!i||0===i.glyphMosaicItems.length)return e;const s=he(t.text)[1],n=Ve(i.glyphMosaicItems,s,{scale:E(t.font.size)/24,angle:t.angle,xOffset:t.xoffset,yOffset:t.yoffset,hAlign:me(t.horizontalAlignment||"center"),vAlign:ge(t.verticalAlignment||"baseline"),maxLineWidth:Math.max(32,Math.min(t.lineWidth||512,512)),lineHeight:30*Math.max(.25,Math.min(t.lineHeight||1,4)),decoration:t.font.decoration||"none",isCIM:!1}).bounds;return e[0]=E(n.x-n.halfWidth),e[1]=E(n.y-n.halfHeight),e[2]=E(n.width),e[3]=E(n.height),e}var Qe;let et=Qe=class extends k{writeLevels(e,t,i){for(const s in e){const e=this.levels[s];return void(t.stops=e)}}clone(){return new Qe({axis:this.axis,field:this.field,valueExpression:this.valueExpression,valueExpressionTitle:this.valueExpressionTitle,maxDataValue:this.maxDataValue,maxSize:P(this.maxSize)?this.maxSize.clone():this.maxSize,minDataValue:this.minDataValue,minSize:P(this.minSize)?this.minSize.clone():this.minSize,normalizationField:this.normalizationField,stops:this.stops&&this.stops.map((e=>e.clone())),target:this.target,useSymbolValue:this.useSymbolValue,valueRepresentation:this.valueRepresentation,valueUnit:this.valueUnit,legendOptions:this.legendOptions&&this.legendOptions.clone(),levels:A(this.levels)})}};O([L()],et.prototype,"levels",void 0),O([B("levels")],et.prototype,"writeLevels",null),et=Qe=O([N("esri.views.2d.engine.LevelDependentSizeVariable")],et);const tt=j.getLogger("esri.views.2d.layers.support.clusterUtils");W.add("esri-cluster-arcade-enabled",1);const it=W("esri-cluster-arcade-enabled"),st=(e,t,i,s)=>{const n=t.clone();if(!ot(n))return n;if(i.fields)for(const r of i.fields)lt(e,r);if("visualVariables"in n){const t=(n.visualVariables||[]).filter((e=>"$view.scale"!==e.valueExpression)),r=nt(t);t.forEach((t=>{"rotation"===t.type?t.field?t.field=ct(e,t.field,"avg_angle"):t.valueExpression&&(t.field=ut(e,t.valueExpression,"avg_angle"),t.valueExpression=null):t.normalizationField?(t.field=ct(e,t.field,"norm",t.normalizationField),t.normalizationField=null):t.field?t.field=ct(e,t.field,"avg"):(t.field=ut(e,t.valueExpression,"avg"),t.valueExpression=null)})),$(r)&&!rt(t)&&(t.push(at(i,s)),n.dynamicClusterSize=!0),n.visualVariables=t}switch(n.type){case"simple":break;case"unique-value":n.field?n.field=ct(e,n.field,"mode"):n.valueExpression&&(n.field=ut(e,n.valueExpression,"mode"),n.valueExpression=null);break;case"class-breaks":n.normalizationField?(n.field=ct(e,n.field,"norm",n.normalizationField),n.normalizationField=null):n.field?n.field=ct(e,n.field,"avg"):(n.field=ut(e,n.valueExpression,"avg"),n.valueExpression=null)}return n},nt=e=>{for(const t of e)if("size"===t.type)return t;return null},rt=e=>{for(const t of e)if("cluster_count"===t.field)return!0;return!1},at=(e,t)=>{const i=[new D({value:0,size:0}),new D({value:1})];if($(t))return new k({field:"cluster_count",stops:[...i,new D({value:2,size:0})]});const s=Object.keys(t).reduce(((s,n)=>l(o({},s),{[n]:[...i,new D({value:Math.max(2,t[n].minValue),size:e.clusterMinSize}),new D({value:Math.max(3,t[n].maxValue),size:e.clusterMaxSize})]})),{});return new et({field:"cluster_count",levels:s})},ot=e=>{const t=t=>tt.error(new H("Unsupported-renderer",t,{renderer:e}));if("unique-value"===e.type){if(e.field2||e.field3)return t("FeatureReductionCluster does not support multi-field UniqueValueRenderers"),!1}else if("class-breaks"===e.type){if(e.normalizationField){const i=e.normalizationType;if("field"!==i)return t(`FeatureReductionCluster does not support a normalizationType of ${i}`),!1}}else if("simple"!==e.type)return t(`FeatureReductionCluster does not support renderers of type ${e.type}`),!1;if(!it){if("valueExpression"in e&&e.valueExpression)return t("FeatureReductionCluster does not currently support renderer.valueExpression. Support will be added in a future release"),!1;if(("visualVariables"in e&&e.visualVariables||[]).some((e=>!(!("valueExpression"in e)||!e.valueExpression))))return t("FeatureReductionCluster does not currently support visualVariables with a valueExpression. Support will be added in a future release"),!1}return!0};function lt(e,t){const{name:i,outStatistic:s}=t,{onStatisticField:n,onStatisticValueExpression:r,statisticType:a}=s;if(r){const t=X(r.toLowerCase());e.push({name:i,outStatistic:{onStatisticField:t,onStatisticValueExpression:r,statisticType:a}})}else n?e.push({name:i,outStatistic:{onStatisticField:n,statisticType:a}}):tt.error(new H("mapview-unsupported-field","Unable to handle field",{field:t}))}function ut(e,t,i){const s=X(t),n="mode"===i?`cluster_type_${s}`:`cluster_avg_${s}`;return e.some((e=>e.name===n))||e.push({name:n,outStatistic:{onStatisticField:s,onStatisticValueExpression:t,statisticType:i}}),n}function ct(e,t,i,s){if("cluster_count"===t||e.some((e=>e.name===t)))return t;const n=function(e,t,i){switch(e){case"avg":case"avg_angle":return`cluster_avg_${t}`;case"mode":return`cluster_type_${t}`;case"norm":{const e=i,s="field",n=t.toLowerCase()+",norm:"+s+","+e.toLowerCase();return"cluster_avg_"+X(n)}}}(i,t,s);return e.some((e=>e.name===n))||("norm"===i?e.push({name:n,outStatistic:{onStatisticField:t,onStatisticNormalizationField:s,statisticType:i}}):e.push({name:n,outStatistic:{onStatisticField:t,statisticType:i}})),n}const ht={"simple-marker":1,"picture-marker":1,text:0,"simple-line":0,"simple-fill":0,"picture-fill":0,cim:1,"web-style":1};function ft(e){if(!("visualVariables"in e))return 0;if(!e.hasVisualVariables("size"))return 0;const t=e.getVisualVariablesForType("size");if(!t[0])return 0;const i=t[0];if("stops"===i.transformationType)return i.stops.map((e=>e.size)).reduce(vt,0);if("clamped-linear"===i.transformationType){let e=-1/0,t=-1/0;return e="number"==typeof i.maxSize?i.maxSize:i.maxSize.stops.map((e=>e.size)).reduce(vt,0),t="number"==typeof i.minSize?i.minSize:i.minSize.stops.map((e=>e.size)).reduce(vt,0),Math.max(e,t)}return"real-world-size"===i.transformationType?30:void 0}async function dt(e,t,i){if(!e||i&&"cluster"===i.type)return 0;if("heatmap"===e.type)return Math.round(3*e.blurRadius);if("dot-density"===e.type)return 0;if("dictionary"===e.type)return"esriGeometryPoint"===t||"esriGeometryMultipoint"===t?100:200;const s=e.getSymbols(),n=ft(e),r=[];for(const o of s)r.push(bt(o,n));const a=await Promise.all(r);return E(a.reduce(vt,0))}const pt=[0,0,0,0];function mt(e,t){return null==e?t:e}const gt={sdf:!0,code:99,metrics:re.metrics,rect:new oe(0,0,24,24),page:0,textureBinding:2};async function yt(e,t){if("simple-marker"===e.type){const i=Math.max(mt(e.size,12),t);return xt(e)+.707*i}if("picture-marker"===e.type){const i=Math.max(mt(e.height,12),t),s=mt(e.width,12)*(i/mt(e.height,12))/2,n=i/2;return xt(e)+Math.sqrt(s*s+n*n)}if("text"===e.type){const t=function(e){const t=e.text&&e.text.length;if(!t)return{glyphMosaicItems:[gt]};const i=[];for(let s=0;s<t;s++)i.push(l(o({},gt),{code:e.text.charCodeAt(s)}));return{glyphMosaicItems:i}}(e);Ze(pt,e.toJSON(),t);const i=Math.abs(pt[0]),s=Math.abs(pt[1]),n=pt[2],r=pt[3];return Math.max(i,s)+Math.max(n,r)}if("simple-line"===e.type){const i=e,s=Math.max(mt(i.width,.75),t)/2;return i.marker?Math.max(6*i.width,2*t):s}if("simple-fill"===e.type||"picture-fill"===e.type)return Math.max(function(e,t){return null==e.outline?t:mt(e.outline.width,t)}(e,0),t)/2;if("cim"===e.type){const t=ae.getEnvelope(e.data);return t?Math.sqrt(t.width*t.width+t.height*t.height):0}return"web-style"===e.type?yt(await e.fetchCIMSymbol(),t):0}async function bt(e,t){return function(e){return e.type in ht}(e)?Math.min(await yt(e,t),75):0}function xt(e){const t=mt(e.xoffset,0),i=mt(e.yoffset,0);return Math.sqrt(t*t+i*i)}function vt(e,t){return Math.max(e,t)}const wt=j.getLogger("esri.renderers.visualVariables.support.utils"),Mt=e=>{if(!("visualVariables"in e)||!e.visualVariables||!e.visualVariables.length)return e;const t=e.clone(),i=t.visualVariables.map((e=>Tt(e)?zt(e):e));return t.visualVariables=i,t};function St(e){return e.map((e=>Tt(e)?zt(e.clone()):e))}function Tt(e){return("size"===e.type||"color"===e.type||"opacity"===e.type)&&null!=e.stops}function zt(e){return e.stops=function(e,t){return t.length<=8?t:(wt.warn(`Found ${t.length} Visual Variable stops, but MapView only supports 8. Displayed stops will be simplified.`),t.length>16?function(e,t){const[i,...s]=t,n=s.pop(),r=s[0].value,a=s[s.length-1].value,o=(a-r)/6,l=[];for(let u=r;u<a;u+=o){let i=0;for(;u>=s[i].value;)i++;const n=s[i],r=t[i-1],a=u-r.value,o=n.value===r.value?1:a/(n.value-r.value);if("color"===e){const e=s[i],n=t[i-1],r=e.color.clone();r.r=_t(n.color.r,r.r,o),r.g=_t(n.color.g,r.g,o),r.b=_t(n.color.b,r.b,o),r.a=_t(n.color.a,r.a,o),l.push({value:u,color:r,label:e.label})}else if("size"===e){const e=s[i],n=t[i-1],r=G(e.size),a=_t(G(n.size),r,o);l.push({value:u,size:a,label:e.label})}else{const e=s[i],n=_t(t[i-1].opacity,e.opacity,o);l.push({value:u,opacity:n,label:e.label})}}return[i,...l,n]}(e,t):function(e){const[t,...i]=e,s=i.pop();for(;i.length>6;){let e=0,t=0;for(let s=1;s<i.length;s++){const n=i[s-1],r=i[s],a=Math.abs(r.value-n.value);a>t&&(t=a,e=s)}i.splice(e,1)}return[t,...i,s]}(t))}(e.type,e.stops),e}function _t(e,t,i){return(1-i)*e+i*t}const Et=new J({esriGeometryPoint:"point",esriGeometryMultipoint:"multipoint",esriGeometryPolyline:"polyline",esriGeometryPolygon:"polygon",esriGeometryMultiPatch:"multipatch",mesh:"mesh"});function Ft(e){return Et.toJSON(e)}const Vt=j.getLogger("esri.views.2d.layers.features.schemaUtils"),It="ValidationError",Ct={esriGeometryPoint:["above-right","above-center","above-left","center-center","center-left","center-right","below-center","below-left","below-right"],esriGeometryPolygon:["always-horizontal"],esriGeometryPolyline:["center-along"],esriGeometryMultipoint:null};function Rt(e){return ie(e)}function Ot(e){switch(e.type){case"line-marker":var t;return{type:"line-marker",color:null==(t=e.color)?void 0:t.toJSON(),placement:e.placement,style:e.style};default:return Y(e.toJSON()).toJSON()}}function Lt(e,t,i){if(!e)return null;let s=0,n=!1,r=0;switch(K(t)&&(r=ft(t),"visualVariables"in t&&(s=function(e){if(!e)return Q.NONE;let t=0;for(const i of e)if("size"===i.type){const e=ne(i);t|=e,"outline"===i.target&&(t|=e<<4)}else"color"===i.type?t|=Q.COLOR:"opacity"===i.type?t|=Q.OPACITY:"rotation"===i.type&&(t|=Q.ROTATION);return t}(t.visualVariables||[]),n="dot-density"===t.type)),e.type){case"simple-fill":case"picture-fill":return function(e,t,i,s){const n=se(ee.FILL,t,!1,i),r=s?Rt(n):n,a=e.clone(),l=a.outline;a.outline=null;const u=[],c=o({materialKey:r,hash:a.hash()},Ot(a));if(u.push(c),l){const e=se(ee.LINE,t,!0,!1),i=o({materialKey:s?Rt(e):e,hash:l.hash()},Ot(l));u.push(i)}return{type:"composite-symbol",layers:u,hash:u.reduce(((e,t)=>t.hash+e),"")}}(e,s,n,i);case"simple-marker":case"picture-marker":return function(e,t,i,s){const n=se(ee.MARKER,t,!1,!1),r=s?Rt(n):n,a=Ot(e);return l(o({materialKey:r,hash:e.hash()},a),{angle:e.angle,maxVVSize:i})}(e,s,r,i);case"simple-line":return function(e,t,i){const s=se(ee.LINE,t,!1,!1),n=i?Rt(s):s,r=e.clone(),a=r.marker;r.marker=null;const l=[];if(l.push(o({materialKey:n,hash:r.hash()},Ot(r))),a){var u;const e=se(ee.MARKER,t,!1,!1),s=i?Rt(e):e;a.color=null!=(u=a.color)?u:r.color,l.push(o({materialKey:s,hash:a.hash(),lineWidth:r.width},Ot(a)))}return{type:"composite-symbol",layers:l,hash:l.reduce(((e,t)=>t.hash+e),"")}}(e,s,i);case"text":return function(e,t,i,s){const n=se(ee.TEXT,t,!1,!1),r=s?Rt(n):n,a=Ot(e);return l(o({materialKey:r,hash:e.hash()},a),{angle:e.angle,maxVVSize:i})}(e,s,r,i);case"label":return function(e,t,i){const s=se(ee.LABEL,t,!1,!1,e.labelPlacement);return l(o({materialKey:i?Rt(s):s,hash:e.hash()},e.toJSON()),{labelPlacement:e.labelPlacement})}(e,s,i);case"cim":return{type:"cim",rendererKey:s,data:e.data,maxVVSize:r};case"web-style":return l(o({},Ot(e)),{type:"web-style",hash:e.hash(),rendererKey:s,maxVVSize:r});default:throw new Error(`symbol not supported ${e.type}`)}}function Bt(e,t){const i=A(e);return i.some((e=>function(e,t){const i=e.labelPlacement,s=Ct[t];if(!e.symbol)return Vt.warn("No LabelClass symbol specified."),!0;if(!s)return Vt.error(new H("mapview-labeling:unsupported-geometry-type",`Unable to create labels for Feature Layer, ${t} is not supported`)),!0;if(!s.some((e=>e===i))){const n=s[0];i&&Vt.warn(`Found invalid label placement type ${i} for ${t}. Defaulting to ${n}`),e.labelPlacement=n}return!1}(e,t)))?[]:i}function Nt(e){return W("esri-2d-update-debug")&&console.debug("Created new schema",kt(e,!0)),kt(e)}function kt(e,t=!1){try{var i,s;const n=function(e,t=!1){const i=new Array;return i.push(function(e,t,i=!1){const s={indexCount:0,fields:{}},n="featureReduction"in e&&e.featureReduction,r=n?"aggregate":"feature";switch(e.renderer.type){case"heatmap":{const{blurRadius:t,fieldOffset:i,field:n}=e.renderer;return{type:"heatmap",aggregateFields:[],attributes:s,target:r,storage:null,mesh:{blurRadius:t,fieldOffset:i,field:Wt(s,{target:r,field:n,resultType:"numeric"}).field}}}default:{const t=[],a="aggregate"===r?st(t,e.renderer,n,null):e.renderer;!function(e,t){const i={mesh:!0,storage:!0};for(const s of t){const{name:t,outStatistic:n}=s,{statisticType:r,onStatisticField:a}=n;let o=null,l=null,u=null;const c="numeric",h="feature";"onStatisticValueExpression"in n?l=$t(e,{type:"expression",target:h,valueExpression:n.onStatisticValueExpression,resultType:c}).fieldIndex:"onStatisticNormalizationField"in n?(o=$t(e,{type:"field",target:h,field:a,resultType:c}).field,u=n.onStatisticNormalizationField):o=$t(e,{type:"field",target:h,field:a,resultType:c}).field,$t(e,{type:"statistic",target:"aggregate",name:t,context:i,inField:o,inNormalizationField:u,inFieldIndex:l,statisticType:r})}}(s,t);const o=Ht(s,r,a,i);let l=null;const u=function(e,t,i){switch(i.type){case"dot-density":return function(e,t,i){return i&&i.length?{type:"dot-density",mapping:i.map(((i,s)=>{const{field:n,fieldIndex:r}=Wt(e,{valueExpression:i.valueExpression,field:i.field,resultType:"numeric",target:t});return{binding:s,field:n,fieldIndex:r}})),target:t}:{type:"dot-density",mapping:[],target:t}}(e,t,i.attributes);case"simple":case"class-breaks":case"unique-value":return function(e,t,i){if(!i||!i.length)return{type:"visual-variable",mapping:[],target:t};const s={storage:!0},n="numeric";return{type:"visual-variable",mapping:St(i).map((i=>{var r;const a=te(i.type),{field:o,fieldIndex:l}=Wt(e,{target:t,valueExpression:i.valueExpression,field:i.field,context:s,resultType:n});switch(i.type){case"size":return"$view.scale"===i.valueExpression?null:{type:"size",binding:a,field:o,fieldIndex:l,normalizationField:Wt(e,{target:t,field:i.normalizationField,context:s,resultType:n}).field,valueRepresentation:null!=(r=i.valueRepresentation)?r:null};case"color":return{type:"color",binding:a,field:o,fieldIndex:l,normalizationField:Wt(e,{target:t,field:i.normalizationField,context:s,resultType:n}).field};case"opacity":return{type:"opacity",binding:a,field:o,fieldIndex:l,normalizationField:Wt(e,{target:t,field:i.normalizationField,context:s,resultType:n}).field};case"rotation":return{type:"rotation",binding:a,field:o,fieldIndex:l}}})).filter((e=>e)),target:t}}(e,t,i.visualVariables);case"heatmap":case"dictionary":return null}}(s,r,a),c=Ft(e.geometryType);let h=e.labelsVisible&&e.labelingInfo||[],f=[];if(n){if("selection"===n.type)throw new H(It,"Mapview does not support `selection` reduction type",n);if(n.symbol){const e=new q({symbol:n.symbol,visualVariables:"visualVariables"in a?a.visualVariables:null});l=Ht(s,r,e,i)}f=n&&n.labelsVisible&&n.labelingInfo||[]}h=Bt(h,c),f=Bt(f,c);let d=0;const p=[...h.map((e=>Dt(a,s,e,"feature",d++,i))),...f.map((e=>Dt(a,s,e,"aggregate",d++,i)))];return{type:"symbol",target:r,attributes:s,aggregateFields:t,storage:u,mesh:{matcher:o,labels:p,aggregateMatcher:l}}}}}(e,t)),i}(e,t),r={};return n.map((t=>function(e,t,i){switch(i.target){case"feature":return void jt(e,At(t),i);case"aggregate":{const s=t.featureReduction;if("selection"===s.type)throw new H(It,"Mapview does not support `selection` reduction type",s);return jt(e,At(t),i),void function(e,t,i){e.aggregate||(e.aggregate={name:"aggregate",input:"feature",filters:null,attributes:{},params:{clusterRadius:E(t.clusterRadius/2),clusterPixelBuffer:64*Math.ceil(E(t.clusterMaxSize)/64),fields:i.aggregateFields}}),Pt(e.aggregate,i.attributes.fields)}(e,s,i)}}}(r,e,t))),{source:{definitionExpression:e.definitionExpression,fields:e.fields.map((e=>e.toJSON())),gdbVersion:e.gdbVersion,historicMoment:null==(i=e.historicMoment)?void 0:i.getTime(),outFields:e.availableFields,pixelBuffer:e.pixelBuffer,spatialReference:e.spatialReference.toJSON(),timeExtent:null==(s=e.timeExtent)?void 0:s.toJSON()},attributes:{fields:{},indexCount:0},processors:n,targets:r}}catch(n){if(n.fieldName===It)return Vt.error(n),null;throw n}}function Pt(e,t){for(const i in t){const s=t[i];if(s.target!==e.name)continue;const n=e.attributes[i];n?(n.context.mesh=n.context.mesh||s.context.mesh,n.context.storage=n.context.storage||s.context.storage):e.attributes[i]=s}return e}function At(e){var t,i,s,n,r;return[null!=(t=null==(i=e.filter)?void 0:i.toJSON())?t:null,null!=(s=null==(n=e.effect)||null==(r=n.filter)?void 0:r.toJSON())?s:null]}function jt(e,t,i){return e.feature||(e.feature={name:"feature",input:"source",filters:t,attributes:{}}),Pt(e.feature,i.attributes.fields),e}function Wt(e,t){return t.field?$t(e,l(o({},t),{type:"field",field:t.field})):t.valueExpression?$t(e,l(o({},t),{type:"expression",valueExpression:t.valueExpression})):{field:null,fieldIndex:null}}function $t(e,t){switch(t.type){case"expression":{const i=t.valueExpression;if(!e.fields[i]){const s=e.indexCount++;e.fields[i]=l(o({},t),{name:i,fieldIndex:s})}return{fieldIndex:e.fields[i].fieldIndex}}case"label-expression":{const i=JSON.stringify(t.label);if(!e.fields[i]){const s=e.indexCount++;e.fields[i]=l(o({},t),{name:i,fieldIndex:s})}return{fieldIndex:e.fields[i].fieldIndex}}case"field":{const i=t.field;return"aggregate"===t.target&&e.fields[i]||(e.fields[i]=l(o({},t),{name:i})),{field:i}}case"statistic":return e.fields[t.name]=o({},t),{field:t.name}}}function Dt(e,t,i,s,n,r=!1){const a=$t(t,{type:"label-expression",target:s,context:{mesh:!0},resultType:"string",label:{labelExpression:i.labelExpression,labelExpressionInfo:i.labelExpressionInfo?{expression:i.labelExpressionInfo.expression}:null,symbol:!!i.symbol,where:i.where}}),{fieldIndex:u}=a;return l(o({},Lt(i,e,r)),{fieldIndex:u,target:s,index:n})}function Ht(e,t,i,s=!1){const n=U(e,{indexCount:0,fields:{}});switch(i.type){case"simple":case"dot-density":return function(e,t,i,s=!1){const n=t.getSymbols();return{type:"simple",symbol:Lt(n.length?n[0]:null,t,s),isDotDensity:i}}(0,i,"dot-density"===i.type,s);case"class-breaks":return function(e,t,i,s=!1){const n={mesh:!0,use:"renderer.field"},r=i.backgroundFillSymbol,{field:a,fieldIndex:o}=Wt(e,{target:t,field:i.field,valueExpression:i.valueExpression,resultType:"numeric",context:n}),l=i.normalizationType,u="log"===l?"esriNormalizeByLog":"percent-of-total"===l?"esriNormalizeByPercentOfTotal":"field"===l?"esriNormalizeByField":null,c=i.classBreakInfos.map((e=>({symbol:Lt(e.symbol,i,s),min:e.minValue,max:e.maxValue}))).sort(((e,t)=>e.min-t.min));return{type:"interval",attributes:e.fields,field:a,fieldIndex:o,backgroundFillSymbol:Lt(r,i,s),defaultSymbol:Lt(i.defaultSymbol,i,s),intervals:c,normalizationField:i.normalizationField,normalizationTotal:i.normalizationTotal,normalizationType:u,isMaxInclusive:i.isMaxInclusive}}(n,t,i,s);case"unique-value":return function(e,t,i,s=!1){const n=[],r=i.backgroundFillSymbol,a={target:t,context:{mesh:!0},resultType:"string"};if(i.field&&"string"!=typeof i.field)throw new H(It,"Expected renderer.field to be a string",i);const{field:u,fieldIndex:c}=Wt(e,l(o({},a),{field:i.field,valueExpression:i.valueExpression}));for(const o of i.uniqueValueInfos)n.push({value:""+o.value,symbol:Lt(o.symbol,i,s)});return{type:"map",attributes:e.fields,field:u,fieldIndex:c,field2:Wt(e,l(o({},a),{field:i.field2})).field,field3:Wt(e,l(o({},a),{field:i.field3})).field,fieldDelimiter:i.fieldDelimiter,backgroundFillSymbol:Lt(r,i),defaultSymbol:Lt(i.defaultSymbol,i),map:n}}(n,t,i,s);case"dictionary":return function(e,t,i=!1){return{type:"dictionary",renderer:t.toJSON()}}(0,i,s)}}export{Ne as A,ke as C,Ke as D,qe as G,Pe as H,Ue as J,Ye as K,Le as P,Lt as S,Be as T,Ae as W,Ht as a,Ve as b,me as c,ye as d,be as e,Ft as f,nt as g,at as h,st as i,Mt as j,Nt as k,ot as m,he as n,xe as o,ge as r,ve as s,dt as u,Oe as z};
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b2) => {
+  for (var prop in b2 || (b2 = {}))
+    if (__hasOwnProp.call(b2, prop))
+      __defNormalProp(a2, prop, b2[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b2)) {
+      if (__propIsEnum.call(b2, prop))
+        __defNormalProp(a2, prop, b2[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b2) => __defProps(a2, __getOwnPropDescs(b2));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { bV as t$2, at as n$4, bW as h$2, bX as h$3, bY as n$5, bZ as o$5, as as r$2, aI as D$2, aG as i$2, aH as c$4, aF as n$6, b_ as e$4, bA as a$3, b6 as i$3, b$ as e$5, c0 as o$6, c1 as l$2, c2 as _$1, a9 as u$4, c3 as e$6, b9 as l$3, be as c$5, bu as k$2, b7 as S$2, ae as e$7, af as y$3, c4 as o$7, ag as i$4, c5 as j$2, c6 as n$7, bT as y$4, a4 as n$8, ai as t$4, a0 as t$5, c7 as l$4, aa as s$3, c8 as o$9, c9 as t$7, a5 as r$3, ca as m$3, ay as c$6, cb as i$5 } from "./vendor.74d5941c.js";
+import { x as x$4 } from "./MD5.1ef35834.js";
+import { m as m$2, A as A$3, E as E$2, S as S$3 } from "./Utils.3f1577e5.js";
+import { f as f$2, A as A$4 } from "./MaterialKey.3bc4aaea.js";
+import { o as o$8 } from "./visualVariablesUtils.cb58e4df.js";
+import { k as k$3 } from "./definitions.6737c10c.js";
+import { h as h$4, t as t$6 } from "./CIMSymbolHelper.6546a069.js";
+import { t as t$3 } from "./Rect.b51904ac.js";
+import { C as C$2 } from "./BidiEngine.9b392b22.js";
+const i$1 = new C$2();
+function n$3(r2) {
+  if (!i$1.hasBidiChar(r2))
+    return [r2, false];
+  let n2;
+  return n2 = i$1.checkContextual(r2) === "rtl" ? "IDNNN" : "ICNNN", [i$1.bidiTransform(r2, n2, "VLYSN"), true];
+}
+var e$3, t$1;
+function n$2(t2) {
+  switch (t2) {
+    case "left":
+      return e$3.Left;
+    case "right":
+      return e$3.Right;
+    case "center":
+    case "justify":
+      return e$3.Center;
+  }
+}
+function r$1(e2) {
+  switch (e2) {
+    case "top":
+      return t$1.Top;
+    case "middle":
+      return t$1.Center;
+    case "baseline":
+      return t$1.Baseline;
+    case "bottom":
+      return t$1.Bottom;
+  }
+}
+function a$2(n2) {
+  switch (n2) {
+    case "above-left":
+      return [e$3.Right, t$1.Bottom];
+    case "above-center":
+    case "above-along":
+      return [e$3.Center, t$1.Bottom];
+    case "above-right":
+      return [e$3.Left, t$1.Bottom];
+    case "center-left":
+      return [e$3.Right, t$1.Center];
+    case "center-center":
+    case "center-along":
+      return [e$3.Center, t$1.Center];
+    case "center-right":
+      return [e$3.Left, t$1.Center];
+    case "below-left":
+      return [e$3.Right, t$1.Top];
+    case "below-center":
+    case "below-along":
+      return [e$3.Center, t$1.Top];
+    case "below-right":
+      return [e$3.Left, t$1.Top];
+    case "always-horizontal":
+      return [e$3.Center, t$1.Baseline];
+    default:
+      return console.debug(`Found invalid placement type ${n2}`), [e$3.Center, t$1.Center];
+  }
+}
+function c$3(t2) {
+  switch (t2) {
+    case e$3.Right:
+      return -1;
+    case e$3.Center:
+      return 0;
+    case e$3.Left:
+      return 1;
+    default:
+      return console.debug(`Found invalid horizontal alignment ${t2}`), 0;
+  }
+}
+function o$4(e2) {
+  switch (e2) {
+    case t$1.Top:
+      return 1;
+    case t$1.Center:
+      return 0;
+    case t$1.Bottom:
+    case t$1.Baseline:
+      return -1;
+    default:
+      return console.debug(`Found invalid vertical alignment ${e2}`), 0;
+  }
+}
+function s$2(t2) {
+  switch (t2) {
+    case "left":
+      return e$3.Left;
+    case "right":
+      return e$3.Right;
+    case "center":
+    case "justify":
+      return e$3.Center;
+  }
+}
+!function(e2) {
+  e2[e2.Left = -1] = "Left", e2[e2.Center = 0] = "Center", e2[e2.Right = 1] = "Right";
+}(e$3 || (e$3 = {})), function(e2) {
+  e2[e2.Top = 1] = "Top", e2[e2.Center = 0] = "Center", e2[e2.Bottom = -1] = "Bottom", e2[e2.Baseline = 2] = "Baseline";
+}(t$1 || (t$1 = {}));
+class e$2 {
+  constructor(t2, e2, s2, r2) {
+    this.center = t$2(t2, e2), this.centerT = n$4(), this.halfWidth = s2 / 2, this.halfHeight = r2 / 2, this.width = s2, this.height = r2;
+  }
+  get x() {
+    return this.center[0];
+  }
+  get y() {
+    return this.center[1];
+  }
+  get blX() {
+    return this.center[0] + this.halfWidth;
+  }
+  get blY() {
+    return this.center[1] + this.halfHeight;
+  }
+  get trX() {
+    return this.center[0] - this.halfWidth;
+  }
+  get trY() {
+    return this.center[1] - this.halfHeight;
+  }
+  get xmin() {
+    return this.x - this.halfWidth;
+  }
+  get xmax() {
+    return this.x + this.halfWidth;
+  }
+  get ymin() {
+    return this.y - this.halfHeight;
+  }
+  get ymax() {
+    return this.y + this.halfHeight;
+  }
+  set x(t2) {
+    this.center[0] = t2;
+  }
+  set y(t2) {
+    this.center[1] = t2;
+  }
+  clone() {
+    return new e$2(this.x, this.y, this.width, this.height);
+  }
+  serialize(t2) {
+    return t2.writeF32(this.center[0]), t2.writeF32(this.center[1]), t2.push(this.width), t2.push(this.height), t2;
+  }
+  findCollisionDelta(h2, i2 = 4) {
+    const e2 = Math.abs(h2.centerT[0] - this.centerT[0]), s2 = Math.abs(h2.centerT[1] - this.centerT[1]), r2 = (h2.halfWidth + this.halfWidth + i2) / e2, n2 = (h2.halfHeight + this.halfHeight + i2) / s2, a2 = Math.min(r2, n2);
+    return h$2(a2);
+  }
+  extend(t2) {
+    const h2 = Math.min(this.xmin, t2.xmin), i2 = Math.min(this.ymin, t2.ymin), e2 = Math.max(this.xmax, t2.xmax) - h2, s2 = Math.max(this.ymax, t2.ymax) - i2, r2 = h2 + e2 / 2, n2 = i2 + s2 / 2;
+    this.width = e2, this.height = s2, this.halfWidth = e2 / 2, this.halfHeight = s2 / 2, this.x = r2, this.y = n2;
+  }
+  static deserialize(t2) {
+    const h2 = t2.readF32(), i2 = t2.readF32(), s2 = t2.readInt32(), r2 = t2.readInt32();
+    return new e$2(h2, i2, s2, r2);
+  }
+}
+const u$3 = 26, g = 4, _ = u$3 + g, p$3 = u$3 - 6, x$3 = 3, w$1 = 8, y$2 = Math.PI / 180;
+class T$2 {
+  constructor(t2, s2, e2, i2) {
+    this._rotationT = n$5(), this._xBounds = 0, this._yBounds = 0, this.minZoom = 0, this.maxZoom = 255, this._bounds = null;
+    const h2 = e2.rect, n2 = new Float32Array(8);
+    t2 *= i2, s2 *= i2;
+    const o2 = e2.code ? h2.width * i2 : e2.metrics.width, a2 = e2.code ? h2.height * i2 : e2.metrics.height;
+    n2[0] = t2, n2[1] = s2, n2[2] = t2 + o2, n2[3] = s2, n2[4] = t2, n2[5] = s2 + a2, n2[6] = t2 + o2, n2[7] = s2 + a2, this._data = n2, this._setTextureCoords(h2), this._scale = i2, this._mosaic = e2, this.x = t2, this.y = s2, this.maxOffset = Math.max(t2 + o2, s2 + a2);
+  }
+  get width() {
+    return this._mosaic.metrics.width * this._scale;
+  }
+  get mosaic() {
+    return this._mosaic;
+  }
+  set angle(t2) {
+    this._angle = t2, n$6(this._rotationT), c$4(this._rotationT, this._rotationT, -t2), this._setOffsets(this._data);
+  }
+  get angle() {
+    return this._angle;
+  }
+  get xTopLeft() {
+    return this._data[0];
+  }
+  get yTopLeft() {
+    return this._data[1];
+  }
+  get xBottomRight() {
+    return this._data[6];
+  }
+  get yBottomRight() {
+    return this._data[7];
+  }
+  get texcoords() {
+    return this._texcoords;
+  }
+  get textureBinding() {
+    return this._mosaic.textureBinding;
+  }
+  get offsets() {
+    return this._offsets || this._setOffsets(this._data), this._offsets;
+  }
+  get char() {
+    return String.fromCharCode(this._mosaic.code);
+  }
+  get code() {
+    return this._mosaic.code;
+  }
+  get bounds() {
+    if (!this._bounds) {
+      const { height: t2, width: s2 } = this._mosaic.metrics, e2 = s2 * this._scale, i2 = Math.abs(t2) * this._scale, n2 = new Float32Array(8);
+      n2[0] = this.x, n2[1] = this.y, n2[2] = this.x + e2, n2[3] = this.y, n2[4] = this.x, n2[5] = this.y + i2, n2[6] = this.x + e2, n2[7] = this.y + i2;
+      const o2 = o$5(n$5(), this._rotationT, this._T);
+      e$4(n2, n2, o2);
+      let c2 = 1 / 0, d2 = 1 / 0, f2 = 0, l2 = 0;
+      for (let h2 = 0; h2 < 4; h2++) {
+        const t3 = n2[2 * h2], s3 = n2[2 * h2 + 1];
+        c2 = Math.min(c2, t3), d2 = Math.min(d2, s3), f2 = Math.max(f2, t3), l2 = Math.max(l2, s3);
+      }
+      const u2 = f2 - c2, g2 = l2 - d2, _2 = c2 + u2 / 2, p2 = d2 + g2 / 2;
+      this._bounds = new e$2(_2, p2, u2, g2);
+    }
+    return this._bounds;
+  }
+  setTransform(t2) {
+    this._T = t2, this._offsets = null;
+  }
+  _setOffsets(t2) {
+    this._offsets || (this._offsets = { upperLeft: 0, upperRight: 0, lowerLeft: 0, lowerRight: 0 });
+    const s2 = this._offsets, e2 = new Float32Array(8), i2 = o$5(n$5(), this._rotationT, this._T);
+    e$4(e2, t2, i2), s2.upperLeft = m$2(e2[0] * w$1, e2[1] * w$1), s2.upperRight = m$2(e2[2] * w$1, e2[3] * w$1), s2.lowerLeft = m$2(e2[4] * w$1, e2[5] * w$1), s2.lowerRight = m$2(e2[6] * w$1, e2[7] * w$1);
+  }
+  _setTextureCoords({ x: t2, y: s2, width: e2, height: i2 }) {
+    this._texcoords = { upperLeft: m$2(t2, s2), upperRight: m$2(t2 + e2, s2), lowerLeft: m$2(t2, s2 + i2), lowerRight: m$2(t2 + e2, s2 + i2) };
+  }
+}
+const M$2 = (t2, s2) => ({ code: 0, page: 0, sdf: true, rect: new t$3(0, 0, 11, 8), textureBinding: s2, metrics: { advance: 0, height: 4, width: t2, left: 0, top: 0 } });
+class B$2 {
+  constructor(t2, s2, e2) {
+    this._rotation = 0, this._decorate(t2, s2, e2), this.glyphs = t2, this.bounds = this._createBounds(t2), this.isMultiline = s2.length > 1, this._hasRotation = e2.angle !== 0, this._T = this._createGlyphTransform(this.bounds, e2);
+    for (const i2 of t2)
+      i2.setTransform(this._T);
+  }
+  setRotation(t2) {
+    if (t2 === 0 && this._rotation === 0)
+      return;
+    this._rotation = t2;
+    const s2 = this._T, e2 = h$3(n$5(), t2);
+    o$5(s2, e2, s2);
+    for (const i2 of this.glyphs)
+      i2.setTransform(this._T);
+  }
+  _decorate(t2, s2, e2) {
+    if (!e2.decoration || e2.decoration === "none" || !t2.length)
+      return;
+    const i2 = e2.scale, h2 = e2.decoration === "underline" ? _ : p$3, n2 = t2[0].textureBinding;
+    for (const o2 of s2) {
+      const s3 = o2.startX * i2, e3 = o2.startY * i2, r2 = (o2.width + o2.glyphWidthEnd) * i2;
+      t2.push(new T$2(s3, e3 + h2 * i2, M$2(r2, n2), 1));
+    }
+  }
+  get boundsT() {
+    const e2 = this.bounds, i2 = r$2(n$4(), e2.x, e2.y);
+    if (D$2(i2, i2, this._T), this._hasRotation) {
+      const t2 = Math.max(e2.width, e2.height);
+      return new e$2(i2[0], i2[1], t2, t2);
+    }
+    return new e$2(i2[0], i2[1], e2.width, e2.height);
+  }
+  _createBounds(t2) {
+    let s2 = 1 / 0, e2 = 1 / 0, i2 = 0, h2 = 0;
+    for (const r2 of t2)
+      s2 = Math.min(s2, r2.xTopLeft), e2 = Math.min(e2, r2.yTopLeft), i2 = Math.max(i2, r2.xTopLeft + r2.width), h2 = Math.max(h2, r2.yBottomRight);
+    const n2 = i2 - s2, o2 = h2 - e2;
+    return new e$2(s2 + n2 / 2, e2 + o2 / 2, n2, o2);
+  }
+  _createGlyphTransform(s2, e2) {
+    const h2 = y$2 * e2.angle, n2 = n$5(), a2 = n$4();
+    return i$2(n2, n2, r$2(a2, e2.xOffset, -e2.yOffset)), e2.isCIM ? c$4(n2, n2, h2) : (i$2(n2, n2, r$2(a2, s2.x, s2.y)), c$4(n2, n2, h2), i$2(n2, n2, r$2(a2, -s2.x, -s2.y))), n2;
+  }
+}
+class b$1 {
+  constructor(t2, s2, e2, i2, h2, n2) {
+    this.glyphWidthEnd = 0, this.startX = 0, this.startY = 0, this.start = Math.max(0, Math.min(s2, e2)), this.end = Math.max(0, Math.max(s2, e2)), this.end < t2.length && (this.glyphWidthEnd = t2[this.end].metrics.width), this.width = i2, this.yMin = h2, this.yMax = n2;
+  }
+}
+const R$2 = (t2) => t2 === 10, L$2 = (t2) => t2 === 32;
+function v$3(t2, s2, e2) {
+  const i2 = new Array(), h2 = 1 / e2.scale, n2 = e2.maxLineWidth * h2, o2 = s2 ? t2.length - 1 : 0, r2 = s2 ? -1 : t2.length, a2 = s2 ? -1 : 1;
+  let c2 = o2, d2 = 0, f2 = 0, l2 = c2, m2 = l2, u2 = 0, g2 = 1 / 0, _2 = 0;
+  for (; c2 !== r2; ) {
+    const { code: s3, metrics: e3 } = t2[c2], h3 = Math.abs(e3.top);
+    if (R$2(s3) || L$2(s3) || (g2 = Math.min(g2, h3), _2 = Math.max(_2, h3 + e3.height)), R$2(s3))
+      c2 !== o2 && (i2.push(new b$1(t2, l2, c2 - a2, d2, g2, _2)), g2 = 1 / 0, _2 = 0), d2 = 0, l2 = c2 + a2, m2 = c2 + a2, f2 = 0;
+    else if (L$2(s3))
+      m2 = c2 + a2, f2 = 0, u2 = e3.advance, d2 += e3.advance;
+    else if (d2 > n2) {
+      if (m2 !== l2) {
+        const s4 = m2 - 2 * a2;
+        d2 -= u2, i2.push(new b$1(t2, l2, s4, d2 - f2, g2, _2)), g2 = 1 / 0, _2 = 0, l2 = m2, d2 = f2;
+      } else
+        i2.push(new b$1(t2, l2, c2 - a2, d2, g2, _2)), g2 = 1 / 0, _2 = 0, l2 = c2, m2 = c2, d2 = 0;
+      d2 += e3.advance, f2 += e3.advance;
+    } else
+      d2 += e3.advance, f2 += e3.advance;
+    c2 += a2;
+  }
+  const p2 = new b$1(t2, l2, c2 - a2, d2, g2, _2);
+  return p2.start >= 0 && p2.end < t2.length && i2.push(p2), i2;
+}
+function j$1(t2, s2) {
+  let e2 = 0;
+  for (let n2 = 0; n2 < t2.length; n2++) {
+    const { width: s3 } = t2[n2];
+    e2 = Math.max(s3, e2);
+  }
+  const i2 = s2.decoration === "underline" ? g : 0, h2 = t2[0].yMin;
+  return { x: 0, y: h2, height: t2[t2.length - 1].yMax + s2.lineHeight * (t2.length - 1) + i2 - h2, width: e2 };
+}
+function A$2(t2, s2, e2) {
+  const i2 = e2.scale, h2 = new Array(), n2 = v$3(t2, s2, e2), o2 = j$1(n2, e2), { vAlign: r2, hAlign: a2 } = e2, c2 = r2 === t$1.Baseline ? 1 : 0, f2 = c2 ? 0 : r2 - 1, l2 = (1 - c2) * -o2.y + f2 * (o2.height / 2) + (c2 ? 1 : 0) * -u$3;
+  for (let d2 = 0; d2 < n2.length; d2++) {
+    const { start: s3, end: o3, width: r3 } = n2[d2];
+    let c3 = -1 * (a2 + 1) * (r3 / 2) - x$3;
+    const f3 = d2 * e2.lineHeight + l2 - x$3;
+    n2[d2].startX = c3, n2[d2].startY = f3;
+    for (let e3 = s3; e3 <= o3; e3++) {
+      const s4 = t2[e3];
+      if (R$2(s4.code))
+        continue;
+      const n3 = new T$2(c3 + s4.metrics.left, f3 - s4.metrics.top, s4, i2);
+      c3 += s4.metrics.advance, h2.push(n3);
+    }
+  }
+  return new B$2(h2, n2, e2);
+}
+const k$1 = Math.PI / 180, I$1 = 0.04, U$1 = n$5(), v$2 = n$4(), z$1 = 512, P$1 = 50;
+function T$1(t2, e2) {
+  if (!e2.isWrappable)
+    return null;
+  const [s2, n2] = a$3(e2);
+  return t2[2] > n2 ? [i$3([t2[0], t2[1], n2, t2[3]]), i$3([s2, t2[1], s2 + t2[2] - n2, t2[3]])] : t2[0] < s2 ? [i$3([s2, t2[1], t2[2], t2[3]]), i$3([n2 - (s2 - t2[0]), t2[1], n2, t2[3]])] : null;
+}
+function A$1(t2, e2, o2, r2, i2, a2, c2) {
+  if (!r2 || !o2.symbol)
+    return t2[0] = t2[1] = t2[2] = t2[3] = 0, e2[0] = e2[1] = e2[2] = e2[3] = 0, t2;
+  const m2 = r2;
+  if (!l$3(m2)) {
+    c$5(t2, m2);
+    let n2 = e2[0];
+    n2 === 0 && (n2 = N$1(o2), e2[0] = n2);
+    const r3 = i2 * n2 / 2;
+    return t2[0] -= r3, t2[1] -= r3, t2[2] += r3, t2[3] += r3, t2;
+  }
+  {
+    const s2 = m2.x, n2 = m2.y;
+    o2.symbol.type === "esriTS" && e2[2] === 0 && e2[3] === 0 && Q$1(e2, o2.symbol, o2.mosaicItem), V$1(t2, s2, n2, o2.symbol, e2, i2, a2, c2);
+  }
+  return t2;
+}
+function C$1(t2) {
+  return t2 === "text" || t2 === "esriTS";
+}
+function H$1(t2) {
+  return t2 === "simple-marker" || t2 === "picture-marker" || t2 === "esriSMS" || t2 === "esriPMS";
+}
+function W$1(e2) {
+  switch (e$5(e2.geometry).type) {
+    case "point":
+    case "multipoint":
+      return 0;
+    case "polyline":
+      return 1;
+    case "polygon":
+    case "extent":
+      return 2;
+  }
+  return 0;
+}
+const q$1 = n$4(), R$1 = n$4(), B$1 = n$4(), E$1 = n$4(), F$1 = n$4(), L$1 = n$4(), O$1 = n$4();
+function D$1(t2, e2, s2, n2) {
+  r$2(B$1, e2, s2);
+  const o2 = t2.paths;
+  let r2, i2, a2, f2, u2, p2, g2, y2, b2, M2 = 1 / 0;
+  for (let d2 = 0; d2 < o2.length; d2++) {
+    const t3 = o2[d2];
+    if (!(t3.length < 2))
+      for (let o3 = 1; o3 < t3.length; o3++)
+        r2 = t3[o3 - 1][0], a2 = t3[o3 - 1][1], i2 = t3[o3][0], f2 = t3[o3][1], u2 = Math.min(r2, i2) - n2, p2 = Math.min(a2, f2) - n2, g2 = Math.max(r2, i2) + n2, y2 = Math.max(a2, f2) + n2, e2 < u2 || e2 > g2 || s2 < p2 || s2 > y2 || (r$2(q$1, r2, a2), r$2(R$1, i2, f2), o$6(E$1, R$1, q$1), o$6(F$1, q$1, B$1), l$2(L$1, E$1, _$1(E$1, F$1) / _$1(E$1, E$1)), o$6(O$1, F$1, L$1), b2 = _$1(O$1, O$1), M2 > b2 && (M2 = b2));
+  }
+  return Math.sqrt(M2) <= n2;
+}
+function G$1(t2, e2, s2, n2, r2, i2) {
+  let a2, m2;
+  const l2 = u$4(s2.xoffset), h2 = u$4(s2.yoffset), b2 = k$1 * s2.angle, M2 = k$1 * i2;
+  switch (s2.type) {
+    case "esriSMS":
+      a2 = m2 = u$4(s2.size);
+      break;
+    case "esriPMS":
+      a2 = u$4(s2.width), m2 = u$4(s2.height);
+  }
+  r2 < I$1 && (n2 = I$1 * n2 / r2);
+  const d2 = n$6(U$1);
+  i$2(d2, d2, r$2(v$2, t2, e2)), c$4(d2, d2, M2 - b2), e$6(d2, d2, r$2(v$2, n2, -n2)), i$2(d2, d2, r$2(v$2, l2, -h2));
+  const x2 = [0, 0];
+  D$2(x2, r$2(v$2, -0.5 * a2, -0.5 * m2), d2);
+  const S2 = [0, 0];
+  D$2(S2, r$2(v$2, -0.5 * a2, 0.5 * m2), d2);
+  const j2 = [0, 0];
+  D$2(j2, r$2(v$2, 0.5 * a2, -0.5 * m2), d2);
+  const w2 = [0, 0];
+  return D$2(w2, r$2(v$2, 0.5 * a2, 0.5 * m2), d2), { rings: [[x2, j2, w2, S2, x2]] };
+}
+function J$1(t2, e2, s2, n2, r2, i2) {
+  const a2 = h$4.getEnvelope(s2.data);
+  if (!a2)
+    return null;
+  r2 < I$1 && (n2 = I$1 * n2 / r2);
+  const m2 = u$4(a2.width), l2 = u$4(a2.height), h2 = u$4(a2.x), b2 = u$4(a2.y), M2 = 0 * k$1, d2 = k$1 * i2, x2 = n$6(U$1);
+  i$2(x2, x2, r$2(v$2, t2, e2)), c$4(x2, x2, d2 - M2), e$6(x2, x2, r$2(v$2, n2, n2));
+  const S2 = [0, 0];
+  D$2(S2, r$2(v$2, h2, b2 + l2), x2);
+  const j2 = [0, 0];
+  D$2(j2, r$2(v$2, h2, b2), x2);
+  const z2 = [0, 0];
+  D$2(z2, r$2(v$2, h2 + m2, b2 + l2), x2);
+  const P2 = [0, 0];
+  return D$2(P2, r$2(v$2, h2 + m2, b2), x2), { rings: [[S2, z2, P2, j2, S2]] };
+}
+function K$1(t2, e2, s2, n2, r2, i2) {
+  const a2 = u$4(s2.xoffset), m2 = u$4(s2.yoffset), l2 = k$1 * s2.angle, h2 = k$1 * i2, b2 = n$6(U$1);
+  i$2(b2, b2, r$2(v$2, t2, e2)), c$4(b2, b2, h2), e$6(b2, b2, r$2(v$2, r2, -r2));
+  const M2 = n2[0] + n2[2] / 2, d2 = n2[1] + n2[3] / 2;
+  i$2(b2, b2, r$2(v$2, a2, -m2)), i$2(b2, b2, r$2(v$2, M2, d2)), c$4(b2, b2, l2), i$2(b2, b2, r$2(v$2, -M2, -d2));
+  const x2 = [0, 0];
+  D$2(x2, r$2(v$2, n2[0], n2[1]), b2);
+  const S2 = [0, 0];
+  D$2(S2, r$2(v$2, n2[0], n2[1] + n2[3]), b2);
+  const j2 = [0, 0];
+  D$2(j2, r$2(v$2, n2[0] + n2[2], n2[1]), b2);
+  const w2 = [0, 0];
+  return D$2(w2, r$2(v$2, n2[0] + n2[2], n2[1] + n2[3]), b2), { rings: [[x2, j2, w2, S2, x2]] };
+}
+function N$1(t2) {
+  switch (t2.symbol.type) {
+    case "esriSFS":
+    case "esriPFS": {
+      const e2 = t2.symbol.outline;
+      return e2 ? e2.width : 0;
+    }
+    case "esriSLS":
+      return u$4(t2.symbol.width);
+    case "esriSMS":
+      return u$4(t2.symbol.size);
+    case "esriPMS":
+      return u$4(Math.max(t2.symbol.width, t2.symbol.height));
+    case "esriTS": {
+      const e2 = [0, 0, 0, 0];
+      Q$1(e2, t2.symbol, t2.mosaicItem);
+      const s2 = Math.max(Math.abs(e2[0]), Math.abs(e2[1]));
+      return Math.max(e2[2], e2[3]) + s2;
+    }
+    case "expanded-cim": {
+      const e2 = h$4.getEnvelope(t2.symbol.data);
+      return e2.width !== -1 / 0 && e2.height !== -1 / 0 || (e2.width = 10, e2.height = 10, e2.x = 0, e2.y = 0), u$4(Math.sqrt(e2.width * e2.width + e2.height * e2.height));
+    }
+    case "composite-symbol": {
+      if (!t2.symbol.layers.length)
+        return 0;
+      const e2 = t2.symbol.layers.length - 1;
+      return N$1({ symbol: t2.symbol.layers[e2], mosaicItem: null });
+    }
+    case "label":
+    default:
+      return 0;
+  }
+}
+function Q$1(t2, e2, s2) {
+  if (!s2 || s2.glyphMosaicItems.length === 0)
+    return t2;
+  const n2 = n$3(e2.text)[1], r2 = s2.glyphMosaicItems, i2 = A$2(r2, n2, { scale: u$4(e2.font.size) / 24, angle: e2.angle, xOffset: e2.xoffset, yOffset: e2.yoffset, hAlign: n$2(e2.horizontalAlignment || "center"), vAlign: r$1(e2.verticalAlignment || "baseline"), maxLineWidth: Math.max(32, Math.min(e2.lineWidth || 512, 512)), lineHeight: 30 * Math.max(0.25, Math.min(e2.lineHeight || 1, 4)), decoration: e2.font.decoration || "none", isCIM: false }).bounds;
+  return t2[0] = u$4(i2.x - i2.halfWidth), t2[1] = u$4(i2.y - i2.halfHeight), t2[2] = u$4(i2.width), t2[3] = u$4(i2.height), t2;
+}
+function V$1(t2, s2, n2, o2, r2, i2, c2, m2) {
+  let l2;
+  switch (o2.type) {
+    case "esriSMS":
+    case "esriPMS":
+      l2 = G$1(s2, n2, o2, i2, c2, 0);
+      break;
+    case "esriTS":
+      l2 = K$1(s2, n2, o2, r2, i2, 0);
+      break;
+    case "cim":
+    case "CIMSymbolReference":
+    case "expanded-cim":
+      l2 = J$1(s2, n2, o2, i2, c2, 0);
+  }
+  let h2, f2, u2 = 0;
+  for (let e2 = 0; e2 < l2.rings[0].length - 1; e2++)
+    f2 = l2.rings[0][e2], h2 = (s2 - f2[0]) * (s2 - f2[0]) + (n2 - f2[1]) * (n2 - f2[1]), u2 = Math.max(u2, h2);
+  u2 = Math.sqrt(u2);
+  let p2 = k$2(s2 - u2, m2), g2 = k$2(s2 + u2, m2);
+  if (p2 > g2) {
+    const t3 = S$2(m2);
+    if (t3) {
+      const [e2, s3] = t3.valid;
+      p2 = e2, g2 = s3;
+    }
+  }
+  return t2[0] = p2, t2[1] = n2 - u2, t2[2] = g2, t2[3] = n2 + u2, t2;
+}
+var l$1;
+let n$1 = l$1 = class extends j$2 {
+  writeLevels(e2, s2, i2) {
+    for (const t2 in e2) {
+      const e3 = this.levels[t2];
+      return void (s2.stops = e3);
+    }
+  }
+  clone() {
+    return new l$1({ axis: this.axis, field: this.field, valueExpression: this.valueExpression, valueExpressionTitle: this.valueExpressionTitle, maxDataValue: this.maxDataValue, maxSize: n$7(this.maxSize) ? this.maxSize.clone() : this.maxSize, minDataValue: this.minDataValue, minSize: n$7(this.minSize) ? this.minSize.clone() : this.minSize, normalizationField: this.normalizationField, stops: this.stops && this.stops.map((e2) => e2.clone()), target: this.target, useSymbolValue: this.useSymbolValue, valueRepresentation: this.valueRepresentation, valueUnit: this.valueUnit, legendOptions: this.legendOptions && this.legendOptions.clone(), levels: y$4(this.levels) });
+  }
+};
+e$7([y$3()], n$1.prototype, "levels", void 0), e$7([o$7("levels")], n$1.prototype, "writeLevels", null), n$1 = l$1 = e$7([i$4("esri.views.2d.engine.LevelDependentSizeVariable")], n$1);
+const o$3 = n$8.getLogger("esri.views.2d.layers.support.clusterUtils");
+t$4.add("esri-cluster-arcade-enabled", 1);
+const u$2 = t$4("esri-cluster-arcade-enabled"), c$2 = (e2, t2, r2, s2) => {
+  const a2 = t2.clone();
+  if (!m$1(a2))
+    return a2;
+  if (r2.fields)
+    for (const i2 of r2.fields)
+      x$2(e2, i2);
+  if ("visualVariables" in a2) {
+    const t3 = (a2.visualVariables || []).filter((e3) => e3.valueExpression !== "$view.scale"), n2 = d$1(t3);
+    t3.forEach((i2) => {
+      i2.type === "rotation" ? i2.field ? i2.field = y$1(e2, i2.field, "avg_angle") : i2.valueExpression && (i2.field = S$1(e2, i2.valueExpression, "avg_angle"), i2.valueExpression = null) : i2.normalizationField ? (i2.field = y$1(e2, i2.field, "norm", i2.normalizationField), i2.normalizationField = null) : i2.field ? i2.field = y$1(e2, i2.field, "avg") : (i2.field = S$1(e2, i2.valueExpression, "avg"), i2.valueExpression = null);
+    }), t$5(n2) && !p$2(t3) && (t3.push(f$1(r2, s2)), a2.dynamicClusterSize = true), a2.visualVariables = t3;
+  }
+  switch (a2.type) {
+    case "simple":
+      break;
+    case "unique-value":
+      a2.field ? a2.field = y$1(e2, a2.field, "mode") : a2.valueExpression && (a2.field = S$1(e2, a2.valueExpression, "mode"), a2.valueExpression = null);
+      break;
+    case "class-breaks":
+      a2.normalizationField ? (a2.field = y$1(e2, a2.field, "norm", a2.normalizationField), a2.normalizationField = null) : a2.field ? a2.field = y$1(e2, a2.field, "avg") : (a2.field = S$1(e2, a2.valueExpression, "avg"), a2.valueExpression = null);
+  }
+  return a2;
+}, d$1 = (e2) => {
+  for (const i2 of e2)
+    if (i2.type === "size")
+      return i2;
+  return null;
+}, p$2 = (e2) => {
+  for (const i2 of e2)
+    if (i2.field === "cluster_count")
+      return true;
+  return false;
+}, f$1 = (e2, t2) => {
+  const r2 = [new l$4({ value: 0, size: 0 }), new l$4({ value: 1 })];
+  if (t$5(t2))
+    return new j$2({ field: "cluster_count", stops: [...r2, new l$4({ value: 2, size: 0 })] });
+  const n2 = Object.keys(t2).reduce((i2, a2) => __spreadProps(__spreadValues({}, i2), { [a2]: [...r2, new l$4({ value: Math.max(2, t2[a2].minValue), size: e2.clusterMinSize }), new l$4({ value: Math.max(3, t2[a2].maxValue), size: e2.clusterMaxSize })] }), {});
+  return new n$1({ field: "cluster_count", levels: n2 });
+}, m$1 = (e2) => {
+  const i2 = (i3) => o$3.error(new s$3("Unsupported-renderer", i3, { renderer: e2 }));
+  if (e2.type === "unique-value") {
+    if (e2.field2 || e2.field3)
+      return i2("FeatureReductionCluster does not support multi-field UniqueValueRenderers"), false;
+  } else if (e2.type === "class-breaks") {
+    if (e2.normalizationField) {
+      const t2 = e2.normalizationType;
+      if (t2 !== "field")
+        return i2(`FeatureReductionCluster does not support a normalizationType of ${t2}`), false;
+    }
+  } else if (e2.type !== "simple")
+    return i2(`FeatureReductionCluster does not support renderers of type ${e2.type}`), false;
+  if (!u$2) {
+    if ("valueExpression" in e2 && e2.valueExpression)
+      return i2("FeatureReductionCluster does not currently support renderer.valueExpression. Support will be added in a future release"), false;
+    if (("visualVariables" in e2 && e2.visualVariables || []).some((e3) => !(!("valueExpression" in e3) || !e3.valueExpression)))
+      return i2("FeatureReductionCluster does not currently support visualVariables with a valueExpression. Support will be added in a future release"), false;
+  }
+  return true;
+};
+function v$1(e2, i2, t2) {
+  switch (e2) {
+    case "avg":
+    case "avg_angle":
+      return `cluster_avg_${i2}`;
+    case "mode":
+      return `cluster_type_${i2}`;
+    case "norm": {
+      const e3 = t2, r2 = "field", s2 = i2.toLowerCase() + ",norm:" + r2 + "," + e3.toLowerCase();
+      return "cluster_avg_" + x$4(s2);
+    }
+  }
+}
+function x$2(e2, i2) {
+  const { name: t2, outStatistic: s2 } = i2, { onStatisticField: a2, onStatisticValueExpression: l2, statisticType: u2 } = s2;
+  if (l2) {
+    const i3 = x$4(l2.toLowerCase());
+    e2.push({ name: t2, outStatistic: { onStatisticField: i3, onStatisticValueExpression: l2, statisticType: u2 } });
+  } else
+    a2 ? e2.push({ name: t2, outStatistic: { onStatisticField: a2, statisticType: u2 } }) : o$3.error(new s$3("mapview-unsupported-field", "Unable to handle field", { field: i2 }));
+}
+function S$1(e2, i2, t2) {
+  const r2 = x$4(i2), s2 = t2 === "mode" ? `cluster_type_${r2}` : `cluster_avg_${r2}`;
+  return e2.some((e3) => e3.name === s2) || e2.push({ name: s2, outStatistic: { onStatisticField: r2, onStatisticValueExpression: i2, statisticType: t2 } }), s2;
+}
+function y$1(e2, i2, t2, r2) {
+  if (i2 === "cluster_count" || e2.some((e3) => e3.name === i2))
+    return i2;
+  const s2 = v$1(t2, i2, r2);
+  return e2.some((e3) => e3.name === s2) || (t2 === "norm" ? e2.push({ name: s2, outStatistic: { onStatisticField: i2, onStatisticNormalizationField: r2, statisticType: t2 } }) : e2.push({ name: s2, outStatistic: { onStatisticField: i2, statisticType: t2 } })), s2;
+}
+function e$1(e2) {
+  if (!e2)
+    return A$3.NONE;
+  let r2 = 0;
+  for (const i2 of e2)
+    if (i2.type === "size") {
+      const t2 = o$8(i2);
+      r2 |= t2, i2.target === "outline" && (r2 |= t2 << 4);
+    } else
+      i2.type === "color" ? r2 |= A$3.COLOR : i2.type === "opacity" ? r2 |= A$3.OPACITY : i2.type === "rotation" && (r2 |= A$3.ROTATION);
+  return r2;
+}
+const s$1 = { "simple-marker": 1, "picture-marker": 1, text: 0, "simple-line": 0, "simple-fill": 0, "picture-fill": 0, cim: 1, "web-style": 1 }, o$2 = 0.707;
+function a$1(t2) {
+  if (!("visualVariables" in t2))
+    return 0;
+  if (!t2.hasVisualVariables("size"))
+    return 0;
+  const e2 = t2.getVisualVariablesForType("size");
+  if (!e2[0])
+    return 0;
+  const i2 = e2[0];
+  if (i2.transformationType === "stops")
+    return i2.stops.map((t3) => t3.size).reduce(x$1, 0);
+  if (i2.transformationType === "clamped-linear") {
+    let t3 = -1 / 0, e3 = -1 / 0;
+    return t3 = typeof i2.maxSize == "number" ? i2.maxSize : i2.maxSize.stops.map((t4) => t4.size).reduce(x$1, 0), e3 = typeof i2.minSize == "number" ? i2.minSize : i2.minSize.stops.map((t4) => t4.size).reduce(x$1, 0), Math.max(t3, e3);
+  }
+  return i2.transformationType === "real-world-size" ? 30 : void 0;
+}
+function m(t2) {
+  return t2.type in s$1;
+}
+function u$1(e2, i2, r2) {
+  return __async(this, null, function* () {
+    if (!e2 || r2 && r2.type === "cluster")
+      return 0;
+    if (e2.type === "heatmap")
+      return Math.round(3 * e2.blurRadius);
+    if (e2.type === "dot-density")
+      return 0;
+    if (e2.type === "dictionary")
+      return i2 === "esriGeometryPoint" || i2 === "esriGeometryMultipoint" ? 100 : 200;
+    const n2 = e2.getSymbols(), s2 = a$1(e2), o2 = [];
+    for (const t2 of n2)
+      o2.push(d(t2, s2));
+    const m2 = yield Promise.all(o2);
+    return u$4(m2.reduce(x$1, 0));
+  });
+}
+const c$1 = [0, 0, 0, 0];
+function l(t2, e2) {
+  return t2 == null ? e2 : t2;
+}
+function p$1(t2, e2) {
+  return t2.outline == null ? e2 : l(t2.outline.width, e2);
+}
+const f = { sdf: true, code: 99, metrics: k$3.metrics, rect: new t$6(0, 0, 24, 24), page: 0, textureBinding: 2 };
+function h$1(t2) {
+  const e2 = t2.text && t2.text.length;
+  if (!e2)
+    return { glyphMosaicItems: [f] };
+  const i2 = [];
+  for (let r2 = 0; r2 < e2; r2++)
+    i2.push(__spreadProps(__spreadValues({}, f), { code: t2.text.charCodeAt(r2) }));
+  return { glyphMosaicItems: i2 };
+}
+function y(t2, e2) {
+  return __async(this, null, function* () {
+    if (t2.type === "simple-marker") {
+      const i2 = Math.max(l(t2.size, 12), e2);
+      return M$1(t2) + i2 * o$2;
+    }
+    if (t2.type === "picture-marker") {
+      const i2 = Math.max(l(t2.height, 12), e2), r2 = l(t2.width, 12) * (i2 / l(t2.height, 12)) / 2, n2 = i2 / 2;
+      return M$1(t2) + Math.sqrt(r2 * r2 + n2 * n2);
+    }
+    if (t2.type === "text") {
+      const e3 = h$1(t2);
+      Q$1(c$1, t2.toJSON(), e3);
+      const i2 = Math.abs(c$1[0]), r2 = Math.abs(c$1[1]), s2 = c$1[2], o2 = c$1[3];
+      return Math.max(i2, r2) + Math.max(s2, o2);
+    }
+    if (t2.type === "simple-line") {
+      const i2 = t2, r2 = Math.max(l(i2.width, 0.75), e2) / 2;
+      return i2.marker ? Math.max(6 * i2.width, 2 * e2) : r2;
+    }
+    if (t2.type === "simple-fill" || t2.type === "picture-fill")
+      return Math.max(p$1(t2, 0), e2) / 2;
+    if (t2.type === "cim") {
+      const e3 = h$4.getEnvelope(t2.data);
+      return e3 ? Math.sqrt(e3.width * e3.width + e3.height * e3.height) : 0;
+    }
+    return t2.type === "web-style" ? y(yield t2.fetchCIMSymbol(), e2) : 0;
+  });
+}
+function d(t2, e2) {
+  return __async(this, null, function* () {
+    return m(t2) ? Math.min(yield y(t2, e2), 75) : 0;
+  });
+}
+function M$1(t2) {
+  const e2 = l(t2.xoffset, 0), i2 = l(t2.yoffset, 0);
+  return Math.sqrt(e2 * e2 + i2 * i2);
+}
+function x$1(t2, e2) {
+  return Math.max(t2, e2);
+}
+const o$1 = 8, t = o$1 - 2, r = n$8.getLogger("esri.renderers.visualVariables.support.utils"), s = (e2) => {
+  if (!("visualVariables" in e2) || !e2.visualVariables || !e2.visualVariables.length)
+    return e2;
+  const l2 = e2.clone(), o2 = l2.visualVariables.map((e3) => n(e3) ? i(e3) : e3);
+  return l2.visualVariables = o2, l2;
+};
+function a(e2) {
+  return e2.map((e3) => n(e3) ? i(e3.clone()) : e3);
+}
+function n(e2) {
+  return (e2.type === "size" || e2.type === "color" || e2.type === "opacity") && e2.stops != null;
+}
+function i(e2) {
+  return e2.stops = b(e2.type, e2.stops), e2;
+}
+function u(e2, l2, o2) {
+  return (1 - o2) * e2 + o2 * l2;
+}
+function c(e2, o2) {
+  const [r2, ...s2] = o2, a2 = s2.pop(), n2 = s2[0].value, i2 = s2[s2.length - 1].value, c2 = (i2 - n2) / t, p2 = [];
+  for (let t2 = n2; t2 < i2; t2 += c2) {
+    let r3 = 0;
+    for (; t2 >= s2[r3].value; )
+      r3++;
+    const a3 = s2[r3], n3 = o2[r3 - 1], i3 = t2 - n3.value, c3 = a3.value === n3.value ? 1 : i3 / (a3.value - n3.value);
+    if (e2 === "color") {
+      const e3 = s2[r3], l2 = o2[r3 - 1], a4 = e3.color.clone();
+      a4.r = u(l2.color.r, a4.r, c3), a4.g = u(l2.color.g, a4.g, c3), a4.b = u(l2.color.b, a4.b, c3), a4.a = u(l2.color.a, a4.a, c3), p2.push({ value: t2, color: a4, label: e3.label });
+    } else if (e2 === "size") {
+      const e3 = s2[r3], a4 = o2[r3 - 1], n4 = o$9(e3.size), i4 = u(o$9(a4.size), n4, c3);
+      p2.push({ value: t2, size: i4, label: e3.label });
+    } else {
+      const e3 = s2[r3], l2 = u(o2[r3 - 1].opacity, e3.opacity, c3);
+      p2.push({ value: t2, opacity: l2, label: e3.label });
+    }
+  }
+  return [r2, ...p2, a2];
+}
+function p(e2) {
+  const [l2, ...o2] = e2, r2 = o2.pop();
+  for (; o2.length > t; ) {
+    let e3 = 0, l3 = 0;
+    for (let t2 = 1; t2 < o2.length; t2++) {
+      const r3 = o2[t2 - 1], s2 = o2[t2], a2 = Math.abs(s2.value - r3.value);
+      a2 > l3 && (l3 = a2, e3 = t2);
+    }
+    o2.splice(e3, 1);
+  }
+  return [l2, ...o2, r2];
+}
+function b(e2, l2) {
+  return l2.length <= o$1 ? l2 : (r.warn(`Found ${l2.length} Visual Variable stops, but MapView only supports ${o$1}. Displayed stops will be simplified.`), l2.length > 2 * o$1 ? c(e2, l2) : p(l2));
+}
+const o = new t$7({ esriGeometryPoint: "point", esriGeometryMultipoint: "multipoint", esriGeometryPolyline: "polyline", esriGeometryPolygon: "polygon", esriGeometryMultiPatch: "multipatch", mesh: "mesh" });
+function e(t2) {
+  return o.toJSON(t2);
+}
+const h = n$8.getLogger("esri.views.2d.layers.features.schemaUtils"), x = "ValidationError", v = { esriGeometryPoint: ["above-right", "above-center", "above-left", "center-center", "center-left", "center-right", "below-center", "below-left", "below-right"], esriGeometryPolygon: ["always-horizontal"], esriGeometryPolyline: ["center-along"], esriGeometryMultipoint: null };
+function w(e2) {
+  return f$2(e2);
+}
+function E(e2) {
+  return e2;
+}
+function I(e2) {
+  switch (e2.type) {
+    case "line-marker":
+      var t2;
+      return { type: "line-marker", color: (t2 = e2.color) == null ? void 0 : t2.toJSON(), placement: e2.placement, style: e2.style };
+    default:
+      return i$5(e2.toJSON()).toJSON();
+  }
+}
+function S(e2, t2, i2) {
+  if (!e2)
+    return null;
+  let n2 = 0, l2 = false, s2 = 0;
+  switch (r$3(t2) && (s2 = a$1(t2), "visualVariables" in t2 && (n2 = e$1(t2.visualVariables || []), l2 = t2.type === "dot-density")), e2.type) {
+    case "simple-fill":
+    case "picture-fill":
+      return F(e2, n2, l2, i2);
+    case "simple-marker":
+    case "picture-marker":
+      return j(e2, n2, s2, i2);
+    case "simple-line":
+      return z(e2, n2, i2);
+    case "text":
+      return V(e2, n2, s2, i2);
+    case "label":
+      return N(e2, n2, i2);
+    case "cim":
+      return { type: "cim", rendererKey: n2, data: e2.data, maxVVSize: s2 };
+    case "web-style":
+      return __spreadProps(__spreadValues({}, I(e2)), { type: "web-style", hash: e2.hash(), rendererKey: n2, maxVVSize: s2 });
+    default:
+      throw new Error(`symbol not supported ${e2.type}`);
+  }
+}
+function F(e2, t2, r2, i2) {
+  const n2 = A$4(E$2.FILL, t2, false, r2), l2 = i2 ? w(n2) : n2, s2 = e2.clone(), a2 = s2.outline;
+  s2.outline = null;
+  const o2 = [], u2 = __spreadValues({ materialKey: l2, hash: s2.hash() }, I(s2));
+  if (o2.push(u2), a2) {
+    const e3 = A$4(E$2.LINE, t2, true, false), r3 = __spreadValues({ materialKey: i2 ? w(e3) : e3, hash: a2.hash() }, I(a2));
+    o2.push(r3);
+  }
+  return { type: "composite-symbol", layers: o2, hash: o2.reduce((e3, t3) => t3.hash + e3, "") };
+}
+function z(e2, t2, r2) {
+  const i2 = A$4(E$2.LINE, t2, false, false), n2 = r2 ? w(i2) : i2, l2 = e2.clone(), s2 = l2.marker;
+  l2.marker = null;
+  const a2 = [];
+  if (a2.push(__spreadValues({ materialKey: n2, hash: l2.hash() }, I(l2))), s2) {
+    var o2;
+    const e3 = A$4(E$2.MARKER, t2, false, false), i3 = r2 ? w(e3) : e3;
+    s2.color = (o2 = s2.color) != null ? o2 : l2.color, a2.push(__spreadValues({ materialKey: i3, hash: s2.hash(), lineWidth: l2.width }, I(s2)));
+  }
+  return { type: "composite-symbol", layers: a2, hash: a2.reduce((e3, t3) => t3.hash + e3, "") };
+}
+function j(e2, t2, r2, i2) {
+  const n2 = A$4(E$2.MARKER, t2, false, false), l2 = i2 ? w(n2) : n2, s2 = I(e2);
+  return __spreadProps(__spreadValues({ materialKey: l2, hash: e2.hash() }, s2), { angle: e2.angle, maxVVSize: r2 });
+}
+function V(e2, t2, r2, i2) {
+  const n2 = A$4(E$2.TEXT, t2, false, false), l2 = i2 ? w(n2) : n2, s2 = I(e2);
+  return __spreadProps(__spreadValues({ materialKey: l2, hash: e2.hash() }, s2), { angle: e2.angle, maxVVSize: r2 });
+}
+function T(e2, t2) {
+  const r2 = e2.labelPlacement, i2 = v[t2];
+  if (!e2.symbol)
+    return h.warn("No LabelClass symbol specified."), true;
+  if (!i2)
+    return h.error(new s$3("mapview-labeling:unsupported-geometry-type", `Unable to create labels for Feature Layer, ${t2} is not supported`)), true;
+  if (!i2.some((e3) => e3 === r2)) {
+    const n2 = i2[0];
+    r2 && h.warn(`Found invalid label placement type ${r2} for ${t2}. Defaulting to ${n2}`), e2.labelPlacement = n2;
+  }
+  return false;
+}
+function R(e2, r2) {
+  const i2 = y$4(e2);
+  return i2.some((e3) => T(e3, r2)) ? [] : i2;
+}
+function N(e2, t2, r2) {
+  const i2 = A$4(E$2.LABEL, t2, false, false, e2.labelPlacement);
+  return __spreadProps(__spreadValues({ materialKey: r2 ? w(i2) : i2, hash: e2.hash() }, e2.toJSON()), { labelPlacement: e2.labelPlacement });
+}
+function k(t2) {
+  return t$4("esri-2d-update-debug") && console.debug("Created new schema", K(t2, true)), K(t2);
+}
+function K(e2, t2 = false) {
+  try {
+    var r2, i2;
+    const n2 = C(e2, t2), l2 = {};
+    n2.map((t3) => M(l2, e2, t3));
+    return { source: { definitionExpression: e2.definitionExpression, fields: e2.fields.map((e3) => e3.toJSON()), gdbVersion: e2.gdbVersion, historicMoment: (r2 = e2.historicMoment) == null ? void 0 : r2.getTime(), outFields: e2.availableFields, pixelBuffer: e2.pixelBuffer, spatialReference: e2.spatialReference.toJSON(), timeExtent: (i2 = e2.timeExtent) == null ? void 0 : i2.toJSON() }, attributes: { fields: {}, indexCount: 0 }, processors: n2, targets: l2 };
+  } catch (n2) {
+    if (n2.fieldName === x)
+      return h.error(n2), null;
+    throw n2;
+  }
+}
+function M(e2, t2, r2) {
+  switch (r2.target) {
+    case "feature":
+      return void L(e2, J(t2), r2);
+    case "aggregate": {
+      const i2 = t2.featureReduction;
+      if (i2.type === "selection")
+        throw new s$3(x, "Mapview does not support `selection` reduction type", i2);
+      return L(e2, J(t2), r2), void B(e2, i2, r2);
+    }
+  }
+}
+function O(e2, t2) {
+  for (const r2 in t2) {
+    const i2 = t2[r2];
+    if (i2.target !== e2.name)
+      continue;
+    const n2 = e2.attributes[r2];
+    n2 ? (n2.context.mesh = n2.context.mesh || i2.context.mesh, n2.context.storage = n2.context.storage || i2.context.storage) : e2.attributes[r2] = i2;
+  }
+  return e2;
+}
+function J(e2) {
+  var t2, r2, i2, n2, l2;
+  return [(t2 = (r2 = e2.filter) == null ? void 0 : r2.toJSON()) != null ? t2 : null, (i2 = (n2 = e2.effect) == null || (l2 = n2.filter) == null ? void 0 : l2.toJSON()) != null ? i2 : null];
+}
+function L(e2, t2, r2) {
+  return e2.feature || (e2.feature = { name: "feature", input: "source", filters: t2, attributes: {} }), O(e2.feature, r2.attributes.fields), e2;
+}
+function B(e2, t2, r2) {
+  return e2.aggregate || (e2.aggregate = { name: "aggregate", input: "feature", filters: null, attributes: {}, params: { clusterRadius: u$4(t2.clusterRadius / 2), clusterPixelBuffer: 64 * Math.ceil(u$4(t2.clusterMaxSize) / 64), fields: r2.aggregateFields } }), O(e2.aggregate, r2.attributes.fields), e2;
+}
+function P(e2, t2) {
+  return t2.field ? U(e2, __spreadProps(__spreadValues({}, t2), { type: "field", field: t2.field })) : t2.valueExpression ? U(e2, __spreadProps(__spreadValues({}, t2), { type: "expression", valueExpression: t2.valueExpression })) : { field: null, fieldIndex: null };
+}
+function U(e2, t2) {
+  switch (t2.type) {
+    case "expression": {
+      const r2 = E(t2.valueExpression);
+      if (!e2.fields[r2]) {
+        const i2 = e2.indexCount++;
+        e2.fields[r2] = __spreadProps(__spreadValues({}, t2), { name: r2, fieldIndex: i2 });
+      }
+      return { fieldIndex: e2.fields[r2].fieldIndex };
+    }
+    case "label-expression": {
+      const r2 = E(JSON.stringify(t2.label));
+      if (!e2.fields[r2]) {
+        const i2 = e2.indexCount++;
+        e2.fields[r2] = __spreadProps(__spreadValues({}, t2), { name: r2, fieldIndex: i2 });
+      }
+      return { fieldIndex: e2.fields[r2].fieldIndex };
+    }
+    case "field": {
+      const r2 = t2.field;
+      return t2.target === "aggregate" && e2.fields[r2] || (e2.fields[r2] = __spreadProps(__spreadValues({}, t2), { name: r2 })), { field: r2 };
+    }
+    case "statistic":
+      return e2.fields[t2.name] = __spreadValues({}, t2), { field: t2.name };
+  }
+}
+function C(e2, t2 = false) {
+  const r2 = new Array();
+  let i2 = 0;
+  return r2.push($(e2, i2++, t2)), r2;
+}
+function D(e2, t2, r2, i2, n2, l2 = false) {
+  const s2 = U(t2, { type: "label-expression", target: i2, context: { mesh: true }, resultType: "string", label: { labelExpression: r2.labelExpression, labelExpressionInfo: r2.labelExpressionInfo ? { expression: r2.labelExpressionInfo.expression } : null, symbol: !!r2.symbol, where: r2.where } }), { fieldIndex: a2 } = s2;
+  return __spreadProps(__spreadValues({}, S(r2, e2, l2)), { fieldIndex: a2, target: i2, index: n2 });
+}
+function $(e$12, t2, r2 = false) {
+  const i2 = { indexCount: 0, fields: {} }, n2 = "featureReduction" in e$12 && e$12.featureReduction, s2 = n2 ? "aggregate" : "feature";
+  switch (e$12.renderer.type) {
+    case "heatmap": {
+      const { blurRadius: t3, fieldOffset: r3, field: n3 } = e$12.renderer;
+      return { type: "heatmap", aggregateFields: [], attributes: i2, target: s2, storage: null, mesh: { blurRadius: t3, fieldOffset: r3, field: P(i2, { target: s2, field: n3, resultType: "numeric" }).field } };
+    }
+    default: {
+      const t3 = [], a2 = s2 === "aggregate" ? c$2(t3, e$12.renderer, n2, null) : e$12.renderer;
+      q(i2, t3);
+      const d2 = W(i2, s2, a2, r2);
+      let c2 = null;
+      const f2 = A(i2, s2, a2), p2 = e(e$12.geometryType);
+      let m2 = e$12.labelsVisible && e$12.labelingInfo || [], y2 = [];
+      if (n2) {
+        if (n2.type === "selection")
+          throw new s$3(x, "Mapview does not support `selection` reduction type", n2);
+        if (n2.symbol) {
+          const e2 = new m$3({ symbol: n2.symbol, visualVariables: "visualVariables" in a2 ? a2.visualVariables : null });
+          c2 = W(i2, s2, e2, r2);
+        }
+        y2 = n2 && n2.labelsVisible && n2.labelingInfo || [];
+      }
+      m2 = R(m2, p2), y2 = R(y2, p2);
+      let g2 = 0;
+      const h2 = [...m2.map((e2) => D(a2, i2, e2, "feature", g2++, r2)), ...y2.map((e2) => D(a2, i2, e2, "aggregate", g2++, r2))];
+      return { type: "symbol", target: s2, attributes: i2, aggregateFields: t3, storage: f2, mesh: { matcher: d2, labels: h2, aggregateMatcher: c2 } };
+    }
+  }
+}
+function q(e2, t2) {
+  const r2 = { mesh: true, storage: true };
+  for (const i2 of t2) {
+    const { name: t3, outStatistic: n2 } = i2, { statisticType: l2, onStatisticField: s2 } = n2;
+    let a2 = null, o2 = null, u2 = null;
+    const d2 = "numeric", c2 = "feature";
+    if ("onStatisticValueExpression" in n2) {
+      o2 = U(e2, { type: "expression", target: c2, valueExpression: n2.onStatisticValueExpression, resultType: d2 }).fieldIndex;
+    } else if ("onStatisticNormalizationField" in n2) {
+      a2 = U(e2, { type: "field", target: c2, field: s2, resultType: d2 }).field, u2 = n2.onStatisticNormalizationField;
+    } else {
+      a2 = U(e2, { type: "field", target: c2, field: s2, resultType: d2 }).field;
+    }
+    U(e2, { type: "statistic", target: "aggregate", name: t3, context: r2, inField: a2, inNormalizationField: u2, inFieldIndex: o2, statisticType: l2 });
+  }
+}
+function A(e2, t2, r2) {
+  switch (r2.type) {
+    case "dot-density":
+      return G(e2, t2, r2.attributes);
+    case "simple":
+    case "class-breaks":
+    case "unique-value":
+      return H(e2, t2, r2.visualVariables);
+    case "heatmap":
+    case "dictionary":
+      return null;
+  }
+}
+function G(e2, t2, r2) {
+  if (!r2 || !r2.length)
+    return { type: "dot-density", mapping: [], target: t2 };
+  return { type: "dot-density", mapping: r2.map((r3, i2) => {
+    const { field: n2, fieldIndex: l2 } = P(e2, { valueExpression: r3.valueExpression, field: r3.field, resultType: "numeric", target: t2 });
+    return { binding: i2, field: n2, fieldIndex: l2 };
+  }), target: t2 };
+}
+function H(e2, t2, r2) {
+  if (!r2 || !r2.length)
+    return { type: "visual-variable", mapping: [], target: t2 };
+  const i2 = { storage: true }, n2 = "numeric";
+  return { type: "visual-variable", mapping: a(r2).map((r3) => {
+    var l2;
+    const s2 = S$3(r3.type), { field: a2, fieldIndex: o2 } = P(e2, { target: t2, valueExpression: r3.valueExpression, field: r3.field, context: i2, resultType: n2 });
+    switch (r3.type) {
+      case "size":
+        return r3.valueExpression === "$view.scale" ? null : { type: "size", binding: s2, field: a2, fieldIndex: o2, normalizationField: P(e2, { target: t2, field: r3.normalizationField, context: i2, resultType: n2 }).field, valueRepresentation: (l2 = r3.valueRepresentation) != null ? l2 : null };
+      case "color":
+        return { type: "color", binding: s2, field: a2, fieldIndex: o2, normalizationField: P(e2, { target: t2, field: r3.normalizationField, context: i2, resultType: n2 }).field };
+      case "opacity":
+        return { type: "opacity", binding: s2, field: a2, fieldIndex: o2, normalizationField: P(e2, { target: t2, field: r3.normalizationField, context: i2, resultType: n2 }).field };
+      case "rotation":
+        return { type: "rotation", binding: s2, field: a2, fieldIndex: o2 };
+    }
+  }).filter((e3) => e3), target: t2 };
+}
+function W(e2, t2, r2, n2 = false) {
+  const l2 = c$6(e2, { indexCount: 0, fields: {} });
+  switch (r2.type) {
+    case "simple":
+    case "dot-density":
+      return X(l2, r2, r2.type === "dot-density", n2);
+    case "class-breaks":
+      return Q(l2, t2, r2, n2);
+    case "unique-value":
+      return Y(l2, t2, r2, n2);
+    case "dictionary":
+      return Z(l2, r2, n2);
+  }
+}
+function X(e2, t2, r2, i2 = false) {
+  const n2 = t2.getSymbols();
+  return { type: "simple", symbol: S(n2.length ? n2[0] : null, t2, i2), isDotDensity: r2 };
+}
+function Q(e2, t2, r2, i2 = false) {
+  const n2 = { mesh: true, use: "renderer.field" }, l2 = r2.backgroundFillSymbol, { field: s2, fieldIndex: a2 } = P(e2, { target: t2, field: r2.field, valueExpression: r2.valueExpression, resultType: "numeric", context: n2 }), o2 = r2.normalizationType, u2 = o2 === "log" ? "esriNormalizeByLog" : o2 === "percent-of-total" ? "esriNormalizeByPercentOfTotal" : o2 === "field" ? "esriNormalizeByField" : null, d2 = r2.classBreakInfos.map((e3) => ({ symbol: S(e3.symbol, r2, i2), min: e3.minValue, max: e3.maxValue })).sort((e3, t3) => e3.min - t3.min);
+  return { type: "interval", attributes: e2.fields, field: s2, fieldIndex: a2, backgroundFillSymbol: S(l2, r2, i2), defaultSymbol: S(r2.defaultSymbol, r2, i2), intervals: d2, normalizationField: r2.normalizationField, normalizationTotal: r2.normalizationTotal, normalizationType: u2, isMaxInclusive: r2.isMaxInclusive };
+}
+function Y(e2, t2, r2, i2 = false) {
+  const n2 = [], s2 = r2.backgroundFillSymbol, a2 = { target: t2, context: { mesh: true }, resultType: "string" };
+  if (r2.field && typeof r2.field != "string")
+    throw new s$3(x, "Expected renderer.field to be a string", r2);
+  const { field: o2, fieldIndex: u2 } = P(e2, __spreadProps(__spreadValues({}, a2), { field: r2.field, valueExpression: r2.valueExpression }));
+  for (const l2 of r2.uniqueValueInfos)
+    n2.push({ value: "" + l2.value, symbol: S(l2.symbol, r2, i2) });
+  return { type: "map", attributes: e2.fields, field: o2, fieldIndex: u2, field2: P(e2, __spreadProps(__spreadValues({}, a2), { field: r2.field2 })).field, field3: P(e2, __spreadProps(__spreadValues({}, a2), { field: r2.field3 })).field, fieldDelimiter: r2.fieldDelimiter, backgroundFillSymbol: S(s2, r2), defaultSymbol: S(r2.defaultSymbol, r2), map: n2 };
+}
+function Z(e2, t2, r2 = false) {
+  return { type: "dictionary", renderer: t2.toJSON() };
+}
+export { A$1 as A, C$1 as C, D$1 as D, G$1 as G, H$1 as H, J$1 as J, K$1 as K, P$1 as P, S, T$1 as T, W$1 as W, W as a, A$2 as b, n$2 as c, a$2 as d, c$3 as e, e as f, d$1 as g, f$1 as h, c$2 as i, s as j, k, m$1 as m, n$3 as n, o$4 as o, r$1 as r, s$2 as s, u$1 as u, z$1 as z };

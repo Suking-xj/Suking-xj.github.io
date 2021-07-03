@@ -1,1 +1,1530 @@
-var e=Object.defineProperty,t=Object.defineProperties,i=Object.getOwnPropertyDescriptors,r=Object.getOwnPropertySymbols,s=Object.prototype.hasOwnProperty,n=Object.prototype.propertyIsEnumerable,a=(t,i,r)=>i in t?e(t,i,{enumerable:!0,configurable:!0,writable:!0,value:r}):t[i]=r,o=(e,t)=>{for(var i in t||(t={}))s.call(t,i)&&a(e,i,t[i]);if(r)for(var i of r(t))n.call(t,i)&&a(e,i,t[i]);return e},l=(e,r)=>t(e,i(r));import{a4 as u,ae as c,af as f,cr as h,hq as d,bF as p,eP as m,e0 as y,ag as g,hL as x,b7 as w,aj as v,a5 as I,_ as b,dA as S,el as T,aa as R,b$ as C,bI as _,al as M,eS as k,dQ as P,c4 as F,dR as O,dd as D,am as B,hM as N,dD as H,fc as z,hp as L,gR as E,gS as J,gT as A,dY as j,dZ as q,d_ as U,e1 as W,e6 as G,gX as $,gV as V,hj as Y,M as X}from"./vendor.74d5941c.js";import{a as K,d as Q,K as Z,M as ee,V as te,j as ie,b as re,p as se,i as ne}from"./rasterRendererHelper.c783c0d1.js";import{N as ae,T as oe,r as le,p as ue,D as ce,a as fe,b as he,y as de,c as pe,x as me,E as ye}from"./RasterSymbolizer.07b5503f.js";import{p as ge,C as xe,U as we,r as ve,o as Ie,d as be,u as Se}from"./pixelUtils.5399eb4b.js";import{h as Te,d as Re,j as Ce,M as _e,g as Me,R as ke}from"./rasterProjectionHelper.3405c919.js";import{i as Pe,m as Fe,x as Oe,d as De,h as Be}from"./RawBlockCache.0fd02a44.js";import"./vectorFieldUtils.cdd2fa8a.js";import"./_commonjsHelpers.f2a458db.js";import"./LercCodec.7b2d60e1.js";const Ne=u.getLogger("esri.layers.mixins.ImageryTileMixin"),He=e=>{let t=class extends e{constructor(){super(...arguments),this._rasterJobHandler={instance:null,refCount:0,connectionPromise:null},this.bandIds=null,this.copyright=null,this.fullExtent=null,this.interpolation="nearest",this.raster=null,this.rasterInfo=null,this.sourceJSON=null,this.spatialReference=null,this.tileInfo=null,this.symbolizer=null}set multidimensionalDefinition(e){this.raster&&(this._sliceId=this.raster.getSliceIndex(e)),this._set("multidimensionalDefinition",e)}set url(e){this._set("url",x(e,Ne))}set renderer(e){this._set("renderer",e),this.updateRenderer()}async updateRenderer(){if(!this.loaded)return;if(JSON.stringify(this._cachedRendererJson)===JSON.stringify(this.renderer))return;const e=this._rasterJobHandler.instance;e&&(this.symbolizer.rendererJSON=Z(this.renderer.toJSON()),this.symbolizer.bind(),await e.updateSymbolizer(this.symbolizer),this._cachedRendererJson=this.renderer.toJSON())}async applyRenderer(e,t){const i=e&&e.pixelBlock;if(!(i&&i.pixels&&i.pixels.length>0))return null;let r;this.updateRenderer();const s=this._rasterJobHandler.instance,{bandIds:n}=this;return r=s?await s.symbolize(l(o({},e),{simpleStretchParams:t,bandIds:n})):this.symbolizer.symbolize(l(o({},e),{simpleStretchParams:t,bandIds:n})),r}getTileUrl(e,t,i){return"RasterTileServer"===this.raster.datasetFormat?`${this.url}/tile/${e}/${t}/${i}`:""}getCompatibleTileInfo(e,t){if(!this.loaded)return null;const i=w(e);return m.create({size:256,spatialReference:e,origin:i?{x:i.origin[0],y:i.origin[1]}:{x:t.xmin,y:t.ymax}})}getCompatibleFullExtent(e){return this.loaded?(this._compatibleFullExtent&&this._compatibleFullExtent.spatialReference.equals(e)||(this._compatibleFullExtent=this.raster.computeExtent(e)),this._compatibleFullExtent):null}async fetchTile(e,t,i,r={}){if(r.requestAsImageElement){const s=this.getTileUrl(e,t,i);return v(s,{responseType:"image",query:{sliceId:this._sliceId,_ts:r.timestamp},signal:r.signal}).then((e=>e.data))}await this._initJobHandler();const s="raster-shaded-relief"===this.renderer.type?{cols:1,rows:1}:null;if(this.multidimensionalDefinition){const e=this._sliceId;r=o({multidimensionalDefinition:this.multidimensionalDefinition,sliceId:e,buffer:s},r)}return this.raster.fetchTile(e,t,i,r)}async fetchPixels(e,t,i,r){if(await this._initJobHandler(),this.multidimensionalDefinition){const e=this._sliceId;r=o({multidimensionalDefinition:this.multidimensionalDefinition,sliceId:e},r)}return this.raster.fetchPixels(e,t,i,r)}identify(e,t={}){return this.multidimensionalDefinition&&!t.multidimensionalDefinition&&(t=l(o({},t),{multidimensionalDefinition:this.multidimensionalDefinition})),this.raster.identify(e,t)}increaseRasterJobHandlerUsage(){this._rasterJobHandler.refCount++}decreaseRasterJobHandlerUsage(){this._rasterJobHandler.refCount--,this._rasterJobHandler.refCount<=0&&this._shutdownJobHandler()}_configDefaultSettings(){this._configDefaultInterpolation(),this._configDefaultSlice(),this._configDefaultRenderer()}_initJobHandler(){if(null!=this._rasterJobHandler.connectionPromise)return this._rasterJobHandler.connectionPromise;const e=new re;return this._rasterJobHandler.connectionPromise=e.initialize().then((()=>{this._rasterJobHandler.instance=e,this.raster.rasterJobHandler=e,this.renderer&&this.updateRenderer()})).catch((()=>null)),this._rasterJobHandler.connectionPromise}_shutdownJobHandler(){this._rasterJobHandler.instance&&this._rasterJobHandler.instance.destroy(),this._rasterJobHandler.instance=null,this._rasterJobHandler.connectionPromise=null,this._rasterJobHandler.refCount=0,this.raster.rasterJobHandler=null}_configDefaultInterpolation(){if(null==this.interpolation){var e;const t=ee(this.rasterInfo,this.raster.tileType,null==(e=this.sourceJSON)?void 0:e.defaultResamplingMethod);this._set("interpolation",t)}}_configDefaultSlice(){const{multidimensionalInfo:e}=this.raster.rasterInfo;if(I(e)){if(!this.multidimensionalDefinition){const t=e.variables[0],i=[];t.dimensions.forEach((e=>{i.push(new K({variableName:t.name,dimensionName:e.name,values:e.hasRegularIntervals?e.extent[0]:e.values[0],isSlice:!0}))})),this.multidimensionalDefinition=i}this._sliceId=this.raster.getSliceIndex(this.multidimensionalDefinition)}}_configDefaultRenderer(){const e=this.raster.rasterInfo;var t,i;this.bandIds||(this.bandIds=te(e)),this.renderer||(this.renderer=ie(e,{bandIds:this.bandIds,variableName:null==(t=this.multidimensionalDefinition)||null==(i=t[0])?void 0:i.variableName})),this.symbolizer?(this.symbolizer.rendererJSON=Z(this.renderer.toJSON()),this.symbolizer.rasterInfo=e):this.symbolizer=new ae({rendererJSON:this.renderer.toJSON(),rasterInfo:e}),this.symbolizer.bind()||Ne.warn("imagery-tile-mixin","The given renderer is not supported by the layer.")}};return c([f()],t.prototype,"_cachedRendererJson",void 0),c([f()],t.prototype,"_sliceId",void 0),c([f()],t.prototype,"_compatibleFullExtent",void 0),c([f()],t.prototype,"_rasterJobHandler",void 0),c([f()],t.prototype,"bandIds",void 0),c([f()],t.prototype,"copyright",void 0),c([f({type:h}),d("rasterInfo.extent")],t.prototype,"fullExtent",void 0),c([f()],t.prototype,"interpolation",void 0),c([f()],t.prototype,"ioConfig",void 0),c([f({type:[K]})],t.prototype,"multidimensionalDefinition",null),c([f()],t.prototype,"raster",void 0),c([f({readOnly:!0}),d("raster.rasterInfo")],t.prototype,"rasterInfo",void 0),c([f()],t.prototype,"sourceJSON",void 0),c([f({type:p}),d("rasterInfo.spatialReference")],t.prototype,"spatialReference",void 0),c([f({type:m}),d("rasterInfo.storageInfo.tileInfo")],t.prototype,"tileInfo",void 0),c([f(y)],t.prototype,"url",null),c([f({types:Q})],t.prototype,"renderer",null),c([f()],t.prototype,"symbolizer",void 0),t=c([g("esri.layers.ImageryTileMixin")],t),t};let ze=class extends S{constructor(){super(...arguments),this.blockWidth=void 0,this.blockHeight=void 0,this.compression=null,this.origin=null,this.firstPyramidLevel=null,this.maximumPyramidLevel=null,this.pyramidScalingFactor=2,this.pyramidBlockWidth=null,this.pyramidBlockHeight=null,this.isVirtualTileInfo=!1,this.tileInfo=null,this.blockBoundary=null}};c([f({type:Number,json:{write:!0}})],ze.prototype,"blockWidth",void 0),c([f({type:Number,json:{write:!0}})],ze.prototype,"blockHeight",void 0),c([f({type:String,json:{write:!0}})],ze.prototype,"compression",void 0),c([f({type:b,json:{write:!0}})],ze.prototype,"origin",void 0),c([f({type:Number,json:{write:!0}})],ze.prototype,"firstPyramidLevel",void 0),c([f({type:Number,json:{write:!0}})],ze.prototype,"maximumPyramidLevel",void 0),c([f()],ze.prototype,"pyramidScalingFactor",void 0),c([f({type:Number,json:{write:!0}})],ze.prototype,"pyramidBlockWidth",void 0),c([f({type:Number,json:{write:!0}})],ze.prototype,"pyramidBlockHeight",void 0),c([f({type:Boolean,json:{write:!0}})],ze.prototype,"isVirtualTileInfo",void 0),c([f({json:{write:!0}})],ze.prototype,"tileInfo",void 0),c([f()],ze.prototype,"blockBoundary",void 0),ze=c([g("esri.layers.support.RasterStorageInfo")],ze);var Le=ze;let Ee=class extends(T(S)){constructor(){super(...arguments),this.rasterJobHandler=null,this.datasetName=null,this.datasetFormat=null,this.rasterInfo=null,this.ioConfig={sampling:"closest"}}async init(){const e=Te();this.addResolvingPromise(e),await this.when()}normalizeCtorArgs(e){return e&&e.ioConfig&&(e=l(o({},e),{ioConfig:o({resolution:null,bandIds:null,sampling:"closest",tileInfo:m.create()},e.ioConfig)})),e}set url(e){this._set("url",x(e,u.getLogger(this.declaredClass)))}async open(e){throw new R("BaseRaster:open-not-implemented","open() is not implemented")}async fetchTile(e,t,i,r={}){var s;const{tileInfo:n}=r,a=n.lodAt(e),u=this.getTileExtent({x:a.resolution,y:a.resolution},t,i,n.origin,n.spatialReference,n.size);return null!=(s=r.multidimensionalDefinition)&&s.length&&I(this.rasterInfo.multidimensionalInfo)&&null==r.sliceId&&(r=l(o({},r),{sliceId:this.getSliceIndex(r.multidimensionalDefinition)||0})),this.fetchPixels(u,n.size[0],n.size[1],r)}async identify(e,t={}){const{spatialReference:i,extent:r}=this.rasterInfo,{datumTransformation:s}=t;let n=Re(e,i,s);if(!r.intersects(n))return{location:n,value:null};if(I(this.rasterInfo.transform)){const e=this.rasterInfo.transform.inverseTransform(n);if(!this.rasterInfo.nativeExtent.intersects(e))return{location:e,value:null};n=e}let a=0;if(t.srcResolution)a=Ce(t.srcResolution,this.rasterInfo,this.ioConfig.sampling).pyramidLevel;else if(a=await this.computeBestPyramidLevelForLocation(e,t),null==a)return{location:n,value:null};const o=this.identifyPixelLocation(n,a,null);if(null===o)return{location:n,value:null};const{row:l,col:u,rowOffset:c,colOffset:f}=o,h=Pe(this.url,t.sliceId),d=`${a}/${l}/${u}`;let p=Fe(h,null,d);I(p)||(p=this.fetchRawTile(a,l,u,t),Oe(h,null,d,p));const m=await p;if(!(m&&m.pixels&&m.pixels.length>0))return{location:n,value:null};const y=c*this.rasterInfo.storageInfo.blockHeight+f;return{location:n,value:!m.mask||m.mask[y]?m.pixels.map((e=>e[y])):null,pyramidLevel:a}}async fetchPixels(e,t,i,r={}){const s=e.clone().normalize();e=s[0];const n=this.rasterInfo.spatialReference,a=!e.spatialReference.equals(n),{datumTransformation:o}=r,l=new b({x:(e.xmax-e.xmin)/t,y:(e.ymax-e.ymin)/i,spatialReference:e.spatialReference}),u=r.srcResolution||(a?_e(l,n,e,o):l);if(!u)return null;const{pyramidLevel:c,pyramidResolution:f,excessiveReading:h}=Ce(u,this.rasterInfo,this.ioConfig.sampling);if(h)return null;const d=this.rasterInfo.storageInfo;let p=a?Me(e,n,o):e;const m=C(this.rasterInfo.transform);if(m&&(p=m.inverseTransform(p)),null==p)return null;const y={x:Math.floor((p.xmin-d.origin.x)/f.x+.1),y:Math.floor((d.origin.y-p.ymax)/f.y+.1)},g=Math.ceil((p.xmax-p.xmin)/f.x-.1),x=Math.ceil((p.ymax-p.ymin)/f.y-.1);if(g/t>8||x/i>8)return null;const w=await this.fetchRawPixels(c,y,{width:g,height:x},r);if(!w)return null;const v=c>0?d.pyramidBlockWidth:d.blockWidth,I=c>0?d.pyramidBlockHeight:d.blockHeight;if(!a&&1===w.pixelBlocks.length&&v===t&&I===i&&u.x===l.x&&u.y===l.y)return{extent:e,srcExtent:p,pixelBlock:w.pixelBlocks[0]};const S=ke(e,w.extent,l,o,m);let T;const R=!r.requestRawData,_={rows:S.spacing[0],cols:S.spacing[1]},{pixelBlocks:M,mosaicSize:k,isPartiallyFilled:P}=w;if(this.rasterJobHandler)T=await this.rasterJobHandler.mosaicAndTransform({srcPixelBlocks:M,srcMosaicSize:k,destDimension:R?{width:t,height:i}:null,coefs:R?S.coefficients:null,sampleSpacing:R?_:null,interpolation:r.interpolation},r);else{const e=ge(M,k);T=R?xe(e,{width:t,height:i},S.coefficients,_,r.interpolation):e}return r.requestRawData?{srcExtent:p,pixelBlock:T,transformGrid:S,extent:e,isPartiallyFilled:P}:{srcExtent:p,extent:e,pixelBlock:T}}async fetchRawPixels(e,t,i,r){const{origin:s,blockBoundary:n}=this.rasterInfo.storageInfo,{blockWidth:a,blockHeight:o}=this.getBlockWidthHeight(e);let{x:l,y:u}=t,{width:c,height:f}=i;r.buffer&&(l-=r.buffer.cols,u-=r.buffer.rows,c+=2*r.buffer.cols,f+=2*r.buffer.rows);const d=Math.floor(l/a),p=Math.floor(u/o),m=Math.floor((l+c-1)/a),y=Math.floor((u+f-1)/o),g=n[e];if(!g)return null;const{minRow:x,minCol:w,maxCol:v,maxRow:I}=g;if(y<x||m<w||p>I||d>v)return null;const b=[];let S,T=!1;for(let h=p;h<=y;h++)for(let t=d;t<=m;t++)h>=x&&t>=w&&I>=h&&v>=t?(S=this._fetchRawTile(e,h,t,r),this.ioConfig.allowPartialFill&&(S=new Promise((e=>{S.then((t=>e(t))).catch((()=>{T=!0,e(null)}))}))),b.push(S)):b.push(null);if(0===b.length)return null;const R=await Promise.all(b),C={height:(y-p+1)*a,width:(m-d+1)*o},{nativePixelSize:_,spatialReference:M}=this.rasterInfo,k=_.x*2**e,P=_.y*2**e;return{extent:new h({xmin:s.x+d*a*k,xmax:s.x+(m+1)*a*k,ymin:s.y-(y+1)*o*P,ymax:s.y-p*o*P,spatialReference:M}),pixelBlocks:R,mosaicSize:C,isPartiallyFilled:T}}async fetchRawTile(e,t,i,r){throw new R("BaseRaster:read-not-implemented","fetchRawTile() is not implemented")}computeExtent(e){return Me(this.rasterInfo.extent,e)}decodePixelBlock(e,t){return!this.rasterJobHandler||t.useCanvas?oe(e,t):this.rasterJobHandler.decode({data:e,options:t})}async request(e,t,i){var r,s;const{customFetchParameters:n}=this.ioConfig,{range:a,query:u,headers:c}=t;i=null!=(r=null!=(s=i)?s:t.retryCount)?r:this.ioConfig.retryCount;const f=a?{Range:`bytes=${a.from}-${a.to}`}:null;try{return await v(e,l(o({},t),{query:o(o({},u),n),headers:o(o({},c),f)}))}catch(h){if(i>0)return i--,this.request(e,t,i);throw h}}getSliceIndex(e){const{multidimensionalInfo:t}=this.rasterInfo;if(!I(t)||null==e||!e.length)return null;let i=0;const r=e[0].variableName;for(let s=0;s<t.variables.length;s++){const n=t.variables[s],a=n.dimensions;if(n.name!==r){i+=a.map((e=>this._getDimensionValuesCount(e))).reduce(((e,t)=>e+t));break}const o=a.map((e=>this._getDimensionValuesCount(e))),l=a.length;for(let t=0;t<l;t++){const r=e.filter((e=>e.dimensionName===a[t].name))[0];if(null==r)return null;const s=Array.isArray(r.values[0])?r.values[0][0]:r.values[0],n=this._getIndexFromDimensions(s,a[t]);if(-1===n)return null;o.shift(),i+=t===l-1?n:n*o.reduce(((e,t)=>e+t))}}return i}updateTileInfo(){const{storageInfo:e,spatialReference:t,extent:i,pixelSize:r}=this.rasterInfo;if(!e.tileInfo){const s=[],n=e.maximumPyramidLevel||0;let a=Math.max(r.x,r.y),o=1/.0254*96*a;for(let e=0;e<=n;e++)s.push({level:n-e,resolution:a,scale:o}),a*=2,o*=2;const l=new b({x:i.xmin,y:i.ymax,spatialReference:t});e.tileInfo=new m({origin:l,size:[e.blockWidth,e.blockHeight],spatialReference:t,lods:s}),e.isVirtualTileInfo=!0}}createRemoteDatasetStorageInfo(e,t=512,i=512,r){const{width:s,height:n,nativeExtent:a,pixelSize:o,spatialReference:l}=e,u=new b({x:a.xmin,y:a.ymax,spatialReference:l});null==r&&(r=Math.max(0,Math.round(Math.log(Math.max(s,n))/Math.LN2-8)));const c=this._computeBlockBoundary(a,o,r,512,512);e.storageInfo=new Le({blockWidth:t,blockHeight:i,pyramidBlockWidth:t,pyramidBlockHeight:i,origin:u,firstPyramidLevel:1,maximumPyramidLevel:r,blockBoundary:c})}async computeBestPyramidLevelForLocation(e,t={}){return 0}identifyPixelLocation(e,t,i){const{spatialReference:r,nativePixelSize:s,nativeExtent:n}=this.rasterInfo,{blockWidth:a,blockHeight:o,maximumPyramidLevel:l,pyramidScalingFactor:u,origin:c}=this.rasterInfo.storageInfo,f=Re(e,r,i);if(!n.intersects(f))return null;if(t<0||t>l)return null;const h=u**t,d=h*s.x,p=h*s.y,m=(c.y-f.y)/p/o,y=(f.x-c.x)/d/a,g=Math.min(o-1,Math.floor((m-Math.floor(m))*o)),x=Math.min(a-1,Math.floor((y-Math.floor(y))*a));return{pyramidLevel:t,row:Math.floor(m),col:Math.floor(y),rowOffset:g,colOffset:x,srcLocation:f}}getTileExtent(e,t,i,r,s,n){const[a,o]=n,l=r.x+i*a*e.x,u=l+a*e.x,c=r.y-t*o*e.y,f=c-o*e.y;return new h({xmin:l,xmax:u,ymin:f,ymax:c,spatialReference:s})}getBlockWidthHeight(e){return{blockWidth:e>0?this.rasterInfo.storageInfo.pyramidBlockWidth:this.rasterInfo.storageInfo.blockWidth,blockHeight:e>0?this.rasterInfo.storageInfo.pyramidBlockHeight:this.rasterInfo.storageInfo.blockHeight}}isBlockOutside(e,t,i){const r=this.rasterInfo.storageInfo.blockBoundary[e];return!r||r.maxRow<t||r.maxCol<i||r.minRow>t||r.minCol>i}_computeBlockBoundary(e,t,i,r,s){let{x:n,y:a}=t;const o=e.xmin,l=e.ymax,u=[{minCol:Math.floor((e.xmin-o+.1*n)/r/n),maxCol:Math.floor((e.xmax-o-.1*n)/r/n),minRow:Math.floor((l-e.ymax+.1*a)/s/a),maxRow:Math.floor((l-e.ymin-.1*a)/s/a)}];if(i>0)for(let c=0;c<i;c++)n*=2,a*=2,u.push({minCol:Math.floor((e.xmin-o+.1*n)/r/n),maxCol:Math.floor((e.xmax-o-.1*n)/r/n),minRow:Math.floor((l-e.ymax+.1*a)/s/n),maxRow:Math.floor((l-e.ymin-.1*a)/s/n)});return u}_fetchRawTile(e,t,i,r){const s=this.rasterInfo.storageInfo.blockBoundary[e];if(!s)return Promise.resolve(null);const{minRow:n,minCol:a,maxCol:u,maxRow:c}=s;if(t<n||i<a||t>c||i>u)return Promise.resolve(null);const f=Pe(this.url,r.sliceId),h=`${e}/${t}/${i}`;let d=Fe(f,r.registryId,h);if(!I(d)){const s=_();d=this.fetchRawTile(e,t,i,l(o({},r),{signal:s.signal})),Oe(f,r.registryId,h,d,s),d.catch((()=>{De(f,r.registryId,h)}))}return r.signal&&M(r,(()=>{Be(f,r.registryId,h)})),d}_getIndexFromDimensions(e,t){const{extent:i,interval:r,unit:s,values:n}=t;if(null!=n&&n.length)return Array.isArray(n[0])?n.findIndex((t=>t[0]<=e&&t[1]>=e)):n.indexOf(e);if(e>i[1])return-1;const a=i[0];let o=-1;if("ISO8601"===s){var l;switch((null==(l=t.intervalUnit)?void 0:l.toLowerCase())||"seconds"){case"seconds":o=Math.round((e-a)/1e3/r);break;case"minutes":o=Math.round((e-a)/6e4/r);break;case"hours":o=Math.round((e-a)/36e5/r);break;case"days":o=Math.round((e-a)/864e5/r);break;case"years":o=Math.round((new Date(e).getUTCFullYear()-new Date(a).getUTCFullYear())/r);break;case"decades":o=Math.round((new Date(e).getUTCFullYear()-new Date(a).getUTCFullYear())/10/r)}return o}return Math.round((e-a)/r)}_getDimensionValuesCount(e){const{extent:t,interval:i,unit:r,values:s}=e;let n=(null==s?void 0:s.length)||0;if(n)return n;const a=t[0];if(0===n&&"ISO8601"===r){var o;switch((null==(o=e.intervalUnit)?void 0:o.toLowerCase())||"seconds"){case"seconds":n=Math.round((t[1]-t[0])/1e3/i);break;case"minutes":n=Math.round((t[1]-t[0])/6e4/i);break;case"hours":n=Math.round((t[1]-t[0])/36e5/i);break;case"days":n=Math.round((t[1]-t[0])/864e5/i);break;case"years":n=Math.round((new Date(t[1]).getUTCFullYear()-new Date(a).getUTCFullYear())/i);break;case"decades":n=Math.round((new Date(t[1]).getUTCFullYear()-new Date(a).getUTCFullYear())/10/i)}return n}return Math.round((t[1]-t[0])/i)}};c([f(y)],Ee.prototype,"url",null),c([f({type:String,json:{write:!0}})],Ee.prototype,"datasetName",void 0),c([f({type:String,json:{write:!0}})],Ee.prototype,"datasetFormat",void 0),c([f()],Ee.prototype,"rasterInfo",void 0),c([f()],Ee.prototype,"ioConfig",void 0),c([f()],Ee.prototype,"sourceJSON",void 0),Ee=c([g("esri.layers.support.rasterDatasets.BaseRaster")],Ee);var Je=Ee;function Ae(e){const t=e.fields,i=e.records,r=t.some((e=>"oid"===e.name.toLowerCase()))?"OBJECTID":"OID",s=[{name:r,type:"esriFieldTypeOID",alias:"OID"}].concat(t.map((e=>({name:e.name,type:"esriFieldType"+e.typeName,alias:e.name})))),n=s.map((e=>e.name)),a=[];let o=0,l=0;return i.forEach((e=>{const t={};for(t[r]=o++,l=1;l<n.length;l++)t[n[l]]=e[l-1];a.push({attributes:t})})),{displayFieldName:"",fields:s,features:a}}let je=class extends S{constructor(){super(...arguments),this.type="identity"}forwardTransform(e){return e}inverseTransform(e){return e}};c([f({json:{write:!0}})],je.prototype,"spatialReference",void 0),c([k({IdentityXform:"identity"})],je.prototype,"type",void 0),je=c([g("esri.layers.support.rasterTransforms.IdentityTransform")],je);var qe=je;function Ue(e,t,i){const{x:r,y:s}=t;if(i<2)return{x:e[0]+r*e[2]+s*e[4],y:e[1]+r*e[3]+s*e[5]};if(2===i){const t=r*r,i=s*s,n=r*s;return{x:e[0]+r*e[2]+s*e[4]+t*e[6]+n*e[8]+i*e[10],y:e[1]+r*e[3]+s*e[5]+t*e[7]+n*e[9]+i*e[11]}}const n=r*r,a=s*s,o=r*s,l=n*r,u=n*s,c=r*a,f=s*a;return{x:e[0]+r*e[2]+s*e[4]+n*e[6]+o*e[8]+a*e[10]+l*e[12]+u*e[14]+c*e[16]+f*e[18],y:e[1]+r*e[3]+s*e[5]+n*e[7]+o*e[9]+a*e[11]+l*e[13]+u*e[15]+c*e[17]+f*e[19]}}function We(e,t,i){const{xmin:r,ymin:s,xmax:n,ymax:a,spatialReference:o}=t;let l=[];if(i<2)l.push({x:r,y:a}),l.push({x:n,y:a}),l.push({x:r,y:s}),l.push({x:n,y:s});else{let e=10;for(let t=0;t<e;t++)l.push({x:r,y:s+(a-s)*t/(e-1)}),l.push({x:n,y:s+(a-s)*t/(e-1)});e=8;for(let t=1;t<=e;t++)l.push({x:r+(n-r)*t/e,y:s}),l.push({x:r+(n-r)*t/e,y:a})}l=l.map((t=>Ue(e,t,i)));const u=l.map((e=>e.x)),c=l.map((e=>e.y));return new h({xmin:Math.min.apply(null,u),xmax:Math.max.apply(null,u),ymin:Math.min.apply(null,c),ymax:Math.max.apply(null,c),spatialReference:o})}let Ge=class extends S{constructor(){super(...arguments),this.polynomialOrder=1,this.type="polynomial"}readForwardCoefficients(e,t){const{coeffX:i,coeffY:r}=t;if(null==i||!i.length||null==r||!r.length||i.length!==r.length)return null;const s=[];for(let n=0;n<i.length;n++)s.push(i[n]),s.push(r[n]);return s}writeForwardCoefficients(e,t,i){const r=[],s=[];for(let n=0;n<(null==e?void 0:e.length);n++)n%2==0?r.push(e[n]):s.push(e[n]);t.coeffX=r,t.coeffY=s}get inverseCoefficients(){let e=this._get("inverseCoefficients");const t=this._get("forwardCoefficients");return!e&&t&&this.polynomialOrder<2&&(e=function(e){const[t,i,r,s,n,a]=e,o=r*a-n*s,l=n*s-r*a;return[(n*i-t*a)/o,(r*i-t*s)/l,a/o,s/l,-n/o,-r/l]}(t)),e}set inverseCoefficients(e){this._set("inverseCoefficients",e)}readInverseCoefficients(e,t){const{inverseCoeffX:i,inverseCoeffY:r}=t;if(null==i||!i.length||null==r||!r.length||i.length!==r.length)return null;const s=[];for(let n=0;n<i.length;n++)s.push(i[n]),s.push(r[n]);return s}writeInverseCoefficients(e,t,i){const r=[],s=[];for(let n=0;n<(null==e?void 0:e.length);n++)n%2==0?r.push(e[n]):s.push(e[n]);t.inverseCoeffX=r,t.inverseCoeffY=s}forwardTransform(e){if("point"===e.type){const t=Ue(this.forwardCoefficients,e,this.polynomialOrder);return new b({x:t.x,y:t.y,spatialReference:e.spatialReference})}return We(this.forwardCoefficients,e,this.polynomialOrder)}inverseTransform(e){if("point"===e.type){const t=Ue(this.inverseCoefficients,e,this.polynomialOrder);return new b({x:t.x,y:t.y,spatialReference:e.spatialReference})}return We(this.inverseCoefficients,e,this.polynomialOrder)}};c([f({json:{write:!0}})],Ge.prototype,"polynomialOrder",void 0),c([f()],Ge.prototype,"forwardCoefficients",void 0),c([P("forwardCoefficients",["coeffX","coeffY"])],Ge.prototype,"readForwardCoefficients",null),c([F("forwardCoefficients")],Ge.prototype,"writeForwardCoefficients",null),c([f({json:{write:!0}})],Ge.prototype,"inverseCoefficients",null),c([P("inverseCoefficients",["inverseCoeffX","inverseCoeffY"])],Ge.prototype,"readInverseCoefficients",null),c([F("inverseCoefficients")],Ge.prototype,"writeInverseCoefficients",null),c([f({json:{write:!0}})],Ge.prototype,"spatialReference",void 0),c([k({PolynomialXform:"polynomial"})],Ge.prototype,"type",void 0),Ge=c([g("esri.layers.support.rasterTransforms.PolynomialTransform")],Ge);var $e=Ge;const Ve={PolynomialXform:$e,IdentityXform:qe},Ye=Object.keys(Ve);const Xe=new Map;Xe.set("int16","esriFieldTypeSmallInteger"),Xe.set("int32","esriFieldTypeInteger"),Xe.set("int64","esriFieldTypeInteger"),Xe.set("float32","esriFieldTypeSingle"),Xe.set("float64","esriFieldTypeDouble"),Xe.set("text","esriFieldTypeString");let Ke=class extends Je{constructor(){super(...arguments),this.storageInfo=null,this.datasetFormat="CRF"}async open(e){await this.init();const{data:t}=await this.request(this.url+"/conf.json",{signal:null==e?void 0:e.signal});if(!this._validateHeader(t))throw new R("cloudraster:open","Invalid or unsupported conf.json.");this.datasetName=this.url.slice(this.url.lastIndexOf("/")+1);const{storageInfo:i,rasterInfo:r}=this._parseHeader(t);if("thematic"===r.dataType){const e=await this._fetchAuxiliaryInformation();r.attributeTable=e}this._set("storageInfo",i),this._set("rasterInfo",r),this.ioConfig.retryCount=this.ioConfig.retryCount||0}async fetchRawTile(e,t,i,r={}){const s=this.rasterInfo.storageInfo.maximumPyramidLevel-e;if(s<0)return null;const n=this._buildCacheFilePath(s,t,i,r.multidimensionalDefinition),a=this._getIndexRecordFromBundle(t,i),o=await this.request(n,{range:{from:0,to:this.storageInfo.headerSize-1},responseType:"array-buffer",signal:r.signal});if(!o)return null;const l=new Uint8Array(o.data),u=this._getTileEndAndContentType(l,a);if(0===u.recordSize)return null;const c=await this.request(n,{range:{from:u.position,to:u.position+u.recordSize},responseType:"array-buffer",signal:r.signal});return c?this.decodePixelBlock(c.data,{width:this.rasterInfo.storageInfo.tileInfo.size[0],height:this.rasterInfo.storageInfo.tileInfo.size[1],planes:null,pixelType:null}):null}_validateHeader(e){return e&&"RasterInfo"===e.type&&!["origin","extent","geodataXform","LODInfos","blockWidth","blockHeight","bandCount","pixelType","pixelSizeX","pixelSizeY","format","packetSize"].some((t=>!e[t]))}_parseHeader(e){var t,i;const r=["u1","u2","u4","u8","s8","u16","s16","u32","s32","f32","f64"][e.pixelType],{bandCount:s,histograms:n,colormap:a,blockWidth:o,blockHeight:l,firstPyramidLevel:u,maximumPyramidLevel:c}=e,f=e.statistics&&e.statistics.map((e=>({min:e.min,max:e.max,avg:e.mean,stddev:e.standardDeviation,median:e.median,mode:e.mode}))),d=e.extent.spatialReference,y=null==(t=e.geodataXform)?void 0:t.spatialReference,g=new p(null!=d&&d.wkid||null!=d&&d.wkt?d:y);let x=new h({xmin:e.extent.xmin,ymin:e.extent.ymin,xmax:e.extent.xmax,ymax:e.extent.ymax,spatialReference:g});const w=new b({x:e.pixelSizeX,y:e.pixelSizeY,spatialReference:g}),v=Math.round((x.xmax-x.xmin)/w.x),I=Math.round((x.ymax-x.ymin)/w.y),S=this._parseTransform(e.geodataXform),T=S?x:null;S&&(x=S.forwardTransform(x),w.x=(x.xmax-x.xmin)/v,w.y=(x.ymax-x.ymin)/I);const R=null!=(i=e.properties)?i:{},C=e.format.toLowerCase().replace("cache/",""),_=new b(e.origin.x,e.origin.y,g);let M,k,P,F;if(a&&a.colors)for(M=[],k=0;k<a.colors.length;k++)P=a.colors[k],F=a.values?a.values[k]:k,M.push([F,255&P,P<<16>>>24,P<<8>>>24,P>>>24]);const O=e.LODInfos,D=[];for(k=0;k<O.levels.length;k++)D.push({level:O.levels[k],resolution:O.resolutions[k],scale:96/.0254*O.resolutions[k]});const B=new m({dpi:96,lods:D,format:C,origin:_,size:[o,l],spatialReference:g}),N={recordSize:8,packetSize:e.packetSize,headerSize:e.packetSize*e.packetSize*8+64},H=[{maxCol:Math.ceil(v/o)-1,maxRow:Math.ceil(I/l)-1,minCol:0,minRow:0}];let z=2;if(c>0)for(k=0;k<c;k++)H.push({maxCol:Math.ceil(v/z/o)-1,maxRow:Math.ceil(I/z/l)-1,minCol:0,minRow:0}),z*=2;const L=e.mdInfo;return{storageInfo:N,rasterInfo:new ue({width:v,height:I,pixelType:r,bandCount:s,extent:x,nativeExtent:T,transform:S,spatialReference:g,pixelSize:w,keyProperties:R,statistics:f,histograms:n,multidimensionalInfo:L,colormap:M,storageInfo:new Le({blockWidth:o,blockHeight:l,pyramidBlockWidth:o,pyramidBlockHeight:l,origin:_,tileInfo:B,firstPyramidLevel:u,maximumPyramidLevel:c,blockBoundary:H})})}}_parseTransform(e){var t,i;if(!function(e){const t=null==e?void 0:e.type;return!e||Ye.includes(t)}(e))throw new R("cloudraster:open","the data contains unsupported geodata transform types");const r=function(e){if(!(null==e?void 0:e.type))return null;const t=Ve[null==e?void 0:e.type];if(t){const i=new t;return i.read(e),i}return null}(e);if("identity"===r.type)return null;if(null==(t=r.forwardCoefficients)||!t.length||null==(i=r.inverseCoefficients)||!i.length)throw new R("cloudraster:open","the data contains unsupported geodata transforms - both forward and inverse coefficients are required currently");return r}async _fetchAuxiliaryInformation(e){const t=this.request(this.url+"/conf.vat.json",{signal:e}).then((e=>e.data)).catch((()=>null)),i=this.request(this.url+"/conf.vat.dbf",{responseType:"array-buffer",signal:e}).then((e=>e.data)).catch((()=>null)),r=await Promise.all([t,i]);let s;if(r[0]){let e=r[0].fields;const t=r[0].values;if(e&&t){e=e.map((e=>({type:"OID"===e.name?"esriFieldTypeOID":Xe.get(e.type),name:e.name,alias:e.alias||e.name})));const i=t.map((e=>({attributes:e})));e&&t&&(s={fields:e,features:i})}}return!s&&r[1]&&(s=class{static get supportedVersions(){return[5]}static parse(e){const t=new DataView(e),i=3&t.getUint8(0);if(3!==i)return{header:{version:i},recordSet:null};const r=t.getUint32(4,!0),s=t.getUint16(8,!0),n=t.getUint16(10,!0),a={version:i,recordCount:r,headerByteCount:s,recordByteCount:n};let o=32;const l=[],u=[];let c;if(3===i){for(;13!==t.getUint8(o);)c=String.fromCharCode(t.getUint8(o+11)).trim(),l.push({name:le(new Uint8Array(e,o,11)),type:c,typeName:["String","Date","Double","Boolean","String","Integer"][["C","D","F","L","M","N"].indexOf(c)],length:t.getUint8(o+16)}),o+=32;if(o+=1,l.length>0)for(;u.length<r&&e.byteLength-o>n;){const i=[];32===t.getUint8(o)?(o+=1,l.forEach((t=>{if("C"===t.type)i.push(le(new Uint8Array(e,o,t.length)).trim());else if("N"===t.type)i.push(parseInt(String.fromCharCode.apply(null,new Uint8Array(e,o,t.length)).trim(),10));else if("F"===t.type)i.push(parseFloat(String.fromCharCode.apply(null,new Uint8Array(e,o,t.length)).trim()));else if("D"===t.type){const r=String.fromCharCode.apply(null,new Uint8Array(e,o,t.length)).trim();i.push(new Date(parseInt(r.substring(0,4),10),parseInt(r.substring(4,6),10)-1,parseInt(r.substring(6,8),10)))}o+=t.length})),u.push(i)):o+=n}}return{header:a,fields:l,records:u,recordSet:Ae({fields:l,records:u})}}}.parse(r[1]).recordSet),O.fromJSON(s)}_buildCacheFilePath(e,t,i,r){const s=this.storageInfo.packetSize,n=Math.floor(t/s)*s,a=Math.floor(i/s)*s,o="R"+this._toHexString4(n)+"C"+this._toHexString4(a);let l="L";l+=e>=10?e.toString():"0"+e.toString();const{multidimensionalInfo:u}=this.rasterInfo,c=null==r?void 0:r[0];if(!I(u)||!c)return`${this.url}/_alllayers/${l}/${o}.bundle`;let f=u.variables.filter((e=>e.name===c.variableName))[0].dimensions[0].values.indexOf(c.values[0]).toString(16);const h=4-f.length;for(let d=0;d<h;d++)f="0"+f;return f="S"+f,`${this.url}/_alllayers/${c.variableName}/${f}/${l}/${o}.bundle`}_getIndexRecordFromBundle(e,t){const i=this.storageInfo.packetSize,r=i*(e%i)+t%i;if(r<0)throw"Invalid level / row / col";return 20+r*this.storageInfo.recordSize+44}_getTileEndAndContentType(e,t){const i=e.subarray(t,t+8);let r,s=0;for(r=0;r<5;r++)s|=(255&i[r])<<8*r;const n=0xffffffffff&s;for(s=0,r=5;r<8;r++)s|=(255&i[r])<<8*(r-5);return{position:n,recordSize:0xffffffffff&s}}_toHexString4(e){let t=e.toString(16);if(4!==t.length){let e=4-t.length;for(;e-- >0;)t="0"+t}return t}};c([f({readOnly:!0})],Ke.prototype,"storageInfo",void 0),c([f({type:String,json:{write:!0}})],Ke.prototype,"datasetFormat",void 0),Ke=c([g("esri.layers.support.rasterDatasets.CloudRaster")],Ke);var Qe=Ke;let Ze=class extends Je{constructor(){super(...arguments),this.datasetFormat="MEMORY"}async open(e){var t;await this.init();const{pixelBlock:i,statistics:r,histograms:s,name:n,keyProperties:a,nativeExtent:o,transform:l}=this.data,{width:u,height:c,pixelType:f}=i,d=this.data.extent||new h({xmin:-.5,ymin:.5,xmax:u-.5,ymax:c-.5,spatialReference:new p({wkid:3857})}),m=null!=(t=this.data.isPseudoSpatialReference)?t:!this.data.extent,y={x:d.width/u,y:d.height/c},g=new ue({width:u,height:c,pixelType:f,extent:d,nativeExtent:o,transform:l,pixelSize:y,spatialReference:d.spatialReference,bandCount:3,keyProperties:a||{},statistics:r,isPseudoSpatialReference:m,histograms:s});this.createRemoteDatasetStorageInfo(g,512,512),this._set("rasterInfo",g),this.updateTileInfo(),await this._buildInMemoryRaster(i,{width:512,height:512},e),this.datasetName=n,this.url="/InMemory/"+n}fetchRawTile(e,t,i,r={}){const s=this._pixelBlockTiles.get(`${e}/${t}/${i}`);return Promise.resolve(s)}async _buildInMemoryRaster(e,t,i){const r=this.rasterInfo.storageInfo.maximumPyramidLevel,s=this.rasterJobHandler?this.rasterJobHandler.split({pixelBlock:e,tileSize:t,maximumPyramidLevel:r},i):Promise.resolve(we(e,t,r)),n=I(this.rasterInfo.statistics),a=I(this.rasterInfo.histograms),o=n&&a?Promise.resolve({statistics:null,histograms:null}):this.rasterJobHandler?this.rasterJobHandler.estimateStatisticsHistograms({pixelBlock:e},i):Promise.resolve(ve(e)),l=await D([s,o]);if(!l[0].value&&l[1].value)throw new R("inmemory-raster:open","failed to build in memory raster");var u,c;this._pixelBlockTiles=l[0].value,n||(this.rasterInfo.statistics=null==(u=l[1].value)?void 0:u.statistics),a&&(this.rasterInfo.histograms=null==(c=l[1].value)?void 0:c.histograms)}};c([f({type:String,json:{write:!0}})],Ze.prototype,"datasetFormat",void 0),c([f()],Ze.prototype,"data",void 0),Ze=c([g("esri.layers.support.rasterDatasets.InMemoryRaster")],Ze);var et=Ze;function tt(e,t){if(!e||!t)return[];let i=t;t.indexOf("/")>-1?(i=t.slice(0,t.indexOf("/")),t=t.slice(t.indexOf("/")+1)):t="";const r=[];if(t){const s=tt(e,i);for(let e=0;e<s.length;e++)tt(s[e],t).forEach((e=>r.push(e)));return r}const s=e.getElementsByTagNameNS("*",i);if(!s||0===s.length)return[];for(let n=0;n<s.length;n++)r.push(s[n]||s.item[n]);return r}function it(e,t){if(!e||!t)return null;let i=t;t.indexOf("/")>-1?(i=t.slice(0,t.indexOf("/")),t=t.slice(t.indexOf("/")+1)):t="";const r=tt(e,i);return r.length>0?t?it(r[0],t):r[0]:null}function rt(e,t=null){const i=t?it(e,t):e;let r;return i?(r=i.textContent||i.nodeValue,r?r.trim():null):null}function st(e,t){return function(e,t){const i=tt(e,t),r=[];let s;for(let n=0;n<i.length;n++)s=i[n].textContent||i[n].nodeValue,s&&(s=s.trim(),""!==s&&r.push(s));return r}(e,t).map((e=>Number(e)))}function nt(e,t){const i=rt(e,t);return Number(i)}function at(e,t){var i;const r=null==e||null==(i=e.nodeName)?void 0:i.toLowerCase(),s=t.toLowerCase();return r.slice(r.lastIndexOf(":")+1)===s}function ot(e,t){if(!e||!t)return null;const i=[];for(let r=0;r<e.length;r++)i.push(e[r]),i.push(t[r]);return i}function lt(e){if(!e)return null;let t=Number(e);if(!isNaN(t)&&0!==t)return new p({wkid:t});if(!(e=String(e)).startsWith("GEOGCS")&&!e.startsWith("PROJCS"))return null;const i=e.replace(/\]/g,"[").replace(/\"/g,"").split("[").map((e=>e.trim())).filter((e=>""!==e)),r=i[i.length-1].split(",");return"EPSG"===r[0]&&e.endsWith('"]]')&&(t=Number(r[1]),!isNaN(t)&&0!==t)?new p({wkid:t}):new p({wkt:e})}function ut(e){var t;if("pamdataset"!==(null==e||null==(t=e.documentElement.tagName)?void 0:t.toLowerCase()))return{};const i={spatialReference:null,transform:null,metadata:{},rasterBands:[],statistics:null,histograms:null};e.documentElement.childNodes.forEach((e=>{if(1===e.nodeType)if(at(e,"SRS")){if(!i.spatialReference){const t=rt(e);i.spatialReference=lt(t)}}else if(at(e,"Metadata"))if("xml:ESRI"===e.getAttribute("domain")){const{spatialReference:t,transform:r}=function(e){var t;const i=it(e,"GeodataXform"),r=lt(nt(i,"SpatialReference/WKID")||rt(i,"SpatialReference/WKT"));if("typens:PolynomialXform"!==i.getAttribute("xsi:type"))return{spatialReference:r,transform:null};const s=null!=(t=nt(i,"PolynomialOrder"))?t:1,n=st(i,"CoeffX/Double"),a=st(i,"CoeffY/Double"),o=st(i,"InverseCoeffX/Double"),l=st(i,"InverseCoeffY/Double"),u=ot(n,a),c=ot(o,l);return{spatialReference:r,transform:new $e({spatialReference:r,polynomialOrder:s,forwardCoefficients:u,inverseCoefficients:c})}}(e);i.transform=r,i.spatialReference||(i.spatialReference=t)}else tt(e,"MDI").forEach((e=>i.metadata[e.getAttribute("key")]=rt(e)));else if(at(e,"PAMRasterBand")){const t=function(e){var t;const i=nt(e,"NoDataValue"),r=it(e,"Histograms/HistItem"),s=nt(r,"HistMin"),n=nt(r,"HistMax"),a=nt(r,"BucketCount"),o=null==(t=rt(r,"HistCounts"))?void 0:t.split("|").map((e=>Number(e)));let l,u,c,f;tt(e,"Metadata/MDI").forEach((e=>{var t;const i=Number(null!=(t=e.textContent)?t:e.nodeValue);switch(e.getAttribute("key").toUpperCase()){case"STATISTICS_MINIMUM":l=i;break;case"STATISTICS_MAXIMUM":u=i;break;case"STATISTICS_MEAN":c=i;break;case"STATISTICS_STDDEV":f=i}}));const h=nt(e,"Metadata/SourceBandIndex");return{noDataValue:i,histogram:null!=o&&o.length&&null!=l&&null!=u?{min:s,max:n,size:a||o.length,counts:o}:null,sourceBandIndex:h,statistics:null!=l&&null!=u?{min:l,max:u,avg:c,stddev:f}:null}}(e);null!=t.sourceBandIndex&&null==i.rasterBands[t.sourceBandIndex]?i.rasterBands[t.sourceBandIndex]=t:i.rasterBands.push(t)}}));const r=i.rasterBands;if(r){const e=!!r[0].statistics;i.statistics=e?r.map((e=>e.statistics)):null;const t=!!r[0].histogram;i.histograms=t?r.map((e=>e.histogram)):null}return i}let ct=class extends Je{async open(e){await this.init();const t=await this._fetchData(e);let{spatialReference:i,statistics:r,histograms:s,transform:n}=await this._fetchAuxiliaryData(e);const a=!i;a&&(i=new p({wkid:3857})),null!=s&&s.length&&null==r&&(r=Ie(s));const{width:o,height:l}=t;let u=new h({xmin:-.5,ymin:.5-l,xmax:o-.5,ymax:.5,spatialReference:i});const c=n?n.forwardTransform(u):u;let f=!0;if(n){const e=n.forwardCoefficients;f=e&&0===e[1]&&0===e[2],f&&(n=null,u=c)}const d=new et({data:{extent:c,nativeExtent:u,transform:n,pixelBlock:t,statistics:r,histograms:s,keyProperties:{DateType:"Processed"},isPseudoSpatialReference:a}});await d.open(),this._set("rasterInfo",d.rasterInfo),this._inMemoryRaster=d}fetchRawTile(e,t,i,r={}){return this._inMemoryRaster.fetchRawTile(e,t,i,r)}async _fetchData(e){const{data:t}=await this.request(this.url,{responseType:"array-buffer",signal:null==e?void 0:e.signal}),i=ce(t).toUpperCase();if("JPG"!==i&&"PNG"!==i&&"GIF"!==i&&"BMP"!==i)throw new R("image-aux-raster:open","the data is not a supported format");return this._set("datasetFormat",i),await this.decodePixelBlock(t,{format:"jpg",width:1,height:1,useCanvas:!0})}async _fetchAuxiliaryData(e){var t,i;const r=C(null==e?void 0:e.signal),s=null!=(t=this.ioConfig.skipExtensions)?t:[],n=s.indexOf("aux.xml")>-1?null:this.request(this.url+".aux.xml",{responseType:"xml",signal:r}),a=this.datasetFormat,o="JPG"===a?"jgw":"PNG"===a?"pgw":"BMP"===a?"bpw":null,l=s.indexOf(o)>-1?null:this.request(this.url.slice(0,this.url.lastIndexOf("."))+"."+o,{responseType:"text",signal:r}),u=await D([n,l]);if(null!=r&&r.aborted)throw B();const c=ut(null==(i=u[0].value)?void 0:i.data);if(!c.transform){const e=u[1].value?u[1].value.data.split("\n").slice(0,6).map((e=>Number(e))):null;c.transform=6===(null==e?void 0:e.length)?new $e({forwardCoefficients:[e[4],e[5],e[0],-e[1],e[2],-e[3]]}):null}return c}};c([f({type:String,json:{write:!0}})],ct.prototype,"datasetFormat",void 0),ct=c([g("esri.layers.support.rasterDatasets.ImageAuxRaster")],ct);var ft=ct;let ht=class extends Je{constructor(){super(...arguments),this._levelOffset=0,this._slices=null,this._tilemapCache=null,this.datasetFormat="RasterTileServer"}async open(e){await this.init();const t=e&&e.signal,i=this.sourceJSON?{data:this.sourceJSON}:await this.request(this.url,{query:{f:"json"},signal:t});i.ssl&&(this.url=this.url.replace(/^http:/i,"https:"));const r=i.data;if(this.sourceJSON=r,!r)throw new R("imageserverraster:open","cannot initialize tiled image service, missing service info");if(!r.tileInfo)throw new R("imageserverraster:open","use ImageryLayer to open non-tiled image services");this._fixScaleInServiceInfo();this.tileType=r.cacheType,null==this.tileType&&(["jpg","jpeg","png","png8","png24","png32","mixed"].indexOf(r.tileInfo.format.toLowerCase())>-1?this.tileType="Map":"lerc"===r.tileInfo.format.toLowerCase()?this.tileType="Elevation":this.tileType="Raster"),this.datasetName=r.name.slice(r.name.indexOf("/")+1);const s=await this._fetchRasterInfo({signal:t});if(!I(s))throw new R("image-server-raster:open","cannot initialize image service");{const e="Map"===this.tileType?N(r.tileInfo,r):m.fromJSON(r.tileInfo),{extent:t,pixelSize:i}=s,n=.5/s.width*i.x;let a,o;const l=e.lodAt(Math.max.apply(null,e.lods.map((e=>e.level))));"Map"!==this.tileType&&0!==r.maxScale&&("Raster"===this.tileType?(a=e.lods.filter((e=>e.resolution===i.x))[0],a||(a=e.lods[e.lods.length-1])):(a=e.lods.filter((e=>Math.abs(e.scale-r.maxScale)<n))[0],a||(a=e.lods.filter((e=>e.scale>r.maxScale)).sort(((e,t)=>e.scale>t.scale?1:-1))[0])),i.x=i.y=a.resolution,s.width=Math.ceil((t.xmax-t.xmin)/i.x-.1),s.height=Math.ceil((t.ymax-t.ymin)/i.y-.1)),a||(a=l);const u=e.lodAt(Math.min.apply(null,e.lods.map((e=>e.level))));"Map"===this.tileType?this._levelOffset=e.lods[0].level:0!==r.minScale&&"Elevation"===this.tileType&&(o=e.lods.filter((e=>Math.abs(e.scale-r.minScale)<n))[0],this._levelOffset=o.level-u.level),o||(o=u);const c=Math.max(i.x,i.y);(Math.abs(i.x-i.y)>n||!e.lods.some((e=>Math.abs(e.resolution-c)<n)))&&(i.x=i.y=a.resolution,s.width=Math.ceil((t.xmax-t.xmin)/i.x-.1),s.height=Math.ceil((t.ymax-t.ymin)/i.y-.1));const f=a.level-o.level,[h,d]=e.size,p=e.origin;let{x:y,y:g}=i;const x=[{minCol:Math.floor((t.xmin-p.x+.1*y)/h/y),maxCol:Math.floor((t.xmax-p.x-.1*y)/h/y),minRow:Math.floor((p.y-t.ymax+.1*g)/d/g),maxRow:Math.floor((p.y-t.ymin-.1*g)/d/g)}];if(f>0)for(let r=0;r<f;r++)y*=2,g*=2,x.push({minCol:Math.floor((t.xmin-p.x+.1*y)/h/y),maxCol:Math.floor((t.xmax-p.x-.1*y)/h/y),minRow:Math.floor((p.y-t.ymax+.1*g)/d/y),maxRow:Math.floor((p.y-t.ymin-.1*g)/d/y)});s.storageInfo=new Le({blockWidth:e.size[0],blockHeight:e.size[1],pyramidBlockWidth:e.size[0],pyramidBlockHeight:e.size[1],compression:e.format,origin:e.origin,firstPyramidLevel:1,maximumPyramidLevel:f,tileInfo:e,blockBoundary:x}),this._set("rasterInfo",s)}if(r.capabilities.toLowerCase().indexOf("tilemap")>-1){const e={tileInfo:s.storageInfo.tileInfo,parsedUrl:H(this.url),url:this.url,tileServers:[],type:"tile"};this._tilemapCache=new z({layer:e})}}async fetchRawTile(e,t,i,r={}){const{storageInfo:s,extent:n,pixelSize:a}=this.rasterInfo,o=s.maximumPyramidLevel-e+this._levelOffset,l=`${this.url}/tile/${o}/${t}/${i}`,u=this._slices?{sliceId:r.sliceId||0}:null,{data:c}=await this.request(l,{query:u,responseType:"array-buffer",signal:r.signal});if(!c)return null;const f=await this.decodePixelBlock(c,{width:s.tileInfo.size[0],height:s.tileInfo.size[1],planes:null,pixelType:null,isPoint:"Elevation"===this.tileType}),h=s.blockBoundary[e];if("jpg"!==s.compression||i>h.minCol&&i<h.maxCol&&t>h.minRow&&t<h.maxRow)return f;const{origin:d,blockWidth:p,blockHeight:m}=s,y=2**e,g=Math.round((n.xmin-d.x)/(a.x*y))%p,x=Math.round((n.xmax-d.x)/(a.x*y))%p,w=Math.round((d.y-n.ymax)/(a.x*y))%m,v=Math.round((d.y-n.ymin)/(a.x*y))%m,I=i===h.minCol?g:0,b=t===h.minRow?w:0,S=i===h.maxCol?x:p,T=t===h.maxRow?v:m;return be(f,{x:I,y:b},{width:S-I,height:T-b}),f}getSliceIndex(e){if(null==e||!e.length||!this._slices)return null;const t=e;for(let i=0;i<this._slices.length;i++){const e=this._slices[i].multidimensionalDefinition;if(e.length===t.length&&!e.some((e=>{const i=t.filter((t=>e.variableName===t.variableName&&t.dimensionName===e.dimensionName))[0];return!i||(Array.isArray(e.values[0])?e.values[0][0]:e.values[0])!==(Array.isArray(i.values[0])?i.values[0][0]:i.values[0])})))return i}return null}async fetchVariableStatisticsHistograms(e,t){const i=this.request(this.url+"/statistics",{query:{variable:e,f:"json"},signal:t}).then((e=>{var t;return null==(t=e.data)?void 0:t.statistics})),r=this.request(this.url+"/histograms",{query:{variable:e,f:"json"},signal:t}).then((e=>{var t;return null==(t=e.data)?void 0:t.histograms})),s=await Promise.all([i,r]);return s[0]&&s[0].forEach((e=>{e.avg=e.mean,e.stddev=e.standardDeviation})),{statistics:s[0]||null,histograms:s[1]||null}}async computeBestPyramidLevelForLocation(e,t={}){if(!this._tilemapCache)return 0;let i=this.identifyPixelLocation(e,0,C(t.datumTransformation));if(null===i)return null;let r=0;const{maximumPyramidLevel:s}=this.rasterInfo.storageInfo;let n=s-r+this._levelOffset;const a=i.srcLocation;for(;n>=0;){try{if("available"===await this._tilemapCache.fetchAvailability(n,i.row,i.col,t))break}catch{}if(n--,r++,i=this.identifyPixelLocation(a,r,C(t.datumTransformation)),null===i)return null}return-1===n||null==i?null:r}async _fetchRasterInfo(e){const t=this.sourceJSON,i=Math.ceil((t.extent.xmax-t.extent.xmin)/t.pixelSizeX-.1),r=Math.ceil((t.extent.ymax-t.extent.ymin)/t.pixelSizeY-.1),s=p.fromJSON(t.spatialReference||t.extent.spatialReference);if("Map"===this.tileType)return new ue({width:i,height:r,bandCount:3,extent:h.fromJSON(t.extent),spatialReference:s,pixelSize:new b({x:t.pixelSizeX,y:t.pixelSizeY,spatialReference:s}),pixelType:"u8",statistics:null,keyProperties:{DataType:"processed"}});const{slice:n,signal:a}=e,o=!!t.hasRasterAttributeTable&&this.request(this.url+"/rasterAttributeTable",{query:{slice:n,f:"json"},signal:a}).then((e=>O.fromJSON(e.data))).catch((()=>null)),l=!!t.hasColormap&&this.request(this.url+"/colormap",{query:{slice:n,f:"json"},signal:a}).then((e=>{var t;return null==(t=e.data)?void 0:t.colormap})),u=!!t.hasHistograms&&this.request(this.url+"/histograms",{query:{slice:n,f:"json"},signal:a}).then((e=>{var t;return null==(t=e.data)?void 0:t.histograms})),c=this.request(this.url+"/keyProperties",{query:{f:"json"},signal:a}).then((e=>e.data)).catch((()=>{})),f=!!t.hasMultidimensions&&this._fetchMultidimensionalInfo(),d=!!t.hasMultidimensions&&this.request(this.url+"/slices",{query:{f:"json"},signal:a}).then((e=>e.data&&e.data.slices)).catch((()=>{}));return Promise.all([o,l,u,c,f,d]).then((e=>{let n=null;if(t.minValues&&t.minValues.length===t.bandCount){n=[];for(let e=0;e<t.minValues.length;e++)n.push({min:t.minValues[e],max:t.maxValues[e],avg:t.meanValues[e],stddev:t.stdvValues[e]})}return this._slices=e[5]||null,new ue({width:i,height:r,bandCount:t.bandCount,extent:h.fromJSON(t.extent),spatialReference:s,pixelSize:new b({x:t.pixelSizeX,y:t.pixelSizeY,spatialReference:s}),pixelType:t.pixelType.toLowerCase(),statistics:n,attributeTable:e[0]||null,colormap:e[1]||null,histograms:e[2]||null,keyProperties:e[3]||{},multidimensionalInfo:e[4]||null})}))}async _fetchMultidimensionalInfo(e){var t;const i=await this.request(this.url+"/multidimensionalInfo",{query:{f:"json"},signal:e}).then((e=>{var t;return null==(t=e.data)?void 0:t.multidimensionalInfo}));return null!=(t=i.variables)&&t.length&&i.variables.forEach((e=>{var t;null!=(t=e.statistics)&&t.length&&e.statistics.forEach((e=>{e.avg=e.mean,e.stddev=e.standardDeviation}))})),i}_fixScaleInServiceInfo(){const{sourceJSON:e}=this;e.minScale&&e.minScale<0&&(e.minScale=0),e.maxScale&&e.maxScale<0&&(e.maxScale=0)}};c([f({type:String,json:{write:!0}})],ht.prototype,"datasetFormat",void 0),c([f()],ht.prototype,"tileType",void 0),ht=c([g("esri.layers.support.rasterDatasets.ImageServerRaster")],ht);var dt=ht;const pt=new Map;pt.set("Int8","s8"),pt.set("UInt8","u8"),pt.set("Int16","s16"),pt.set("UInt16","u16"),pt.set("Int32","s32"),pt.set("UInt32","u32"),pt.set("Float32","f32"),pt.set("Float64","f32"),pt.set("Double64","f32");const mt=new Map;mt.set("lerc",".lrc"),mt.set("none",".til"),mt.set("deflate",".pzp"),mt.set("jpeg",".jzp");let yt=class extends Je{constructor(){super(...arguments),this._files=null,this._storageIndex=null,this.datasetFormat="MRF"}async open(e){var t;await this.init(),this.datasetName=this.url.slice(this.url.lastIndexOf("/")+1);const i=e?C(e.signal):null,r=await this.request(this.url,{responseType:"xml",signal:i}),{rasterInfo:s,files:n}=this._parseHeader(r.data);if(-1===(null==(t=this.ioConfig.skipExtensions)?void 0:t.indexOf("aux.xml"))){const t=await this._fetchAuxiliaryData(e);var a;null!=t&&(s.statistics=null!=(a=t.statistics)?a:s.statistics,s.histograms=t.histograms,t.histograms&&!I(s.statistics)&&(s.statistics=Ie(t.histograms)))}this._set("rasterInfo",s),this._files=n;const o=await this.request(n.index,{responseType:"array-buffer",signal:i});this._storageIndex=this._parseIndex(o.data);let l,u,c=0,f=-1;const{blockWidth:h,blockHeight:d,compression:p}=this.rasterInfo.storageInfo,m=this.rasterInfo.storageInfo.pyramidScalingFactor,{width:y,height:g,bandCount:x}=this.rasterInfo,w=[],v="none"===p?1:x;for(;c<this._storageIndex.length;)f++,l=Math.ceil(y/h/m**f),u=Math.ceil(g/d/m**f),c+=l*u*v*4,w.push({maxRow:u,maxCol:l,minCol:0,minRow:0});this.rasterInfo.storageInfo.blockBoundary=w,f>0&&(this.rasterInfo.storageInfo.firstPyramidLevel=1,this.rasterInfo.storageInfo.maximumPyramidLevel=f),this.updateTileInfo()}async fetchRawTile(e,t,i,r={}){const{blockWidth:s,blockHeight:n,blockBoundary:a,compression:o}=this.rasterInfo.storageInfo,l=a[e];if(!l||l.maxRow<t||l.maxCol<i||l.minRow>t||l.minCol>i)return null;const{bandCount:u,pixelType:c}=this.rasterInfo,{ranges:f,actualTileWidth:h,actualTileHeight:d}=this._getTileLocation(e,t,i);if(!f||0===f.length)return null;if(0===f[0].from&&0===f[0].to){const e=new Uint8Array(s*n);return new Se({width:s,height:n,pixels:null,mask:e,validPixelCount:0})}const{bandIds:p}=this.ioConfig,m="none"===o?1:u,y=[];let g=0;for(g=0;g<m;g++)(!p||p.indexOf[g]>-1)&&y.push(this.request(this._files.data,{range:{from:f[g].from,to:f[g].to},responseType:"array-buffer",signal:r.signal}));const x=await Promise.all(y),w=x.map((e=>e.data.byteLength)).reduce(((e,t)=>e+t)),v=new Uint8Array(w);let I=0;for(g=0;g<m;g++)v.set(new Uint8Array(x[g].data),I),I+=x[g].data.byteLength;const b="lerc"===this.rasterInfo.storageInfo.compression?"lerc":"bip",S=await this.decodePixelBlock(v.buffer,{width:s,height:n,format:b,pixelType:c});let T=0,R=0;if(h!==s||d!==n){let e=S.mask;if(e)for(g=0;g<n;g++)if(R=g*s,g<d)for(T=h;T<s;T++)e[R+T]=0;else for(T=0;T<s;T++)e[R+T]=0;else for(e=new Uint8Array(s*n),S.mask=e,g=0;g<d;g++)for(R=g*s,T=0;T<h;T++)e[R+T]=1}return S}_parseIndex(e){if(e.byteLength%16>0)throw"invalid array buffer must be multiples of 16";let t,i,r,s,n,a;if(fe){for(i=new Uint8Array(e),s=new ArrayBuffer(e.byteLength),r=new Uint8Array(s),n=0;n<e.byteLength/4;n++)for(a=0;a<4;a++)r[4*n+a]=i[4*n+3-a];t=new Uint32Array(s)}else t=new Uint32Array(e);return t}_getTileLocation(e,t,i){const{blockWidth:r,blockHeight:s,pyramidScalingFactor:n,compression:a}=this.rasterInfo.storageInfo,{width:o,height:l,bandCount:u}=this.rasterInfo,c="none"===a?1:u;let f,h,d,p=0,m=0;for(d=0;d<e;d++)m=n**d,f=Math.ceil(o/r/m),h=Math.ceil(l/s/m),p+=f*h;m=n**e,f=Math.ceil(o/r/m),h=Math.ceil(l/s/m),p+=t*f+i,p*=4*c;const y=this._storageIndex.subarray(p,p+4*c);let g=0,x=0;const w=[];for(let v=0;v<c;v++)g=y[4*v+0]*2**32+y[4*v+1],x=g+y[4*v+2]*2**32+y[4*v+3],w.push({from:g,to:x});return{ranges:w,actualTileWidth:i<f-1?r:Math.ceil(o/m)-r*(f-1),actualTileHeight:t<h-1?s:Math.ceil(l/m)-s*(h-1)}}_parseHeader(e){const t=it(e,"MRF_META/Raster");if(!t)throw new R("mrf:open","not a valid MRF format");const i=it(t,"Size"),r=parseInt(i.getAttribute("x"),10),s=parseInt(i.getAttribute("y"),10),n=parseInt(i.getAttribute("c"),10),a=(rt(t,"Compression")||"none").toLowerCase();if(!a||-1===["none","lerc"].indexOf(a))throw new R("mrf:open","currently does not support compression "+a);const o=rt(t,"DataType")||"UInt8",l=pt.get(o);if(null==l)throw new R("mrf:open","currently does not support pixel type "+o);const u=it(t,"PageSize"),c=parseInt(u.getAttribute("x"),10),f=parseInt(u.getAttribute("y"),10),d=it(t,"DataValues");let m,y;if(d&&(y=d.getAttribute("NoData"),null!=y&&(m=y.trim().split(" ").map((e=>parseFloat(e))))),it(e,"MRF_META/CachedSource"))throw new R("mrf:open","currently does not support MRF referencing other data files");const g=it(e,"MRF_META/GeoTags"),x=it(g,"BoundingBox");if(null==x)throw new R("mrf:open","missing node MRF_META/GeoTags/BoundingBox");const w=parseFloat(x.getAttribute("minx")),v=parseFloat(x.getAttribute("miny")),I=parseFloat(x.getAttribute("maxx")),S=parseFloat(x.getAttribute("maxy")),T=rt(g,"Projection")||"",C=rt(e,"datafile"),_=rt(e,"IndexFile");let M;if("LOCAL_CS[]"!==T)if(T.toLowerCase().startsWith("epsg:")){const e=Number(T.slice(5));isNaN(e)||0===e||(M=new p({wkid:e}))}else M=lt(T);const k=new h(w,v,I,S);k.spatialReference=M;const P=it(e,"MRF_META/Rsets"),F=parseInt(P&&P.getAttribute("scale")||"2",10),O=new Le({origin:new b({x:k.xmin,y:k.ymax,spatialReference:M}),blockWidth:c,blockHeight:f,pyramidBlockWidth:c,pyramidBlockHeight:f,compression:a,pyramidScalingFactor:F}),D=new b({x:(I-w)/r,y:(S-v)/s,spatialReference:M});return{rasterInfo:new ue({width:r,height:s,extent:k,spatialReference:M,bandCount:n,pixelType:l,pixelSize:D,noDataValue:m,storageInfo:O}),files:{mrf:this.url,index:_||this.url.replace(".mrf",".idx"),data:C||this.url.replace(".mrf",mt.get(a))}}}async _fetchAuxiliaryData(e){try{const{data:t}=await this.request(this.url+".aux.xml",{responseType:"xml",signal:null==e?void 0:e.signal});return ut(t)}catch{return null}}};c([f()],yt.prototype,"_files",void 0),c([f()],yt.prototype,"_storageIndex",void 0),c([f({type:String,json:{write:!0}})],yt.prototype,"datasetFormat",void 0),yt=c([g("esri.layers.support.rasterIO.MRFRaster")],yt);var gt=yt;const xt=function(e,t){const i=e.get(t);return i&&i.values},wt=function(e,t){const i=e.get(t);return i&&i.values[0]};let vt=class extends Je{constructor(){super(...arguments),this._files=null,this._headerInfo=null,this._bufferSize=1048576,this.datasetFormat="TIFF"}async open(e){var t;await this.init();const i=e?C(e.signal):null,{data:r}=await this.request(this.url,{range:{from:0,to:this._bufferSize},responseType:"array-buffer",signal:i});if(!r)throw new R("tiffraster:open","failed to open url "+this.url);this.datasetName=this.url.slice(this.url.lastIndexOf("/")+1);const{littleEndian:s,firstIFD:n,isBigTiff:a}=he(r),l=[];await this.readIFDs(l,r,s,n,0,a?8:4,i);const u=de(l),{width:c,height:f,tileWidth:d,tileHeight:p,planes:m,pixelType:y,compression:g,firstPyramidLevel:x,maximumPyramidLevel:w,pyramidBlockWidth:v,pyramidBlockHeight:S,tileBoundary:T,affine:_,metadata:M}=u,k=h.fromJSON(u.extent),P=k.spatialReference,F=new b(k?{x:k.xmin,y:k.ymax,spatialReference:P}:{x:0,y:0}),O=new Le({blockWidth:d,blockHeight:p,pyramidBlockWidth:v,pyramidBlockHeight:S,compression:g,origin:F,firstPyramidLevel:x,maximumPyramidLevel:w,blockBoundary:T}),D=new b({x:(k.xmax-k.xmin)/c,y:(k.ymax-k.ymin)/f,spatialReference:P}),B=M?{BandProperties:M.bandProperties,DataType:M.dataType}:{},N=new ue({width:c,height:f,bandCount:m,pixelType:y,compression:g,pixelSize:D,storageInfo:O,spatialReference:P,keyProperties:B,extent:k,statistics:M?M.statistics:null});if(null!=_&&_.length&&(N.nativeExtent=new h({xmin:-.5,ymin:.5-f,xmax:c-.5,ymax:.5,spatialReference:P}),N.transform=new $e({polynomialOrder:1,forwardCoefficients:[_[2]+_[0]/2,_[5]-_[3]/2,_[0],_[3],-_[1],-_[4]]}),N.extent=N.transform.forwardTransform(N.nativeExtent),N.pixelSize=new b({x:(k.xmax-k.xmin)/c,y:(k.ymax-k.ymin)/f,spatialReference:P}),O.origin.x=-.5,O.origin.y=.5),null==(t=this.ioConfig.skipExtensions)||!t.includes("aux.xml")){const t=await this._fetchAuxiliaryData(e);if(null!=t){var H;if(N.statistics=null!=(H=t.statistics)?H:N.statistics,N.histograms=t.histograms,t.histograms&&!I(N.statistics)&&(N.statistics=Ie(t.histograms)),t.transform&&!_){N.transform=t.transform,N.nativeExtent=N.extent;const e=N.transform.forwardTransform(N.nativeExtent);N.pixelSize=new b({x:(e.xmax-e.xmin)/c,y:(e.ymax-e.ymin)/f,spatialReference:P}),N.extent=e}N.spatialReference||(N.spatialReference=t.spatialReference)}}if(this._set("rasterInfo",N),this._headerInfo=o({littleEndian:s,isBigTiff:a,ifds:l},u),!this._headerInfo.isSupported)throw new R("tiffraster:open","this tiff is not supported: "+this._headerInfo.message);this.updateTileInfo()}async fetchRawTile(e,t,i,r={}){var s;if(null==(s=this._headerInfo)||!s.isSupported||this.isBlockOutside(e,t,i))return null;const n=this.getTileLocation(e,t,i);if(!n)return null;const{range:a,actualTileWidth:o,actualTileHeight:l,ifd:u}=n,{data:c}=await this.request(this.url,{range:a,responseType:"array-buffer",signal:r.signal}),{blockWidth:f,blockHeight:h}=this.getBlockWidthHeight(e),d=await this.decodePixelBlock(c,{format:"tiff",customOptions:{headerInfo:this._headerInfo,ifd:u,offset:0,size:0},width:f,height:h,planes:null,pixelType:null});let p,m,y;if(o!==f||l!==h){let e=d.mask;if(e)for(p=0;p<h;p++)if(y=p*f,p<l)for(m=o;m<f;m++)e[y+m]=0;else for(m=0;m<f;m++)e[y+m]=0;else for(e=new Uint8Array(f*h),d.mask=e,p=0;p<l;p++)for(y=p*f,m=0;m<o;m++)e[y+m]=1}return d}async readIFDs(e,t,i,r,s,n=4,a){if(!r)return null;(r>=t.byteLength||r<0)&&(t=(await this.request(this.url,{range:{from:r+s,to:r+s+this._bufferSize},responseType:"array-buffer",signal:a})).data,s=r+s,r=0);const o=await this.readIFD(t,i,r,s,pe.TIFF_TAGS,n,a);if(e.push(o.ifd),!o.nextIFD)return null;await this.readIFDs(e,t,i,o.nextIFD-s,s,n,a)}async readIFD(e,t,i,r,s=pe.TIFF_TAGS,n=4,a){if(!e)return null;const o=me(e,t,i,r,s,n);if(o.success){const i=[];if(o.ifd.forEach((e=>{e.values||i.push(e)})),i.length>0){const s=i.map((e=>e.offlineOffsetSize)),n=Math.min.apply(null,s.map((e=>e[0])));if(Math.min.apply(null,s.map((e=>e[0]+e[1])))-n<=this._bufferSize){const{data:s}=await this.request(this.url,{range:{from:n,to:n+this._bufferSize},responseType:"array-buffer",signal:a});e=s,r=n,i.forEach((i=>ye(e,t,i,r)))}}if(o.ifd.has("GEOKEYDIRECTORY")){const i=o.ifd.get("GEOKEYDIRECTORY"),s=i.values;if(s&&s.length>4){const n=s[0]+"."+s[1]+"."+s[2],o=await this.readIFD(e,t,i.valueOffset+6-r,r,pe.GEO_KEYS,2,a);i.data=o.ifd,i.data&&i.data.set("GEOTIFFVersion",{id:0,type:2,valueCount:1,valueOffset:null,values:[n]})}}return o}if(o.requiredBufferSize&&o.requiredBufferSize!==e.byteLength){const i=await this.request(this.url,{range:{from:r,to:r+o.requiredBufferSize+4},responseType:"array-buffer",signal:a});return(e=i.data).byteLength<o.requiredBufferSize?null:this.readIFD(e,t,0,r,pe.TIFF_TAGS,4,a)}}getTileLocation(e,t,i){const{firstPyramidLevel:r,blockBoundary:s}=this.rasterInfo.storageInfo,n=0===e?0:e-(r-1),a=this._headerInfo.ifds[n];if(!a)return null;const o=xt(a,"TILEOFFSETS");if(void 0===o)return null;const l=xt(a,"TILEBYTECOUNTS"),{minRow:u,minCol:c,maxRow:f,maxCol:h}=s[n];if(t>f||i>h||t<u||i<c)return null;const d=wt(a,"IMAGEWIDTH"),p=wt(a,"IMAGELENGTH"),m=wt(a,"TILEWIDTH"),y=wt(a,"TILELENGTH"),g=t*(h+1)+i,x=o[g],w=l[g];return null==x||null==w?null:{range:{from:x,to:x+w-1},ifd:a,actualTileWidth:i===h?d%m:m,actualTileHeight:t===f?p%y:y}}async _fetchAuxiliaryData(e){try{const{data:t}=await this.request(this.url+".aux.xml",{responseType:"xml",signal:null==e?void 0:e.signal});return ut(t)}catch{return null}}};c([f()],vt.prototype,"_files",void 0),c([f()],vt.prototype,"_headerInfo",void 0),c([f()],vt.prototype,"_bufferSize",void 0),c([f({type:String,json:{write:!0}})],vt.prototype,"datasetFormat",void 0),vt=c([g("esri.layers.support.rasterDatasets.TIFFRaster")],vt);var It=vt;const bt=new Map;bt.set("CRF",{desc:"Cloud Raster Format",constructor:Qe}),bt.set("MRF",{desc:"Meta Raster Format",constructor:gt}),bt.set("TIFF",{desc:"GeoTIFF",constructor:It}),bt.set("RasterTileServer",{desc:"Raster Tile Server",constructor:dt}),bt.set("JPG",{desc:"JPG Raster Format",constructor:ft}),bt.set("PNG",{desc:"PNG Raster Format",constructor:ft}),bt.set("GIF",{desc:"GIF Raster Format",constructor:ft}),bt.set("BMP",{desc:"BMP Raster Format",constructor:ft});const St=L()({RSP_NearestNeighbor:"nearest",RSP_BilinearInterpolation:"bilinear",RSP_CubicConvolution:"cubic",RSP_Majority:"majority"});function Tt(){return{enabled:!this.loaded||"RasterTileServer"===this.raster.datasetFormat&&"Raster"===this.raster.tileType}}let Rt=class extends(E(J(A(j(q(He(U(W)))))))){constructor(...e){super(...e),this.bandIds=null,this.interpolation=null,this.legendEnabled=!0,this.isReference=null,this.listMode="show",this.sourceJSON=null,this.version=null,this.title=null,this.type="imagery-tile",this.operationalLayerType="ArcGISTiledImageServiceLayer",this.popupEnabled=!0,this.popupTemplate=null}normalizeCtorArgs(e,t){return"string"==typeof e?o({url:e},t):e}load(e){const t=I(e)?e.signal:null;return this.addResolvingPromise(this.loadFromPortal({supportedTypes:["Image Service"]},e).then((()=>this._openRaster(t)),(()=>this._openRaster(t)))),Promise.resolve(this)}get defaultPopupTemplate(){return this.createPopupTemplate()}get fields(){var e,t;let i=[new G({name:"Raster.ServicePixelValue",alias:"Pixel Value",domain:null,editable:!1,length:50,type:"string"})];const r=null==(e=this.rasterInfo)||null==(t=e.attributeTable)?void 0:t.fields;if(r){const e=r.filter((e=>"oid"!==e.type&&"value"!==e.name.toLowerCase())).map((e=>{const t=e.clone();return t.name="Raster."+e.name,t}));i=i.concat(e)}return i}set renderer(e){this._set("renderer",e),this.updateRenderer()}readRenderer(e,t,i){const r=t&&t.layerDefinition&&t.layerDefinition.drawingInfo&&t.layerDefinition.drawingInfo.renderer,s=se(r,i)||void 0;if(null!=s)return s}createPopupTemplate(e){return $(this,e)}write(e,t){const{raster:i}=this;if(this.loaded?"RasterTileServer"===i.datasetFormat&&("Raster"===i.tileType||"Map"===i.tileType):this.url&&/\/ImageServer(\/|\/?$)/i.test(this.url))return super.write(e,t);if(t&&t.messages){const e=`${t.origin}/${t.layerContainerType||"operational-layers"}`;t.messages.push(new R("layer:unsupported",`Layers (${this.title}, ${this.id}) of type '${this.declaredClass}' are not supported in the context of '${e}'`,{layer:this}))}return null}async _openRaster(e){this.raster?(this.raster.rasterInfo||await this.raster.open(),this.url=this.raster.url):this.raster=await class{static get supportedFormats(){const e=new Set;return bt.forEach(((t,i)=>e.add(i))),e}static async open(e){const{url:t,ioConfig:i,sourceJSON:r}=e;let s=e.datasetFormat;null==s&&t.lastIndexOf(".")&&(s=t.slice(t.lastIndexOf(".")+1).toUpperCase()),"OVR"===s||"TIF"===s?s="TIFF":"JPG"!==s&&"JPEG"!==s&&"JFIF"!==s||(s="JPG"),t.toLowerCase().indexOf("/imageserver")>-1&&-1===t.toLowerCase().indexOf("/wcsserver")&&(s="RasterTileServer");const n={url:t,sourceJSON:r,datasetFormat:s,ioConfig:i||{bandIds:null,sampling:null}};let a,o;if(this.supportedFormats.has(s))return a=bt.get(s).constructor,o=new a(n),await o.open({signal:e.signal}),o;if(s)throw new R("rasterfactory:open","not a supported format "+s);const l=Array.from(bt.keys());let u=0;const c=function(){return s=l[u++],s?(a=bt.get(s).constructor,o=new a(n),o.open({signal:e.signal}).then((()=>o)).catch((()=>c()))):null};return c()}static register(e,t,i){bt.has(e.toUpperCase())||bt.set(e.toUpperCase(),{desc:t,constructor:i})}}.open({url:this.url,sourceJSON:this.sourceJSON,ioConfig:this.ioConfig,signal:e});const{rasterInfo:t}=this.raster;if(!t)throw new R("imagery-tile-layer:load","cannot load resources on "+this.url);this.sourceJSON=this.sourceJSON||this.raster.sourceJSON,null!=this.sourceJSON&&(this._set("version",this.sourceJSON.currentVersion),this._set("copyright",this.sourceJSON.copyrightText)),null==this.title&&(this.title=this.raster.datasetName),"Map"===this.raster.tileType&&(this.popupEnabled=!1),this._configDefaultSettings()}};c([f({type:[V],json:{write:{overridePolicy:Tt}}})],Rt.prototype,"bandIds",void 0),c([f({json:{write:{overridePolicy:Tt}}}),k(St)],Rt.prototype,"interpolation",void 0),c([f({json:{write:!0}})],Rt.prototype,"multidimensionalDefinition",void 0),c([f(Y)],Rt.prototype,"legendEnabled",void 0),c([f({type:Boolean,json:{read:!1,write:{enabled:!0,overridePolicy:()=>({enabled:!1})}}})],Rt.prototype,"isReference",void 0),c([f({type:["show","hide"]})],Rt.prototype,"listMode",void 0),c([f()],Rt.prototype,"sourceJSON",void 0),c([f({readOnly:!0})],Rt.prototype,"version",void 0),c([f()],Rt.prototype,"title",void 0),c([f({readOnly:!0,json:{read:!1}})],Rt.prototype,"type",void 0),c([f({type:["ArcGISTiledImageServiceLayer"]})],Rt.prototype,"operationalLayerType",void 0),c([f({type:Boolean,value:!0,json:{read:{source:"disablePopup",reader:(e,t)=>!t.disablePopup},write:{target:"disablePopup",overridePolicy:Tt,writer(e,t,i){t[i]=!e}}}})],Rt.prototype,"popupEnabled",void 0),c([f({type:X,json:{read:{source:"popupInfo"},write:{target:"popupInfo",overridePolicy:Tt}}})],Rt.prototype,"popupTemplate",void 0),c([f({readOnly:!0})],Rt.prototype,"defaultPopupTemplate",null),c([f({readOnly:!0,type:[G]})],Rt.prototype,"fields",null),c([f({types:Q,json:{name:"layerDefinition.drawingInfo.renderer",write:{overridePolicy:Tt},origins:{"web-scene":{types:ne,name:"layerDefinition.drawingInfo.renderer",write:{overridePolicy:e=>({enabled:e&&"vector-field"!==e.type})}}}}})],Rt.prototype,"renderer",null),c([P("renderer")],Rt.prototype,"readRenderer",null),Rt=c([g("esri.layers.ImageryTileLayer")],Rt);var Ct=Rt;export default Ct;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __pow = Math.pow;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b2) => {
+  for (var prop in b2 || (b2 = {}))
+    if (__hasOwnProp.call(b2, prop))
+      __defNormalProp(a2, prop, b2[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b2)) {
+      if (__propIsEnum.call(b2, prop))
+        __defNormalProp(a2, prop, b2[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b2) => __defProps(a2, __getOwnPropDescs(b2));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { a4 as n$2, ae as e$2, af as y$1, cr as M, hq as o$2, bF as k, eP as x$4, e0 as f$1, ag as i$2, hL as y$2, b7 as S$1, aj as U, a5 as r$2, _ as j$1, dA as a$1, el as n$5, aa as s$1, b$ as e$3, bI as h$2, al as v$1, eS as r$4, dQ as e$4, c4 as o$3, dR as g$3, dd as A$1, am as m$3, hM as n$6, dD as U$2, fc as j$3, hp as o$5, gR as t$3, gS as s$2, gT as o$6, dY as l$3, dZ as u$5, d_ as l$4, e1 as b$2, e6 as y$4, gX as a$2, gV as N$1, hj as d$5, M as M$3 } from "./vendor.74d5941c.js";
+import { a as n$3, d as d$1, K, M as M$1, V, j, b as n$4, p as p$4, i as i$4 } from "./rasterRendererHelper.c783c0d1.js";
+import { N, T as T$1, r as r$3, p as p$3, D, a as r$6, b as b$1, y as y$3, c as n$7, x as x$6, E as E$1 } from "./RasterSymbolizer.07b5503f.js";
+import { p as p$2, C, U as U$1, r as r$5, o as o$4, d as d$4, u as u$4 } from "./pixelUtils.5399eb4b.js";
+import { h as h$1, d as d$2, j as j$2, M as M$2, g as g$2, R as R$1 } from "./rasterProjectionHelper.3405c919.js";
+import { i as i$3, m as m$2, x as x$5, d as d$3, h as h$3 } from "./RawBlockCache.0fd02a44.js";
+import "./vectorFieldUtils.cdd2fa8a.js";
+import "./_commonjsHelpers.f2a458db.js";
+import "./LercCodec.7b2d60e1.js";
+const J = n$2.getLogger("esri.layers.mixins.ImageryTileMixin"), x$3 = (r2) => {
+  let x2 = class extends r2 {
+    constructor() {
+      super(...arguments), this._rasterJobHandler = { instance: null, refCount: 0, connectionPromise: null }, this.bandIds = null, this.copyright = null, this.fullExtent = null, this.interpolation = "nearest", this.raster = null, this.rasterInfo = null, this.sourceJSON = null, this.spatialReference = null, this.tileInfo = null, this.symbolizer = null;
+    }
+    set multidimensionalDefinition(e2) {
+      this.raster && (this._sliceId = this.raster.getSliceIndex(e2)), this._set("multidimensionalDefinition", e2);
+    }
+    set url(e2) {
+      this._set("url", y$2(e2, J));
+    }
+    set renderer(e2) {
+      this._set("renderer", e2), this.updateRenderer();
+    }
+    updateRenderer() {
+      return __async(this, null, function* () {
+        if (!this.loaded)
+          return;
+        if (JSON.stringify(this._cachedRendererJson) === JSON.stringify(this.renderer))
+          return;
+        const e2 = this._rasterJobHandler.instance;
+        e2 && (this.symbolizer.rendererJSON = K(this.renderer.toJSON()), this.symbolizer.bind(), yield e2.updateSymbolizer(this.symbolizer), this._cachedRendererJson = this.renderer.toJSON());
+      });
+    }
+    applyRenderer(e2, t2) {
+      return __async(this, null, function* () {
+        const r3 = e2 && e2.pixelBlock;
+        if (!(r3 && r3.pixels && r3.pixels.length > 0))
+          return null;
+        let i2;
+        this.updateRenderer();
+        const s2 = this._rasterJobHandler.instance, { bandIds: n2 } = this;
+        return i2 = s2 ? yield s2.symbolize(__spreadProps(__spreadValues({}, e2), { simpleStretchParams: t2, bandIds: n2 })) : this.symbolizer.symbolize(__spreadProps(__spreadValues({}, e2), { simpleStretchParams: t2, bandIds: n2 })), i2;
+      });
+    }
+    getTileUrl(e2, t2, r3) {
+      return this.raster.datasetFormat === "RasterTileServer" ? `${this.url}/tile/${e2}/${t2}/${r3}` : "";
+    }
+    getCompatibleTileInfo(e2, t2) {
+      if (!this.loaded)
+        return null;
+      const r3 = S$1(e2);
+      return x$4.create({ size: 256, spatialReference: e2, origin: r3 ? { x: r3.origin[0], y: r3.origin[1] } : { x: t2.xmin, y: t2.ymax } });
+    }
+    getCompatibleFullExtent(e2) {
+      return this.loaded ? (this._compatibleFullExtent && this._compatibleFullExtent.spatialReference.equals(e2) || (this._compatibleFullExtent = this.raster.computeExtent(e2)), this._compatibleFullExtent) : null;
+    }
+    fetchTile(_0, _1, _2) {
+      return __async(this, arguments, function* (e2, t2, r3, i2 = {}) {
+        if (i2.requestAsImageElement) {
+          const s3 = this.getTileUrl(e2, t2, r3);
+          return U(s3, { responseType: "image", query: { sliceId: this._sliceId, _ts: i2.timestamp }, signal: i2.signal }).then((e3) => e3.data);
+        }
+        yield this._initJobHandler();
+        const s2 = this.renderer.type === "raster-shaded-relief" ? { cols: 1, rows: 1 } : null;
+        if (this.multidimensionalDefinition) {
+          const e3 = this._sliceId;
+          i2 = __spreadValues({ multidimensionalDefinition: this.multidimensionalDefinition, sliceId: e3, buffer: s2 }, i2);
+        }
+        return this.raster.fetchTile(e2, t2, r3, i2);
+      });
+    }
+    fetchPixels(e2, t2, r3, i2) {
+      return __async(this, null, function* () {
+        if (yield this._initJobHandler(), this.multidimensionalDefinition) {
+          const e3 = this._sliceId;
+          i2 = __spreadValues({ multidimensionalDefinition: this.multidimensionalDefinition, sliceId: e3 }, i2);
+        }
+        return this.raster.fetchPixels(e2, t2, r3, i2);
+      });
+    }
+    identify(e2, t2 = {}) {
+      return this.multidimensionalDefinition && !t2.multidimensionalDefinition && (t2 = __spreadProps(__spreadValues({}, t2), { multidimensionalDefinition: this.multidimensionalDefinition })), this.raster.identify(e2, t2);
+    }
+    increaseRasterJobHandlerUsage() {
+      this._rasterJobHandler.refCount++;
+    }
+    decreaseRasterJobHandlerUsage() {
+      this._rasterJobHandler.refCount--, this._rasterJobHandler.refCount <= 0 && this._shutdownJobHandler();
+    }
+    _configDefaultSettings() {
+      this._configDefaultInterpolation(), this._configDefaultSlice(), this._configDefaultRenderer();
+    }
+    _initJobHandler() {
+      if (this._rasterJobHandler.connectionPromise != null)
+        return this._rasterJobHandler.connectionPromise;
+      const e2 = new n$4();
+      return this._rasterJobHandler.connectionPromise = e2.initialize().then(() => {
+        this._rasterJobHandler.instance = e2, this.raster.rasterJobHandler = e2, this.renderer && this.updateRenderer();
+      }).catch(() => null), this._rasterJobHandler.connectionPromise;
+    }
+    _shutdownJobHandler() {
+      this._rasterJobHandler.instance && this._rasterJobHandler.instance.destroy(), this._rasterJobHandler.instance = null, this._rasterJobHandler.connectionPromise = null, this._rasterJobHandler.refCount = 0, this.raster.rasterJobHandler = null;
+    }
+    _configDefaultInterpolation() {
+      if (this.interpolation == null) {
+        var e2;
+        const t2 = M$1(this.rasterInfo, this.raster.tileType, (e2 = this.sourceJSON) == null ? void 0 : e2.defaultResamplingMethod);
+        this._set("interpolation", t2);
+      }
+    }
+    _configDefaultSlice() {
+      const { multidimensionalInfo: e2 } = this.raster.rasterInfo;
+      if (r$2(e2)) {
+        if (!this.multidimensionalDefinition) {
+          const t2 = e2.variables[0], r3 = [];
+          t2.dimensions.forEach((e3) => {
+            r3.push(new n$3({ variableName: t2.name, dimensionName: e3.name, values: e3.hasRegularIntervals ? e3.extent[0] : e3.values[0], isSlice: true }));
+          }), this.multidimensionalDefinition = r3;
+        }
+        this._sliceId = this.raster.getSliceIndex(this.multidimensionalDefinition);
+      }
+    }
+    _configDefaultRenderer() {
+      const e2 = this.raster.rasterInfo;
+      var t2, r3;
+      (this.bandIds || (this.bandIds = V(e2)), this.renderer) || (this.renderer = j(e2, { bandIds: this.bandIds, variableName: (t2 = this.multidimensionalDefinition) == null || (r3 = t2[0]) == null ? void 0 : r3.variableName }));
+      this.symbolizer ? (this.symbolizer.rendererJSON = K(this.renderer.toJSON()), this.symbolizer.rasterInfo = e2) : this.symbolizer = new N({ rendererJSON: this.renderer.toJSON(), rasterInfo: e2 }), this.symbolizer.bind() || J.warn("imagery-tile-mixin", "The given renderer is not supported by the layer.");
+    }
+  };
+  return e$2([y$1()], x2.prototype, "_cachedRendererJson", void 0), e$2([y$1()], x2.prototype, "_sliceId", void 0), e$2([y$1()], x2.prototype, "_compatibleFullExtent", void 0), e$2([y$1()], x2.prototype, "_rasterJobHandler", void 0), e$2([y$1()], x2.prototype, "bandIds", void 0), e$2([y$1()], x2.prototype, "copyright", void 0), e$2([y$1({ type: M }), o$2("rasterInfo.extent")], x2.prototype, "fullExtent", void 0), e$2([y$1()], x2.prototype, "interpolation", void 0), e$2([y$1()], x2.prototype, "ioConfig", void 0), e$2([y$1({ type: [n$3] })], x2.prototype, "multidimensionalDefinition", null), e$2([y$1()], x2.prototype, "raster", void 0), e$2([y$1({ readOnly: true }), o$2("raster.rasterInfo")], x2.prototype, "rasterInfo", void 0), e$2([y$1()], x2.prototype, "sourceJSON", void 0), e$2([y$1({ type: k }), o$2("rasterInfo.spatialReference")], x2.prototype, "spatialReference", void 0), e$2([y$1({ type: x$4 }), o$2("rasterInfo.storageInfo.tileInfo")], x2.prototype, "tileInfo", void 0), e$2([y$1(f$1)], x2.prototype, "url", null), e$2([y$1({ types: d$1 })], x2.prototype, "renderer", null), e$2([y$1()], x2.prototype, "symbolizer", void 0), x2 = e$2([i$2("esri.layers.ImageryTileMixin")], x2), x2;
+};
+let s = class extends a$1 {
+  constructor() {
+    super(...arguments), this.blockWidth = void 0, this.blockHeight = void 0, this.compression = null, this.origin = null, this.firstPyramidLevel = null, this.maximumPyramidLevel = null, this.pyramidScalingFactor = 2, this.pyramidBlockWidth = null, this.pyramidBlockHeight = null, this.isVirtualTileInfo = false, this.tileInfo = null, this.blockBoundary = null;
+  }
+};
+e$2([y$1({ type: Number, json: { write: true } })], s.prototype, "blockWidth", void 0), e$2([y$1({ type: Number, json: { write: true } })], s.prototype, "blockHeight", void 0), e$2([y$1({ type: String, json: { write: true } })], s.prototype, "compression", void 0), e$2([y$1({ type: j$1, json: { write: true } })], s.prototype, "origin", void 0), e$2([y$1({ type: Number, json: { write: true } })], s.prototype, "firstPyramidLevel", void 0), e$2([y$1({ type: Number, json: { write: true } })], s.prototype, "maximumPyramidLevel", void 0), e$2([y$1()], s.prototype, "pyramidScalingFactor", void 0), e$2([y$1({ type: Number, json: { write: true } })], s.prototype, "pyramidBlockWidth", void 0), e$2([y$1({ type: Number, json: { write: true } })], s.prototype, "pyramidBlockHeight", void 0), e$2([y$1({ type: Boolean, json: { write: true } })], s.prototype, "isVirtualTileInfo", void 0), e$2([y$1({ json: { write: true } })], s.prototype, "tileInfo", void 0), e$2([y$1()], s.prototype, "blockBoundary", void 0), s = e$2([i$2("esri.layers.support.RasterStorageInfo")], s);
+var p$1 = s;
+let S = class extends n$5(a$1) {
+  constructor() {
+    super(...arguments), this.rasterJobHandler = null, this.datasetName = null, this.datasetFormat = null, this.rasterInfo = null, this.ioConfig = { sampling: "closest" };
+  }
+  init() {
+    return __async(this, null, function* () {
+      const e2 = h$1();
+      this.addResolvingPromise(e2), yield this.when();
+    });
+  }
+  normalizeCtorArgs(e2) {
+    return e2 && e2.ioConfig && (e2 = __spreadProps(__spreadValues({}, e2), { ioConfig: __spreadValues({ resolution: null, bandIds: null, sampling: "closest", tileInfo: x$4.create() }, e2.ioConfig) })), e2;
+  }
+  set url(e2) {
+    this._set("url", y$2(e2, n$2.getLogger(this.declaredClass)));
+  }
+  open(e2) {
+    return __async(this, null, function* () {
+      throw new s$1("BaseRaster:open-not-implemented", "open() is not implemented");
+    });
+  }
+  fetchTile(_0, _1, _2) {
+    return __async(this, arguments, function* (e2, r2, o2, i2 = {}) {
+      var n2;
+      const { tileInfo: s2 } = i2, a2 = s2.lodAt(e2), l2 = this.getTileExtent({ x: a2.resolution, y: a2.resolution }, r2, o2, s2.origin, s2.spatialReference, s2.size);
+      return (n2 = i2.multidimensionalDefinition) != null && n2.length && r$2(this.rasterInfo.multidimensionalInfo) && i2.sliceId == null && (i2 = __spreadProps(__spreadValues({}, i2), { sliceId: this.getSliceIndex(i2.multidimensionalDefinition) || 0 })), this.fetchPixels(l2, s2.size[0], s2.size[1], i2);
+    });
+  }
+  identify(_0) {
+    return __async(this, arguments, function* (e2, r2 = {}) {
+      const { spatialReference: o2, extent: i2 } = this.rasterInfo, { datumTransformation: n2 } = r2;
+      let s2 = d$2(e2, o2, n2);
+      if (!i2.intersects(s2))
+        return { location: s2, value: null };
+      if (r$2(this.rasterInfo.transform)) {
+        const e3 = this.rasterInfo.transform.inverseTransform(s2);
+        if (!this.rasterInfo.nativeExtent.intersects(e3))
+          return { location: e3, value: null };
+        s2 = e3;
+      }
+      let a2 = 0;
+      if (r2.srcResolution) {
+        a2 = j$2(r2.srcResolution, this.rasterInfo, this.ioConfig.sampling).pyramidLevel;
+      } else if (a2 = yield this.computeBestPyramidLevelForLocation(e2, r2), a2 == null)
+        return { location: s2, value: null };
+      const l2 = this.identifyPixelLocation(s2, a2, null);
+      if (l2 === null)
+        return { location: s2, value: null };
+      const { row: c2, col: u2, rowOffset: m2, colOffset: f2 } = l2, h2 = i$3(this.url, r2.sliceId), d2 = `${a2}/${c2}/${u2}`;
+      let p2 = m$2(h2, null, d2);
+      r$2(p2) || (p2 = this.fetchRawTile(a2, c2, u2, r2), x$5(h2, null, d2, p2));
+      const x2 = yield p2;
+      if (!(x2 && x2.pixels && x2.pixels.length > 0))
+        return { location: s2, value: null };
+      const y2 = m2 * this.rasterInfo.storageInfo.blockHeight + f2;
+      return { location: s2, value: !x2.mask || x2.mask[y2] ? x2.pixels.map((e3) => e3[y2]) : null, pyramidLevel: a2 };
+    });
+  }
+  fetchPixels(_0, _1, _2) {
+    return __async(this, arguments, function* (e2, t2, o2, i2 = {}) {
+      const n2 = e2.clone().normalize();
+      e2 = n2[0];
+      const s2 = this.rasterInfo.spatialReference, a2 = !e2.spatialReference.equals(s2), { datumTransformation: l2 } = i2, c2 = new j$1({ x: (e2.xmax - e2.xmin) / t2, y: (e2.ymax - e2.ymin) / o2, spatialReference: e2.spatialReference }), m2 = i2.srcResolution || (a2 ? M$2(c2, s2, e2, l2) : c2);
+      if (!m2)
+        return null;
+      const { pyramidLevel: f2, pyramidResolution: h2, excessiveReading: d2 } = j$2(m2, this.rasterInfo, this.ioConfig.sampling);
+      if (d2)
+        return null;
+      const p2 = this.rasterInfo.storageInfo;
+      let x2 = a2 ? g$2(e2, s2, l2) : e2;
+      const y2 = e$3(this.rasterInfo.transform);
+      if (y2 && (x2 = y2.inverseTransform(x2)), x2 == null)
+        return null;
+      const I2 = { x: Math.floor((x2.xmin - p2.origin.x) / h2.x + 0.1), y: Math.floor((p2.origin.y - x2.ymax) / h2.y + 0.1) }, k2 = Math.ceil((x2.xmax - x2.xmin) / h2.x - 0.1), v2 = Math.ceil((x2.ymax - x2.ymin) / h2.y - 0.1);
+      if (k2 / t2 > 8 || v2 / o2 > 8)
+        return null;
+      const B = yield this.fetchRawPixels(f2, I2, { width: k2, height: v2 }, i2);
+      if (!B)
+        return null;
+      const P = f2 > 0 ? p2.pyramidBlockWidth : p2.blockWidth, j2 = f2 > 0 ? p2.pyramidBlockHeight : p2.blockHeight;
+      if (!a2 && B.pixelBlocks.length === 1 && P === t2 && j2 === o2 && m2.x === c2.x && m2.y === c2.y)
+        return { extent: e2, srcExtent: x2, pixelBlock: B.pixelBlocks[0] };
+      const T2 = R$1(e2, B.extent, c2, l2, y2);
+      let F;
+      const S2 = !i2.requestRawData, L2 = { rows: T2.spacing[0], cols: T2.spacing[1] }, { pixelBlocks: D2, mosaicSize: H, isPartiallyFilled: U2 } = B;
+      if (this.rasterJobHandler)
+        F = yield this.rasterJobHandler.mosaicAndTransform({ srcPixelBlocks: D2, srcMosaicSize: H, destDimension: S2 ? { width: t2, height: o2 } : null, coefs: S2 ? T2.coefficients : null, sampleSpacing: S2 ? L2 : null, interpolation: i2.interpolation }, i2);
+      else {
+        const e3 = p$2(D2, H);
+        F = S2 ? C(e3, { width: t2, height: o2 }, T2.coefficients, L2, i2.interpolation) : e3;
+      }
+      return i2.requestRawData ? { srcExtent: x2, pixelBlock: F, transformGrid: T2, extent: e2, isPartiallyFilled: U2 } : { srcExtent: x2, extent: e2, pixelBlock: F };
+    });
+  }
+  fetchRawPixels(e2, t2, r2, o2) {
+    return __async(this, null, function* () {
+      const { origin: i2, blockBoundary: n2 } = this.rasterInfo.storageInfo, { blockWidth: s2, blockHeight: a2 } = this.getBlockWidthHeight(e2);
+      let { x: l2, y: c2 } = t2, { width: u2, height: f2 } = r2;
+      o2.buffer && (l2 -= o2.buffer.cols, c2 -= o2.buffer.rows, u2 += 2 * o2.buffer.cols, f2 += 2 * o2.buffer.rows);
+      const h2 = Math.floor(l2 / s2), d2 = Math.floor(c2 / a2), p2 = Math.floor((l2 + u2 - 1) / s2), x2 = Math.floor((c2 + f2 - 1) / a2), y2 = n2[e2];
+      if (!y2)
+        return null;
+      const { minRow: g2, minCol: w2, maxCol: I2, maxRow: k2 } = y2;
+      if (x2 < g2 || p2 < w2 || d2 > k2 || h2 > I2)
+        return null;
+      const v2 = [];
+      let R2, b2 = false;
+      for (let m2 = d2; m2 <= x2; m2++)
+        for (let t3 = h2; t3 <= p2; t3++)
+          m2 >= g2 && t3 >= w2 && k2 >= m2 && I2 >= t3 ? (R2 = this._fetchRawTile(e2, m2, t3, o2), this.ioConfig.allowPartialFill && (R2 = new Promise((e3) => {
+            R2.then((t4) => e3(t4)).catch(() => {
+              b2 = true, e3(null);
+            });
+          })), v2.push(R2)) : v2.push(null);
+      if (v2.length === 0)
+        return null;
+      const M$12 = yield Promise.all(v2), C2 = { height: (x2 - d2 + 1) * s2, width: (p2 - h2 + 1) * a2 }, { nativePixelSize: B, spatialReference: P } = this.rasterInfo, j2 = B.x * __pow(2, e2), T2 = B.y * __pow(2, e2);
+      return { extent: new M({ xmin: i2.x + h2 * s2 * j2, xmax: i2.x + (p2 + 1) * s2 * j2, ymin: i2.y - (x2 + 1) * a2 * T2, ymax: i2.y - d2 * a2 * T2, spatialReference: P }), pixelBlocks: M$12, mosaicSize: C2, isPartiallyFilled: b2 };
+    });
+  }
+  fetchRawTile(e2, t2, r2, o2) {
+    return __async(this, null, function* () {
+      throw new s$1("BaseRaster:read-not-implemented", "fetchRawTile() is not implemented");
+    });
+  }
+  computeExtent(e2) {
+    return g$2(this.rasterInfo.extent, e2);
+  }
+  decodePixelBlock(e2, t2) {
+    return !this.rasterJobHandler || t2.useCanvas ? T$1(e2, t2) : this.rasterJobHandler.decode({ data: e2, options: t2 });
+  }
+  request(e2, t2, r2) {
+    return __async(this, null, function* () {
+      var o2, i2;
+      const { customFetchParameters: n2 } = this.ioConfig, { range: s2, query: a2, headers: l2 } = t2;
+      r2 = (o2 = (i2 = r2) != null ? i2 : t2.retryCount) != null ? o2 : this.ioConfig.retryCount;
+      const c2 = s2 ? { Range: `bytes=${s2.from}-${s2.to}` } : null;
+      try {
+        return yield U(e2, __spreadProps(__spreadValues({}, t2), { query: __spreadValues(__spreadValues({}, a2), n2), headers: __spreadValues(__spreadValues({}, l2), c2) }));
+      } catch (u2) {
+        if (r2 > 0)
+          return r2--, this.request(e2, t2, r2);
+        throw u2;
+      }
+    });
+  }
+  getSliceIndex(e2) {
+    const { multidimensionalInfo: r2 } = this.rasterInfo;
+    if (!r$2(r2) || e2 == null || !e2.length)
+      return null;
+    let o2 = 0;
+    const i2 = e2[0].variableName;
+    for (let t2 = 0; t2 < r2.variables.length; t2++) {
+      const n2 = r2.variables[t2], s2 = n2.dimensions;
+      if (n2.name !== i2) {
+        o2 += s2.map((e3) => this._getDimensionValuesCount(e3)).reduce((e3, t3) => e3 + t3);
+        break;
+      }
+      const a2 = s2.map((e3) => this._getDimensionValuesCount(e3)), l2 = s2.length;
+      for (let t3 = 0; t3 < l2; t3++) {
+        const r3 = e2.filter((e3) => e3.dimensionName === s2[t3].name)[0];
+        if (r3 == null)
+          return null;
+        const i3 = Array.isArray(r3.values[0]) ? r3.values[0][0] : r3.values[0], n3 = this._getIndexFromDimensions(i3, s2[t3]);
+        if (n3 === -1)
+          return null;
+        a2.shift(), o2 += t3 === l2 - 1 ? n3 : n3 * a2.reduce((e3, t4) => e3 + t4);
+      }
+    }
+    return o2;
+  }
+  updateTileInfo() {
+    const { storageInfo: e2, spatialReference: t2, extent: r2, pixelSize: o2 } = this.rasterInfo;
+    if (!e2.tileInfo) {
+      const i2 = [], n2 = e2.maximumPyramidLevel || 0;
+      let s2 = Math.max(o2.x, o2.y), a2 = 1 / 0.0254 * 96 * s2;
+      for (let e3 = 0; e3 <= n2; e3++)
+        i2.push({ level: n2 - e3, resolution: s2, scale: a2 }), s2 *= 2, a2 *= 2;
+      const l2 = new j$1({ x: r2.xmin, y: r2.ymax, spatialReference: t2 });
+      e2.tileInfo = new x$4({ origin: l2, size: [e2.blockWidth, e2.blockHeight], spatialReference: t2, lods: i2 }), e2.isVirtualTileInfo = true;
+    }
+  }
+  createRemoteDatasetStorageInfo(e2, t2 = 512, r2 = 512, o2) {
+    const { width: i2, height: n2, nativeExtent: s2, pixelSize: a2, spatialReference: l2 } = e2, c2 = new j$1({ x: s2.xmin, y: s2.ymax, spatialReference: l2 });
+    o2 == null && (o2 = Math.max(0, Math.round(Math.log(Math.max(i2, n2)) / Math.LN2 - 8)));
+    const m2 = this._computeBlockBoundary(s2, a2, o2, 512, 512);
+    e2.storageInfo = new p$1({ blockWidth: t2, blockHeight: r2, pyramidBlockWidth: t2, pyramidBlockHeight: r2, origin: c2, firstPyramidLevel: 1, maximumPyramidLevel: o2, blockBoundary: m2 });
+  }
+  computeBestPyramidLevelForLocation(_0) {
+    return __async(this, arguments, function* (e2, t2 = {}) {
+      return 0;
+    });
+  }
+  identifyPixelLocation(e2, t2, r2) {
+    const { spatialReference: o2, nativePixelSize: i2, nativeExtent: n2 } = this.rasterInfo, { blockWidth: s2, blockHeight: a2, maximumPyramidLevel: l2, pyramidScalingFactor: c2, origin: u2 } = this.rasterInfo.storageInfo, m2 = d$2(e2, o2, r2);
+    if (!n2.intersects(m2))
+      return null;
+    if (t2 < 0 || t2 > l2)
+      return null;
+    const f2 = __pow(c2, t2), h2 = f2 * i2.x, d2 = f2 * i2.y, p2 = (u2.y - m2.y) / d2 / a2, x2 = (m2.x - u2.x) / h2 / s2, y2 = Math.min(a2 - 1, Math.floor((p2 - Math.floor(p2)) * a2)), g2 = Math.min(s2 - 1, Math.floor((x2 - Math.floor(x2)) * s2));
+    return { pyramidLevel: t2, row: Math.floor(p2), col: Math.floor(x2), rowOffset: y2, colOffset: g2, srcLocation: m2 };
+  }
+  getTileExtent(e2, t2, r2, o2, i2, n2) {
+    const [s2, a2] = n2, l2 = o2.x + r2 * s2 * e2.x, c2 = l2 + s2 * e2.x, u2 = o2.y - t2 * a2 * e2.y, f2 = u2 - a2 * e2.y;
+    return new M({ xmin: l2, xmax: c2, ymin: f2, ymax: u2, spatialReference: i2 });
+  }
+  getBlockWidthHeight(e2) {
+    return { blockWidth: e2 > 0 ? this.rasterInfo.storageInfo.pyramidBlockWidth : this.rasterInfo.storageInfo.blockWidth, blockHeight: e2 > 0 ? this.rasterInfo.storageInfo.pyramidBlockHeight : this.rasterInfo.storageInfo.blockHeight };
+  }
+  isBlockOutside(e2, t2, r2) {
+    const o2 = this.rasterInfo.storageInfo.blockBoundary[e2];
+    return !o2 || o2.maxRow < t2 || o2.maxCol < r2 || o2.minRow > t2 || o2.minCol > r2;
+  }
+  _computeBlockBoundary(e2, t2, r2, o2, i2) {
+    let { x: n2, y: s2 } = t2;
+    const a2 = e2.xmin, l2 = e2.ymax, c2 = [{ minCol: Math.floor((e2.xmin - a2 + 0.1 * n2) / o2 / n2), maxCol: Math.floor((e2.xmax - a2 - 0.1 * n2) / o2 / n2), minRow: Math.floor((l2 - e2.ymax + 0.1 * s2) / i2 / s2), maxRow: Math.floor((l2 - e2.ymin - 0.1 * s2) / i2 / s2) }];
+    if (r2 > 0)
+      for (let u2 = 0; u2 < r2; u2++)
+        n2 *= 2, s2 *= 2, c2.push({ minCol: Math.floor((e2.xmin - a2 + 0.1 * n2) / o2 / n2), maxCol: Math.floor((e2.xmax - a2 - 0.1 * n2) / o2 / n2), minRow: Math.floor((l2 - e2.ymax + 0.1 * s2) / i2 / n2), maxRow: Math.floor((l2 - e2.ymin - 0.1 * s2) / i2 / n2) });
+    return c2;
+  }
+  _fetchRawTile(e2, r2, o2, i2) {
+    const n2 = this.rasterInfo.storageInfo.blockBoundary[e2];
+    if (!n2)
+      return Promise.resolve(null);
+    const { minRow: s2, minCol: c2, maxCol: u2, maxRow: m2 } = n2;
+    if (r2 < s2 || o2 < c2 || r2 > m2 || o2 > u2)
+      return Promise.resolve(null);
+    const f2 = i$3(this.url, i2.sliceId), h2 = `${e2}/${r2}/${o2}`;
+    let d2 = m$2(f2, i2.registryId, h2);
+    if (!r$2(d2)) {
+      const t2 = h$2();
+      d2 = this.fetchRawTile(e2, r2, o2, __spreadProps(__spreadValues({}, i2), { signal: t2.signal })), x$5(f2, i2.registryId, h2, d2, t2), d2.catch(() => {
+        d$3(f2, i2.registryId, h2);
+      });
+    }
+    return i2.signal && v$1(i2, () => {
+      h$3(f2, i2.registryId, h2);
+    }), d2;
+  }
+  _getIndexFromDimensions(e2, t2) {
+    const { extent: r2, interval: o2, unit: i2, values: n2 } = t2;
+    if (n2 != null && n2.length)
+      return Array.isArray(n2[0]) ? n2.findIndex((t3) => t3[0] <= e2 && t3[1] >= e2) : n2.indexOf(e2);
+    if (e2 > r2[1])
+      return -1;
+    const s2 = r2[0];
+    let a2 = -1;
+    if (i2 === "ISO8601") {
+      var l2;
+      switch (((l2 = t2.intervalUnit) == null ? void 0 : l2.toLowerCase()) || "seconds") {
+        case "seconds":
+          a2 = Math.round((e2 - s2) / 1e3 / o2);
+          break;
+        case "minutes":
+          a2 = Math.round((e2 - s2) / 6e4 / o2);
+          break;
+        case "hours":
+          a2 = Math.round((e2 - s2) / 36e5 / o2);
+          break;
+        case "days":
+          a2 = Math.round((e2 - s2) / 864e5 / o2);
+          break;
+        case "years":
+          a2 = Math.round((new Date(e2).getUTCFullYear() - new Date(s2).getUTCFullYear()) / o2);
+          break;
+        case "decades":
+          a2 = Math.round((new Date(e2).getUTCFullYear() - new Date(s2).getUTCFullYear()) / 10 / o2);
+      }
+      return a2;
+    }
+    return Math.round((e2 - s2) / o2);
+  }
+  _getDimensionValuesCount(e2) {
+    const { extent: t2, interval: r2, unit: o2, values: i2 } = e2;
+    let n2 = (i2 == null ? void 0 : i2.length) || 0;
+    if (n2)
+      return n2;
+    const s2 = t2[0];
+    if (n2 === 0 && o2 === "ISO8601") {
+      var a2;
+      switch (((a2 = e2.intervalUnit) == null ? void 0 : a2.toLowerCase()) || "seconds") {
+        case "seconds":
+          n2 = Math.round((t2[1] - t2[0]) / 1e3 / r2);
+          break;
+        case "minutes":
+          n2 = Math.round((t2[1] - t2[0]) / 6e4 / r2);
+          break;
+        case "hours":
+          n2 = Math.round((t2[1] - t2[0]) / 36e5 / r2);
+          break;
+        case "days":
+          n2 = Math.round((t2[1] - t2[0]) / 864e5 / r2);
+          break;
+        case "years":
+          n2 = Math.round((new Date(t2[1]).getUTCFullYear() - new Date(s2).getUTCFullYear()) / r2);
+          break;
+        case "decades":
+          n2 = Math.round((new Date(t2[1]).getUTCFullYear() - new Date(s2).getUTCFullYear()) / 10 / r2);
+      }
+      return n2;
+    }
+    return Math.round((t2[1] - t2[0]) / r2);
+  }
+};
+e$2([y$1(f$1)], S.prototype, "url", null), e$2([y$1({ type: String, json: { write: true } })], S.prototype, "datasetName", void 0), e$2([y$1({ type: String, json: { write: true } })], S.prototype, "datasetFormat", void 0), e$2([y$1()], S.prototype, "rasterInfo", void 0), e$2([y$1()], S.prototype, "ioConfig", void 0), e$2([y$1()], S.prototype, "sourceJSON", void 0), S = e$2([i$2("esri.layers.support.rasterDatasets.BaseRaster")], S);
+var L = S;
+function t$2(e2) {
+  const t2 = e2.fields, r2 = e2.records, n2 = t2.some((e3) => e3.name.toLowerCase() === "oid") ? "OBJECTID" : "OID", i2 = [{ name: n2, type: "esriFieldTypeOID", alias: "OID" }].concat(t2.map((e3) => ({ name: e3.name, type: "esriFieldType" + e3.typeName, alias: e3.name }))), s2 = i2.map((e3) => e3.name), a2 = [];
+  let o2 = 0, l2 = 0;
+  return r2.forEach((e3) => {
+    const t3 = {};
+    for (t3[n2] = o2++, l2 = 1; l2 < s2.length; l2++)
+      t3[s2[l2]] = e3[l2 - 1];
+    a2.push({ attributes: t3 });
+  }), { displayFieldName: "", fields: i2, features: a2 };
+}
+class r$1 {
+  static get supportedVersions() {
+    return [5];
+  }
+  static parse(r2) {
+    const n2 = new DataView(r2), i2 = 3 & n2.getUint8(0);
+    if (i2 !== 3)
+      return { header: { version: i2 }, recordSet: null };
+    const s2 = n2.getUint32(4, true), a2 = n2.getUint16(8, true), o2 = n2.getUint16(10, true), l2 = { version: i2, recordCount: s2, headerByteCount: a2, recordByteCount: o2 };
+    let p2 = 32;
+    const g2 = [], u2 = [];
+    let d2;
+    if (i2 === 3) {
+      for (; n2.getUint8(p2) !== 13; )
+        d2 = String.fromCharCode(n2.getUint8(p2 + 11)).trim(), g2.push({ name: r$3(new Uint8Array(r2, p2, 11)), type: d2, typeName: ["String", "Date", "Double", "Boolean", "String", "Integer"][["C", "D", "F", "L", "M", "N"].indexOf(d2)], length: n2.getUint8(p2 + 16) }), p2 += 32;
+      if (p2 += 1, g2.length > 0)
+        for (; u2.length < s2 && r2.byteLength - p2 > o2; ) {
+          const t2 = [];
+          n2.getUint8(p2) === 32 ? (p2 += 1, g2.forEach((n3) => {
+            if (n3.type === "C")
+              t2.push(r$3(new Uint8Array(r2, p2, n3.length)).trim());
+            else if (n3.type === "N")
+              t2.push(parseInt(String.fromCharCode.apply(null, new Uint8Array(r2, p2, n3.length)).trim(), 10));
+            else if (n3.type === "F")
+              t2.push(parseFloat(String.fromCharCode.apply(null, new Uint8Array(r2, p2, n3.length)).trim()));
+            else if (n3.type === "D") {
+              const e2 = String.fromCharCode.apply(null, new Uint8Array(r2, p2, n3.length)).trim();
+              t2.push(new Date(parseInt(e2.substring(0, 4), 10), parseInt(e2.substring(4, 6), 10) - 1, parseInt(e2.substring(6, 8), 10)));
+            }
+            p2 += n3.length;
+          }), u2.push(t2)) : p2 += o2;
+        }
+    }
+    return { header: l2, fields: g2, records: u2, recordSet: t$2({ fields: g2, records: u2 }) };
+  }
+}
+let p = class extends a$1 {
+  constructor() {
+    super(...arguments), this.type = "identity";
+  }
+  forwardTransform(r2) {
+    return r2;
+  }
+  inverseTransform(r2) {
+    return r2;
+  }
+};
+e$2([y$1({ json: { write: true } })], p.prototype, "spatialReference", void 0), e$2([r$4({ IdentityXform: "identity" })], p.prototype, "type", void 0), p = e$2([i$2("esri.layers.support.rasterTransforms.IdentityTransform")], p);
+var i$1 = p;
+function l$2(e2, r2, o2) {
+  const { x: t2, y: s2 } = r2;
+  if (o2 < 2) {
+    return { x: e2[0] + t2 * e2[2] + s2 * e2[4], y: e2[1] + t2 * e2[3] + s2 * e2[5] };
+  }
+  if (o2 === 2) {
+    const r3 = t2 * t2, o3 = s2 * s2, n3 = t2 * s2;
+    return { x: e2[0] + t2 * e2[2] + s2 * e2[4] + r3 * e2[6] + n3 * e2[8] + o3 * e2[10], y: e2[1] + t2 * e2[3] + s2 * e2[5] + r3 * e2[7] + n3 * e2[9] + o3 * e2[11] };
+  }
+  const n2 = t2 * t2, i2 = s2 * s2, f2 = t2 * s2, p2 = n2 * t2, l2 = n2 * s2, c2 = t2 * i2, a2 = s2 * i2;
+  return { x: e2[0] + t2 * e2[2] + s2 * e2[4] + n2 * e2[6] + f2 * e2[8] + i2 * e2[10] + p2 * e2[12] + l2 * e2[14] + c2 * e2[16] + a2 * e2[18], y: e2[1] + t2 * e2[3] + s2 * e2[5] + n2 * e2[7] + f2 * e2[9] + i2 * e2[11] + p2 * e2[13] + l2 * e2[15] + c2 * e2[17] + a2 * e2[19] };
+}
+function c$2(e2, r2, o2) {
+  const { xmin: t2, ymin: s2, xmax: n2, ymax: i2, spatialReference: f2 } = r2;
+  let c2 = [];
+  if (o2 < 2)
+    c2.push({ x: t2, y: i2 }), c2.push({ x: n2, y: i2 }), c2.push({ x: t2, y: s2 }), c2.push({ x: n2, y: s2 });
+  else {
+    let e3 = 10;
+    for (let r3 = 0; r3 < e3; r3++)
+      c2.push({ x: t2, y: s2 + (i2 - s2) * r3 / (e3 - 1) }), c2.push({ x: n2, y: s2 + (i2 - s2) * r3 / (e3 - 1) });
+    e3 = 8;
+    for (let r3 = 1; r3 <= e3; r3++)
+      c2.push({ x: t2 + (n2 - t2) * r3 / e3, y: s2 }), c2.push({ x: t2 + (n2 - t2) * r3 / e3, y: i2 });
+  }
+  c2 = c2.map((r3) => l$2(e2, r3, o2));
+  const a2 = c2.map((e3) => e3.x), u2 = c2.map((e3) => e3.y);
+  return new M({ xmin: Math.min.apply(null, a2), xmax: Math.max.apply(null, a2), ymin: Math.min.apply(null, u2), ymax: Math.max.apply(null, u2), spatialReference: f2 });
+}
+function a(e2) {
+  const [r2, o2, t2, s2, n2, i2] = e2, f2 = t2 * i2 - n2 * s2, p2 = n2 * s2 - t2 * i2;
+  return [(n2 * o2 - r2 * i2) / f2, (t2 * o2 - r2 * s2) / p2, i2 / f2, s2 / p2, -n2 / f2, -t2 / p2];
+}
+let u$3 = class extends a$1 {
+  constructor() {
+    super(...arguments), this.polynomialOrder = 1, this.type = "polynomial";
+  }
+  readForwardCoefficients(e2, r2) {
+    const { coeffX: o2, coeffY: t2 } = r2;
+    if (o2 == null || !o2.length || t2 == null || !t2.length || o2.length !== t2.length)
+      return null;
+    const s2 = [];
+    for (let n2 = 0; n2 < o2.length; n2++)
+      s2.push(o2[n2]), s2.push(t2[n2]);
+    return s2;
+  }
+  writeForwardCoefficients(e2, r2, o2) {
+    const t2 = [], s2 = [];
+    for (let n2 = 0; n2 < (e2 == null ? void 0 : e2.length); n2++)
+      n2 % 2 == 0 ? t2.push(e2[n2]) : s2.push(e2[n2]);
+    r2.coeffX = t2, r2.coeffY = s2;
+  }
+  get inverseCoefficients() {
+    let e2 = this._get("inverseCoefficients");
+    const r2 = this._get("forwardCoefficients");
+    return !e2 && r2 && this.polynomialOrder < 2 && (e2 = a(r2)), e2;
+  }
+  set inverseCoefficients(e2) {
+    this._set("inverseCoefficients", e2);
+  }
+  readInverseCoefficients(e2, r2) {
+    const { inverseCoeffX: o2, inverseCoeffY: t2 } = r2;
+    if (o2 == null || !o2.length || t2 == null || !t2.length || o2.length !== t2.length)
+      return null;
+    const s2 = [];
+    for (let n2 = 0; n2 < o2.length; n2++)
+      s2.push(o2[n2]), s2.push(t2[n2]);
+    return s2;
+  }
+  writeInverseCoefficients(e2, r2, o2) {
+    const t2 = [], s2 = [];
+    for (let n2 = 0; n2 < (e2 == null ? void 0 : e2.length); n2++)
+      n2 % 2 == 0 ? t2.push(e2[n2]) : s2.push(e2[n2]);
+    r2.inverseCoeffX = t2, r2.inverseCoeffY = s2;
+  }
+  forwardTransform(e2) {
+    if (e2.type === "point") {
+      const r2 = l$2(this.forwardCoefficients, e2, this.polynomialOrder);
+      return new j$1({ x: r2.x, y: r2.y, spatialReference: e2.spatialReference });
+    }
+    return c$2(this.forwardCoefficients, e2, this.polynomialOrder);
+  }
+  inverseTransform(e2) {
+    if (e2.type === "point") {
+      const r2 = l$2(this.inverseCoefficients, e2, this.polynomialOrder);
+      return new j$1({ x: r2.x, y: r2.y, spatialReference: e2.spatialReference });
+    }
+    return c$2(this.inverseCoefficients, e2, this.polynomialOrder);
+  }
+};
+e$2([y$1({ json: { write: true } })], u$3.prototype, "polynomialOrder", void 0), e$2([y$1()], u$3.prototype, "forwardCoefficients", void 0), e$2([e$4("forwardCoefficients", ["coeffX", "coeffY"])], u$3.prototype, "readForwardCoefficients", null), e$2([o$3("forwardCoefficients")], u$3.prototype, "writeForwardCoefficients", null), e$2([y$1({ json: { write: true } })], u$3.prototype, "inverseCoefficients", null), e$2([e$4("inverseCoefficients", ["inverseCoeffX", "inverseCoeffY"])], u$3.prototype, "readInverseCoefficients", null), e$2([o$3("inverseCoefficients")], u$3.prototype, "writeInverseCoefficients", null), e$2([y$1({ json: { write: true } })], u$3.prototype, "spatialReference", void 0), e$2([r$4({ PolynomialXform: "polynomial" })], u$3.prototype, "type", void 0), u$3 = e$2([i$2("esri.layers.support.rasterTransforms.PolynomialTransform")], u$3);
+var m$1 = u$3;
+const t$1 = { PolynomialXform: m$1, IdentityXform: i$1 }, r = Object.keys(t$1);
+function e$1(n2) {
+  const o2 = n2 == null ? void 0 : n2.type;
+  return !n2 || r.includes(o2);
+}
+function l$1(n2) {
+  if (!(n2 == null ? void 0 : n2.type))
+    return null;
+  const o2 = t$1[n2 == null ? void 0 : n2.type];
+  if (o2) {
+    const t2 = new o2();
+    return t2.read(n2), t2;
+  }
+  return null;
+}
+const g$1 = new Map();
+g$1.set("int16", "esriFieldTypeSmallInteger"), g$1.set("int32", "esriFieldTypeInteger"), g$1.set("int64", "esriFieldTypeInteger"), g$1.set("float32", "esriFieldTypeSingle"), g$1.set("float64", "esriFieldTypeDouble"), g$1.set("text", "esriFieldTypeString");
+const y = 8;
+let x$2 = class extends L {
+  constructor() {
+    super(...arguments), this.storageInfo = null, this.datasetFormat = "CRF";
+  }
+  open(e2) {
+    return __async(this, null, function* () {
+      yield this.init();
+      const { data: t2 } = yield this.request(this.url + "/conf.json", { signal: e2 == null ? void 0 : e2.signal });
+      if (!this._validateHeader(t2))
+        throw new s$1("cloudraster:open", "Invalid or unsupported conf.json.");
+      this.datasetName = this.url.slice(this.url.lastIndexOf("/") + 1);
+      const { storageInfo: r2, rasterInfo: o2 } = this._parseHeader(t2);
+      if (o2.dataType === "thematic") {
+        const e3 = yield this._fetchAuxiliaryInformation();
+        o2.attributeTable = e3;
+      }
+      this._set("storageInfo", r2), this._set("rasterInfo", o2), this.ioConfig.retryCount = this.ioConfig.retryCount || 0;
+    });
+  }
+  fetchRawTile(_0, _1, _2) {
+    return __async(this, arguments, function* (e2, t2, r2, o2 = {}) {
+      const i2 = this.rasterInfo.storageInfo.maximumPyramidLevel - e2;
+      if (i2 < 0)
+        return null;
+      const s2 = this._buildCacheFilePath(i2, t2, r2, o2.multidimensionalDefinition), a2 = this._getIndexRecordFromBundle(t2, r2), n2 = yield this.request(s2, { range: { from: 0, to: this.storageInfo.headerSize - 1 }, responseType: "array-buffer", signal: o2.signal });
+      if (!n2)
+        return null;
+      const l2 = new Uint8Array(n2.data), f2 = this._getTileEndAndContentType(l2, a2);
+      if (f2.recordSize === 0)
+        return null;
+      const m2 = yield this.request(s2, { range: { from: f2.position, to: f2.position + f2.recordSize }, responseType: "array-buffer", signal: o2.signal });
+      return m2 ? this.decodePixelBlock(m2.data, { width: this.rasterInfo.storageInfo.tileInfo.size[0], height: this.rasterInfo.storageInfo.tileInfo.size[1], planes: null, pixelType: null }) : null;
+    });
+  }
+  _validateHeader(e2) {
+    const t2 = ["origin", "extent", "geodataXform", "LODInfos", "blockWidth", "blockHeight", "bandCount", "pixelType", "pixelSizeX", "pixelSizeY", "format", "packetSize"];
+    return e2 && e2.type === "RasterInfo" && !t2.some((t3) => !e2[t3]);
+  }
+  _parseHeader(e2) {
+    var t2, r2;
+    const o2 = ["u1", "u2", "u4", "u8", "s8", "u16", "s16", "u32", "s32", "f32", "f64"][e2.pixelType], { bandCount: i2, histograms: l2, colormap: c2, blockWidth: u2, blockHeight: d2, firstPyramidLevel: h2, maximumPyramidLevel: g2 } = e2, x2 = e2.statistics && e2.statistics.map((e3) => ({ min: e3.min, max: e3.max, avg: e3.mean, stddev: e3.standardDeviation, median: e3.median, mode: e3.mode })), I2 = e2.extent.spatialReference, S2 = (t2 = e2.geodataXform) == null ? void 0 : t2.spatialReference, v2 = new k(I2 != null && I2.wkid || I2 != null && I2.wkt ? I2 : S2);
+    let w2 = new M({ xmin: e2.extent.xmin, ymin: e2.extent.ymin, xmax: e2.extent.xmax, ymax: e2.extent.ymax, spatialReference: v2 });
+    const b2 = new j$1({ x: e2.pixelSizeX, y: e2.pixelSizeY, spatialReference: v2 }), T2 = Math.round((w2.xmax - w2.xmin) / b2.x), j2 = Math.round((w2.ymax - w2.ymin) / b2.y), k$1 = this._parseTransform(e2.geodataXform), z = k$1 ? w2 : null;
+    k$1 && (w2 = k$1.forwardTransform(w2), b2.x = (w2.xmax - w2.xmin) / T2, b2.y = (w2.ymax - w2.ymin) / j2);
+    const _ = (r2 = e2.properties) != null ? r2 : {}, C2 = e2.format.toLowerCase().replace("cache/", ""), R2 = new j$1(e2.origin.x, e2.origin.y, v2);
+    let F, P, H, L2;
+    if (c2 && c2.colors)
+      for (F = [], P = 0; P < c2.colors.length; P++)
+        H = c2.colors[P], L2 = c2.values ? c2.values[P] : P, F.push([L2, 255 & H, H << 16 >>> 24, H << 8 >>> 24, H >>> 24]);
+    const D2 = e2.LODInfos, M$12 = [];
+    for (P = 0; P < D2.levels.length; P++)
+      M$12.push({ level: D2.levels[P], resolution: D2.resolutions[P], scale: 96 / 0.0254 * D2.resolutions[P] });
+    const B = new x$4({ dpi: 96, lods: M$12, format: C2, origin: R2, size: [u2, d2], spatialReference: v2 }), O2 = { recordSize: y, packetSize: e2.packetSize, headerSize: e2.packetSize * e2.packetSize * y + 64 }, $ = [{ maxCol: Math.ceil(T2 / u2) - 1, maxRow: Math.ceil(j2 / d2) - 1, minCol: 0, minRow: 0 }];
+    let q = 2;
+    if (g2 > 0)
+      for (P = 0; P < g2; P++)
+        $.push({ maxCol: Math.ceil(T2 / q / u2) - 1, maxRow: Math.ceil(j2 / q / d2) - 1, minCol: 0, minRow: 0 }), q *= 2;
+    const E2 = e2.mdInfo;
+    return { storageInfo: O2, rasterInfo: new p$3({ width: T2, height: j2, pixelType: o2, bandCount: i2, extent: w2, nativeExtent: z, transform: k$1, spatialReference: v2, pixelSize: b2, keyProperties: _, statistics: x2, histograms: l2, multidimensionalInfo: E2, colormap: F, storageInfo: new p$1({ blockWidth: u2, blockHeight: d2, pyramidBlockWidth: u2, pyramidBlockHeight: d2, origin: R2, tileInfo: B, firstPyramidLevel: h2, maximumPyramidLevel: g2, blockBoundary: $ }) }) };
+  }
+  _parseTransform(e2) {
+    var t2, r2;
+    if (!e$1(e2))
+      throw new s$1("cloudraster:open", "the data contains unsupported geodata transform types");
+    const o2 = l$1(e2);
+    if (o2.type === "identity")
+      return null;
+    if ((t2 = o2.forwardCoefficients) == null || !t2.length || (r2 = o2.inverseCoefficients) == null || !r2.length)
+      throw new s$1("cloudraster:open", "the data contains unsupported geodata transforms - both forward and inverse coefficients are required currently");
+    return o2;
+  }
+  _fetchAuxiliaryInformation(e2) {
+    return __async(this, null, function* () {
+      const t2 = this.request(this.url + "/conf.vat.json", { signal: e2 }).then((e3) => e3.data).catch(() => null), r2 = this.request(this.url + "/conf.vat.dbf", { responseType: "array-buffer", signal: e2 }).then((e3) => e3.data).catch(() => null), o2 = yield Promise.all([t2, r2]);
+      let i2;
+      if (o2[0]) {
+        let e3 = o2[0].fields;
+        const t3 = o2[0].values;
+        if (e3 && t3) {
+          e3 = e3.map((e4) => ({ type: e4.name === "OID" ? "esriFieldTypeOID" : g$1.get(e4.type), name: e4.name, alias: e4.alias || e4.name }));
+          const r3 = t3.map((e4) => ({ attributes: e4 }));
+          e3 && t3 && (i2 = { fields: e3, features: r3 });
+        }
+      }
+      if (!i2 && o2[1]) {
+        i2 = r$1.parse(o2[1]).recordSet;
+      }
+      return g$3.fromJSON(i2);
+    });
+  }
+  _buildCacheFilePath(e2, r2, o2, i2) {
+    const s2 = this.storageInfo.packetSize, a2 = Math.floor(r2 / s2) * s2, n2 = Math.floor(o2 / s2) * s2, l2 = "R" + this._toHexString4(a2) + "C" + this._toHexString4(n2);
+    let f2 = "L";
+    f2 += e2 >= 10 ? e2.toString() : "0" + e2.toString();
+    const { multidimensionalInfo: m2 } = this.rasterInfo, p2 = i2 == null ? void 0 : i2[0];
+    if (!r$2(m2) || !p2)
+      return `${this.url}/_alllayers/${f2}/${l2}.bundle`;
+    let c2 = m2.variables.filter((e3) => e3.name === p2.variableName)[0].dimensions[0].values.indexOf(p2.values[0]).toString(16);
+    const u2 = 4 - c2.length;
+    for (let t2 = 0; t2 < u2; t2++)
+      c2 = "0" + c2;
+    return c2 = "S" + c2, `${this.url}/_alllayers/${p2.variableName}/${c2}/${f2}/${l2}.bundle`;
+  }
+  _getIndexRecordFromBundle(e2, t2) {
+    const r2 = this.storageInfo.packetSize, o2 = r2 * (e2 % r2) + t2 % r2;
+    if (o2 < 0)
+      throw "Invalid level / row / col";
+    return 20 + o2 * this.storageInfo.recordSize + 44;
+  }
+  _getTileEndAndContentType(e2, t2) {
+    const r2 = e2.subarray(t2, t2 + 8);
+    let o2, i2 = 0;
+    for (o2 = 0; o2 < 5; o2++)
+      i2 |= (255 & r2[o2]) << 8 * o2;
+    const s2 = 1099511627775 & i2;
+    for (i2 = 0, o2 = 5; o2 < 8; o2++)
+      i2 |= (255 & r2[o2]) << 8 * (o2 - 5);
+    return { position: s2, recordSize: 1099511627775 & i2 };
+  }
+  _toHexString4(e2) {
+    let t2 = e2.toString(16);
+    if (t2.length !== 4) {
+      let e3 = 4 - t2.length;
+      for (; e3-- > 0; )
+        t2 = "0" + t2;
+    }
+    return t2;
+  }
+};
+e$2([y$1({ readOnly: true })], x$2.prototype, "storageInfo", void 0), e$2([y$1({ type: String, json: { write: true } })], x$2.prototype, "datasetFormat", void 0), x$2 = e$2([i$2("esri.layers.support.rasterDatasets.CloudRaster")], x$2);
+var I$3 = x$2;
+let h = class extends L {
+  constructor() {
+    super(...arguments), this.datasetFormat = "MEMORY";
+  }
+  open(t2) {
+    return __async(this, null, function* () {
+      var e2;
+      yield this.init();
+      const { pixelBlock: s2, statistics: r2, histograms: i2, name: o2, keyProperties: l2, nativeExtent: p2, transform: c2 } = this.data, { width: h2, height: u2, pixelType: d2 } = s2, f2 = this.data.extent || new M({ xmin: -0.5, ymin: 0.5, xmax: h2 - 0.5, ymax: u2 - 0.5, spatialReference: new k({ wkid: 3857 }) }), y2 = (e2 = this.data.isPseudoSpatialReference) != null ? e2 : !this.data.extent, x2 = { x: f2.width / h2, y: f2.height / u2 }, g2 = new p$3({ width: h2, height: u2, pixelType: d2, extent: f2, nativeExtent: p2, transform: c2, pixelSize: x2, spatialReference: f2.spatialReference, bandCount: 3, keyProperties: l2 || {}, statistics: r2, isPseudoSpatialReference: y2, histograms: i2 });
+      this.createRemoteDatasetStorageInfo(g2, 512, 512), this._set("rasterInfo", g2), this.updateTileInfo(), yield this._buildInMemoryRaster(s2, { width: 512, height: 512 }, t2), this.datasetName = o2, this.url = "/InMemory/" + o2;
+    });
+  }
+  fetchRawTile(t2, e2, s2, r2 = {}) {
+    const i2 = this._pixelBlockTiles.get(`${t2}/${e2}/${s2}`);
+    return Promise.resolve(i2);
+  }
+  _buildInMemoryRaster(t2, s2, r2) {
+    return __async(this, null, function* () {
+      const a2 = this.rasterInfo.storageInfo.maximumPyramidLevel, m2 = this.rasterJobHandler ? this.rasterJobHandler.split({ pixelBlock: t2, tileSize: s2, maximumPyramidLevel: a2 }, r2) : Promise.resolve(U$1(t2, s2, a2)), n2 = r$2(this.rasterInfo.statistics), c2 = r$2(this.rasterInfo.histograms), h2 = n2 && c2 ? Promise.resolve({ statistics: null, histograms: null }) : this.rasterJobHandler ? this.rasterJobHandler.estimateStatisticsHistograms({ pixelBlock: t2 }, r2) : Promise.resolve(r$5(t2)), u2 = yield A$1([m2, h2]);
+      if (!u2[0].value && u2[1].value)
+        throw new s$1("inmemory-raster:open", "failed to build in memory raster");
+      var d2, f2;
+      (this._pixelBlockTiles = u2[0].value, n2) || (this.rasterInfo.statistics = (d2 = u2[1].value) == null ? void 0 : d2.statistics);
+      c2 && (this.rasterInfo.histograms = (f2 = u2[1].value) == null ? void 0 : f2.histograms);
+    });
+  }
+};
+e$2([y$1({ type: String, json: { write: true } })], h.prototype, "datasetFormat", void 0), e$2([y$1()], h.prototype, "data", void 0), h = e$2([i$2("esri.layers.support.rasterDatasets.InMemoryRaster")], h);
+var u$2 = h;
+function n$1(e2, t2) {
+  if (!e2 || !t2)
+    return [];
+  let l2 = t2;
+  t2.indexOf("/") > -1 ? (l2 = t2.slice(0, t2.indexOf("/")), t2 = t2.slice(t2.indexOf("/") + 1)) : t2 = "";
+  const r2 = [];
+  if (t2) {
+    const u3 = n$1(e2, l2);
+    for (let e3 = 0; e3 < u3.length; e3++) {
+      n$1(u3[e3], t2).forEach((n2) => r2.push(n2));
+    }
+    return r2;
+  }
+  const u2 = e2.getElementsByTagNameNS("*", l2);
+  if (!u2 || u2.length === 0)
+    return [];
+  for (let n2 = 0; n2 < u2.length; n2++)
+    r2.push(u2[n2] || u2.item[n2]);
+  return r2;
+}
+function e(t2, l2) {
+  if (!t2 || !l2)
+    return null;
+  let r2 = l2;
+  l2.indexOf("/") > -1 ? (r2 = l2.slice(0, l2.indexOf("/")), l2 = l2.slice(l2.indexOf("/") + 1)) : l2 = "";
+  const u2 = n$1(t2, r2);
+  return u2.length > 0 ? l2 ? e(u2[0], l2) : u2[0] : null;
+}
+function t(n2, t2 = null) {
+  const l2 = t2 ? e(n2, t2) : n2;
+  let r2;
+  return l2 ? (r2 = l2.textContent || l2.nodeValue, r2 ? r2.trim() : null) : null;
+}
+function l(e2, t2) {
+  const l2 = n$1(e2, t2), r2 = [];
+  let u2;
+  for (let n2 = 0; n2 < l2.length; n2++)
+    u2 = l2[n2].textContent || l2[n2].nodeValue, u2 && (u2 = u2.trim(), u2 !== "" && r2.push(u2));
+  return r2;
+}
+function u$1(n2, e2) {
+  return l(n2, e2).map((n3) => Number(n3));
+}
+function o$1(n2, e2) {
+  const l2 = t(n2, e2);
+  return Number(l2);
+}
+function i(n2, e2) {
+  var t2;
+  const l2 = n2 == null || (t2 = n2.nodeName) == null ? void 0 : t2.toLowerCase(), r2 = e2.toLowerCase();
+  return l2.slice(l2.lastIndexOf(":") + 1) === r2;
+}
+function o(e2, t2) {
+  if (!e2 || !t2)
+    return null;
+  const n2 = [];
+  for (let a2 = 0; a2 < e2.length; a2++)
+    n2.push(e2[a2]), n2.push(t2[a2]);
+  return n2;
+}
+function u(e$12) {
+  var n2;
+  const r2 = e(e$12, "GeodataXform"), u2 = c$1(o$1(r2, "SpatialReference/WKID") || t(r2, "SpatialReference/WKT"));
+  if (r2.getAttribute("xsi:type") !== "typens:PolynomialXform")
+    return { spatialReference: u2, transform: null };
+  const f2 = (n2 = o$1(r2, "PolynomialOrder")) != null ? n2 : 1, m2 = u$1(r2, "CoeffX/Double"), d2 = u$1(r2, "CoeffY/Double"), p2 = u$1(r2, "InverseCoeffX/Double"), S2 = u$1(r2, "InverseCoeffY/Double"), I2 = o(m2, d2), g2 = o(p2, S2);
+  return { spatialReference: u2, transform: new m$1({ spatialReference: u2, polynomialOrder: f2, forwardCoefficients: I2, inverseCoefficients: g2 }) };
+}
+function f(e$12) {
+  var t$12;
+  const n2 = o$1(e$12, "NoDataValue"), i2 = e(e$12, "Histograms/HistItem"), o2 = o$1(i2, "HistMin"), u2 = o$1(i2, "HistMax"), f2 = o$1(i2, "BucketCount"), c2 = (t$12 = t(i2, "HistCounts")) == null ? void 0 : t$12.split("|").map((e2) => Number(e2));
+  let m2, d2, p2, S2;
+  n$1(e$12, "Metadata/MDI").forEach((e2) => {
+    var t2;
+    const n3 = Number((t2 = e2.textContent) != null ? t2 : e2.nodeValue);
+    switch (e2.getAttribute("key").toUpperCase()) {
+      case "STATISTICS_MINIMUM":
+        m2 = n3;
+        break;
+      case "STATISTICS_MAXIMUM":
+        d2 = n3;
+        break;
+      case "STATISTICS_MEAN":
+        p2 = n3;
+        break;
+      case "STATISTICS_STDDEV":
+        S2 = n3;
+    }
+  });
+  const I2 = o$1(e$12, "Metadata/SourceBandIndex");
+  return { noDataValue: n2, histogram: c2 != null && c2.length && m2 != null && d2 != null ? { min: o2, max: u2, size: f2 || c2.length, counts: c2 } : null, sourceBandIndex: I2, statistics: m2 != null && d2 != null ? { min: m2, max: d2, avg: p2, stddev: S2 } : null };
+}
+function c$1(t2) {
+  if (!t2)
+    return null;
+  let n2 = Number(t2);
+  if (!isNaN(n2) && n2 !== 0)
+    return new k({ wkid: n2 });
+  if (!(t2 = String(t2)).startsWith("GEOGCS") && !t2.startsWith("PROJCS"))
+    return null;
+  const a2 = t2.replace(/\]/g, "[").replace(/\"/g, "").split("[").map((e2) => e2.trim()).filter((e2) => e2 !== ""), r2 = a2[a2.length - 1].split(",");
+  return r2[0] === "EPSG" && t2.endsWith('"]]') && (n2 = Number(r2[1]), !isNaN(n2) && n2 !== 0) ? new k({ wkid: n2 }) : new k({ wkt: t2 });
+}
+function m(e2) {
+  var t$12;
+  if ((e2 == null || (t$12 = e2.documentElement.tagName) == null ? void 0 : t$12.toLowerCase()) !== "pamdataset")
+    return {};
+  const s2 = { spatialReference: null, transform: null, metadata: {}, rasterBands: [], statistics: null, histograms: null };
+  e2.documentElement.childNodes.forEach((e3) => {
+    if (e3.nodeType === 1) {
+      if (i(e3, "SRS")) {
+        if (!s2.spatialReference) {
+          const t$13 = t(e3);
+          s2.spatialReference = c$1(t$13);
+        }
+      } else if (i(e3, "Metadata"))
+        if (e3.getAttribute("domain") === "xml:ESRI") {
+          const { spatialReference: t2, transform: n2 } = u(e3);
+          s2.transform = n2, s2.spatialReference || (s2.spatialReference = t2);
+        } else {
+          n$1(e3, "MDI").forEach((e4) => s2.metadata[e4.getAttribute("key")] = t(e4));
+        }
+      else if (i(e3, "PAMRasterBand")) {
+        const t2 = f(e3);
+        t2.sourceBandIndex != null && s2.rasterBands[t2.sourceBandIndex] == null ? s2.rasterBands[t2.sourceBandIndex] = t2 : s2.rasterBands.push(t2);
+      }
+    }
+  });
+  const l2 = s2.rasterBands;
+  if (l2) {
+    const e3 = !!l2[0].statistics;
+    s2.statistics = e3 ? l2.map((e4) => e4.statistics) : null;
+    const t2 = !!l2[0].histogram;
+    s2.histograms = t2 ? l2.map((e4) => e4.histogram) : null;
+  }
+  return s2;
+}
+let d = class extends L {
+  open(t2) {
+    return __async(this, null, function* () {
+      yield this.init();
+      const r2 = yield this._fetchData(t2);
+      let { spatialReference: e2, statistics: s2, histograms: o2, transform: a2 } = yield this._fetchAuxiliaryData(t2);
+      const i2 = !e2;
+      i2 && (e2 = new k({ wkid: 3857 })), o2 != null && o2.length && s2 == null && (s2 = o$4(o2));
+      const { width: m2, height: c2 } = r2;
+      let f2 = new M({ xmin: -0.5, ymin: 0.5 - c2, xmax: m2 - 0.5, ymax: 0.5, spatialReference: e2 });
+      const h2 = a2 ? a2.forwardTransform(f2) : f2;
+      let d2 = true;
+      if (a2) {
+        const t3 = a2.forwardCoefficients;
+        d2 = t3 && t3[1] === 0 && t3[2] === 0, d2 && (a2 = null, f2 = h2);
+      }
+      const x2 = new u$2({ data: { extent: h2, nativeExtent: f2, transform: a2, pixelBlock: r2, statistics: s2, histograms: o2, keyProperties: { DateType: "Processed" }, isPseudoSpatialReference: i2 } });
+      yield x2.open(), this._set("rasterInfo", x2.rasterInfo), this._inMemoryRaster = x2;
+    });
+  }
+  fetchRawTile(t2, r2, e2, s2 = {}) {
+    return this._inMemoryRaster.fetchRawTile(t2, r2, e2, s2);
+  }
+  _fetchData(t2) {
+    return __async(this, null, function* () {
+      const { data: r2 } = yield this.request(this.url, { responseType: "array-buffer", signal: t2 == null ? void 0 : t2.signal }), e2 = D(r2).toUpperCase();
+      if (e2 !== "JPG" && e2 !== "PNG" && e2 !== "GIF" && e2 !== "BMP")
+        throw new s$1("image-aux-raster:open", "the data is not a supported format");
+      this._set("datasetFormat", e2);
+      return yield this.decodePixelBlock(r2, { format: "jpg", width: 1, height: 1, useCanvas: true });
+    });
+  }
+  _fetchAuxiliaryData(t2) {
+    return __async(this, null, function* () {
+      var e2, s2;
+      const o2 = e$3(t2 == null ? void 0 : t2.signal), n2 = (e2 = this.ioConfig.skipExtensions) != null ? e2 : [], l2 = n2.indexOf("aux.xml") > -1 ? null : this.request(this.url + ".aux.xml", { responseType: "xml", signal: o2 }), m$22 = this.datasetFormat, p2 = m$22 === "JPG" ? "jgw" : m$22 === "PNG" ? "pgw" : m$22 === "BMP" ? "bpw" : null, c2 = n2.indexOf(p2) > -1 ? null : this.request(this.url.slice(0, this.url.lastIndexOf(".")) + "." + p2, { responseType: "text", signal: o2 }), u2 = yield A$1([l2, c2]);
+      if (o2 != null && o2.aborted)
+        throw m$3();
+      const d2 = m((s2 = u2[0].value) == null ? void 0 : s2.data);
+      if (!d2.transform) {
+        const t3 = u2[1].value ? u2[1].value.data.split("\n").slice(0, 6).map((t4) => Number(t4)) : null;
+        d2.transform = (t3 == null ? void 0 : t3.length) === 6 ? new m$1({ forwardCoefficients: [t3[4], t3[5], t3[0], -t3[1], t3[2], -t3[3]] }) : null;
+      }
+      return d2;
+    });
+  }
+};
+e$2([y$1({ type: String, json: { write: true } })], d.prototype, "datasetFormat", void 0), d = e$2([i$2("esri.layers.support.rasterDatasets.ImageAuxRaster")], d);
+var x$1 = d;
+let g = class extends L {
+  constructor() {
+    super(...arguments), this._levelOffset = 0, this._slices = null, this._tilemapCache = null, this.datasetFormat = "RasterTileServer";
+  }
+  open(e2) {
+    return __async(this, null, function* () {
+      yield this.init();
+      const i2 = e2 && e2.signal, s2 = this.sourceJSON ? { data: this.sourceJSON } : yield this.request(this.url, { query: { f: "json" }, signal: i2 });
+      s2.ssl && (this.url = this.url.replace(/^http:/i, "https:"));
+      const a2 = s2.data;
+      if (this.sourceJSON = a2, !a2)
+        throw new s$1("imageserverraster:open", "cannot initialize tiled image service, missing service info");
+      if (!a2.tileInfo)
+        throw new s$1("imageserverraster:open", "use ImageryLayer to open non-tiled image services");
+      this._fixScaleInServiceInfo();
+      const o2 = ["jpg", "jpeg", "png", "png8", "png24", "png32", "mixed"];
+      this.tileType = a2.cacheType, this.tileType == null && (o2.indexOf(a2.tileInfo.format.toLowerCase()) > -1 ? this.tileType = "Map" : a2.tileInfo.format.toLowerCase() === "lerc" ? this.tileType = "Elevation" : this.tileType = "Raster"), this.datasetName = a2.name.slice(a2.name.indexOf("/") + 1);
+      const n2 = yield this._fetchRasterInfo({ signal: i2 });
+      if (!r$2(n2))
+        throw new s$1("image-server-raster:open", "cannot initialize image service");
+      {
+        const e3 = this.tileType === "Map" ? n$6(a2.tileInfo, a2) : x$4.fromJSON(a2.tileInfo), { extent: t2, pixelSize: i3 } = n2, s3 = 0.5 / n2.width * i3.x;
+        let l2, r2;
+        const o3 = e3.lodAt(Math.max.apply(null, e3.lods.map((e4) => e4.level)));
+        this.tileType !== "Map" && a2.maxScale !== 0 && (this.tileType === "Raster" ? (l2 = e3.lods.filter((e4) => e4.resolution === i3.x)[0], l2 || (l2 = e3.lods[e3.lods.length - 1])) : (l2 = e3.lods.filter((e4) => Math.abs(e4.scale - a2.maxScale) < s3)[0], l2 || (l2 = e3.lods.filter((e4) => e4.scale > a2.maxScale).sort((e4, t3) => e4.scale > t3.scale ? 1 : -1)[0])), i3.x = i3.y = l2.resolution, n2.width = Math.ceil((t2.xmax - t2.xmin) / i3.x - 0.1), n2.height = Math.ceil((t2.ymax - t2.ymin) / i3.y - 0.1)), l2 || (l2 = o3);
+        const m2 = e3.lodAt(Math.min.apply(null, e3.lods.map((e4) => e4.level)));
+        this.tileType === "Map" ? this._levelOffset = e3.lods[0].level : a2.minScale !== 0 && this.tileType === "Elevation" && (r2 = e3.lods.filter((e4) => Math.abs(e4.scale - a2.minScale) < s3)[0], this._levelOffset = r2.level - m2.level), r2 || (r2 = m2);
+        const h2 = Math.max(i3.x, i3.y);
+        (Math.abs(i3.x - i3.y) > s3 || !e3.lods.some((e4) => Math.abs(e4.resolution - h2) < s3)) && (i3.x = i3.y = l2.resolution, n2.width = Math.ceil((t2.xmax - t2.xmin) / i3.x - 0.1), n2.height = Math.ceil((t2.ymax - t2.ymin) / i3.y - 0.1));
+        const p2 = l2.level - r2.level, [f2, x2] = e3.size, y2 = e3.origin;
+        let { x: g2, y: v2 } = i3;
+        const S2 = [{ minCol: Math.floor((t2.xmin - y2.x + 0.1 * g2) / f2 / g2), maxCol: Math.floor((t2.xmax - y2.x - 0.1 * g2) / f2 / g2), minRow: Math.floor((y2.y - t2.ymax + 0.1 * v2) / x2 / v2), maxRow: Math.floor((y2.y - t2.ymin - 0.1 * v2) / x2 / v2) }];
+        if (p2 > 0)
+          for (let a3 = 0; a3 < p2; a3++)
+            g2 *= 2, v2 *= 2, S2.push({ minCol: Math.floor((t2.xmin - y2.x + 0.1 * g2) / f2 / g2), maxCol: Math.floor((t2.xmax - y2.x - 0.1 * g2) / f2 / g2), minRow: Math.floor((y2.y - t2.ymax + 0.1 * v2) / x2 / g2), maxRow: Math.floor((y2.y - t2.ymin - 0.1 * v2) / x2 / g2) });
+        n2.storageInfo = new p$1({ blockWidth: e3.size[0], blockHeight: e3.size[1], pyramidBlockWidth: e3.size[0], pyramidBlockHeight: e3.size[1], compression: e3.format, origin: e3.origin, firstPyramidLevel: 1, maximumPyramidLevel: p2, tileInfo: e3, blockBoundary: S2 }), this._set("rasterInfo", n2);
+      }
+      if (a2.capabilities.toLowerCase().indexOf("tilemap") > -1) {
+        const e3 = { tileInfo: n2.storageInfo.tileInfo, parsedUrl: U$2(this.url), url: this.url, tileServers: [], type: "tile" };
+        this._tilemapCache = new j$3({ layer: e3 });
+      }
+    });
+  }
+  fetchRawTile(_0, _1, _2) {
+    return __async(this, arguments, function* (e2, t2, i2, s2 = {}) {
+      const { storageInfo: a2, extent: l2, pixelSize: r2 } = this.rasterInfo, o2 = a2.maximumPyramidLevel - e2 + this._levelOffset, n2 = `${this.url}/tile/${o2}/${t2}/${i2}`, m2 = this._slices ? { sliceId: s2.sliceId || 0 } : null, { data: h2 } = yield this.request(n2, { query: m2, responseType: "array-buffer", signal: s2.signal });
+      if (!h2)
+        return null;
+      const c2 = yield this.decodePixelBlock(h2, { width: a2.tileInfo.size[0], height: a2.tileInfo.size[1], planes: null, pixelType: null, isPoint: this.tileType === "Elevation" }), u2 = a2.blockBoundary[e2];
+      if (a2.compression !== "jpg" || i2 > u2.minCol && i2 < u2.maxCol && t2 > u2.minRow && t2 < u2.maxRow)
+        return c2;
+      const { origin: p2, blockWidth: f2, blockHeight: d2 } = a2, y2 = __pow(2, e2), g2 = Math.round((l2.xmin - p2.x) / (r2.x * y2)) % f2, v2 = Math.round((l2.xmax - p2.x) / (r2.x * y2)) % f2, S2 = Math.round((p2.y - l2.ymax) / (r2.x * y2)) % d2, w2 = Math.round((p2.y - l2.ymin) / (r2.x * y2)) % d2, I2 = i2 === u2.minCol ? g2 : 0, j2 = t2 === u2.minRow ? S2 : 0, b2 = i2 === u2.maxCol ? v2 : f2, M2 = t2 === u2.maxRow ? w2 : d2;
+      return d$4(c2, { x: I2, y: j2 }, { width: b2 - I2, height: M2 - j2 }), c2;
+    });
+  }
+  getSliceIndex(e2) {
+    if (e2 == null || !e2.length || !this._slices)
+      return null;
+    const t2 = e2;
+    for (let i2 = 0; i2 < this._slices.length; i2++) {
+      const e3 = this._slices[i2].multidimensionalDefinition;
+      if (e3.length === t2.length && !e3.some((e4) => {
+        const i3 = t2.filter((t3) => e4.variableName === t3.variableName && t3.dimensionName === e4.dimensionName)[0];
+        if (!i3)
+          return true;
+        return (Array.isArray(e4.values[0]) ? e4.values[0][0] : e4.values[0]) !== (Array.isArray(i3.values[0]) ? i3.values[0][0] : i3.values[0]);
+      }))
+        return i2;
+    }
+    return null;
+  }
+  fetchVariableStatisticsHistograms(e2, t2) {
+    return __async(this, null, function* () {
+      const i2 = this.request(this.url + "/statistics", { query: { variable: e2, f: "json" }, signal: t2 }).then((e3) => {
+        var t3;
+        return (t3 = e3.data) == null ? void 0 : t3.statistics;
+      }), s2 = this.request(this.url + "/histograms", { query: { variable: e2, f: "json" }, signal: t2 }).then((e3) => {
+        var t3;
+        return (t3 = e3.data) == null ? void 0 : t3.histograms;
+      }), a2 = yield Promise.all([i2, s2]);
+      return a2[0] && a2[0].forEach((e3) => {
+        e3.avg = e3.mean, e3.stddev = e3.standardDeviation;
+      }), { statistics: a2[0] || null, histograms: a2[1] || null };
+    });
+  }
+  computeBestPyramidLevelForLocation(_0) {
+    return __async(this, arguments, function* (e2, t2 = {}) {
+      if (!this._tilemapCache)
+        return 0;
+      let s2 = this.identifyPixelLocation(e2, 0, e$3(t2.datumTransformation));
+      if (s2 === null)
+        return null;
+      let a2 = 0;
+      const { maximumPyramidLevel: l2 } = this.rasterInfo.storageInfo;
+      let r2 = l2 - a2 + this._levelOffset;
+      const o2 = s2.srcLocation;
+      for (; r2 >= 0; ) {
+        try {
+          if ((yield this._tilemapCache.fetchAvailability(r2, s2.row, s2.col, t2)) === "available")
+            break;
+        } catch (e3) {
+        }
+        if (r2--, a2++, s2 = this.identifyPixelLocation(o2, a2, e$3(t2.datumTransformation)), s2 === null)
+          return null;
+      }
+      return r2 === -1 || s2 == null ? null : a2;
+    });
+  }
+  _fetchRasterInfo(e2) {
+    return __async(this, null, function* () {
+      const t2 = this.sourceJSON, i2 = Math.ceil((t2.extent.xmax - t2.extent.xmin) / t2.pixelSizeX - 0.1), s2 = Math.ceil((t2.extent.ymax - t2.extent.ymin) / t2.pixelSizeY - 0.1), a2 = k.fromJSON(t2.spatialReference || t2.extent.spatialReference);
+      if (this.tileType === "Map")
+        return new p$3({ width: i2, height: s2, bandCount: 3, extent: M.fromJSON(t2.extent), spatialReference: a2, pixelSize: new j$1({ x: t2.pixelSizeX, y: t2.pixelSizeY, spatialReference: a2 }), pixelType: "u8", statistics: null, keyProperties: { DataType: "processed" } });
+      const { slice: l2, signal: r2 } = e2, c2 = !!t2.hasRasterAttributeTable && this.request(this.url + "/rasterAttributeTable", { query: { slice: l2, f: "json" }, signal: r2 }).then((e3) => g$3.fromJSON(e3.data)).catch(() => null), u2 = !!t2.hasColormap && this.request(this.url + "/colormap", { query: { slice: l2, f: "json" }, signal: r2 }).then((e3) => {
+        var t3;
+        return (t3 = e3.data) == null ? void 0 : t3.colormap;
+      }), p2 = !!t2.hasHistograms && this.request(this.url + "/histograms", { query: { slice: l2, f: "json" }, signal: r2 }).then((e3) => {
+        var t3;
+        return (t3 = e3.data) == null ? void 0 : t3.histograms;
+      }), x2 = this.request(this.url + "/keyProperties", { query: { f: "json" }, signal: r2 }).then((e3) => e3.data).catch(() => {
+      }), d2 = !!t2.hasMultidimensions && this._fetchMultidimensionalInfo(), y2 = !!t2.hasMultidimensions && this.request(this.url + "/slices", { query: { f: "json" }, signal: r2 }).then((e3) => e3.data && e3.data.slices).catch(() => {
+      });
+      return Promise.all([c2, u2, p2, x2, d2, y2]).then((e3) => {
+        let l3 = null;
+        if (t2.minValues && t2.minValues.length === t2.bandCount) {
+          l3 = [];
+          for (let e4 = 0; e4 < t2.minValues.length; e4++)
+            l3.push({ min: t2.minValues[e4], max: t2.maxValues[e4], avg: t2.meanValues[e4], stddev: t2.stdvValues[e4] });
+        }
+        return this._slices = e3[5] || null, new p$3({ width: i2, height: s2, bandCount: t2.bandCount, extent: M.fromJSON(t2.extent), spatialReference: a2, pixelSize: new j$1({ x: t2.pixelSizeX, y: t2.pixelSizeY, spatialReference: a2 }), pixelType: t2.pixelType.toLowerCase(), statistics: l3, attributeTable: e3[0] || null, colormap: e3[1] || null, histograms: e3[2] || null, keyProperties: e3[3] || {}, multidimensionalInfo: e3[4] || null });
+      });
+    });
+  }
+  _fetchMultidimensionalInfo(e2) {
+    return __async(this, null, function* () {
+      var t2;
+      const i2 = yield this.request(this.url + "/multidimensionalInfo", { query: { f: "json" }, signal: e2 }).then((e3) => {
+        var t3;
+        return (t3 = e3.data) == null ? void 0 : t3.multidimensionalInfo;
+      });
+      return (t2 = i2.variables) != null && t2.length && i2.variables.forEach((e3) => {
+        var t3;
+        (t3 = e3.statistics) != null && t3.length && e3.statistics.forEach((e4) => {
+          e4.avg = e4.mean, e4.stddev = e4.standardDeviation;
+        });
+      }), i2;
+    });
+  }
+  _fixScaleInServiceInfo() {
+    const { sourceJSON: e2 } = this;
+    e2.minScale && e2.minScale < 0 && (e2.minScale = 0), e2.maxScale && e2.maxScale < 0 && (e2.maxScale = 0);
+  }
+};
+e$2([y$1({ type: String, json: { write: true } })], g.prototype, "datasetFormat", void 0), e$2([y$1()], g.prototype, "tileType", void 0), g = e$2([i$2("esri.layers.support.rasterDatasets.ImageServerRaster")], g);
+var v = g;
+const w$1 = new Map();
+w$1.set("Int8", "s8"), w$1.set("UInt8", "u8"), w$1.set("Int16", "s16"), w$1.set("UInt16", "u16"), w$1.set("Int32", "s32"), w$1.set("UInt32", "u32"), w$1.set("Float32", "f32"), w$1.set("Float64", "f32"), w$1.set("Double64", "f32");
+const I$2 = new Map();
+I$2.set("lerc", ".lrc"), I$2.set("none", ".til"), I$2.set("deflate", ".pzp"), I$2.set("jpeg", ".jzp");
+let b = class extends L {
+  constructor() {
+    super(...arguments), this._files = null, this._storageIndex = null, this.datasetFormat = "MRF";
+  }
+  open(t2) {
+    return __async(this, null, function* () {
+      var s2;
+      yield this.init(), this.datasetName = this.url.slice(this.url.lastIndexOf("/") + 1);
+      const o2 = t2 ? e$3(t2.signal) : null, i2 = yield this.request(this.url, { responseType: "xml", signal: o2 }), { rasterInfo: a2, files: n2 } = this._parseHeader(i2.data);
+      if (((s2 = this.ioConfig.skipExtensions) == null ? void 0 : s2.indexOf("aux.xml")) === -1) {
+        const e2 = yield this._fetchAuxiliaryData(t2);
+        var l2;
+        if (e2 != null)
+          a2.statistics = (l2 = e2.statistics) != null ? l2 : a2.statistics, a2.histograms = e2.histograms, e2.histograms && !r$2(a2.statistics) && (a2.statistics = o$4(e2.histograms));
+      }
+      this._set("rasterInfo", a2), this._files = n2;
+      const p2 = yield this.request(n2.index, { responseType: "array-buffer", signal: o2 });
+      this._storageIndex = this._parseIndex(p2.data);
+      let c2, f2, h2 = 0, u2 = -1;
+      const { blockWidth: g2, blockHeight: d2, compression: y2 } = this.rasterInfo.storageInfo, x2 = this.rasterInfo.storageInfo.pyramidScalingFactor, { width: w2, height: I2, bandCount: b2 } = this.rasterInfo, A2 = [], j2 = y2 === "none" ? 1 : b2;
+      for (; h2 < this._storageIndex.length; )
+        u2++, c2 = Math.ceil(w2 / g2 / __pow(x2, u2)), f2 = Math.ceil(I2 / d2 / __pow(x2, u2)), h2 += c2 * f2 * j2 * 4, A2.push({ maxRow: f2, maxCol: c2, minCol: 0, minRow: 0 });
+      this.rasterInfo.storageInfo.blockBoundary = A2, u2 > 0 && (this.rasterInfo.storageInfo.firstPyramidLevel = 1, this.rasterInfo.storageInfo.maximumPyramidLevel = u2), this.updateTileInfo();
+    });
+  }
+  fetchRawTile(_0, _1, _2) {
+    return __async(this, arguments, function* (t2, e2, r2, s2 = {}) {
+      const { blockWidth: o2, blockHeight: i2, blockBoundary: a2, compression: n2 } = this.rasterInfo.storageInfo, l2 = a2[t2];
+      if (!l2 || l2.maxRow < e2 || l2.maxCol < r2 || l2.minRow > e2 || l2.minCol > r2)
+        return null;
+      const { bandCount: c2, pixelType: f2 } = this.rasterInfo, { ranges: m2, actualTileWidth: h2, actualTileHeight: u2 } = this._getTileLocation(t2, e2, r2);
+      if (!m2 || m2.length === 0)
+        return null;
+      if (m2[0].from === 0 && m2[0].to === 0) {
+        const t3 = new Uint8Array(o2 * i2);
+        return new u$4({ width: o2, height: i2, pixels: null, mask: t3, validPixelCount: 0 });
+      }
+      const { bandIds: g2 } = this.ioConfig, d2 = n2 === "none" ? 1 : c2, y2 = [];
+      let x2 = 0;
+      for (x2 = 0; x2 < d2; x2++)
+        (!g2 || g2.indexOf[x2] > -1) && y2.push(this.request(this._files.data, { range: { from: m2[x2].from, to: m2[x2].to }, responseType: "array-buffer", signal: s2.signal }));
+      const w2 = yield Promise.all(y2), I2 = w2.map((t3) => t3.data.byteLength).reduce((t3, e3) => t3 + e3), b2 = new Uint8Array(I2);
+      let A2 = 0;
+      for (x2 = 0; x2 < d2; x2++)
+        b2.set(new Uint8Array(w2[x2].data), A2), A2 += w2[x2].data.byteLength;
+      const j2 = this.rasterInfo.storageInfo.compression === "lerc" ? "lerc" : "bip", R2 = yield this.decodePixelBlock(b2.buffer, { width: o2, height: i2, format: j2, pixelType: f2 });
+      let _ = 0, F = 0;
+      if (h2 !== o2 || u2 !== i2) {
+        let t3 = R2.mask;
+        if (t3)
+          for (x2 = 0; x2 < i2; x2++)
+            if (F = x2 * o2, x2 < u2)
+              for (_ = h2; _ < o2; _++)
+                t3[F + _] = 0;
+            else
+              for (_ = 0; _ < o2; _++)
+                t3[F + _] = 0;
+        else
+          for (t3 = new Uint8Array(o2 * i2), R2.mask = t3, x2 = 0; x2 < u2; x2++)
+            for (F = x2 * o2, _ = 0; _ < h2; _++)
+              t3[F + _] = 1;
+      }
+      return R2;
+    });
+  }
+  _parseIndex(t2) {
+    if (t2.byteLength % 16 > 0)
+      throw "invalid array buffer must be multiples of 16";
+    let e2, r2, s2, o2, i2, a2;
+    if (r$6) {
+      for (r2 = new Uint8Array(t2), o2 = new ArrayBuffer(t2.byteLength), s2 = new Uint8Array(o2), i2 = 0; i2 < t2.byteLength / 4; i2++)
+        for (a2 = 0; a2 < 4; a2++)
+          s2[4 * i2 + a2] = r2[4 * i2 + 3 - a2];
+      e2 = new Uint32Array(o2);
+    } else
+      e2 = new Uint32Array(t2);
+    return e2;
+  }
+  _getTileLocation(t2, e2, r2) {
+    const { blockWidth: s2, blockHeight: o2, pyramidScalingFactor: i2, compression: a2 } = this.rasterInfo.storageInfo, { width: n2, height: l2, bandCount: p2 } = this.rasterInfo, c2 = a2 === "none" ? 1 : p2;
+    let f2, m2, h2, u2 = 0, g2 = 0;
+    for (h2 = 0; h2 < t2; h2++)
+      g2 = __pow(i2, h2), f2 = Math.ceil(n2 / s2 / g2), m2 = Math.ceil(l2 / o2 / g2), u2 += f2 * m2;
+    g2 = __pow(i2, t2), f2 = Math.ceil(n2 / s2 / g2), m2 = Math.ceil(l2 / o2 / g2), u2 += e2 * f2 + r2, u2 *= 4 * c2;
+    const d2 = this._storageIndex.subarray(u2, u2 + 4 * c2);
+    let y2 = 0, x2 = 0;
+    const w2 = [];
+    for (let I2 = 0; I2 < c2; I2++)
+      y2 = d2[4 * I2 + 0] * __pow(2, 32) + d2[4 * I2 + 1], x2 = y2 + d2[4 * I2 + 2] * __pow(2, 32) + d2[4 * I2 + 3], w2.push({ from: y2, to: x2 });
+    return { ranges: w2, actualTileWidth: r2 < f2 - 1 ? s2 : Math.ceil(n2 / g2) - s2 * (f2 - 1), actualTileHeight: e2 < m2 - 1 ? o2 : Math.ceil(l2 / g2) - o2 * (m2 - 1) };
+  }
+  _parseHeader(t$12) {
+    const e$12 = e(t$12, "MRF_META/Raster");
+    if (!e$12)
+      throw new s$1("mrf:open", "not a valid MRF format");
+    const r2 = e(e$12, "Size"), s2 = parseInt(r2.getAttribute("x"), 10), o2 = parseInt(r2.getAttribute("y"), 10), p2 = parseInt(r2.getAttribute("c"), 10), f2 = (t(e$12, "Compression") || "none").toLowerCase();
+    if (!f2 || ["none", "lerc"].indexOf(f2) === -1)
+      throw new s$1("mrf:open", "currently does not support compression " + f2);
+    const m2 = t(e$12, "DataType") || "UInt8", u2 = w$1.get(m2);
+    if (u2 == null)
+      throw new s$1("mrf:open", "currently does not support pixel type " + m2);
+    const x2 = e(e$12, "PageSize"), b2 = parseInt(x2.getAttribute("x"), 10), A2 = parseInt(x2.getAttribute("y"), 10), j2 = e(e$12, "DataValues");
+    let R2, _;
+    j2 && (_ = j2.getAttribute("NoData"), _ != null && (R2 = _.trim().split(" ").map((t2) => parseFloat(t2))));
+    if (e(t$12, "MRF_META/CachedSource"))
+      throw new s$1("mrf:open", "currently does not support MRF referencing other data files");
+    const F = e(t$12, "MRF_META/GeoTags"), M$12 = e(F, "BoundingBox");
+    if (M$12 == null)
+      throw new s$1("mrf:open", "missing node MRF_META/GeoTags/BoundingBox");
+    const T2 = parseFloat(M$12.getAttribute("minx")), k$1 = parseFloat(M$12.getAttribute("miny")), C2 = parseFloat(M$12.getAttribute("maxx")), U2 = parseFloat(M$12.getAttribute("maxy")), L2 = t(F, "Projection") || "", S2 = t(t$12, "datafile"), v2 = t(t$12, "IndexFile");
+    let B;
+    if (L2 !== "LOCAL_CS[]")
+      if (L2.toLowerCase().startsWith("epsg:")) {
+        const t2 = Number(L2.slice(5));
+        isNaN(t2) || t2 === 0 || (B = new k({ wkid: t2 }));
+      } else
+        B = c$1(L2);
+    const P = new M(T2, k$1, C2, U2);
+    P.spatialReference = B;
+    const E2 = e(t$12, "MRF_META/Rsets"), H = parseInt(E2 && E2.getAttribute("scale") || "2", 10), W = new p$1({ origin: new j$1({ x: P.xmin, y: P.ymax, spatialReference: B }), blockWidth: b2, blockHeight: A2, pyramidBlockWidth: b2, pyramidBlockHeight: A2, compression: f2, pyramidScalingFactor: H }), D2 = new j$1({ x: (C2 - T2) / s2, y: (U2 - k$1) / o2, spatialReference: B });
+    return { rasterInfo: new p$3({ width: s2, height: o2, extent: P, spatialReference: B, bandCount: p2, pixelType: u2, pixelSize: D2, noDataValue: R2, storageInfo: W }), files: { mrf: this.url, index: v2 || this.url.replace(".mrf", ".idx"), data: S2 || this.url.replace(".mrf", I$2.get(f2)) } };
+  }
+  _fetchAuxiliaryData(t2) {
+    return __async(this, null, function* () {
+      try {
+        const { data: e2 } = yield this.request(this.url + ".aux.xml", { responseType: "xml", signal: t2 == null ? void 0 : t2.signal });
+        return m(e2);
+      } catch (e2) {
+        return null;
+      }
+    });
+  }
+};
+e$2([y$1()], b.prototype, "_files", void 0), e$2([y$1()], b.prototype, "_storageIndex", void 0), e$2([y$1({ type: String, json: { write: true } })], b.prototype, "datasetFormat", void 0), b = e$2([i$2("esri.layers.support.rasterIO.MRFRaster")], b);
+var A = b;
+const T = function(e2, t2) {
+  const r2 = e2.get(t2);
+  return r2 && r2.values;
+}, I$1 = function(e2, t2) {
+  const r2 = e2.get(t2);
+  return r2 && r2.values[0];
+};
+let w = class extends L {
+  constructor() {
+    super(...arguments), this._files = null, this._headerInfo = null, this._bufferSize = 1048576, this.datasetFormat = "TIFF";
+  }
+  open(e2) {
+    return __async(this, null, function* () {
+      var i2;
+      yield this.init();
+      const s2 = e2 ? e$3(e2.signal) : null, { data: l2 } = yield this.request(this.url, { range: { from: 0, to: this._bufferSize }, responseType: "array-buffer", signal: s2 });
+      if (!l2)
+        throw new s$1("tiffraster:open", "failed to open url " + this.url);
+      this.datasetName = this.url.slice(this.url.lastIndexOf("/") + 1);
+      const { littleEndian: p2, firstIFD: c2, isBigTiff: y2 } = b$1(l2), x2 = [];
+      yield this.readIFDs(x2, l2, p2, c2, 0, y2 ? 8 : 4, s2);
+      const T2 = y$3(x2), { width: I2, height: w2, tileWidth: E2, tileHeight: F, planes: S2, pixelType: v2, compression: b2, firstPyramidLevel: _, maximumPyramidLevel: j2, pyramidBlockWidth: R2, pyramidBlockHeight: B, tileBoundary: D2, affine: k2, metadata: L2 } = T2, O2 = M.fromJSON(T2.extent), z = O2.spatialReference, H = new j$1(O2 ? { x: O2.xmin, y: O2.ymax, spatialReference: z } : { x: 0, y: 0 }), P = new p$1({ blockWidth: E2, blockHeight: F, pyramidBlockWidth: R2, pyramidBlockHeight: B, compression: b2, origin: H, firstPyramidLevel: _, maximumPyramidLevel: j2, blockBoundary: D2 }), G = new j$1({ x: (O2.xmax - O2.xmin) / I2, y: (O2.ymax - O2.ymin) / w2, spatialReference: z }), q = L2 ? { BandProperties: L2.bandProperties, DataType: L2.dataType } : {}, W = new p$3({ width: I2, height: w2, bandCount: S2, pixelType: v2, compression: b2, pixelSize: G, storageInfo: P, spatialReference: z, keyProperties: q, extent: O2, statistics: L2 ? L2.statistics : null });
+      if (k2 != null && k2.length && (W.nativeExtent = new M({ xmin: -0.5, ymin: 0.5 - w2, xmax: I2 - 0.5, ymax: 0.5, spatialReference: z }), W.transform = new m$1({ polynomialOrder: 1, forwardCoefficients: [k2[2] + k2[0] / 2, k2[5] - k2[3] / 2, k2[0], k2[3], -k2[1], -k2[4]] }), W.extent = W.transform.forwardTransform(W.nativeExtent), W.pixelSize = new j$1({ x: (O2.xmax - O2.xmin) / I2, y: (O2.ymax - O2.ymin) / w2, spatialReference: z }), P.origin.x = -0.5, P.origin.y = 0.5), (i2 = this.ioConfig.skipExtensions) == null || !i2.includes("aux.xml")) {
+        const t2 = yield this._fetchAuxiliaryData(e2);
+        if (t2 != null) {
+          var C2;
+          if (W.statistics = (C2 = t2.statistics) != null ? C2 : W.statistics, W.histograms = t2.histograms, t2.histograms && !r$2(W.statistics) && (W.statistics = o$4(t2.histograms)), t2.transform && !k2) {
+            W.transform = t2.transform, W.nativeExtent = W.extent;
+            const e3 = W.transform.forwardTransform(W.nativeExtent);
+            W.pixelSize = new j$1({ x: (e3.xmax - e3.xmin) / I2, y: (e3.ymax - e3.ymin) / w2, spatialReference: z }), W.extent = e3;
+          }
+          W.spatialReference || (W.spatialReference = t2.spatialReference);
+        }
+      }
+      if (this._set("rasterInfo", W), this._headerInfo = __spreadValues({ littleEndian: p2, isBigTiff: y2, ifds: x2 }, T2), !this._headerInfo.isSupported)
+        throw new s$1("tiffraster:open", "this tiff is not supported: " + this._headerInfo.message);
+      this.updateTileInfo();
+    });
+  }
+  fetchRawTile(_0, _1, _2) {
+    return __async(this, arguments, function* (e2, t2, r2, i2 = {}) {
+      var s2;
+      if ((s2 = this._headerInfo) == null || !s2.isSupported || this.isBlockOutside(e2, t2, r2))
+        return null;
+      const a2 = this.getTileLocation(e2, t2, r2);
+      if (!a2)
+        return null;
+      const { range: o2, actualTileWidth: n2, actualTileHeight: f2, ifd: l2 } = a2, { data: u2 } = yield this.request(this.url, { range: o2, responseType: "array-buffer", signal: i2.signal }), { blockWidth: m2, blockHeight: p2 } = this.getBlockWidthHeight(e2), c2 = yield this.decodePixelBlock(u2, { format: "tiff", customOptions: { headerInfo: this._headerInfo, ifd: l2, offset: 0, size: 0 }, width: m2, height: p2, planes: null, pixelType: null });
+      let h2, d2, y2;
+      if (n2 !== m2 || f2 !== p2) {
+        let e3 = c2.mask;
+        if (e3)
+          for (h2 = 0; h2 < p2; h2++)
+            if (y2 = h2 * m2, h2 < f2)
+              for (d2 = n2; d2 < m2; d2++)
+                e3[y2 + d2] = 0;
+            else
+              for (d2 = 0; d2 < m2; d2++)
+                e3[y2 + d2] = 0;
+        else
+          for (e3 = new Uint8Array(m2 * p2), c2.mask = e3, h2 = 0; h2 < f2; h2++)
+            for (y2 = h2 * m2, d2 = 0; d2 < n2; d2++)
+              e3[y2 + d2] = 1;
+      }
+      return c2;
+    });
+  }
+  readIFDs(e2, t2, r2, i2, s2, a2 = 4, o2) {
+    return __async(this, null, function* () {
+      if (!i2)
+        return null;
+      if (i2 >= t2.byteLength || i2 < 0) {
+        t2 = (yield this.request(this.url, { range: { from: i2 + s2, to: i2 + s2 + this._bufferSize }, responseType: "array-buffer", signal: o2 })).data, s2 = i2 + s2, i2 = 0;
+      }
+      const n2 = yield this.readIFD(t2, r2, i2, s2, n$7.TIFF_TAGS, a2, o2);
+      if (e2.push(n2.ifd), !n2.nextIFD)
+        return null;
+      yield this.readIFDs(e2, t2, r2, n2.nextIFD - s2, s2, a2, o2);
+    });
+  }
+  readIFD(_0, _1, _2, _3) {
+    return __async(this, arguments, function* (e2, t2, r2, i2, s2 = n$7.TIFF_TAGS, a2 = 4, o2) {
+      if (!e2)
+        return null;
+      const n2 = x$6(e2, t2, r2, i2, s2, a2);
+      if (n2.success) {
+        const r3 = [];
+        if (n2.ifd.forEach((e3) => {
+          e3.values || r3.push(e3);
+        }), r3.length > 0) {
+          const s3 = r3.map((e3) => e3.offlineOffsetSize), a3 = Math.min.apply(null, s3.map((e3) => e3[0]));
+          if (Math.min.apply(null, s3.map((e3) => e3[0] + e3[1])) - a3 <= this._bufferSize) {
+            const { data: s4 } = yield this.request(this.url, { range: { from: a3, to: a3 + this._bufferSize }, responseType: "array-buffer", signal: o2 });
+            e2 = s4, i2 = a3, r3.forEach((r4) => E$1(e2, t2, r4, i2));
+          }
+        }
+        if (n2.ifd.has("GEOKEYDIRECTORY")) {
+          const r4 = n2.ifd.get("GEOKEYDIRECTORY"), s3 = r4.values;
+          if (s3 && s3.length > 4) {
+            const a3 = s3[0] + "." + s3[1] + "." + s3[2], n3 = yield this.readIFD(e2, t2, r4.valueOffset + 6 - i2, i2, n$7.GEO_KEYS, 2, o2);
+            r4.data = n3.ifd, r4.data && r4.data.set("GEOTIFFVersion", { id: 0, type: 2, valueCount: 1, valueOffset: null, values: [a3] });
+          }
+        }
+        return n2;
+      }
+      if (n2.requiredBufferSize && n2.requiredBufferSize !== e2.byteLength) {
+        const r3 = yield this.request(this.url, { range: { from: i2, to: i2 + n2.requiredBufferSize + 4 }, responseType: "array-buffer", signal: o2 });
+        return (e2 = r3.data).byteLength < n2.requiredBufferSize ? null : this.readIFD(e2, t2, 0, i2, n$7.TIFF_TAGS, 4, o2);
+      }
+    });
+  }
+  getTileLocation(e2, t2, r2) {
+    const { firstPyramidLevel: i2, blockBoundary: s2 } = this.rasterInfo.storageInfo, a2 = e2 === 0 ? 0 : e2 - (i2 - 1), o2 = this._headerInfo.ifds[a2];
+    if (!o2)
+      return null;
+    const n2 = T(o2, "TILEOFFSETS");
+    if (n2 === void 0)
+      return null;
+    const f2 = T(o2, "TILEBYTECOUNTS"), { minRow: l2, minCol: u2, maxRow: m2, maxCol: p2 } = s2[a2];
+    if (t2 > m2 || r2 > p2 || t2 < l2 || r2 < u2)
+      return null;
+    const c2 = I$1(o2, "IMAGEWIDTH"), h2 = I$1(o2, "IMAGELENGTH"), d2 = I$1(o2, "TILEWIDTH"), y2 = I$1(o2, "TILELENGTH"), g2 = t2 * (p2 + 1) + r2, x2 = n2[g2], w2 = f2[g2];
+    if (x2 == null || w2 == null)
+      return null;
+    return { range: { from: x2, to: x2 + w2 - 1 }, ifd: o2, actualTileWidth: r2 === p2 ? c2 % d2 : d2, actualTileHeight: t2 === m2 ? h2 % y2 : y2 };
+  }
+  _fetchAuxiliaryData(e2) {
+    return __async(this, null, function* () {
+      try {
+        const { data: t2 } = yield this.request(this.url + ".aux.xml", { responseType: "xml", signal: e2 == null ? void 0 : e2.signal });
+        return m(t2);
+      } catch (e3) {
+        return null;
+      }
+    });
+  }
+};
+e$2([y$1()], w.prototype, "_files", void 0), e$2([y$1()], w.prototype, "_headerInfo", void 0), e$2([y$1()], w.prototype, "_bufferSize", void 0), e$2([y$1({ type: String, json: { write: true } })], w.prototype, "datasetFormat", void 0), w = e$2([i$2("esri.layers.support.rasterDatasets.TIFFRaster")], w);
+var E = w;
+const c = new Map();
+c.set("CRF", { desc: "Cloud Raster Format", constructor: I$3 }), c.set("MRF", { desc: "Meta Raster Format", constructor: A }), c.set("TIFF", { desc: "GeoTIFF", constructor: E }), c.set("RasterTileServer", { desc: "Raster Tile Server", constructor: v }), c.set("JPG", { desc: "JPG Raster Format", constructor: x$1 }), c.set("PNG", { desc: "PNG Raster Format", constructor: x$1 }), c.set("GIF", { desc: "GIF Raster Format", constructor: x$1 }), c.set("BMP", { desc: "BMP Raster Format", constructor: x$1 });
+class n {
+  static get supportedFormats() {
+    const t2 = new Set();
+    return c.forEach((r2, e2) => t2.add(e2)), t2;
+  }
+  static open(r2) {
+    return __async(this, null, function* () {
+      const { url: e2, ioConfig: s2, sourceJSON: o2 } = r2;
+      let a2 = r2.datasetFormat;
+      a2 == null && e2.lastIndexOf(".") && (a2 = e2.slice(e2.lastIndexOf(".") + 1).toUpperCase()), a2 === "OVR" || a2 === "TIF" ? a2 = "TIFF" : a2 !== "JPG" && a2 !== "JPEG" && a2 !== "JFIF" || (a2 = "JPG"), e2.toLowerCase().indexOf("/imageserver") > -1 && e2.toLowerCase().indexOf("/wcsserver") === -1 && (a2 = "RasterTileServer");
+      const n2 = { url: e2, sourceJSON: o2, datasetFormat: a2, ioConfig: s2 || { bandIds: null, sampling: null } };
+      let i2, u2;
+      if (this.supportedFormats.has(a2))
+        return i2 = c.get(a2).constructor, u2 = new i2(n2), yield u2.open({ signal: r2.signal }), u2;
+      if (a2)
+        throw new s$1("rasterfactory:open", "not a supported format " + a2);
+      const l2 = Array.from(c.keys());
+      let m2 = 0;
+      const F = function() {
+        return a2 = l2[m2++], a2 ? (i2 = c.get(a2).constructor, u2 = new i2(n2), u2.open({ signal: r2.signal }).then(() => u2).catch(() => F())) : null;
+      };
+      return F();
+    });
+  }
+  static register(t2, r2, e2) {
+    c.has(t2.toUpperCase()) || c.set(t2.toUpperCase(), { desc: r2, constructor: e2 });
+  }
+}
+const R = o$5()({ RSP_NearestNeighbor: "nearest", RSP_BilinearInterpolation: "bilinear", RSP_CubicConvolution: "cubic", RSP_Majority: "majority" });
+function I() {
+  return { enabled: !this.loaded || this.raster.datasetFormat === "RasterTileServer" && this.raster.tileType === "Raster" };
+}
+let O = class extends t$3(s$2(o$6(l$3(u$5(x$3(l$4(b$2))))))) {
+  constructor(...e2) {
+    super(...e2), this.bandIds = null, this.interpolation = null, this.legendEnabled = true, this.isReference = null, this.listMode = "show", this.sourceJSON = null, this.version = null, this.title = null, this.type = "imagery-tile", this.operationalLayerType = "ArcGISTiledImageServiceLayer", this.popupEnabled = true, this.popupTemplate = null;
+  }
+  normalizeCtorArgs(e2, r2) {
+    return typeof e2 == "string" ? __spreadValues({ url: e2 }, r2) : e2;
+  }
+  load(e2) {
+    const t2 = r$2(e2) ? e2.signal : null;
+    return this.addResolvingPromise(this.loadFromPortal({ supportedTypes: ["Image Service"] }, e2).then(() => this._openRaster(t2), () => this._openRaster(t2))), Promise.resolve(this);
+  }
+  get defaultPopupTemplate() {
+    return this.createPopupTemplate();
+  }
+  get fields() {
+    var e2, r2;
+    let t2 = [new y$4({ name: "Raster.ServicePixelValue", alias: "Pixel Value", domain: null, editable: false, length: 50, type: "string" })];
+    const o2 = (e2 = this.rasterInfo) == null || (r2 = e2.attributeTable) == null ? void 0 : r2.fields, i2 = "Raster.";
+    if (o2) {
+      const e3 = o2.filter((e4) => e4.type !== "oid" && e4.name.toLowerCase() !== "value").map((e4) => {
+        const r3 = e4.clone();
+        return r3.name = i2 + e4.name, r3;
+      });
+      t2 = t2.concat(e3);
+    }
+    return t2;
+  }
+  set renderer(e2) {
+    this._set("renderer", e2), this.updateRenderer();
+  }
+  readRenderer(e2, r2, t2) {
+    const o2 = r2 && r2.layerDefinition && r2.layerDefinition.drawingInfo && r2.layerDefinition.drawingInfo.renderer, i2 = p$4(o2, t2) || void 0;
+    if (i2 != null)
+      return i2;
+  }
+  createPopupTemplate(e2) {
+    return a$2(this, e2);
+  }
+  write(e2, r2) {
+    const { raster: t2 } = this;
+    if (this.loaded ? t2.datasetFormat === "RasterTileServer" && (t2.tileType === "Raster" || t2.tileType === "Map") : this.url && /\/ImageServer(\/|\/?$)/i.test(this.url))
+      return super.write(e2, r2);
+    if (r2 && r2.messages) {
+      const e3 = `${r2.origin}/${r2.layerContainerType || "operational-layers"}`;
+      r2.messages.push(new s$1("layer:unsupported", `Layers (${this.title}, ${this.id}) of type '${this.declaredClass}' are not supported in the context of '${e3}'`, { layer: this }));
+    }
+    return null;
+  }
+  _openRaster(e2) {
+    return __async(this, null, function* () {
+      this.raster ? (this.raster.rasterInfo || (yield this.raster.open()), this.url = this.raster.url) : this.raster = yield n.open({ url: this.url, sourceJSON: this.sourceJSON, ioConfig: this.ioConfig, signal: e2 });
+      const { rasterInfo: r2 } = this.raster;
+      if (!r2)
+        throw new s$1("imagery-tile-layer:load", "cannot load resources on " + this.url);
+      this.sourceJSON = this.sourceJSON || this.raster.sourceJSON, this.sourceJSON != null && (this._set("version", this.sourceJSON.currentVersion), this._set("copyright", this.sourceJSON.copyrightText)), this.title == null && (this.title = this.raster.datasetName), this.raster.tileType === "Map" && (this.popupEnabled = false), this._configDefaultSettings();
+    });
+  }
+};
+e$2([y$1({ type: [N$1], json: { write: { overridePolicy: I } } })], O.prototype, "bandIds", void 0), e$2([y$1({ json: { write: { overridePolicy: I } } }), r$4(R)], O.prototype, "interpolation", void 0), e$2([y$1({ json: { write: true } })], O.prototype, "multidimensionalDefinition", void 0), e$2([y$1(d$5)], O.prototype, "legendEnabled", void 0), e$2([y$1({ type: Boolean, json: { read: false, write: { enabled: true, overridePolicy: () => ({ enabled: false }) } } })], O.prototype, "isReference", void 0), e$2([y$1({ type: ["show", "hide"] })], O.prototype, "listMode", void 0), e$2([y$1()], O.prototype, "sourceJSON", void 0), e$2([y$1({ readOnly: true })], O.prototype, "version", void 0), e$2([y$1()], O.prototype, "title", void 0), e$2([y$1({ readOnly: true, json: { read: false } })], O.prototype, "type", void 0), e$2([y$1({ type: ["ArcGISTiledImageServiceLayer"] })], O.prototype, "operationalLayerType", void 0), e$2([y$1({ type: Boolean, value: true, json: { read: { source: "disablePopup", reader: (e2, r2) => !r2.disablePopup }, write: { target: "disablePopup", overridePolicy: I, writer(e2, r2, t2) {
+  r2[t2] = !e2;
+} } } })], O.prototype, "popupEnabled", void 0), e$2([y$1({ type: M$3, json: { read: { source: "popupInfo" }, write: { target: "popupInfo", overridePolicy: I } } })], O.prototype, "popupTemplate", void 0), e$2([y$1({ readOnly: true })], O.prototype, "defaultPopupTemplate", null), e$2([y$1({ readOnly: true, type: [y$4] })], O.prototype, "fields", null), e$2([y$1({ types: d$1, json: { name: "layerDefinition.drawingInfo.renderer", write: { overridePolicy: I }, origins: { "web-scene": { types: i$4, name: "layerDefinition.drawingInfo.renderer", write: { overridePolicy: (e2) => ({ enabled: e2 && e2.type !== "vector-field" }) } } } } })], O.prototype, "renderer", null), e$2([e$4("renderer")], O.prototype, "readRenderer", null), O = e$2([i$2("esri.layers.ImageryTileLayer")], O);
+var x = O;
+export default x;

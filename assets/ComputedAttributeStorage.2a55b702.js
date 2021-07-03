@@ -1,1 +1,930 @@
-import{cd as t,b6 as e,cr as s,cs as i,ct as r,av as n,ai as a,cu as o,cv as h,cw as u,cx as l,cy as c,cz as d,a5 as m,cA as _,a0 as f,a4 as p,bI as g,cB as x,bN as y,an as b,aa as I,cC as M,cD as S,cE as T,aw as w,b$ as z,a7 as v}from"./vendor.74d5941c.js";import{r as B}from"./quickselect.e4940b29.js";import{d as F,t as Y}from"./FeatureSetReader.a91e3e2d.js";import{N as X,O as A,K as C,c as k,J as D}from"./definitions.6737c10c.js";import{Y as E}from"./Utils.3f1577e5.js";import{n as R,l as O,r as P}from"./visualVariablesUtils.bb9f81fa.js";class U{constructor(s,i){this.key=new t(0,0,0,0),this.bounds=e(),this.objectIds=new Set,this.key.set(i);const r=s.getLODInfoAt(this.key);this.tileInfoView=s,this.tileInfoView.getTileBounds(this.bounds,this.key,!0),this.resolution=r.resolution,this.scale=r.scale,this.level=r.level,this.needsClear=!0}get id(){return this.key.id}get extent(){return s.fromBounds(this.bounds,this.tileInfoView.tileInfo.spatialReference)}get transform(){return{originPosition:"upperLeft",scale:[this.resolution,this.resolution],translate:[this.bounds[0],this.bounds[3]]}}get bbox(){const t=this.bounds;return{minX:t[0],minY:t[1],maxX:t[2],maxY:t[3]}}clone(){return new U(this.tileInfoView,this.key)}createChildTiles(){const t=this.key.getChildKeys(),e=i.acquire();for(let s=0;s<t.length;s++)e[s]=new U(this.tileInfoView,t[s]);return e}getQuantizationParameters(){return r.fromJSON({mode:"view",originPosition:"upperLeft",tolerance:this.resolution,extent:{xmin:this.bounds[0],ymin:this.bounds[1],xmax:this.bounds[2],ymax:this.bounds[3],spatialReference:this.tileInfoView.tileInfo.spatialReference}})}}function G(t,e){if(!(this instanceof G))return new G(t,e);this._maxEntries=Math.max(4,t||9),this._minEntries=Math.max(2,Math.ceil(.4*this._maxEntries)),e&&("function"==typeof e?this.toBBox=e:this._initFormat(e)),this.clear()}function N(t,e,s){if(!s)return e.indexOf(t);for(var i=0;i<e.length;i++)if(s(t,e[i]))return i;return-1}function L(t,e){j(t,0,t.children.length,e,t)}function j(t,e,s,i,r){r||(r=tt(null)),r.minX=1/0,r.minY=1/0,r.maxX=-1/0,r.maxY=-1/0;for(var n,a=e;a<s;a++)n=t.children[a],H(r,t.leaf?i(n):n);return r}function H(t,e){return t.minX=Math.min(t.minX,e.minX),t.minY=Math.min(t.minY,e.minY),t.maxX=Math.max(t.maxX,e.maxX),t.maxY=Math.max(t.maxY,e.maxY),t}function V(t,e){return t.minX-e.minX}function Z(t,e){return t.minY-e.minY}function q(t){return(t.maxX-t.minX)*(t.maxY-t.minY)}function J(t){return t.maxX-t.minX+(t.maxY-t.minY)}function Q(t,e){return(Math.max(e.maxX,t.maxX)-Math.min(e.minX,t.minX))*(Math.max(e.maxY,t.maxY)-Math.min(e.minY,t.minY))}function K(t,e){var s=Math.max(t.minX,e.minX),i=Math.max(t.minY,e.minY),r=Math.min(t.maxX,e.maxX),n=Math.min(t.maxY,e.maxY);return Math.max(0,r-s)*Math.max(0,n-i)}function $(t,e){return t.minX<=e.minX&&t.minY<=e.minY&&e.maxX<=t.maxX&&e.maxY<=t.maxY}function W(t,e){return e.minX<=t.maxX&&e.minY<=t.maxY&&e.maxX>=t.minX&&e.maxY>=t.minY}function tt(t){return{children:t,height:1,leaf:!0,minX:1/0,minY:1/0,maxX:-1/0,maxY:-1/0}}function et(t,e,s,i,r){for(var n,a=[e,s];a.length;)(s=a.pop())-(e=a.pop())<=i||(n=e+Math.ceil((s-e)/i/2)*i,B(t,n,e,s,r),a.push(e,n,n,s))}G.prototype={all:function(){return this._all(this.data,[])},search:function(t){var e=this.data,s=[],i=this.toBBox;if(!W(t,e))return s;for(var r,n,a,o,h=[];e;){for(r=0,n=e.children.length;r<n;r++)a=e.children[r],W(t,o=e.leaf?i(a):a)&&(e.leaf?s.push(a):$(t,o)?this._all(a,s):h.push(a));e=h.pop()}return s},collides:function(t){var e=this.data,s=this.toBBox;if(!W(t,e))return!1;for(var i,r,n,a,o=[];e;){for(i=0,r=e.children.length;i<r;i++)if(n=e.children[i],W(t,a=e.leaf?s(n):n)){if(e.leaf||$(t,a))return!0;o.push(n)}e=o.pop()}return!1},load:function(t){if(!t||!t.length)return this;if(t.length<this._minEntries){for(var e=0,s=t.length;e<s;e++)this.insert(t[e]);return this}var i=this._build(t.slice(),0,t.length-1,0);if(this.data.children.length)if(this.data.height===i.height)this._splitRoot(this.data,i);else{if(this.data.height<i.height){var r=this.data;this.data=i,i=r}this._insert(i,this.data.height-i.height-1,!0)}else this.data=i;return this},insert:function(t){return t&&this._insert(t,this.data.height-1),this},clear:function(){return this.data=tt([]),this},remove:function(t,e){if(!t)return this;for(var s,i,r,n,a=this.data,o=this.toBBox(t),h=[],u=[];a||h.length;){if(a||(a=h.pop(),i=h[h.length-1],s=u.pop(),n=!0),a.leaf&&-1!==(r=N(t,a.children,e)))return a.children.splice(r,1),h.push(a),this._condense(h),this;n||a.leaf||!$(a,o)?i?(s++,a=i.children[s],n=!1):a=null:(h.push(a),u.push(s),s=0,i=a,a=a.children[0])}return this},toBBox:function(t){return t},compareMinX:V,compareMinY:Z,toJSON:function(){return this.data},fromJSON:function(t){return this.data=t,this},_all:function(t,e){for(var s=[];t;)t.leaf?e.push.apply(e,t.children):s.push.apply(s,t.children),t=s.pop();return e},_build:function(t,e,s,i){var r,n=s-e+1,a=this._maxEntries;if(n<=a)return L(r=tt(t.slice(e,s+1)),this.toBBox),r;i||(i=Math.ceil(Math.log(n)/Math.log(a)),a=Math.ceil(n/Math.pow(a,i-1))),(r=tt([])).leaf=!1,r.height=i;var o,h,u,l,c=Math.ceil(n/a),d=c*Math.ceil(Math.sqrt(a));for(et(t,e,s,d,this.compareMinX),o=e;o<=s;o+=d)for(et(t,o,u=Math.min(o+d-1,s),c,this.compareMinY),h=o;h<=u;h+=c)l=Math.min(h+c-1,u),r.children.push(this._build(t,h,l,i-1));return L(r,this.toBBox),r},_chooseSubtree:function(t,e,s,i){for(var r,n,a,o,h,u,l,c;i.push(e),!e.leaf&&i.length-1!==s;){for(l=c=1/0,r=0,n=e.children.length;r<n;r++)h=q(a=e.children[r]),(u=Q(t,a)-h)<c?(c=u,l=h<l?h:l,o=a):u===c&&h<l&&(l=h,o=a);e=o||e.children[0]}return e},_insert:function(t,e,s){var i=this.toBBox,r=s?t:i(t),n=[],a=this._chooseSubtree(r,this.data,e,n);for(a.children.push(t),H(a,r);e>=0&&n[e].children.length>this._maxEntries;)this._split(n,e),e--;this._adjustParentBBoxes(r,n,e)},_split:function(t,e){var s=t[e],i=s.children.length,r=this._minEntries;this._chooseSplitAxis(s,r,i);var n=this._chooseSplitIndex(s,r,i),a=tt(s.children.splice(n,s.children.length-n));a.height=s.height,a.leaf=s.leaf,L(s,this.toBBox),L(a,this.toBBox),e?t[e-1].children.push(a):this._splitRoot(s,a)},_splitRoot:function(t,e){this.data=tt([t,e]),this.data.height=t.height+1,this.data.leaf=!1,L(this.data,this.toBBox)},_chooseSplitIndex:function(t,e,s){var i,r,n,a,o,h,u,l;for(h=u=1/0,i=e;i<=s-e;i++)a=K(r=j(t,0,i,this.toBBox),n=j(t,i,s,this.toBBox)),o=q(r)+q(n),a<h?(h=a,l=i,u=o<u?o:u):a===h&&o<u&&(u=o,l=i);return l},_chooseSplitAxis:function(t,e,s){var i=t.leaf?this.compareMinX:V,r=t.leaf?this.compareMinY:Z;this._allDistMargin(t,e,s,i)<this._allDistMargin(t,e,s,r)&&t.children.sort(i)},_allDistMargin:function(t,e,s,i){t.children.sort(i);var r,n,a=this.toBBox,o=j(t,0,e,a),h=j(t,s-e,s,a),u=J(o)+J(h);for(r=e;r<s-e;r++)n=t.children[r],H(o,t.leaf?a(n):n),u+=J(o);for(r=s-e-1;r>=e;r--)n=t.children[r],H(h,t.leaf?a(n):n),u+=J(h);return u},_adjustParentBBoxes:function(t,e,s){for(var i=s;i>=0;i--)H(e[i],t)},_condense:function(t){for(var e,s=t.length-1;s>=0;s--)0===t[s].children.length?s>0?(e=t[s-1].children).splice(e.indexOf(t[s]),1):this.clear():L(t[s],this.toBBox)},_initFormat:function(t){var e=["return a"," - b",";"];this.compareMinX=new Function("a","b",e.join(t[0])),this.compareMinY=new Function("a","b",e.join(t[1])),this.toBBox=new Function("a","return {minX: a"+t[0]+", minY: a"+t[1]+", maxX: a"+t[2]+", maxY: a"+t[3]+"};")}};const st={added:[],removed:[]},it=new Set,rt=new t(0,0,0,0);class nt extends n{constructor(t){super(),this._tiles=new Map,this._index=G(9,a("csp-restrictions")?t=>({minX:t.bounds[0],minY:t.bounds[1],maxX:t.bounds[2],maxY:t.bounds[3]}):[".bounds[0]",".bounds[1]",".bounds[2]",".bounds[3]"]),this.tiles=[],this.tileScheme=t}destroy(){this.clear()}clear(){this.tiles.length=0,this._tiles.clear(),this._index.clear()}has(t){return this._tiles.has(t)}get(t){return this._tiles.get(t)}findByKey(t){return this._tiles.get(t.id)}minLOD(){return Math.min(...this.tiles.map((t=>t.level)))}intersections(t,e){const s="string"==typeof t?this.get(t):t;if(!s)return[];const i=e*s.resolution,r=s.bounds[0]-i,n=s.bounds[1]-i,a=s.bounds[2]+i,o=s.bounds[3]+i,h=[];for(const u of this._index.search({minX:r,minY:n,maxX:a,maxY:o})){const t=u.bounds.slice();t[0]=Math.max(t[0],r),t[1]=Math.max(t[1],n),t[2]=Math.min(t[2],a),t[3]=Math.min(t[3],o),t[2]-t[0]>0&&t[3]-t[1]>0&&h.push({bounds:t,tile:u})}return h}boundsIntersections(t){return this._index.search({minX:t[0],minY:t[1],maxX:t[2],maxY:t[3]})}updateTiles(t){const e={added:[],removed:[]};for(const s of t.added)if(!this.has(s)){const t=new U(this.tileScheme,s);this._tiles.set(s,t),this._index.insert(t),e.added.push(t)}for(const s of t.removed)if(this.has(s)){const t=this.get(s);this._tiles.delete(s),this._index.remove(t),e.removed.push(t)}this.tiles.length=0,this._tiles.forEach((t=>this.tiles.push(t))),(e.added.length||e.removed.length)&&this.emit("update",e)}setViewState(t){const e=this.tileScheme.getTileCoverage(t,0);if(!e)return;const{spans:s,lodInfo:i}=e,{level:r}=i;if(s.length>0)for(const{row:n,colFrom:a,colTo:o}of s)for(let t=a;t<=o;t++){const e=rt.set(r,n,i.normalizeCol(t),i.getWorldForColumn(t)).id;if(it.add(e),!this.has(e)){const t=new U(this.tileScheme,e);this._tiles.set(e,t),this._index.insert(t),this.tiles.push(t),st.added.push(t)}}for(let n=this.tiles.length-1;n>=0;n--){const t=this.tiles[n];it.has(t.id)||(this._tiles.delete(t.id),this.tiles.splice(n,1),this._index.remove(t),st.removed.push(t))}(st.added.length||st.removed.length)&&this.emit("update",st),o.pool.release(e),it.clear(),st.added.length=0,st.removed.length=0}}class at extends F{constructor(t,e,s){super(t),this._featureIndex=-1,this._dateFields=new Set,this._geometryType=s,this._features=e}static fromFeatures(t,e,s){const i=h([],t,e,!1,!1,s);for(let r=0;r<i.length;r++)i[r].displayId=t[r].displayId;return at.fromOptimizedFeatures(i,e)}static fromFeatureSet(t,e){const s=u(t,e);return at.fromOptimizedFeatureSet(s)}static fromOptimizedFeatureSet(t){const{features:e,geometryType:s}=t,i=at.fromOptimizedFeatures(e,s);i._exceededTransferLimit=t.exceededTransferLimit,i._transform=t.transform;for(const r of t.fields)"esriFieldTypeDate"===r.type&&i._dateFields.add(r.name);return i}static fromOptimizedFeatures(t,e,s){const i=F.createInstance(),r=new at(i,t,e);return r._transform=s,r}get _current(){return this._features[this._featureIndex]}get geometryType(){return this._geometryType}get hasFeatures(){return!!this._features.length}get hasNext(){return this._featureIndex+1<this._features.length}get exceededTransferLimit(){return this._exceededTransferLimit}get hasZ(){return!1}get hasM(){return!1}getApproximateSize(){return this._features.length}getCursor(){return this.copy()}getQuantizationTransform(){return this._transform}getAttributeHash(){let t="";for(const e in this._current.attributes)t+=this._current.attributes[e];return t}getIndex(){return this._featureIndex}setIndex(t){this._featureIndex=t}getObjectId(){return this._current.objectId}getDisplayId(){return this._current.displayId}setDisplayId(t){this._current.displayId=t}getGroupId(){return this._current.groupId}setGroupId(t){this._current.groupId=t}copy(){const t=new at(this.instance,this._features,this.geometryType);return this.copyInto(t),t}next(){for(;++this._featureIndex<this._features.length&&!this._passesFilter()&&!this._getExists(););return this._featureIndex<this._features.length}readLegacyFeature(){return l(this._current,this.geometryType,this.hasZ,this.hasM)}readOptimizedFeature(){return this._current}readLegacyPointGeometry(){return this.readGeometry()?{x:this.getX(),y:this.getY()}:null}readLegacyGeometry(){const t=this.readGeometry();return c(t,this.geometryType,this.hasZ,this.hasM)}readLegacyCentroid(){const t=this.readCentroid();return t?{x:t.coords[0]*this._sx+this._tx,y:t.coords[1]*this._sy+this._ty}:null}readGeometryArea(){return d(this._current.geometry,2)}readUnquantizedGeometry(){const t=this.readGeometry();if("esriGeometryPoint"===this.geometryType||!t)return t;const e=t.clone();return function({coords:t,lengths:e}){let s=0;for(const i of e){for(let e=1;e<i;e++)t[2*(s+e)]+=t[2*(s+e)-2],t[2*(s+e)+1]+=t[2*(s+e)-1];s+=i}}(e),e}readHydratedGeometry(){const t=this._current.geometry;if(!t)return null;const e=t.clone();return m(this._transform)&&_(e,e,this.hasZ,this.hasM,this._transform),e}getXHydrate(){const t=this._current.geometry.coords[0],e=this.getQuantizationTransform();return f(e)?t:t*e.scale[0]+e.translate[0]}getYHydrate(){const t=this._current.geometry.coords[1],e=this.getQuantizationTransform();return f(e)?t:e.translate[1]-t*e.scale[1]}getX(){return this._current.geometry.coords[0]*this._sx+this._tx}getY(){return this._current.geometry.coords[1]*this._sy+this._ty}readGeometry(){if(!this._current.hasGeometry)return null;const t=this._current.geometry.clone();if(t.isPoint)return t.coords[0]=t.coords[0]*this._sx+this._tx,t.coords[1]=t.coords[1]*this._sy+this._ty,t;let e=0;for(const s of t.lengths)t.coords[2*e]=t.coords[2*e]*this._sx+this._tx,t.coords[2*e+1]=t.coords[2*e+1]*this._sy+this._ty,e+=s;return t}readCentroid(){if(!this._current.hasGeometry)return null;if(!this._current.centroid){const t=this._computeCentroid();if(!t)return null;t.coords[0]=(t.coords[0]-this._tx)/this._sx,t.coords[1]=(t.coords[1]-this._ty)/this._sy,this._current.centroid=t}const t=this._current.centroid.clone();return t.coords[0]=t.coords[0]*this._sx+this._tx,t.coords[1]=t.coords[1]*this._sx+this._ty,t}_readAttribute(t,e){const s=this._current.attributes[t];if(void 0!==s)return null!=s&&e&&this._dateFields.has(t)?new Date(s):s;const i=this.readAttributes(),r=t.toLocaleLowerCase().trim();for(const n in i)if(n.toLocaleLowerCase().trim()===r){const t=this._current.attributes[n];return null!=t&&e&&this._dateFields.has(n)?new Date(t):t}}copyInto(t){super.copyInto(t),t._featureIndex=this._featureIndex,t._transform=this._transform,t._dateFields=this._dateFields}_readAttributes(){return this._current.attributes}_passesFilter(){if(!this._hasFilter)return!0;let t=0,e=0;switch(this.geometryType){case"esriGeometryPoint":{const s=this._current.geometry;if(!s)return!1;[t,e]=s.coords;break}case"esriGeometryPolygon":{const s=this.readCentroid();if(!s)return!1;[t,e]=s.coords,t-=this._tx,e-=this._ty;break}default:return!1}return t>=this._xmin&&t<=this._xmax&&e>=this._ymin&&e<=this._ymax}}const ot=p.getLogger("esri.views.layers.2d.features.support.AttributeStore"),ht=R(O,ot),ut=t=>(2147483648&t)>>>31,lt=t=>2147483647&t;function ct(t){return 1===ut(t)}const dt={sharedArrayBuffer:a("esri-shared-array-buffer"),atomics:a("esri-atomics")};function mt(t,e){return s=>e(t(s))}class _t{constructor(t,e,s,i){this.size=0,this.texelSize=4;const{pixelType:r,layout:n,textureOnly:a}=i;this.textureOnly=a||!1,this.pixelType=r,this._ctype=e,this.layout=n,this._resetRange(),this._shared=t,this.size=s,a||(this.data=this._initData(r,s,t,e))}get buffer(){return w(this.data,(t=>t.buffer))}unsetComponentAllTexels(t,e){const s=z(this.data);for(let i=0;i<this.size*this.size;i++)s[i*this.texelSize+t]&=~e;this.dirtyStart=0,this.dirtyEnd=this.size*this.size-1}setComponentAllTexels(t,e){const s=z(this.data);for(let i=0;i<this.size*this.size;i++)s[i*this.texelSize+t]|=255&e;this.dirtyStart=0,this.dirtyEnd=this.size*this.size-1}setComponent(t,e,s){const i=z(this.data);for(const r of s)i[r*this.texelSize+t]|=e,this.dirtyStart=Math.min(this.dirtyStart,r),this.dirtyEnd=Math.max(this.dirtyEnd,r)}setComponentTexel(t,e,s){z(this.data)[s*this.texelSize+t]|=e,this.dirtyStart=Math.min(this.dirtyStart,s),this.dirtyEnd=Math.max(this.dirtyEnd,s)}unsetComponentTexel(t,e,s){z(this.data)[s*this.texelSize+t]&=~e,this.dirtyStart=Math.min(this.dirtyStart,s),this.dirtyEnd=Math.max(this.dirtyEnd,s)}getData(t,e){const s=lt(t);return z(this.data)[s*this.texelSize+e]}setData(t,e,s){const i=lt(t),r=1<<e;0!=(this.layout&r)?(this.data[i*this.texelSize+e]=s,this.dirtyStart=Math.min(this.dirtyStart,i),this.dirtyEnd=Math.max(this.dirtyEnd,i)):ot.error("mapview-attributes-store","Tried to set a value for a texel's readonly component")}lock(){5121===this.pixelType&&this._shared&&dt.atomics&&"local"!==this._ctype&&Atomics.store(this.data,0,1)}unlock(){5121===this.pixelType&&this._shared&&dt.atomics&&"local"!==this._ctype&&Atomics.store(this.data,0,0)}expand(t){if(this.size=t,!this.textureOnly){const e=this._initData(this.pixelType,t,this._shared,this._ctype),s=z(this.data);e.set(s),this.data=e}}toMessage(){const t=this.dirtyStart,e=this.dirtyEnd,s=this.texelSize;if(t>e)return null;this._resetRange();const i=!(this._shared||"local"===this._ctype),r=this.pixelType,n=this.layout,a=z(this.data);return a.slice?{start:t,end:e,data:i&&a.slice(t*s,(e+1)*s)||null,pixelType:r,layout:n}:i?{start:t,end:e,data:new(E(this.pixelType))(Array.prototype.slice.call(this.data,t*s,(e+1)*s)),pixelType:r,layout:n}:{start:t,end:e,data:null,pixelType:r,layout:n}}_initData(t,e,s,i){const r=s&&"local"!==i?SharedArrayBuffer:ArrayBuffer,n=E(t),a=new n(new r(e*e*4*n.BYTES_PER_ELEMENT));for(let o=0;o<a.length;o+=4)a[o+1]=255;return a}_resetRange(){this.dirtyStart=2147483647,this.dirtyEnd=0}}class ft{constructor(t,e){this._client=t,this.config=e,this._attributeComputeMap=new Map,this._blocks=new Array,this._filters=new Array(X),this._targetType=0,this._abortController=g(),this._hasScaleExpr=!1,this._size=32,this._idsToHighlight=new Set;const s=e.supportsTextureFloat?5126:5121;ht(`Creating AttributeStore ${dt.sharedArrayBuffer?"with":"without"} shared memory`),this._blockDescriptors=[{pixelType:5121,layout:1},{pixelType:5121,layout:15,textureOnly:!0},{pixelType:s,layout:15},{pixelType:s,layout:15}],this._blocks=this._blockDescriptors.map((()=>null))}destroy(){this._abortController.abort()}get hasScaleExpr(){return this._hasScaleExpr}get _signal(){return this._abortController.signal}update(t,e){this.config=e;const s=e.schema.processors[0].storage,i=x(this._schema,s);if((t.targets.feature||t.targets.aggregate)&&(t.storage.data=!0),i&&(a("esri-2d-update-debug")&&console.debug("Applying Update - AttributeStore:",i),t.storage.data=!0,this._schema=s,this._attributeComputeMap.clear(),!f(s))){switch(s.target){case"feature":this._targetType=0;break;case"aggregate":this._targetType=1}for(const t of s.mapping)this._bindAttribute(t)}}onTileData(t,e){if(f(e.addOrUpdate))return;const s=e.addOrUpdate.getCursor();for(;s.next();){const t=s.getDisplayId();this.setAttributeData(t,s)}}invalidateResources(){this._createResourcesPromise=null,this._abortController.abort(),this._abortController=g()}async setHighlight(t,e){const s=this._getBlock(0),i=e.map((t=>lt(t)));s.lock(),s.unsetComponentAllTexels(0,1),s.setComponent(0,1,i),s.unlock(),this._idsToHighlight.clear();for(const r of t)this._idsToHighlight.add(r);await this.sendUpdates()}async updateFilters(t,e){const{config:s,service:i,spatialReference:r}=e,{filters:n}=s,o=n.map(((t,e)=>this._updateFilter(t,e,i,r)));(await Promise.all(o)).some((t=>t))&&(t.storage.filters=!0,a("esri-2d-update-debug")&&console.debug("Applying Update - AttributeStore:","Filters changed"))}setData(t,e,s,i){const r=lt(t);this._ensureSizeForTexel(r),this._getBlock(e).setData(t,s,i)}getData(t,e,s){return this._getBlock(e).getData(t,s)}getHighlightFlag(t){return this._idsToHighlight.has(t)?A:0}unsetAttributeData(t){const e=lt(t);this._getBlock(0).setData(e,0,0)}setAttributeData(t,e){const s=lt(t);if(this._ensureSizeForTexel(s),this._getBlock(0).setData(s,0,this.getFilterFlags(e)),this._targetType!==ut(t))return;const i=this._attributeComputeMap,r=this.config.supportsTextureFloat?1:2;i.size&&i.forEach(((t,i)=>{const n=i*r%4,a=Math.floor(i*r/4),o=this._getBlock(a+C),h=t(e);if(this.config.supportsTextureFloat)o.setData(s,n,h);else if(h===k)o.setData(s,n,255),o.setData(s,n+1,255);else{const t=v(Math.round(h),-32767,32766)+32768,e=255&t,i=(65280&t)>>8;o.setData(s,n,e),o.setData(s,n+1,i)}}))}sendUpdates(){if(this._nextUpdate)return this._nextUpdate.promise;if(this._currUpdate)return this._nextUpdate=y(),this._nextUpdate.promise;const t={blocks:this._blocks.map((t=>m(t)?t.toMessage():null))};return this._currUpdate=this._createResources().then((()=>{const e=()=>{if(this._currUpdate=null,this._nextUpdate){const t=this._nextUpdate;this._nextUpdate=null,this.sendUpdates().then((()=>t.resolve()))}},s=this._client.update(t,this._signal).then(e).catch(e);return this._client.render(this._signal),s})).catch((t=>b(t)?(this._createResourcesPromise=null,this._createResources()):(ot.error(new I("mapview-attribute-store","Encountered an error during client update",t)),Promise.resolve()))),this._currUpdate}_ensureSizeForTexel(t){for(;t>=this._size*this._size;)if(this._expand())return}_bindAttribute(t){let e;if(null!=t.fieldIndex)t.normalizationField&&ot.warn("mapview-arcade","Ignoring normalizationField specified with an arcade expression which is not supported."),e=e=>e.getComputedNumericAtIndex(t.fieldIndex);else{if(!t.field)return;e=t.normalizationField?e=>{const s=e.readAttribute(t.normalizationField);return s?e.readAttribute(t.field)/s:null}:e=>e.readAttribute(t.field)}t.valueRepresentation&&(e=mt(e,(e=>P(e,t.valueRepresentation))));this._attributeComputeMap.set(t.binding,mt(e,(t=>null===t||isNaN(t)||t===1/0?k:t)))}_createResources(){if(m(this._createResourcesPromise))return this._createResourcesPromise;this._getBlock(D),ht("Initializing AttributeStore");const t={shared:dt.sharedArrayBuffer&&!("local"===this._client.type),size:this._size,blocks:M(this._blocks,(t=>({textureOnly:t.textureOnly,buffer:t.buffer,pixelType:t.pixelType})))},e=this._client.initialize(t,this._signal).catch((t=>{b(t)?this._createResourcesPromise=null:ot.error(new I("mapview-attribute-store","Encountered an error during client initialization",t))}));return this._createResourcesPromise=e,e.then((()=>f(this._createResourcesPromise)?this._createResources():void 0)),e}_getBlock(t){const e=this._blocks[t];if(m(e))return e;ht(`Initializing AttributeBlock at index ${t}`);const s=dt.sharedArrayBuffer,i=this._client.type,r=new _t(s,i,this._size,this._blockDescriptors[t]);return this._blocks[t]=r,this._createResourcesPromise=null,r}_expand(){if(this._size<this.config.maxTextureSize){const t=this._size<<=1;return ht("Expanding block size to",t,this._blocks),S(this._blocks,(e=>e.expand(t))),this._createResourcesPromise=null,this._size=t,0}return ot.error(new I("mapview-limitations","Maximum number of onscreen features exceeded.")),-1}async _updateFilter(t,e,s,i){const r=this._filters[e],n=m(r)&&r.hash;if(!r&&!t)return!1;if(n===JSON.stringify(t))return!1;if(f(t)){const t=1<<e+1,s=this._getBlock(0);return this._filters[e]=null,s.setComponentAllTexels(0,t),this.sendUpdates(),!0}const a=await this._getFilter(e,s);return await a.update(t,i),!0}async _getFilter(t,e){const s=this._filters[t];if(m(s))return s;const{default:i}=await import("./FeatureFilter.836bcb90.js"),r=new i({geometryType:e.geometryType,hasM:!1,hasZ:!1,timeInfo:e.timeInfo,fieldsIndex:new T(e.fields)});return this._filters[t]=r,r}isVisible(t){return!!(2&this._getBlock(0).getData(t,0))}getFilterFlags(t){let e=0;const s=(t=>1===ut(t)?254:255)(t.getDisplayId());for(let r=0;r<this._filters.length;r++){const i=!!(s&1<<r),n=this._filters[r];e|=(!i||f(n)||n.check(t)?1:0)<<r}let i=0;if(this._idsToHighlight.size){const e=t.getObjectId();i=this.getHighlightFlag(e)}return e<<1|i}}class pt{constructor(){this._freeIds=[],this._idCounter=1}createId(t=!1){return function(t,e){return((e?2147483648:0)|t)>>>0}(this._getFreeId(),t)}releaseId(t){this._freeIds.push(t)}_getFreeId(){return this._freeIds.length?this._freeIds.pop():this._idCounter++}}function gt(t,e,s){if(!(t.length>e))for(;t.length<=e;)t.push(s)}const xt=2147483647;class yt{constructor(){this._numerics=[],this._strings=[],this._idGenerator=new pt,this._allocatedSize=256,this._bitsets=[],this._instanceIds=[],this._bounds=[]}createBitset(){const t=this._bitsets.length;return this._bitsets.push(Y.create(this._allocatedSize,xt)),t+1}getBitset(t){return this._bitsets[t-1]}_expand(){this._allocatedSize<<=1;for(const t of this._bitsets)t.resize(this._allocatedSize)}_ensureNumeric(t,e){this._numerics[t]||(this._numerics[t]=[]),gt(this._numerics[t],e,0)}_ensureInstanceId(t){gt(this._instanceIds,t,0)}_ensureString(t,e){this._strings[t]||(this._strings[t]=[]),gt(this._strings[t],e,null)}createDisplayId(t=!1){const e=this._idGenerator.createId();return e>this._allocatedSize&&this._expand(),((t,e)=>((e?2147483648:0)|t)>>>0)(e,t)}releaseDisplayId(t){for(const e of this._bitsets)e.unset(t);return this._idGenerator.releaseId(t&xt)}getComputedNumeric(t,e){return this.getComputedNumericAtIndex(t&xt,0)}setComputedNumeric(t,e,s){return this.setComputedNumericAtIndex(t&xt,s,0)}getComputedString(t,e){return this.getComputedStringAtIndex(t&xt,0)}setComputedString(t,e,s){return this.setComputedStringAtIndex(t&xt,0,s)}getComputedNumericAtIndex(t,e){const s=t&xt;return this._ensureNumeric(e,s),this._numerics[e][s]}setComputedNumericAtIndex(t,e,s){const i=t&xt;this._ensureNumeric(e,i),this._numerics[e][i]=s}getInstanceId(t){const e=t&xt;return this._ensureInstanceId(e),this._instanceIds[e]}setInstanceId(t,e){const s=t&xt;this._ensureInstanceId(s),this._instanceIds[s]=e}getComputedStringAtIndex(t,e){const s=t&xt;return this._ensureString(e,s),this._strings[e][s]}setComputedStringAtIndex(t,e,s){const i=t&xt;this._ensureString(e,i),this._strings[e][i]=s}getXMin(t){return this._bounds[4*(t&xt)]}getYMin(t){return this._bounds[4*(t&xt)+1]}getXMax(t){return this._bounds[4*(t&xt)+2]}getYMax(t){return this._bounds[4*(t&xt)+3]}setBounds(t,e){const s=e.readHydratedGeometry();if(!s||!s.coords.length)return!1;let i=1/0,r=1/0,n=-1/0,a=-1/0;s.forEachVertex(((t,e)=>{i=Math.min(i,t),r=Math.min(r,e),n=Math.max(n,t),a=Math.max(a,e)}));const o=t&xt;return gt(this._bounds,4*o+4,0),this._bounds[4*o]=i,this._bounds[4*o+1]=r,this._bounds[4*o+2]=n,this._bounds[4*o+3]=a,!0}}export{lt as M,ft as O,at as c,G as i,nt as l,yt as u,ct as v};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { cd as e$1, b6 as i$2, cr as M$1, cs as o$1, ct as a$1, av as n$2, ai as t$1, cu as l$3, cv as K, cw as oe, cx as W, cy as ee, cz as ye, a5 as r$4, cA as ae, a0 as t$2, a4 as n$3, bI as h$3, cB as m$1, bN as B$1, an as g, aa as s$2, cC as y, cD as d$4, cE as e$2, aw as A$1, b$ as e$3, a7 as e$4 } from "./vendor.74d5941c.js";
+import { r as r$3 } from "./quickselect.e4940b29.js";
+import { d as d$3, t as t$3 } from "./FeatureSetReader.a91e3e2d.js";
+import { N, O as O$1, K as K$1, c as c$2, J } from "./definitions.6737c10c.js";
+import { Y } from "./Utils.3f1577e5.js";
+import { n as n$4, l as l$4, r as r$5 } from "./visualVariablesUtils.bb9f81fa.js";
+class l$2 {
+  constructor(e2, t2) {
+    this.key = new e$1(0, 0, 0, 0), this.bounds = i$2(), this.objectIds = new Set(), this.key.set(t2);
+    const s2 = e2.getLODInfoAt(this.key);
+    this.tileInfoView = e2, this.tileInfoView.getTileBounds(this.bounds, this.key, true), this.resolution = s2.resolution, this.scale = s2.scale, this.level = s2.level, this.needsClear = true;
+  }
+  get id() {
+    return this.key.id;
+  }
+  get extent() {
+    return M$1.fromBounds(this.bounds, this.tileInfoView.tileInfo.spatialReference);
+  }
+  get transform() {
+    return { originPosition: "upperLeft", scale: [this.resolution, this.resolution], translate: [this.bounds[0], this.bounds[3]] };
+  }
+  get bbox() {
+    const e2 = this.bounds;
+    return { minX: e2[0], minY: e2[1], maxX: e2[2], maxY: e2[3] };
+  }
+  clone() {
+    return new l$2(this.tileInfoView, this.key);
+  }
+  createChildTiles() {
+    const t2 = this.key.getChildKeys(), i2 = o$1.acquire();
+    for (let e2 = 0; e2 < t2.length; e2++)
+      i2[e2] = new l$2(this.tileInfoView, t2[e2]);
+    return i2;
+  }
+  getQuantizationParameters() {
+    return a$1.fromJSON({ mode: "view", originPosition: "upperLeft", tolerance: this.resolution, extent: { xmin: this.bounds[0], ymin: this.bounds[1], xmax: this.bounds[2], ymax: this.bounds[3], spatialReference: this.tileInfoView.tileInfo.spatialReference } });
+  }
+}
+function i$1(t2, n2) {
+  if (!(this instanceof i$1))
+    return new i$1(t2, n2);
+  this._maxEntries = Math.max(4, t2 || 9), this._minEntries = Math.max(2, Math.ceil(0.4 * this._maxEntries)), n2 && (typeof n2 == "function" ? this.toBBox = n2 : this._initFormat(n2)), this.clear();
+}
+function n$1(t2, i2, n2) {
+  if (!n2)
+    return i2.indexOf(t2);
+  for (var h2 = 0; h2 < i2.length; h2++)
+    if (n2(t2, i2[h2]))
+      return h2;
+  return -1;
+}
+function h$2(t2, i2) {
+  a(t2, 0, t2.children.length, i2, t2);
+}
+function a(t2, i2, n2, h2, a2) {
+  a2 || (a2 = x(null)), a2.minX = 1 / 0, a2.minY = 1 / 0, a2.maxX = -1 / 0, a2.maxY = -1 / 0;
+  for (var e2, o2 = i2; o2 < n2; o2++)
+    e2 = t2.children[o2], r$2(a2, t2.leaf ? h2(e2) : e2);
+  return a2;
+}
+function r$2(t2, i2) {
+  return t2.minX = Math.min(t2.minX, i2.minX), t2.minY = Math.min(t2.minY, i2.minY), t2.maxX = Math.max(t2.maxX, i2.maxX), t2.maxY = Math.max(t2.maxY, i2.maxY), t2;
+}
+function e(t2, i2) {
+  return t2.minX - i2.minX;
+}
+function o(t2, i2) {
+  return t2.minY - i2.minY;
+}
+function s$1(t2) {
+  return (t2.maxX - t2.minX) * (t2.maxY - t2.minY);
+}
+function l$1(t2) {
+  return t2.maxX - t2.minX + (t2.maxY - t2.minY);
+}
+function m(t2, i2) {
+  return (Math.max(i2.maxX, t2.maxX) - Math.min(i2.minX, t2.minX)) * (Math.max(i2.maxY, t2.maxY) - Math.min(i2.minY, t2.minY));
+}
+function c$1(t2, i2) {
+  var n2 = Math.max(t2.minX, i2.minX), h2 = Math.max(t2.minY, i2.minY), a2 = Math.min(t2.maxX, i2.maxX), r2 = Math.min(t2.maxY, i2.maxY);
+  return Math.max(0, a2 - n2) * Math.max(0, r2 - h2);
+}
+function u$2(t2, i2) {
+  return t2.minX <= i2.minX && t2.minY <= i2.minY && i2.maxX <= t2.maxX && i2.maxY <= t2.maxY;
+}
+function f(t2, i2) {
+  return i2.minX <= t2.maxX && i2.minY <= t2.maxY && i2.maxX >= t2.minX && i2.maxY >= t2.minY;
+}
+function x(t2) {
+  return { children: t2, height: 1, leaf: true, minX: 1 / 0, minY: 1 / 0, maxX: -1 / 0, maxY: -1 / 0 };
+}
+function d$2(i2, n2, h2, a2, r2) {
+  for (var e2, o2 = [n2, h2]; o2.length; )
+    (h2 = o2.pop()) - (n2 = o2.pop()) <= a2 || (e2 = n2 + Math.ceil((h2 - n2) / a2 / 2) * a2, r$3(i2, e2, n2, h2, r2), o2.push(n2, e2, e2, h2));
+}
+i$1.prototype = { all: function() {
+  return this._all(this.data, []);
+}, search: function(t2) {
+  var i2 = this.data, n2 = [], h2 = this.toBBox;
+  if (!f(t2, i2))
+    return n2;
+  for (var a2, r2, e2, o2, s2 = []; i2; ) {
+    for (a2 = 0, r2 = i2.children.length; a2 < r2; a2++)
+      e2 = i2.children[a2], f(t2, o2 = i2.leaf ? h2(e2) : e2) && (i2.leaf ? n2.push(e2) : u$2(t2, o2) ? this._all(e2, n2) : s2.push(e2));
+    i2 = s2.pop();
+  }
+  return n2;
+}, collides: function(t2) {
+  var i2 = this.data, n2 = this.toBBox;
+  if (!f(t2, i2))
+    return false;
+  for (var h2, a2, r2, e2, o2 = []; i2; ) {
+    for (h2 = 0, a2 = i2.children.length; h2 < a2; h2++)
+      if (r2 = i2.children[h2], f(t2, e2 = i2.leaf ? n2(r2) : r2)) {
+        if (i2.leaf || u$2(t2, e2))
+          return true;
+        o2.push(r2);
+      }
+    i2 = o2.pop();
+  }
+  return false;
+}, load: function(t2) {
+  if (!t2 || !t2.length)
+    return this;
+  if (t2.length < this._minEntries) {
+    for (var i2 = 0, n2 = t2.length; i2 < n2; i2++)
+      this.insert(t2[i2]);
+    return this;
+  }
+  var h2 = this._build(t2.slice(), 0, t2.length - 1, 0);
+  if (this.data.children.length)
+    if (this.data.height === h2.height)
+      this._splitRoot(this.data, h2);
+    else {
+      if (this.data.height < h2.height) {
+        var a2 = this.data;
+        this.data = h2, h2 = a2;
+      }
+      this._insert(h2, this.data.height - h2.height - 1, true);
+    }
+  else
+    this.data = h2;
+  return this;
+}, insert: function(t2) {
+  return t2 && this._insert(t2, this.data.height - 1), this;
+}, clear: function() {
+  return this.data = x([]), this;
+}, remove: function(t2, i2) {
+  if (!t2)
+    return this;
+  for (var h2, a2, r2, e2, o2 = this.data, s2 = this.toBBox(t2), l2 = [], m2 = []; o2 || l2.length; ) {
+    if (o2 || (o2 = l2.pop(), a2 = l2[l2.length - 1], h2 = m2.pop(), e2 = true), o2.leaf && (r2 = n$1(t2, o2.children, i2)) !== -1)
+      return o2.children.splice(r2, 1), l2.push(o2), this._condense(l2), this;
+    e2 || o2.leaf || !u$2(o2, s2) ? a2 ? (h2++, o2 = a2.children[h2], e2 = false) : o2 = null : (l2.push(o2), m2.push(h2), h2 = 0, a2 = o2, o2 = o2.children[0]);
+  }
+  return this;
+}, toBBox: function(t2) {
+  return t2;
+}, compareMinX: e, compareMinY: o, toJSON: function() {
+  return this.data;
+}, fromJSON: function(t2) {
+  return this.data = t2, this;
+}, _all: function(t2, i2) {
+  for (var n2 = []; t2; )
+    t2.leaf ? i2.push.apply(i2, t2.children) : n2.push.apply(n2, t2.children), t2 = n2.pop();
+  return i2;
+}, _build: function(t2, i2, n2, a2) {
+  var r2, e2 = n2 - i2 + 1, o2 = this._maxEntries;
+  if (e2 <= o2)
+    return h$2(r2 = x(t2.slice(i2, n2 + 1)), this.toBBox), r2;
+  a2 || (a2 = Math.ceil(Math.log(e2) / Math.log(o2)), o2 = Math.ceil(e2 / Math.pow(o2, a2 - 1))), (r2 = x([])).leaf = false, r2.height = a2;
+  var s2, l2, m2, c2, u2 = Math.ceil(e2 / o2), f2 = u2 * Math.ceil(Math.sqrt(o2));
+  for (d$2(t2, i2, n2, f2, this.compareMinX), s2 = i2; s2 <= n2; s2 += f2)
+    for (d$2(t2, s2, m2 = Math.min(s2 + f2 - 1, n2), u2, this.compareMinY), l2 = s2; l2 <= m2; l2 += u2)
+      c2 = Math.min(l2 + u2 - 1, m2), r2.children.push(this._build(t2, l2, c2, a2 - 1));
+  return h$2(r2, this.toBBox), r2;
+}, _chooseSubtree: function(t2, i2, n2, h2) {
+  for (var a2, r2, e2, o2, l2, c2, u2, f2; h2.push(i2), !i2.leaf && h2.length - 1 !== n2; ) {
+    for (u2 = f2 = 1 / 0, a2 = 0, r2 = i2.children.length; a2 < r2; a2++)
+      l2 = s$1(e2 = i2.children[a2]), (c2 = m(t2, e2) - l2) < f2 ? (f2 = c2, u2 = l2 < u2 ? l2 : u2, o2 = e2) : c2 === f2 && l2 < u2 && (u2 = l2, o2 = e2);
+    i2 = o2 || i2.children[0];
+  }
+  return i2;
+}, _insert: function(t2, i2, n2) {
+  var h2 = this.toBBox, a2 = n2 ? t2 : h2(t2), e2 = [], o2 = this._chooseSubtree(a2, this.data, i2, e2);
+  for (o2.children.push(t2), r$2(o2, a2); i2 >= 0 && e2[i2].children.length > this._maxEntries; )
+    this._split(e2, i2), i2--;
+  this._adjustParentBBoxes(a2, e2, i2);
+}, _split: function(t2, i2) {
+  var n2 = t2[i2], a2 = n2.children.length, r2 = this._minEntries;
+  this._chooseSplitAxis(n2, r2, a2);
+  var e2 = this._chooseSplitIndex(n2, r2, a2), o2 = x(n2.children.splice(e2, n2.children.length - e2));
+  o2.height = n2.height, o2.leaf = n2.leaf, h$2(n2, this.toBBox), h$2(o2, this.toBBox), i2 ? t2[i2 - 1].children.push(o2) : this._splitRoot(n2, o2);
+}, _splitRoot: function(t2, i2) {
+  this.data = x([t2, i2]), this.data.height = t2.height + 1, this.data.leaf = false, h$2(this.data, this.toBBox);
+}, _chooseSplitIndex: function(t2, i2, n2) {
+  var h2, r2, e2, o2, l2, m2, u2, f2;
+  for (m2 = u2 = 1 / 0, h2 = i2; h2 <= n2 - i2; h2++)
+    o2 = c$1(r2 = a(t2, 0, h2, this.toBBox), e2 = a(t2, h2, n2, this.toBBox)), l2 = s$1(r2) + s$1(e2), o2 < m2 ? (m2 = o2, f2 = h2, u2 = l2 < u2 ? l2 : u2) : o2 === m2 && l2 < u2 && (u2 = l2, f2 = h2);
+  return f2;
+}, _chooseSplitAxis: function(t2, i2, n2) {
+  var h2 = t2.leaf ? this.compareMinX : e, a2 = t2.leaf ? this.compareMinY : o;
+  this._allDistMargin(t2, i2, n2, h2) < this._allDistMargin(t2, i2, n2, a2) && t2.children.sort(h2);
+}, _allDistMargin: function(t2, i2, n2, h2) {
+  t2.children.sort(h2);
+  var e2, o2, s2 = this.toBBox, m2 = a(t2, 0, i2, s2), c2 = a(t2, n2 - i2, n2, s2), u2 = l$1(m2) + l$1(c2);
+  for (e2 = i2; e2 < n2 - i2; e2++)
+    o2 = t2.children[e2], r$2(m2, t2.leaf ? s2(o2) : o2), u2 += l$1(m2);
+  for (e2 = n2 - i2 - 1; e2 >= i2; e2--)
+    o2 = t2.children[e2], r$2(c2, t2.leaf ? s2(o2) : o2), u2 += l$1(c2);
+  return u2;
+}, _adjustParentBBoxes: function(t2, i2, n2) {
+  for (var h2 = n2; h2 >= 0; h2--)
+    r$2(i2[h2], t2);
+}, _condense: function(t2) {
+  for (var i2, n2 = t2.length - 1; n2 >= 0; n2--)
+    t2[n2].children.length === 0 ? n2 > 0 ? (i2 = t2[n2 - 1].children).splice(i2.indexOf(t2[n2]), 1) : this.clear() : h$2(t2[n2], this.toBBox);
+}, _initFormat: function(t2) {
+  var i2 = ["return a", " - b", ";"];
+  this.compareMinX = new Function("a", "b", i2.join(t2[0])), this.compareMinY = new Function("a", "b", i2.join(t2[1])), this.toBBox = new Function("a", "return {minX: a" + t2[0] + ", minY: a" + t2[1] + ", maxX: a" + t2[2] + ", maxY: a" + t2[3] + "};");
+} };
+const h$1 = { added: [], removed: [] }, r$1 = new Set(), d$1 = new e$1(0, 0, 0, 0);
+class l extends n$2 {
+  constructor(t2) {
+    super(), this._tiles = new Map(), this._index = i$1(9, t$1("csp-restrictions") ? (e2) => ({ minX: e2.bounds[0], minY: e2.bounds[1], maxX: e2.bounds[2], maxY: e2.bounds[3] }) : [".bounds[0]", ".bounds[1]", ".bounds[2]", ".bounds[3]"]), this.tiles = [], this.tileScheme = t2;
+  }
+  destroy() {
+    this.clear();
+  }
+  clear() {
+    this.tiles.length = 0, this._tiles.clear(), this._index.clear();
+  }
+  has(e2) {
+    return this._tiles.has(e2);
+  }
+  get(e2) {
+    return this._tiles.get(e2);
+  }
+  findByKey(e2) {
+    return this._tiles.get(e2.id);
+  }
+  minLOD() {
+    return Math.min(...this.tiles.map((e2) => e2.level));
+  }
+  intersections(e2, t2) {
+    const s2 = typeof e2 == "string" ? this.get(e2) : e2;
+    if (!s2)
+      return [];
+    const i2 = t2 * s2.resolution, n2 = s2.bounds[0] - i2, o2 = s2.bounds[1] - i2, h2 = s2.bounds[2] + i2, r2 = s2.bounds[3] + i2, d2 = [];
+    for (const l2 of this._index.search({ minX: n2, minY: o2, maxX: h2, maxY: r2 })) {
+      const e3 = l2.bounds.slice();
+      e3[0] = Math.max(e3[0], n2), e3[1] = Math.max(e3[1], o2), e3[2] = Math.min(e3[2], h2), e3[3] = Math.min(e3[3], r2), e3[2] - e3[0] > 0 && e3[3] - e3[1] > 0 && d2.push({ bounds: e3, tile: l2 });
+    }
+    return d2;
+  }
+  boundsIntersections(e2) {
+    return this._index.search({ minX: e2[0], minY: e2[1], maxX: e2[2], maxY: e2[3] });
+  }
+  updateTiles(e2) {
+    const t2 = { added: [], removed: [] };
+    for (const s2 of e2.added)
+      if (!this.has(s2)) {
+        const e3 = new l$2(this.tileScheme, s2);
+        this._tiles.set(s2, e3), this._index.insert(e3), t2.added.push(e3);
+      }
+    for (const s2 of e2.removed)
+      if (this.has(s2)) {
+        const e3 = this.get(s2);
+        this._tiles.delete(s2), this._index.remove(e3), t2.removed.push(e3);
+      }
+    this.tiles.length = 0, this._tiles.forEach((e3) => this.tiles.push(e3)), (t2.added.length || t2.removed.length) && this.emit("update", t2);
+  }
+  setViewState(e2) {
+    const t2 = this.tileScheme.getTileCoverage(e2, 0);
+    if (!t2)
+      return;
+    const { spans: s2, lodInfo: o2 } = t2, { level: l2 } = o2;
+    if (s2.length > 0)
+      for (const { row: i2, colFrom: a2, colTo: m2 } of s2)
+        for (let e3 = a2; e3 <= m2; e3++) {
+          const t3 = d$1.set(l2, i2, o2.normalizeCol(e3), o2.getWorldForColumn(e3)).id;
+          if (r$1.add(t3), !this.has(t3)) {
+            const e4 = new l$2(this.tileScheme, t3);
+            this._tiles.set(t3, e4), this._index.insert(e4), this.tiles.push(e4), h$1.added.push(e4);
+          }
+        }
+    for (let i2 = this.tiles.length - 1; i2 >= 0; i2--) {
+      const e3 = this.tiles[i2];
+      r$1.has(e3.id) || (this._tiles.delete(e3.id), this.tiles.splice(i2, 1), this._index.remove(e3), h$1.removed.push(e3));
+    }
+    (h$1.added.length || h$1.removed.length) && this.emit("update", h$1), l$3.pool.release(t2), r$1.clear(), h$1.added.length = 0, h$1.removed.length = 0;
+  }
+}
+function h({ coords: t2, lengths: e2 }) {
+  let r2 = 0;
+  for (const s2 of e2) {
+    for (let e3 = 1; e3 < s2; e3++)
+      t2[2 * (r2 + e3)] += t2[2 * (r2 + e3) - 2], t2[2 * (r2 + e3) + 1] += t2[2 * (r2 + e3) - 1];
+    r2 += s2;
+  }
+}
+class c extends d$3 {
+  constructor(t2, e2, r2) {
+    super(t2), this._featureIndex = -1, this._dateFields = new Set(), this._geometryType = r2, this._features = e2;
+  }
+  static fromFeatures(t2, e2, s2) {
+    const i2 = K([], t2, e2, false, false, s2);
+    for (let r2 = 0; r2 < i2.length; r2++)
+      i2[r2].displayId = t2[r2].displayId;
+    return c.fromOptimizedFeatures(i2, e2);
+  }
+  static fromFeatureSet(t2, e2) {
+    const r2 = oe(t2, e2);
+    return c.fromOptimizedFeatureSet(r2);
+  }
+  static fromOptimizedFeatureSet(t2) {
+    const { features: e2, geometryType: r2 } = t2, s2 = c.fromOptimizedFeatures(e2, r2);
+    s2._exceededTransferLimit = t2.exceededTransferLimit, s2._transform = t2.transform;
+    for (const i2 of t2.fields)
+      i2.type === "esriFieldTypeDate" && s2._dateFields.add(i2.name);
+    return s2;
+  }
+  static fromOptimizedFeatures(t2, e2, r2) {
+    const s2 = d$3.createInstance(), i2 = new c(s2, t2, e2);
+    return i2._transform = r2, i2;
+  }
+  get _current() {
+    return this._features[this._featureIndex];
+  }
+  get geometryType() {
+    return this._geometryType;
+  }
+  get hasFeatures() {
+    return !!this._features.length;
+  }
+  get hasNext() {
+    return this._featureIndex + 1 < this._features.length;
+  }
+  get exceededTransferLimit() {
+    return this._exceededTransferLimit;
+  }
+  get hasZ() {
+    return false;
+  }
+  get hasM() {
+    return false;
+  }
+  getApproximateSize() {
+    return this._features.length;
+  }
+  getCursor() {
+    return this.copy();
+  }
+  getQuantizationTransform() {
+    return this._transform;
+  }
+  getAttributeHash() {
+    let t2 = "";
+    for (const e2 in this._current.attributes)
+      t2 += this._current.attributes[e2];
+    return t2;
+  }
+  getIndex() {
+    return this._featureIndex;
+  }
+  setIndex(t2) {
+    this._featureIndex = t2;
+  }
+  getObjectId() {
+    return this._current.objectId;
+  }
+  getDisplayId() {
+    return this._current.displayId;
+  }
+  setDisplayId(t2) {
+    this._current.displayId = t2;
+  }
+  getGroupId() {
+    return this._current.groupId;
+  }
+  setGroupId(t2) {
+    this._current.groupId = t2;
+  }
+  copy() {
+    const t2 = new c(this.instance, this._features, this.geometryType);
+    return this.copyInto(t2), t2;
+  }
+  next() {
+    for (; ++this._featureIndex < this._features.length && !this._passesFilter() && !this._getExists(); )
+      ;
+    return this._featureIndex < this._features.length;
+  }
+  readLegacyFeature() {
+    return W(this._current, this.geometryType, this.hasZ, this.hasM);
+  }
+  readOptimizedFeature() {
+    return this._current;
+  }
+  readLegacyPointGeometry() {
+    return this.readGeometry() ? { x: this.getX(), y: this.getY() } : null;
+  }
+  readLegacyGeometry() {
+    const t2 = this.readGeometry();
+    return ee(t2, this.geometryType, this.hasZ, this.hasM);
+  }
+  readLegacyCentroid() {
+    const t2 = this.readCentroid();
+    return t2 ? { x: t2.coords[0] * this._sx + this._tx, y: t2.coords[1] * this._sy + this._ty } : null;
+  }
+  readGeometryArea() {
+    return ye(this._current.geometry, 2);
+  }
+  readUnquantizedGeometry() {
+    const t2 = this.readGeometry();
+    if (this.geometryType === "esriGeometryPoint" || !t2)
+      return t2;
+    const e2 = t2.clone();
+    return h(e2), e2;
+  }
+  readHydratedGeometry() {
+    const e2 = this._current.geometry;
+    if (!e2)
+      return null;
+    const r2 = e2.clone();
+    return r$4(this._transform) && ae(r2, r2, this.hasZ, this.hasM, this._transform), r2;
+  }
+  getXHydrate() {
+    const t2 = this._current.geometry.coords[0], r2 = this.getQuantizationTransform();
+    return t$2(r2) ? t2 : t2 * r2.scale[0] + r2.translate[0];
+  }
+  getYHydrate() {
+    const t2 = this._current.geometry.coords[1], r2 = this.getQuantizationTransform();
+    return t$2(r2) ? t2 : r2.translate[1] - t2 * r2.scale[1];
+  }
+  getX() {
+    return this._current.geometry.coords[0] * this._sx + this._tx;
+  }
+  getY() {
+    return this._current.geometry.coords[1] * this._sy + this._ty;
+  }
+  readGeometry() {
+    if (!this._current.hasGeometry)
+      return null;
+    const t2 = this._current.geometry.clone();
+    if (t2.isPoint)
+      return t2.coords[0] = t2.coords[0] * this._sx + this._tx, t2.coords[1] = t2.coords[1] * this._sy + this._ty, t2;
+    let e2 = 0;
+    for (const r2 of t2.lengths)
+      t2.coords[2 * e2] = t2.coords[2 * e2] * this._sx + this._tx, t2.coords[2 * e2 + 1] = t2.coords[2 * e2 + 1] * this._sy + this._ty, e2 += r2;
+    return t2;
+  }
+  readCentroid() {
+    if (!this._current.hasGeometry)
+      return null;
+    if (!this._current.centroid) {
+      const t3 = this._computeCentroid();
+      if (!t3)
+        return null;
+      t3.coords[0] = (t3.coords[0] - this._tx) / this._sx, t3.coords[1] = (t3.coords[1] - this._ty) / this._sy, this._current.centroid = t3;
+    }
+    const t2 = this._current.centroid.clone();
+    return t2.coords[0] = t2.coords[0] * this._sx + this._tx, t2.coords[1] = t2.coords[1] * this._sx + this._ty, t2;
+  }
+  _readAttribute(t2, e2) {
+    const r2 = this._current.attributes[t2];
+    if (r2 !== void 0)
+      return r2 != null && e2 && this._dateFields.has(t2) ? new Date(r2) : r2;
+    const s2 = this.readAttributes(), i2 = t2.toLocaleLowerCase().trim();
+    for (const n2 in s2)
+      if (n2.toLocaleLowerCase().trim() === i2) {
+        const t3 = this._current.attributes[n2];
+        return t3 != null && e2 && this._dateFields.has(n2) ? new Date(t3) : t3;
+      }
+  }
+  copyInto(t2) {
+    super.copyInto(t2), t2._featureIndex = this._featureIndex, t2._transform = this._transform, t2._dateFields = this._dateFields;
+  }
+  _readAttributes() {
+    return this._current.attributes;
+  }
+  _passesFilter() {
+    if (!this._hasFilter)
+      return true;
+    let t2 = 0, e2 = 0;
+    switch (this.geometryType) {
+      case "esriGeometryPoint": {
+        const r2 = this._current.geometry;
+        if (!r2)
+          return false;
+        [t2, e2] = r2.coords;
+        break;
+      }
+      case "esriGeometryPolygon": {
+        const r2 = this.readCentroid();
+        if (!r2)
+          return false;
+        [t2, e2] = r2.coords, t2 -= this._tx, e2 -= this._ty;
+        break;
+      }
+      default:
+        return false;
+    }
+    return t2 >= this._xmin && t2 <= this._xmax && e2 >= this._ymin && e2 <= this._ymax;
+  }
+}
+const w = n$3.getLogger("esri.views.layers.2d.features.support.AttributeStore"), A = n$4(l$4, w), k = 2147483647, D = 2147483648, E = 254, F = 255, U = 0, R = 1, C = (t2) => (t2 & D) >>> 31, M = (t2) => t2 & k, B = (t2) => C(t2) === R ? E : F;
+function v(t2) {
+  return C(t2) === R;
+}
+const j = { sharedArrayBuffer: t$1("esri-shared-array-buffer"), atomics: t$1("esri-atomics") };
+function I(t2, e2) {
+  return (i2) => e2(t2(i2));
+}
+class P {
+  constructor(t2, e2, i2, s2) {
+    this.size = 0, this.texelSize = 4;
+    const { pixelType: r2, layout: a2, textureOnly: o2 } = s2;
+    this.textureOnly = o2 || false, this.pixelType = r2, this._ctype = e2, this.layout = a2, this._resetRange(), this._shared = t2, this.size = i2, o2 || (this.data = this._initData(r2, i2, t2, e2));
+  }
+  get buffer() {
+    return A$1(this.data, (t2) => t2.buffer);
+  }
+  unsetComponentAllTexels(t2, e2) {
+    const i2 = e$3(this.data);
+    for (let s2 = 0; s2 < this.size * this.size; s2++)
+      i2[s2 * this.texelSize + t2] &= ~e2;
+    this.dirtyStart = 0, this.dirtyEnd = this.size * this.size - 1;
+  }
+  setComponentAllTexels(t2, e2) {
+    const i2 = e$3(this.data);
+    for (let s2 = 0; s2 < this.size * this.size; s2++)
+      i2[s2 * this.texelSize + t2] |= 255 & e2;
+    this.dirtyStart = 0, this.dirtyEnd = this.size * this.size - 1;
+  }
+  setComponent(t2, e2, i2) {
+    const s2 = e$3(this.data);
+    for (const r2 of i2)
+      s2[r2 * this.texelSize + t2] |= e2, this.dirtyStart = Math.min(this.dirtyStart, r2), this.dirtyEnd = Math.max(this.dirtyEnd, r2);
+  }
+  setComponentTexel(t2, e2, i2) {
+    e$3(this.data)[i2 * this.texelSize + t2] |= e2, this.dirtyStart = Math.min(this.dirtyStart, i2), this.dirtyEnd = Math.max(this.dirtyEnd, i2);
+  }
+  unsetComponentTexel(t2, e2, i2) {
+    e$3(this.data)[i2 * this.texelSize + t2] &= ~e2, this.dirtyStart = Math.min(this.dirtyStart, i2), this.dirtyEnd = Math.max(this.dirtyEnd, i2);
+  }
+  getData(t2, e2) {
+    const i2 = M(t2);
+    return e$3(this.data)[i2 * this.texelSize + e2];
+  }
+  setData(t2, e2, i2) {
+    const s2 = M(t2), r2 = 1 << e2;
+    (this.layout & r2) != 0 ? (this.data[s2 * this.texelSize + e2] = i2, this.dirtyStart = Math.min(this.dirtyStart, s2), this.dirtyEnd = Math.max(this.dirtyEnd, s2)) : w.error("mapview-attributes-store", "Tried to set a value for a texel's readonly component");
+  }
+  lock() {
+    this.pixelType === 5121 && this._shared && j.atomics && this._ctype !== "local" && Atomics.store(this.data, 0, 1);
+  }
+  unlock() {
+    this.pixelType === 5121 && this._shared && j.atomics && this._ctype !== "local" && Atomics.store(this.data, 0, 0);
+  }
+  expand(t2) {
+    if (this.size = t2, !this.textureOnly) {
+      const e2 = this._initData(this.pixelType, t2, this._shared, this._ctype), i2 = e$3(this.data);
+      e2.set(i2), this.data = e2;
+    }
+  }
+  toMessage() {
+    const t2 = this.dirtyStart, e2 = this.dirtyEnd, i2 = this.texelSize;
+    if (t2 > e2)
+      return null;
+    this._resetRange();
+    const s2 = !(this._shared || this._ctype === "local"), r2 = this.pixelType, a2 = this.layout, n2 = e$3(this.data);
+    if (!n2.slice) {
+      if (!s2)
+        return { start: t2, end: e2, data: null, pixelType: r2, layout: a2 };
+      return { start: t2, end: e2, data: new (Y(this.pixelType))(Array.prototype.slice.call(this.data, t2 * i2, (e2 + 1) * i2)), pixelType: r2, layout: a2 };
+    }
+    return { start: t2, end: e2, data: s2 && n2.slice(t2 * i2, (e2 + 1) * i2) || null, pixelType: r2, layout: a2 };
+  }
+  _initData(t2, e2, i2, s2) {
+    const r2 = i2 && s2 !== "local" ? SharedArrayBuffer : ArrayBuffer, a2 = Y(t2), o2 = new a2(new r2(e2 * e2 * 4 * a2.BYTES_PER_ELEMENT));
+    for (let n2 = 0; n2 < o2.length; n2 += 4)
+      o2[n2 + 1] = 255;
+    return o2;
+  }
+  _resetRange() {
+    this.dirtyStart = 2147483647, this.dirtyEnd = 0;
+  }
+}
+class O {
+  constructor(t2, e2) {
+    this._client = t2, this.config = e2, this._attributeComputeMap = new Map(), this._blocks = new Array(), this._filters = new Array(N), this._targetType = 0, this._abortController = h$3(), this._hasScaleExpr = false, this._size = 32, this._idsToHighlight = new Set();
+    const i2 = e2.supportsTextureFloat ? 5126 : 5121;
+    A(`Creating AttributeStore ${j.sharedArrayBuffer ? "with" : "without"} shared memory`), this._blockDescriptors = [{ pixelType: 5121, layout: 1 }, { pixelType: 5121, layout: 15, textureOnly: true }, { pixelType: i2, layout: 15 }, { pixelType: i2, layout: 15 }], this._blocks = this._blockDescriptors.map(() => null);
+  }
+  destroy() {
+    this._abortController.abort();
+  }
+  get hasScaleExpr() {
+    return this._hasScaleExpr;
+  }
+  get _signal() {
+    return this._abortController.signal;
+  }
+  update(i2, s2) {
+    this.config = s2;
+    const r2 = s2.schema.processors[0].storage, a2 = m$1(this._schema, r2);
+    if ((i2.targets.feature || i2.targets.aggregate) && (i2.storage.data = true), a2 && (t$1("esri-2d-update-debug") && console.debug("Applying Update - AttributeStore:", a2), i2.storage.data = true, this._schema = r2, this._attributeComputeMap.clear(), !t$2(r2))) {
+      switch (r2.target) {
+        case "feature":
+          this._targetType = U;
+          break;
+        case "aggregate":
+          this._targetType = R;
+      }
+      for (const t2 of r2.mapping)
+        this._bindAttribute(t2);
+    }
+  }
+  onTileData(t2, i2) {
+    if (t$2(i2.addOrUpdate))
+      return;
+    const s2 = i2.addOrUpdate.getCursor();
+    for (; s2.next(); ) {
+      const t3 = s2.getDisplayId();
+      this.setAttributeData(t3, s2);
+    }
+  }
+  invalidateResources() {
+    this._createResourcesPromise = null, this._abortController.abort(), this._abortController = h$3();
+  }
+  setHighlight(t2, e2) {
+    return __async(this, null, function* () {
+      const i2 = 1, s2 = this._getBlock(0), r2 = e2.map((t3) => M(t3));
+      s2.lock(), s2.unsetComponentAllTexels(0, i2), s2.setComponent(0, i2, r2), s2.unlock(), this._idsToHighlight.clear();
+      for (const a2 of t2)
+        this._idsToHighlight.add(a2);
+      yield this.sendUpdates();
+    });
+  }
+  updateFilters(e2, i2) {
+    return __async(this, null, function* () {
+      const { config: s2, service: r2, spatialReference: a2 } = i2, { filters: o2 } = s2, n2 = o2.map((t2, e3) => this._updateFilter(t2, e3, r2, a2));
+      (yield Promise.all(n2)).some((t2) => t2) && (e2.storage.filters = true, t$1("esri-2d-update-debug") && console.debug("Applying Update - AttributeStore:", "Filters changed"));
+    });
+  }
+  setData(t2, e2, i2, s2) {
+    const r2 = M(t2);
+    this._ensureSizeForTexel(r2), this._getBlock(e2).setData(t2, i2, s2);
+  }
+  getData(t2, e2, i2) {
+    return this._getBlock(e2).getData(t2, i2);
+  }
+  getHighlightFlag(t2) {
+    return this._idsToHighlight.has(t2) ? O$1 : 0;
+  }
+  unsetAttributeData(t2) {
+    const e2 = M(t2);
+    this._getBlock(0).setData(e2, 0, 0);
+  }
+  setAttributeData(t2, e2) {
+    const i2 = M(t2);
+    if (this._ensureSizeForTexel(i2), this._getBlock(0).setData(i2, 0, this.getFilterFlags(e2)), this._targetType !== C(t2))
+      return;
+    const s2 = this._attributeComputeMap, r2 = this.config.supportsTextureFloat ? 1 : 2, a2 = 4;
+    s2.size && s2.forEach((t3, s3) => {
+      const o2 = s3 * r2 % a2, n2 = Math.floor(s3 * r2 / a2), l2 = this._getBlock(n2 + K$1), h2 = t3(e2);
+      if (this.config.supportsTextureFloat)
+        l2.setData(i2, o2, h2);
+      else if (h2 === c$2)
+        l2.setData(i2, o2, 255), l2.setData(i2, o2 + 1, 255);
+      else {
+        const t4 = e$4(Math.round(h2), -32767, 32766) + 32768, e3 = 255 & t4, s4 = (65280 & t4) >> 8;
+        l2.setData(i2, o2, e3), l2.setData(i2, o2 + 1, s4);
+      }
+    });
+  }
+  sendUpdates() {
+    if (this._nextUpdate)
+      return this._nextUpdate.promise;
+    if (this._currUpdate)
+      return this._nextUpdate = B$1(), this._nextUpdate.promise;
+    const t2 = { blocks: this._blocks.map((t3) => r$4(t3) ? t3.toMessage() : null) };
+    return this._currUpdate = this._createResources().then(() => {
+      const e2 = () => {
+        if (this._currUpdate = null, this._nextUpdate) {
+          const t3 = this._nextUpdate;
+          this._nextUpdate = null, this.sendUpdates().then(() => t3.resolve());
+        }
+      }, i2 = this._client.update(t2, this._signal).then(e2).catch(e2);
+      return this._client.render(this._signal), i2;
+    }).catch((t3) => g(t3) ? (this._createResourcesPromise = null, this._createResources()) : (w.error(new s$2("mapview-attribute-store", "Encountered an error during client update", t3)), Promise.resolve())), this._currUpdate;
+  }
+  _ensureSizeForTexel(t2) {
+    for (; t2 >= this._size * this._size; )
+      if (this._expand())
+        return;
+  }
+  _bindAttribute(t2) {
+    function e2() {
+      return t2.normalizationField ? (e3) => {
+        const i3 = e3.readAttribute(t2.normalizationField);
+        if (!i3)
+          return null;
+        return e3.readAttribute(t2.field) / i3;
+      } : (e3) => e3.readAttribute(t2.field);
+    }
+    function i2() {
+      return t2.normalizationField && w.warn("mapview-arcade", "Ignoring normalizationField specified with an arcade expression which is not supported."), (e3) => e3.getComputedNumericAtIndex(t2.fieldIndex);
+    }
+    let s2;
+    if (t2.fieldIndex != null)
+      s2 = i2();
+    else {
+      if (!t2.field)
+        return;
+      s2 = e2();
+    }
+    if (t2.valueRepresentation) {
+      s2 = I(s2, (e3) => r$5(e3, t2.valueRepresentation));
+    }
+    const r2 = (t3) => t3 === null || isNaN(t3) || t3 === 1 / 0 ? c$2 : t3;
+    this._attributeComputeMap.set(t2.binding, I(s2, r2));
+  }
+  _createResources() {
+    if (r$4(this._createResourcesPromise))
+      return this._createResourcesPromise;
+    this._getBlock(J), A("Initializing AttributeStore");
+    const t2 = { shared: j.sharedArrayBuffer && !(this._client.type === "local"), size: this._size, blocks: y(this._blocks, (t3) => ({ textureOnly: t3.textureOnly, buffer: t3.buffer, pixelType: t3.pixelType })) }, r2 = this._client.initialize(t2, this._signal).catch((t3) => {
+      g(t3) ? this._createResourcesPromise = null : w.error(new s$2("mapview-attribute-store", "Encountered an error during client initialization", t3));
+    });
+    return this._createResourcesPromise = r2, r2.then(() => t$2(this._createResourcesPromise) ? this._createResources() : void 0), r2;
+  }
+  _getBlock(t2) {
+    const e2 = this._blocks[t2];
+    if (r$4(e2))
+      return e2;
+    A(`Initializing AttributeBlock at index ${t2}`);
+    const s2 = j.sharedArrayBuffer, r2 = this._client.type, a2 = new P(s2, r2, this._size, this._blockDescriptors[t2]);
+    return this._blocks[t2] = a2, this._createResourcesPromise = null, a2;
+  }
+  _expand() {
+    if (this._size < this.config.maxTextureSize) {
+      const t2 = this._size <<= 1;
+      return A("Expanding block size to", t2, this._blocks), d$4(this._blocks, (e2) => e2.expand(t2)), this._createResourcesPromise = null, this._size = t2, 0;
+    }
+    return w.error(new s$2("mapview-limitations", "Maximum number of onscreen features exceeded.")), -1;
+  }
+  _updateFilter(t2, s2, r2, a2) {
+    return __async(this, null, function* () {
+      const o2 = this._filters[s2], n2 = r$4(o2) && o2.hash;
+      if (!o2 && !t2)
+        return false;
+      if (n2 === JSON.stringify(t2))
+        return false;
+      if (t$2(t2)) {
+        const t3 = 1 << s2 + 1, e2 = this._getBlock(0);
+        return this._filters[s2] = null, e2.setComponentAllTexels(0, t3), this.sendUpdates(), true;
+      }
+      const l2 = yield this._getFilter(s2, r2);
+      return yield l2.update(t2, a2), true;
+    });
+  }
+  _getFilter(t2, e2) {
+    return __async(this, null, function* () {
+      const s2 = this._filters[t2];
+      if (r$4(s2))
+        return s2;
+      const { default: r2 } = yield import("./FeatureFilter.836bcb90.js"), a2 = new r2({ geometryType: e2.geometryType, hasM: false, hasZ: false, timeInfo: e2.timeInfo, fieldsIndex: new e$2(e2.fields) });
+      return this._filters[t2] = a2, a2;
+    });
+  }
+  isVisible(t2) {
+    return !!(2 & this._getBlock(0).getData(t2, 0));
+  }
+  getFilterFlags(t2) {
+    let i2 = 0;
+    const s2 = B(t2.getDisplayId());
+    for (let a2 = 0; a2 < this._filters.length; a2++) {
+      const r3 = !!(s2 & 1 << a2), o2 = this._filters[a2];
+      i2 |= (!r3 || t$2(o2) || o2.check(t2) ? 1 : 0) << a2;
+    }
+    let r2 = 0;
+    if (this._idsToHighlight.size) {
+      const e2 = t2.getObjectId();
+      r2 = this.getHighlightFlag(e2);
+    }
+    return i2 << 1 | r2;
+  }
+}
+const t = 2147483648;
+function u$1(e2, r2) {
+  return ((r2 ? t : 0) | e2) >>> 0;
+}
+class d {
+  constructor() {
+    this._freeIds = [], this._idCounter = 1;
+  }
+  createId(e2 = false) {
+    return u$1(this._getFreeId(), e2);
+  }
+  releaseId(e2) {
+    this._freeIds.push(e2);
+  }
+  _getFreeId() {
+    return this._freeIds.length ? this._freeIds.pop() : this._idCounter++;
+  }
+}
+function s(t2, e2, s2) {
+  if (!(t2.length > e2))
+    for (; t2.length <= e2; )
+      t2.push(s2);
+}
+const i = 2147483647, n = 2147483648, r = (t2, e2) => ((e2 ? n : 0) | t2) >>> 0;
+class u {
+  constructor() {
+    this._numerics = [], this._strings = [], this._idGenerator = new d(), this._allocatedSize = 256, this._bitsets = [], this._instanceIds = [], this._bounds = [];
+  }
+  createBitset() {
+    const e2 = this._bitsets.length;
+    return this._bitsets.push(t$3.create(this._allocatedSize, i)), e2 + 1;
+  }
+  getBitset(t2) {
+    return this._bitsets[t2 - 1];
+  }
+  _expand() {
+    this._allocatedSize <<= 1;
+    for (const t2 of this._bitsets)
+      t2.resize(this._allocatedSize);
+  }
+  _ensureNumeric(t2, e2) {
+    this._numerics[t2] || (this._numerics[t2] = []);
+    s(this._numerics[t2], e2, 0);
+  }
+  _ensureInstanceId(t2) {
+    s(this._instanceIds, t2, 0);
+  }
+  _ensureString(t2, e2) {
+    this._strings[t2] || (this._strings[t2] = []);
+    s(this._strings[t2], e2, null);
+  }
+  createDisplayId(t2 = false) {
+    const e2 = this._idGenerator.createId();
+    return e2 > this._allocatedSize && this._expand(), r(e2, t2);
+  }
+  releaseDisplayId(t2) {
+    for (const e2 of this._bitsets)
+      e2.unset(t2);
+    return this._idGenerator.releaseId(t2 & i);
+  }
+  getComputedNumeric(t2, e2) {
+    return this.getComputedNumericAtIndex(t2 & i, 0);
+  }
+  setComputedNumeric(t2, e2, s2) {
+    return this.setComputedNumericAtIndex(t2 & i, s2, 0);
+  }
+  getComputedString(t2, e2) {
+    return this.getComputedStringAtIndex(t2 & i, 0);
+  }
+  setComputedString(t2, e2, s2) {
+    return this.setComputedStringAtIndex(t2 & i, 0, s2);
+  }
+  getComputedNumericAtIndex(t2, e2) {
+    const s2 = t2 & i;
+    return this._ensureNumeric(e2, s2), this._numerics[e2][s2];
+  }
+  setComputedNumericAtIndex(t2, e2, s2) {
+    const n2 = t2 & i;
+    this._ensureNumeric(e2, n2), this._numerics[e2][n2] = s2;
+  }
+  getInstanceId(t2) {
+    const e2 = t2 & i;
+    return this._ensureInstanceId(e2), this._instanceIds[e2];
+  }
+  setInstanceId(t2, e2) {
+    const s2 = t2 & i;
+    this._ensureInstanceId(s2), this._instanceIds[s2] = e2;
+  }
+  getComputedStringAtIndex(t2, e2) {
+    const s2 = t2 & i;
+    return this._ensureString(e2, s2), this._strings[e2][s2];
+  }
+  setComputedStringAtIndex(t2, e2, s2) {
+    const n2 = t2 & i;
+    this._ensureString(e2, n2), this._strings[e2][n2] = s2;
+  }
+  getXMin(t2) {
+    return this._bounds[4 * (t2 & i)];
+  }
+  getYMin(t2) {
+    return this._bounds[4 * (t2 & i) + 1];
+  }
+  getXMax(t2) {
+    return this._bounds[4 * (t2 & i) + 2];
+  }
+  getYMax(t2) {
+    return this._bounds[4 * (t2 & i) + 3];
+  }
+  setBounds(t2, e2) {
+    const n2 = e2.readHydratedGeometry();
+    if (!n2 || !n2.coords.length)
+      return false;
+    let r2 = 1 / 0, u2 = 1 / 0, h2 = -1 / 0, o2 = -1 / 0;
+    n2.forEachVertex((t3, e3) => {
+      r2 = Math.min(r2, t3), u2 = Math.min(u2, e3), h2 = Math.max(h2, t3), o2 = Math.max(o2, e3);
+    });
+    const d2 = t2 & i;
+    return s(this._bounds, 4 * d2 + 4, 0), this._bounds[4 * d2] = r2, this._bounds[4 * d2 + 1] = u2, this._bounds[4 * d2 + 2] = h2, this._bounds[4 * d2 + 3] = o2, true;
+  }
+}
+export { M, O, c, i$1 as i, l, u, v };

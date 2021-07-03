@@ -1,1 +1,39 @@
-import{a5 as e,eN as p,ev as l,eO as t}from"./vendor.74d5941c.js";async function d(d,a=d.popupTemplate){if(!e(a))return[];const i=await a.getRequiredFields(d.fields),{lastEditInfoEnabled:s}=a,{objectIdField:n,typeIdField:u,globalIdField:o,relationships:f}=d;if(i.includes("*"))return["*"];const r=s?await p(d):[],c=l(d.fields,[...i,...r]);return u&&c.push(u),c&&n&&t(d.fields,n)&&-1===c.indexOf(n)&&c.push(n),c&&o&&t(d.fields,o)&&-1===c.indexOf(o)&&c.push(o),f&&f.forEach((e=>{const{keyField:p}=e;c&&p&&t(d.fields,p)&&-1===c.indexOf(p)&&c.push(p)})),c}function a(p,l){return p.popupTemplate?p.popupTemplate:e(l)&&l.defaultPopupTemplateEnabled&&e(p.defaultPopupTemplate)?p.defaultPopupTemplate:null}export{a as d,d as i};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { a5 as r, eN as D, ev as y, eO as h } from "./vendor.74d5941c.js";
+function i(_0) {
+  return __async(this, arguments, function* (i2, d2 = i2.popupTemplate) {
+    if (!r(d2))
+      return [];
+    const o = yield d2.getRequiredFields(i2.fields), { lastEditInfoEnabled: s } = d2, { objectIdField: u, typeIdField: a, globalIdField: n, relationships: f } = i2;
+    if (o.includes("*"))
+      return ["*"];
+    const r$1 = s ? yield D(i2) : [], m = y(i2.fields, [...o, ...r$1]);
+    return a && m.push(a), m && u && h(i2.fields, u) && m.indexOf(u) === -1 && m.push(u), m && n && h(i2.fields, n) && m.indexOf(n) === -1 && m.push(n), f && f.forEach((e) => {
+      const { keyField: p } = e;
+      m && p && h(i2.fields, p) && m.indexOf(p) === -1 && m.push(p);
+    }), m;
+  });
+}
+function d(p, l) {
+  return p.popupTemplate ? p.popupTemplate : r(l) && l.defaultPopupTemplateEnabled && r(p.defaultPopupTemplate) ? p.defaultPopupTemplate : null;
+}
+export { d, i };

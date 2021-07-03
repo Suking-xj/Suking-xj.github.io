@@ -1,1 +1,6 @@
-import"./vendor.74d5941c.js";function o(o,l,r,c){const e=o.clone(),n=1<<e.level,t=e.col+l,d=e.row+r;return c&&t<0?(e.col=t+n,e.world-=1):t>=n?(e.col=t-n,e.world+=1):e.col=t,e.row=d,e}export{o as l};
+import "./vendor.74d5941c.js";
+function l(o, e, l2, n) {
+  const r = o.clone(), t = 1 << r.level, i = r.col + e, c = r.row + l2;
+  return n && i < 0 ? (r.col = i + t, r.world -= 1) : i >= t ? (r.col = i - t, r.world += 1) : r.col = i, r.row = c, r;
+}
+export { l };

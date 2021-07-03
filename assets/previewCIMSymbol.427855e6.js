@@ -1,1 +1,398 @@
-import{a9 as e,bi as t,aq as a,cf as i,aj as r,gL as s,gM as n,cO as o,gN as l,gO as h,bc as c,bd as m,gP as g,gQ as d,e8 as f}from"./vendor.74d5941c.js";import{k as u,T as y}from"./cimAnalyzer.0b895c7f.js";import{o as p}from"./Rasterizer.86fb2371.js";import"./CIMSymbolHelper.6546a069.js";class M{constructor(){}rasterizeText(e,t){this._textRasterizationCanvas||(this._textRasterizationCanvas=document.createElement("canvas"));const a=this._textRasterizationCanvas,i=a.getContext("2d");this.setFontProperties(i,t),this.parameters=t,this.textLines=e.split(/\r?\n/),this.lineHeight=this.computeLineHeight();const r=this.computeTextWidth(i,t),s=this.lineHeight*this.textLines.length;a.width=r,a.height=s,this.renderedLineHeight=Math.round(this.lineHeight*t.pixelRatio),this.renderedHaloSize=t.halo.size*t.pixelRatio,this.renderedWidth=r*t.pixelRatio,this.renderedHeight=s*t.pixelRatio,this.fillStyle=function(e){return`rgba(${e.slice(0,3).toString()},${e[3]})`}(t.color),this.haloStyle=function(e){return`rgb(${e.slice(0,3).toString()})`}(t.halo.color);const n=this.renderedLineHeight,o=this.renderedHaloSize;this.setFontProperties(i,t);const l=function(e,t){return"center"===e?.5*t:"right"===e?t:0}(i.textAlign,this.renderedWidth)+o,h=o;let c=0,m=0;o>0&&this.renderHalo(i,l,h,c,m,t),m+=h,c+=l;for(const f of this.textLines)i.globalCompositeOperation="destination-out",i.fillStyle="rgb(0, 0, 0)",i.fillText(f,c,m),i.globalCompositeOperation="source-over",i.fillStyle=this.fillStyle,i.fillText(f,c,m),m+=n;const g=i.getImageData(0,0,this.renderedWidth,this.renderedHeight),d=new Uint8Array(g.data);if(t.premultiplyColors){let e;for(let t=0;t<d.length;t+=4)e=d[t+3]/255,d[t]=d[t]*e,d[t+1]=d[t+1]*e,d[t+2]=d[t+2]*e}return{size:[this.renderedWidth,this.renderedHeight],image:new Uint32Array(d.buffer),sdf:!1,simplePattern:!1,anchorX:0,anchorY:0}}renderHalo(e,t,a,i,r,s){const n=this.renderedWidth,o=this.renderedHeight;this._haloRasterizationCanvas||(this._haloRasterizationCanvas=document.createElement("canvas")),this._haloRasterizationCanvas.width=n,this._haloRasterizationCanvas.height=o;const l=this._haloRasterizationCanvas,h=l.getContext("2d");h.clearRect(0,0,n,o),this.setFontProperties(h,s),h.fillStyle=this.haloStyle,h.strokeStyle=this.haloStyle;const c=this.renderedHaloSize<3;h.lineJoin=c?"miter":"round",c?this.renderHaloEmulated(h,t,a):this.renderHaloNative(h,t,a),e.globalAlpha=this.parameters.halo.color[3],e.drawImage(l,0,0,n,o,i,r,n,o),e.globalAlpha=1}renderHaloEmulated(e,t,a){const i=this.renderedLineHeight,r=this.renderedHaloSize;for(const s of this.textLines){for(const[i,n]of x)e.fillText(s,t+r*i,a+r*n);a+=i}}renderHaloNative(e,t,a){const i=this.renderedLineHeight,r=this.renderedHaloSize;for(const s of this.textLines){const n=2*r,o=5,l=.1;for(let i=0;i<o;i++){const r=1-(o-1)*l+i*l;e.lineWidth=r*n,e.strokeText(s,t,a)}a+=i}}setFontProperties(t,a){const i=a.font,r=`${i.style} ${i.weight} ${e(a.size*a.pixelRatio)}px ${i.family}, sans-serif`;let s;switch(t.font=r,t.textBaseline="top",a.horizontalAlignment){case"left":s="left";break;case"right":s="right";break;case"center":s="center";break;default:s="left"}t.textAlign=s}computeTextWidth(e,t){let a=0;for(const r of this.textLines)a=Math.max(a,e.measureText(r).width);const i=t.font;return("italic"===i.style||"oblique"===i.style||"string"==typeof i.weight&&("bold"===i.weight||"bolder"===i.weight)||"number"==typeof i.weight&&i.weight>600)&&(a+=.3*e.measureText("A").width),a+=2*this.parameters.halo.size,Math.round(a)}computeLineHeight(){const e=1.275*this.parameters.size;return Math.round(e+2*this.parameters.halo.size)}}const x=[];{const e=16;for(let t=0;t<360;t+=360/e)x.push([Math.cos(Math.PI*t/180),Math.sin(Math.PI*t/180)])}var C,z;(z=C||(C={})).Legend="legend",z.Preview="preview";const I=(t,a,i)=>{if(t&&t.targetSize){let r;if(i){const a=Math.max(i.frame.xmax-i.frame.xmin,i.frame.ymax-i.frame.ymin);r=t.targetSize/e(a)}else r=t.targetSize/a.referenceSize;return r}return t&&t.scaleFactor?t.scaleFactor:1},w={fill:{legend:{frame:{xmax:15,xmin:0,ymax:15,ymin:0},geometry:{rings:[[[0,15],[15,7.5],[15,0],[0,0],[0,15]]]},canvasPaths:{rings:[[[0,15],[0,0],[15,7.5],[15,15],[0,15]]]}},preview:{frame:{xmax:100,xmin:0,ymax:100,ymin:0},geometry:{rings:[[[0,100],[100,100],[100,0],[0,0],[0,100]]]},canvasPaths:{rings:[[[0,100],[0,0],[100,0],[100,100],[0,100]]]}}},stroke:{legend:{frame:{xmax:24,xmin:0,ymax:-2,ymin:2},geometry:{paths:[[[0,0],[12,0],[24,0]]]},canvasPaths:{paths:[[[0,2],[12,2],[24,2]]]}},preview:{frame:{xmax:100,xmin:0,ymax:-2,ymin:2},geometry:{paths:[[[0,0],[50,0],[100,0]]]},canvasPaths:{paths:[[[0,2],[50,2],[100,2]]]}}}};function b(e,t,a,i){let r,s;return"function"==typeof e.materialHash?(r=(0,e.materialHash)(t,a,i),s=y(e.cim,e.materialOverrides)):(r=e.materialHash,s=e.cim),{analyzedCIM:s,hash:r}}const P=new class{constructor(e,t){this._spatialReference=e,this._avoidSDF=t,this._resourceCache=new Map,this._rasterizer=new p,this._textRasterizer=new M,this._pictureMarkerCache=new Map}async rasterizeCIMSymbolAsync(e,a,i,r,s,n,o,l){r=r||(a?null!=a.centroid?"esriGeometryPolygon":t(a.geometry):null)||function(e){if(!(e&&e.data&&e.data.symbol))return null;switch(e.data.symbol.type){case"CIMPointSymbol":case"CIMTextSymbol":return"esriGeometryPoint";case"CIMLineSymbol":return"esriGeometryPolyline";case"CIMPolygonSymbol":return"esriGeometryPolygon";default:return null}}(e);const h=await this.analyzeCIMSymbol(e,a?function(e){return(e?Object.keys(e):[]).map((t=>({name:t,alias:t,type:"string"==typeof e[t]?"esriFieldTypeString":"esriFieldTypeDouble"})))}(a.attributes):null,i,r,l);return this.rasterizeCIMSymbol(h,a,r,s,n,o)}async analyzeCIMSymbol(e,t,r,s,n){const o=[],l=t?{geometryType:s,spatialReference:this._spatialReference,fields:t}:null;let h;await u(e.data,l,o,this._avoidSDF),a(n);for(const a of o)"CIMPictureMarker"!==a.cim.type&&"CIMPictureFill"!==a.cim.type&&"CIMPictureStroke"!==a.cim.type||(h||(h=[]),h.push(this.fetchPictureMarkerResource(a,n))),r&&"text"===a.type&&"string"==typeof a.text&&a.text.indexOf("[")>-1&&(a.text=i(r,a.text,a.cim.textCase));return h&&await Promise.all(h),o}async fetchPictureMarkerResource(e,t){const a=e.materialHash;if(!this._pictureMarkerCache.get(a)){const i=(await r(e.cim.url,{responseType:"image",signal:t&&t.signal})).data;this._pictureMarkerCache.set(a,i)}}rasterizeCIMSymbol(e,t,a,i,r,n){const o=[];for(const l of e){i&&"function"==typeof i.scaleFactor&&(i.scaleFactor=i.scaleFactor(t,r,n));const e=this._getRasterizedResource(l,t,a,i,r,n);if(!e)continue;let h=0,c=e.anchorX||0,m=e.anchorY||0,g=!1,d=0,f=0;if("esriGeometryPoint"===a){const e=I(i,l,null);if(d=s(l.offsetX,t,r,n)*e||0,f=s(l.offsetY,t,r,n)*e||0,"marker"===l.type)h=s(l.rotation,t,r,n)||0,g=!!l.rotateClockwise&&l.rotateClockwise;else if("text"===l.type){if(h=s(l.angle,t,r,n)||0,void 0!==l.horizontalAlignment)switch(l.horizontalAlignment){case"left":c=-.5;break;case"right":c=.5;break;default:c=0}if(void 0!==l.verticalAlignment)switch(l.verticalAlignment){case"top":m=.5;break;case"bottom":m=-.5;break;case"baseline":m=-.25;break;default:m=0}}}null!=e&&o.push({angle:h,rotateClockWise:g,anchorX:c,anchorY:m,offsetX:d,offsetY:f,rasterizedResource:e})}return this.getSymbolImage(o)}getSymbolImage(t){const a=document.createElement("canvas"),i=a.getContext("2d");let r=0,s=0,o=0,l=0;const h=[];for(let n=0;n<t.length;n++){const a=t[n],c=a.rasterizedResource;if(!c)continue;const m=c.size,g=a.offsetX,d=a.offsetY,f=a.anchorX,u=a.anchorY,y=a.rotateClockWise||!1;let p=a.angle,M=e(g)-m[0]*(.5+f),x=e(d)-m[1]*(.5+u),C=M+m[0],z=x+m[1];if(p){y&&(p=-p);const e=Math.sin(p*Math.PI/180),t=Math.cos(p*Math.PI/180),a=M*t-x*e,i=M*e+x*t,r=M*t-z*e,s=M*e+z*t,n=C*t-z*e,o=C*e+z*t,l=C*t-x*e,h=C*e+x*t;M=Math.min(a,r,n,l),x=Math.min(i,s,o,h),C=Math.max(a,r,n,l),z=Math.max(i,s,o,h)}r=M<r?M:r,s=x<s?x:s,o=C>o?C:o,l=z>l?z:l;const I=i.createImageData(c.size[0],c.size[1]);I.data.set(new Uint8ClampedArray(c.image.buffer));const w={offsetX:g,offsetY:d,rotateClockwise:y,angle:p,rasterizedImage:I,anchorX:f,anchorY:u};h.push(w)}a.width=o-r,a.height=l-s;const c=-r,m=l;for(let n=0;n<h.length;n++){const t=h[n],a=this._imageDataToCanvas(t.rasterizedImage),r=t.rasterizedImage.width,s=t.rasterizedImage.height,o=c-r*(.5+t.anchorX),l=m-s*(.5-t.anchorY);if(t.angle){const r=(360-t.angle)*Math.PI/180;i.save(),i.translate(e(t.offsetX),-e(t.offsetY)),i.translate(c,m),i.rotate(r),i.translate(-c,-m),i.drawImage(a,o,l),i.restore()}else i.drawImage(a,o+e(t.offsetX),l-e(t.offsetY))}const g=new n({x:c/a.width-.5,y:m/a.height-.5});return{imageData:0!==a.width&&0!==a.height?i.getImageData(0,0,a.width,a.height):i.createImageData(1,1),anchorPosition:g}}_imageDataToCanvas(e){this._imageDataCanvas||(this._imageDataCanvas=document.createElement("canvas"));const t=this._imageDataCanvas,a=t.getContext("2d");return t.width=e.width,t.height=e.height,a.putImageData(e,0,0),t}_imageTo32Array(e,t,a){this._imageDataCanvas||(this._imageDataCanvas=document.createElement("canvas"));const i=this._imageDataCanvas,r=i.getContext("2d");return i.width=t,i.height=a,r.drawImage(e,0,0,t,a),new Uint32Array(r.getImageData(0,0,t,a).data.buffer)}_getRasterizedResource(e,t,a,i,r,n){let h,c,m,g;if("esriGeometryPolyline"===a||"esriGeometryPolygon"===a){const l=i&&i.style?i.style:C.Legend,g="esriGeometryPolyline"===a?w.stroke[l]:w.fill[l];if("line"===e.type){if("CIMSolidStroke"!==e.cim.type){if("CIMPictureStroke"===e.cim.type){const a=s(e.width,t,r,n),{image:i,width:o,height:l}=this._getPictureResource(e,a);return this._rasterizePictureResource(e,i,o,l,g,a)}return null}({analyzedCIM:h,hash:m}=b(e,t,r,n)),c=this._embedCIMLayerInVectorMarker(h,g)}else if("marker"===e.type){if("CIMPictureMarker"===e.cim.type)return null;if("CIMVectorMarker"!==e.cim.type)return null;e.cim.offsetX=s(e.offsetX,t,r,n),e.cim.offsetY=s(e.offsetY,t,r,n),e.cim.rotation=s(e.rotation,t,r,n),e.cim.markerPlacement=e.markerPlacement,({analyzedCIM:h}=b(e,t,r,n)),m=o(JSON.stringify(h)).toString(),c=this._embedCIMLayerInVectorMarker(h,g)}else{if("text"===e.type)return null;if("fill"===e.type){if("CIMHatchFill"===e.cim.type||"CIMVectorMarker"===e.cim.type||"CIMPictureMarker"===e.cim.type||"CIMPictureFill"===e.cim.type){const a=e.cim.size||e.cim.height;let i,s,o;if("CIMPictureMarker"===e.cim.type||"CIMPictureFill"===e.cim.type)({image:i,width:s,height:o}=this._getPictureResource(e,a));else{({analyzedCIM:h,hash:m}=b(e,t,r,n));const a=this._rasterizer.rasterizeJSONResource(h,1,this._avoidSDF);i=a.image,s=a.size[0],o=a.size[1]}return this._rasterizePictureResource(e,i,s,o,g,null)}if("CIMSolidFill"!==e.cim.type)return null;({analyzedCIM:h,hash:m}=b(e,t,r,n)),c=this._embedCIMLayerInVectorMarker(h,g)}}}else{if("text"===e.type)return g=this._rasterizeTextResource(e,t,i,r,n),g;({analyzedCIM:h,hash:m}=b(e,t,r,n));const a=I(i,e,null);if("CIMPictureMarker"===e.cim.type){const i=s(e.size,t,r,n)*a,{image:o,width:l,height:h}=this._getPictureResource(e,i);return g={image:o,size:[l,h],sdf:!1,simplePattern:!1,anchorX:e.anchorPoint?e.anchorPoint.x:0,anchorY:e.anchorPoint?e.anchorPoint.y:0},g}l(h,a,{preserveOutlineWidth:!1}),c=h}m+=a,i&&(m+=JSON.stringify(i));const d=this._resourceCache;return d.has(m)?d.get(m):(g=this._rasterizer.rasterizeJSONResource(c,window.devicePixelRatio||1,this._avoidSDF),d.set(m,g),g)}_rasterizeTextResource(e,t,a,i,r){const n=I(a,e,null),o=s(e.text,t,i,r);if(!o||0===o.length)return null;const l=s(e.fontName,t,i,r),c=s(e.style,t,i,r),m=s(e.weight,t,i,r),g=s(e.decoration,t,i,r),d=s(e.size,t,i,r)*n,f=s(e.horizontalAlignment,t,i,r),u=s(e.verticalAlignment,t,i,r),y=h(s(e.color,t,i,r)),p=h(s(e.outlineColor,t,i,r)),M={color:y,size:d,horizontalAlignment:f,verticalAlignment:u,font:{family:l,style:c,weight:m,decoration:g},halo:{size:s(e.outlineSize,t,i,r)||0,color:p,style:c},pixelRatio:1,premultiplyColors:!this._avoidSDF};return this._textRasterizer.rasterizeText(o,M)}_rasterizePictureResource(t,a,i,r,s,n){const o=document.createElement("canvas"),l=o.getContext("2d");o.height=e(Math.max(Math.abs(s.frame.ymax-s.frame.ymin),n)),o.width=e(Math.abs(s.frame.xmax-s.frame.xmin));const h=l.createImageData(i,r);h.data.set(new Uint8ClampedArray(a.buffer));const g=this._imageDataToCanvas(h),d=l.createPattern(g,"repeat"),f=Math.cos((-t.cim.rotation||0)*Math.PI/180),u=Math.sin((-t.cim.rotation||0)*Math.PI/180);d.setTransform({m11:f,m12:u,m21:-u,m22:f,m41:e(t.cim.offsetX)||0,m42:e(t.cim.offsetY)||0});const y=s.canvasPaths;let p,M,x;c(y)?(p=y.rings,l.fillStyle=d,M=l.fill,x=["evenodd"]):m(y)&&(p=y.paths,l.strokeStyle=d,l.lineWidth=n,M=l.stroke,p[0][0][1]=o.height/2,p[0][1][1]=o.height/2),l.beginPath();for(const c of p){const t=c?c.length:0;if(t>1){let a=c[0];l.moveTo(e(a[0]),e(a[1]));for(let i=1;i<t;++i)a=c[i],l.lineTo(e(a[0]),e(a[1]));l.closePath()}}M.apply(l,x);const C=l.getImageData(0,0,o.width,o.height),z=new Uint8Array(C.data);return{size:[o.width,o.height],image:new Uint32Array(z.buffer),sdf:!1,simplePattern:!1,anchorX:0,anchorY:0}}_getPictureResource(t,a){const i=this._pictureMarkerCache.get(t.materialHash);if(!i)return null;const r=i.height/i.width,s=a?r>1?e(a):e(a)/r:i.width,n=a?r>1?e(a)*r:e(a):i.height;return{image:this._imageTo32Array(i,s,n),width:s,height:n}}_embedCIMLayerInVectorMarker(e,t){const a=c(t.geometry)?"CIMPolygonSymbol":"CIMLineSymbol";return{type:"CIMVectorMarker",frame:t.frame,markerGraphics:[{type:"CIMMarkerGraphic",geometry:t.geometry,symbol:{type:a,symbolLayers:[e]}}]}}}(null,!0);async function v(e,t={}){const{size:a,maxSize:i,node:r,opacity:s}=t,n=t.cimOptions||t,{feature:o,fieldMap:l,geometryType:h,style:c}=n,m=g(e),u=Math.min(null!=a?a:m,null!=i?i:f(120));u!==m&&(e=e.clone(),d(e,u,{preserveOutlineWidth:!0}));let y=3;e&&e.data&&e.data.symbol&&"CIMPointSymbol"!==e.data.symbol.type&&(y=1);const p=await P.rasterizeCIMSymbolAsync(e,o,l,h,{scaleFactor:y,style:c}),M=document.createElement("canvas");M.width=p.imageData.width,M.height=p.imageData.height,M.getContext("2d").putImageData(p.imageData,0,0);let x=M.width/y,C=M.height/y;if(null!=a&&(null==(null==t?void 0:t.scale)||(null==t?void 0:t.scale))){const e=x/C;x=e<=1?Math.ceil(u*e):u,C=e<=1?u:Math.ceil(u/e)}const z=new Image(x,C);return z.src=M.toDataURL(),null!=s&&(z.style.opacity=`${s}`),r&&r.appendChild(z),z}export{v as previewCIMSymbol};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { a9 as u, bi as d$1, aq as a, cf as n$1, aj as U, gL as e$1, gM as c, cO as c$1, gN as m, gO as r$1, bc as y, bd as f, gP as n$2, gQ as i$2, e8 as e$2 } from "./vendor.74d5941c.js";
+import { k, T } from "./cimAnalyzer.0b895c7f.js";
+import { o as o$2 } from "./Rasterizer.86fb2371.js";
+import "./CIMSymbolHelper.6546a069.js";
+function e(t) {
+  return `rgb(${t.slice(0, 3).toString()})`;
+}
+function i$1(t) {
+  return `rgba(${t.slice(0, 3).toString()},${t[3]})`;
+}
+class r {
+  constructor() {
+  }
+  rasterizeText(t, r2) {
+    this._textRasterizationCanvas || (this._textRasterizationCanvas = document.createElement("canvas"));
+    const o2 = this._textRasterizationCanvas, n2 = o2.getContext("2d");
+    this.setFontProperties(n2, r2), this.parameters = r2, this.textLines = t.split(/\r?\n/), this.lineHeight = this.computeLineHeight();
+    const a2 = this.computeTextWidth(n2, r2), h = this.lineHeight * this.textLines.length;
+    o2.width = a2, o2.height = h, this.renderedLineHeight = Math.round(this.lineHeight * r2.pixelRatio), this.renderedHaloSize = r2.halo.size * r2.pixelRatio, this.renderedWidth = a2 * r2.pixelRatio, this.renderedHeight = h * r2.pixelRatio, this.fillStyle = i$1(r2.color), this.haloStyle = e(r2.halo.color);
+    const l = this.renderedLineHeight, d2 = this.renderedHaloSize;
+    this.setFontProperties(n2, r2);
+    const c2 = s(n2.textAlign, this.renderedWidth) + d2, g = d2;
+    let f2 = 0, p2 = 0;
+    d2 > 0 && this.renderHalo(n2, c2, g, f2, p2, r2), p2 += g, f2 += c2;
+    for (const e2 of this.textLines)
+      n2.globalCompositeOperation = "destination-out", n2.fillStyle = "rgb(0, 0, 0)", n2.fillText(e2, f2, p2), n2.globalCompositeOperation = "source-over", n2.fillStyle = this.fillStyle, n2.fillText(e2, f2, p2), p2 += l;
+    const u2 = n2.getImageData(0, 0, this.renderedWidth, this.renderedHeight), x = new Uint8Array(u2.data);
+    if (r2.premultiplyColors) {
+      let t2;
+      for (let e2 = 0; e2 < x.length; e2 += 4)
+        t2 = x[e2 + 3] / 255, x[e2] = x[e2] * t2, x[e2 + 1] = x[e2 + 1] * t2, x[e2 + 2] = x[e2 + 2] * t2;
+    }
+    return { size: [this.renderedWidth, this.renderedHeight], image: new Uint32Array(x.buffer), sdf: false, simplePattern: false, anchorX: 0, anchorY: 0 };
+  }
+  renderHalo(t, e2, i2, r2, s2, o2) {
+    const n2 = this.renderedWidth, a2 = this.renderedHeight;
+    this._haloRasterizationCanvas || (this._haloRasterizationCanvas = document.createElement("canvas")), this._haloRasterizationCanvas.width = n2, this._haloRasterizationCanvas.height = a2;
+    const h = this._haloRasterizationCanvas, l = h.getContext("2d");
+    l.clearRect(0, 0, n2, a2), this.setFontProperties(l, o2), l.fillStyle = this.haloStyle, l.strokeStyle = this.haloStyle;
+    const d2 = this.renderedHaloSize < 3;
+    l.lineJoin = d2 ? "miter" : "round", d2 ? this.renderHaloEmulated(l, e2, i2) : this.renderHaloNative(l, e2, i2), t.globalAlpha = this.parameters.halo.color[3], t.drawImage(h, 0, 0, n2, a2, r2, s2, n2, a2), t.globalAlpha = 1;
+  }
+  renderHaloEmulated(t, e2, i2) {
+    const r2 = this.renderedLineHeight, s2 = this.renderedHaloSize;
+    for (const n2 of this.textLines) {
+      for (const [r3, a2] of o$1)
+        t.fillText(n2, e2 + s2 * r3, i2 + s2 * a2);
+      i2 += r2;
+    }
+  }
+  renderHaloNative(t, e2, i2) {
+    const r2 = this.renderedLineHeight, s2 = this.renderedHaloSize;
+    for (const o2 of this.textLines) {
+      const n2 = 2 * s2, a2 = 5, h = 0.1;
+      for (let r3 = 0; r3 < a2; r3++) {
+        const s3 = 1 - (a2 - 1) * h + r3 * h;
+        t.lineWidth = s3 * n2, t.strokeText(o2, e2, i2);
+      }
+      i2 += r2;
+    }
+  }
+  setFontProperties(e2, i2) {
+    const r2 = i2.font, s2 = `${r2.style} ${r2.weight} ${u(i2.size * i2.pixelRatio)}px ${r2.family}, sans-serif`;
+    let o2;
+    switch (e2.font = s2, e2.textBaseline = "top", i2.horizontalAlignment) {
+      case "left":
+        o2 = "left";
+        break;
+      case "right":
+        o2 = "right";
+        break;
+      case "center":
+        o2 = "center";
+        break;
+      default:
+        o2 = "left";
+    }
+    e2.textAlign = o2;
+  }
+  computeTextWidth(t, e2) {
+    let i2 = 0;
+    for (const s2 of this.textLines)
+      i2 = Math.max(i2, t.measureText(s2).width);
+    const r2 = e2.font;
+    return (r2.style === "italic" || r2.style === "oblique" || typeof r2.weight == "string" && (r2.weight === "bold" || r2.weight === "bolder") || typeof r2.weight == "number" && r2.weight > 600) && (i2 += 0.3 * t.measureText("A").width), i2 += 2 * this.parameters.halo.size, Math.round(i2);
+  }
+  computeLineHeight() {
+    const t = 1.275 * this.parameters.size;
+    return Math.round(t + 2 * this.parameters.halo.size);
+  }
+}
+function s(t, e2) {
+  return t === "center" ? 0.5 * e2 : t === "right" ? e2 : 0;
+}
+const o$1 = [];
+{
+  const t = 16;
+  for (let e2 = 0; e2 < 360; e2 += 360 / t)
+    o$1.push([Math.cos(Math.PI * e2 / 180), Math.sin(Math.PI * e2 / 180)]);
+}
+var p;
+!function(e2) {
+  e2.Legend = "legend", e2.Preview = "preview";
+}(p || (p = {}));
+const d = (e2, t, r2) => {
+  if (e2 && e2.targetSize) {
+    let a2;
+    if (r2) {
+      const t2 = Math.max(r2.frame.xmax - r2.frame.xmin, r2.frame.ymax - r2.frame.ymin);
+      a2 = e2.targetSize / u(t2);
+    } else
+      a2 = e2.targetSize / t.referenceSize;
+    return a2;
+  }
+  return e2 && e2.scaleFactor ? e2.scaleFactor : 1;
+}, M = { fill: { legend: { frame: { xmax: 15, xmin: 0, ymax: 15, ymin: 0 }, geometry: { rings: [[[0, 15], [15, 7.5], [15, 0], [0, 0], [0, 15]]] }, canvasPaths: { rings: [[[0, 15], [0, 0], [15, 7.5], [15, 15], [0, 15]]] } }, preview: { frame: { xmax: 100, xmin: 0, ymax: 100, ymin: 0 }, geometry: { rings: [[[0, 100], [100, 100], [100, 0], [0, 0], [0, 100]]] }, canvasPaths: { rings: [[[0, 100], [0, 0], [100, 0], [100, 100], [0, 100]]] } } }, stroke: { legend: { frame: { xmax: 24, xmin: 0, ymax: -2, ymin: 2 }, geometry: { paths: [[[0, 0], [12, 0], [24, 0]]] }, canvasPaths: { paths: [[[0, 2], [12, 2], [24, 2]]] } }, preview: { frame: { xmax: 100, xmin: 0, ymax: -2, ymin: 2 }, geometry: { paths: [[[0, 0], [50, 0], [100, 0]]] }, canvasPaths: { paths: [[[0, 2], [50, 2], [100, 2]]] } } } };
+class C {
+  constructor(e2, t) {
+    this._spatialReference = e2, this._avoidSDF = t, this._resourceCache = new Map(), this._rasterizer = new o$2(), this._textRasterizer = new r(), this._pictureMarkerCache = new Map();
+  }
+  rasterizeCIMSymbolAsync(e2, t, a2, i2, s2, o2, n2, c2) {
+    return __async(this, null, function* () {
+      i2 = i2 || (t ? t.centroid != null ? "esriGeometryPolygon" : d$1(t.geometry) : null) || z(e2);
+      const l = yield this.analyzeCIMSymbol(e2, t ? I(t.attributes) : null, a2, i2, c2);
+      return this.rasterizeCIMSymbol(l, t, i2, s2, o2, n2);
+    });
+  }
+  analyzeCIMSymbol(e2, r2, a$1, i2, s2) {
+    return __async(this, null, function* () {
+      const o2 = [], n2 = r2 ? { geometryType: i2, spatialReference: this._spatialReference, fields: r2 } : null;
+      let l;
+      yield k(e2.data, n2, o2, this._avoidSDF), a(s2);
+      for (const t of o2)
+        t.cim.type !== "CIMPictureMarker" && t.cim.type !== "CIMPictureFill" && t.cim.type !== "CIMPictureStroke" || (l || (l = []), l.push(this.fetchPictureMarkerResource(t, s2))), a$1 && t.type === "text" && typeof t.text == "string" && t.text.indexOf("[") > -1 && (t.text = n$1(a$1, t.text, t.cim.textCase));
+      return l && (yield Promise.all(l)), o2;
+    });
+  }
+  fetchPictureMarkerResource(e2, t) {
+    return __async(this, null, function* () {
+      const r2 = e2.materialHash;
+      if (!this._pictureMarkerCache.get(r2)) {
+        const a2 = (yield U(e2.cim.url, { responseType: "image", signal: t && t.signal })).data;
+        this._pictureMarkerCache.set(r2, a2);
+      }
+    });
+  }
+  rasterizeCIMSymbol(e2, t, r2, a2, i2, s2) {
+    const o2 = [];
+    for (const n2 of e2) {
+      a2 && typeof a2.scaleFactor == "function" && (a2.scaleFactor = a2.scaleFactor(t, i2, s2));
+      const e3 = this._getRasterizedResource(n2, t, r2, a2, i2, s2);
+      if (!e3)
+        continue;
+      let c2 = 0, m2 = e3.anchorX || 0, h = e3.anchorY || 0, f2 = false, g = 0, y2 = 0;
+      if (r2 === "esriGeometryPoint") {
+        const e4 = d(a2, n2, null);
+        if (g = e$1(n2.offsetX, t, i2, s2) * e4 || 0, y2 = e$1(n2.offsetY, t, i2, s2) * e4 || 0, n2.type === "marker")
+          c2 = e$1(n2.rotation, t, i2, s2) || 0, f2 = !!n2.rotateClockwise && n2.rotateClockwise;
+        else if (n2.type === "text") {
+          if (c2 = e$1(n2.angle, t, i2, s2) || 0, n2.horizontalAlignment !== void 0)
+            switch (n2.horizontalAlignment) {
+              case "left":
+                m2 = -0.5;
+                break;
+              case "right":
+                m2 = 0.5;
+                break;
+              default:
+                m2 = 0;
+            }
+          if (n2.verticalAlignment !== void 0)
+            switch (n2.verticalAlignment) {
+              case "top":
+                h = 0.5;
+                break;
+              case "bottom":
+                h = -0.5;
+                break;
+              case "baseline":
+                h = -0.25;
+                break;
+              default:
+                h = 0;
+            }
+        }
+      }
+      e3 != null && o2.push({ angle: c2, rotateClockWise: f2, anchorX: m2, anchorY: h, offsetX: g, offsetY: y2, rasterizedResource: e3 });
+    }
+    return this.getSymbolImage(o2);
+  }
+  getSymbolImage(e2) {
+    const t = document.createElement("canvas"), r2 = t.getContext("2d");
+    let a2 = 0, i2 = 0, n2 = 0, c$12 = 0;
+    const l = [];
+    for (let o2 = 0; o2 < e2.length; o2++) {
+      const t2 = e2[o2], m3 = t2.rasterizedResource;
+      if (!m3)
+        continue;
+      const h2 = m3.size, f3 = t2.offsetX, g = t2.offsetY, y2 = t2.anchorX, u$1 = t2.anchorY, p2 = t2.rotateClockWise || false;
+      let d2 = t2.angle, M2 = u(f3) - h2[0] * (0.5 + y2), C2 = u(g) - h2[1] * (0.5 + u$1), I2 = M2 + h2[0], z2 = C2 + h2[1];
+      if (d2) {
+        p2 && (d2 = -d2);
+        const e3 = Math.sin(d2 * Math.PI / 180), t3 = Math.cos(d2 * Math.PI / 180), r3 = M2 * t3 - C2 * e3, a3 = M2 * e3 + C2 * t3, i3 = M2 * t3 - z2 * e3, s2 = M2 * e3 + z2 * t3, o3 = I2 * t3 - z2 * e3, n3 = I2 * e3 + z2 * t3, c2 = I2 * t3 - C2 * e3, l2 = I2 * e3 + C2 * t3;
+        M2 = Math.min(r3, i3, o3, c2), C2 = Math.min(a3, s2, n3, l2), I2 = Math.max(r3, i3, o3, c2), z2 = Math.max(a3, s2, n3, l2);
+      }
+      a2 = M2 < a2 ? M2 : a2, i2 = C2 < i2 ? C2 : i2, n2 = I2 > n2 ? I2 : n2, c$12 = z2 > c$12 ? z2 : c$12;
+      const P2 = r2.createImageData(m3.size[0], m3.size[1]);
+      P2.data.set(new Uint8ClampedArray(m3.image.buffer));
+      const x = { offsetX: f3, offsetY: g, rotateClockwise: p2, angle: d2, rasterizedImage: P2, anchorX: y2, anchorY: u$1 };
+      l.push(x);
+    }
+    t.width = n2 - a2, t.height = c$12 - i2;
+    const m2 = -a2, h = c$12;
+    for (let o2 = 0; o2 < l.length; o2++) {
+      const e3 = l[o2], t2 = this._imageDataToCanvas(e3.rasterizedImage), a3 = e3.rasterizedImage.width, i3 = e3.rasterizedImage.height, n3 = m2 - a3 * (0.5 + e3.anchorX), c2 = h - i3 * (0.5 - e3.anchorY);
+      if (e3.angle) {
+        const a4 = (360 - e3.angle) * Math.PI / 180;
+        r2.save(), r2.translate(u(e3.offsetX), -u(e3.offsetY)), r2.translate(m2, h), r2.rotate(a4), r2.translate(-m2, -h), r2.drawImage(t2, n3, c2), r2.restore();
+      } else
+        r2.drawImage(t2, n3 + u(e3.offsetX), c2 - u(e3.offsetY));
+    }
+    const f2 = new c({ x: m2 / t.width - 0.5, y: h / t.height - 0.5 });
+    return { imageData: t.width !== 0 && t.height !== 0 ? r2.getImageData(0, 0, t.width, t.height) : r2.createImageData(1, 1), anchorPosition: f2 };
+  }
+  _imageDataToCanvas(e2) {
+    this._imageDataCanvas || (this._imageDataCanvas = document.createElement("canvas"));
+    const t = this._imageDataCanvas, r2 = t.getContext("2d");
+    return t.width = e2.width, t.height = e2.height, r2.putImageData(e2, 0, 0), t;
+  }
+  _imageTo32Array(e2, t, r2) {
+    this._imageDataCanvas || (this._imageDataCanvas = document.createElement("canvas"));
+    const a2 = this._imageDataCanvas, i2 = a2.getContext("2d");
+    return a2.width = t, a2.height = r2, i2.drawImage(e2, 0, 0, t, r2), new Uint32Array(i2.getImageData(0, 0, t, r2).data.buffer);
+  }
+  _getRasterizedResource(t, r2, a2, i2, s2, o2) {
+    let n2, c2, m$1, f2;
+    if (a2 === "esriGeometryPolyline" || a2 === "esriGeometryPolygon") {
+      const h = i2 && i2.style ? i2.style : p.Legend, f3 = a2 === "esriGeometryPolyline" ? M.stroke[h] : M.fill[h];
+      if (t.type === "line") {
+        if (t.cim.type !== "CIMSolidStroke") {
+          if (t.cim.type === "CIMPictureStroke") {
+            const e2 = e$1(t.width, r2, s2, o2), { image: a3, width: i3, height: n3 } = this._getPictureResource(t, e2);
+            return this._rasterizePictureResource(t, a3, i3, n3, f3, e2);
+          }
+          return null;
+        }
+        ({ analyzedCIM: n2, hash: m$1 } = P(t, r2, s2, o2)), c2 = this._embedCIMLayerInVectorMarker(n2, f3);
+      } else if (t.type === "marker") {
+        if (t.cim.type === "CIMPictureMarker")
+          return null;
+        if (t.cim.type !== "CIMVectorMarker")
+          return null;
+        t.cim.offsetX = e$1(t.offsetX, r2, s2, o2), t.cim.offsetY = e$1(t.offsetY, r2, s2, o2), t.cim.rotation = e$1(t.rotation, r2, s2, o2), t.cim.markerPlacement = t.markerPlacement, { analyzedCIM: n2 } = P(t, r2, s2, o2), m$1 = c$1(JSON.stringify(n2)).toString(), c2 = this._embedCIMLayerInVectorMarker(n2, f3);
+      } else {
+        if (t.type === "text")
+          return null;
+        if (t.type === "fill") {
+          if (t.cim.type === "CIMHatchFill" || t.cim.type === "CIMVectorMarker" || t.cim.type === "CIMPictureMarker" || t.cim.type === "CIMPictureFill") {
+            const e2 = t.cim.size || t.cim.height;
+            let a3, i3, c3;
+            if (t.cim.type === "CIMPictureMarker" || t.cim.type === "CIMPictureFill")
+              ({ image: a3, width: i3, height: c3 } = this._getPictureResource(t, e2));
+            else {
+              ({ analyzedCIM: n2, hash: m$1 } = P(t, r2, s2, o2));
+              const e3 = this._rasterizer.rasterizeJSONResource(n2, 1, this._avoidSDF);
+              a3 = e3.image, i3 = e3.size[0], c3 = e3.size[1];
+            }
+            return this._rasterizePictureResource(t, a3, i3, c3, f3, null);
+          }
+          if (t.cim.type !== "CIMSolidFill")
+            return null;
+          ({ analyzedCIM: n2, hash: m$1 } = P(t, r2, s2, o2)), c2 = this._embedCIMLayerInVectorMarker(n2, f3);
+        }
+      }
+    } else {
+      if (t.type === "text")
+        return f2 = this._rasterizeTextResource(t, r2, i2, s2, o2), f2;
+      ({ analyzedCIM: n2, hash: m$1 } = P(t, r2, s2, o2));
+      const e2 = d(i2, t, null);
+      if (t.cim.type === "CIMPictureMarker") {
+        const a3 = e$1(t.size, r2, s2, o2) * e2, { image: i3, width: n3, height: c3 } = this._getPictureResource(t, a3);
+        return f2 = { image: i3, size: [n3, c3], sdf: false, simplePattern: false, anchorX: t.anchorPoint ? t.anchorPoint.x : 0, anchorY: t.anchorPoint ? t.anchorPoint.y : 0 }, f2;
+      }
+      m(n2, e2, { preserveOutlineWidth: false }), c2 = n2;
+    }
+    m$1 += a2, i2 && (m$1 += JSON.stringify(i2));
+    const g = this._resourceCache;
+    return g.has(m$1) ? g.get(m$1) : (f2 = this._rasterizer.rasterizeJSONResource(c2, window.devicePixelRatio || 1, this._avoidSDF), g.set(m$1, f2), f2);
+  }
+  _rasterizeTextResource(e2, t, r2, a2, i2) {
+    const s2 = d(r2, e2, null), o2 = e$1(e2.text, t, a2, i2);
+    if (!o2 || o2.length === 0)
+      return null;
+    const n2 = e$1(e2.fontName, t, a2, i2), c2 = e$1(e2.style, t, a2, i2), h = e$1(e2.weight, t, a2, i2), f2 = e$1(e2.decoration, t, a2, i2), g = e$1(e2.size, t, a2, i2) * s2, y2 = e$1(e2.horizontalAlignment, t, a2, i2), u2 = e$1(e2.verticalAlignment, t, a2, i2), p2 = r$1(e$1(e2.color, t, a2, i2)), M2 = r$1(e$1(e2.outlineColor, t, a2, i2)), C2 = { color: p2, size: g, horizontalAlignment: y2, verticalAlignment: u2, font: { family: n2, style: c2, weight: h, decoration: f2 }, halo: { size: e$1(e2.outlineSize, t, a2, i2) || 0, color: M2, style: c2 }, pixelRatio: 1, premultiplyColors: !this._avoidSDF };
+    return this._textRasterizer.rasterizeText(o2, C2);
+  }
+  _rasterizePictureResource(e2, t, r2, o2, n2, c2) {
+    const l = document.createElement("canvas"), m2 = l.getContext("2d");
+    l.height = u(Math.max(Math.abs(n2.frame.ymax - n2.frame.ymin), c2)), l.width = u(Math.abs(n2.frame.xmax - n2.frame.xmin));
+    const h = m2.createImageData(r2, o2);
+    h.data.set(new Uint8ClampedArray(t.buffer));
+    const f$1 = this._imageDataToCanvas(h), g = m2.createPattern(f$1, "repeat"), y$1 = Math.cos((-e2.cim.rotation || 0) * Math.PI / 180), u$1 = Math.sin((-e2.cim.rotation || 0) * Math.PI / 180);
+    g.setTransform({ m11: y$1, m12: u$1, m21: -u$1, m22: y$1, m41: u(e2.cim.offsetX) || 0, m42: u(e2.cim.offsetY) || 0 });
+    const p2 = n2.canvasPaths;
+    let d2, M2, C2;
+    y(p2) ? (d2 = p2.rings, m2.fillStyle = g, M2 = m2.fill, C2 = ["evenodd"]) : f(p2) && (d2 = p2.paths, m2.strokeStyle = g, m2.lineWidth = c2, M2 = m2.stroke, d2[0][0][1] = l.height / 2, d2[0][1][1] = l.height / 2), m2.beginPath();
+    for (const a2 of d2) {
+      const e3 = a2 ? a2.length : 0;
+      if (e3 > 1) {
+        let t2 = a2[0];
+        m2.moveTo(u(t2[0]), u(t2[1]));
+        for (let r3 = 1; r3 < e3; ++r3)
+          t2 = a2[r3], m2.lineTo(u(t2[0]), u(t2[1]));
+        m2.closePath();
+      }
+    }
+    M2.apply(m2, C2);
+    const I2 = m2.getImageData(0, 0, l.width, l.height), z2 = new Uint8Array(I2.data);
+    return { size: [l.width, l.height], image: new Uint32Array(z2.buffer), sdf: false, simplePattern: false, anchorX: 0, anchorY: 0 };
+  }
+  _getPictureResource(e2, t) {
+    const r2 = this._pictureMarkerCache.get(e2.materialHash);
+    if (!r2)
+      return null;
+    const a2 = r2.height / r2.width, i2 = t ? a2 > 1 ? u(t) : u(t) / a2 : r2.width, o2 = t ? a2 > 1 ? u(t) * a2 : u(t) : r2.height;
+    return { image: this._imageTo32Array(r2, i2, o2), width: i2, height: o2 };
+  }
+  _embedCIMLayerInVectorMarker(e2, t) {
+    const r2 = y(t.geometry) ? "CIMPolygonSymbol" : "CIMLineSymbol";
+    return { type: "CIMVectorMarker", frame: t.frame, markerGraphics: [{ type: "CIMMarkerGraphic", geometry: t.geometry, symbol: { type: r2, symbolLayers: [e2] } }] };
+  }
+}
+function I(e2) {
+  return (e2 ? Object.keys(e2) : []).map((t) => ({ name: t, alias: t, type: typeof e2[t] == "string" ? "esriFieldTypeString" : "esriFieldTypeDouble" }));
+}
+function z(e2) {
+  if (!(e2 && e2.data && e2.data.symbol))
+    return null;
+  switch (e2.data.symbol.type) {
+    case "CIMPointSymbol":
+    case "CIMTextSymbol":
+      return "esriGeometryPoint";
+    case "CIMLineSymbol":
+      return "esriGeometryPolyline";
+    case "CIMPolygonSymbol":
+      return "esriGeometryPolygon";
+    default:
+      return null;
+  }
+}
+function P(e2, t, r2, a2) {
+  let i2, s2;
+  if (typeof e2.materialHash == "function") {
+    i2 = (0, e2.materialHash)(t, r2, a2), s2 = T(e2.cim, e2.materialOverrides);
+  } else
+    i2 = e2.materialHash, s2 = e2.cim;
+  return { analyzedCIM: s2, hash: i2 };
+}
+const i = new C(null, true), o = 120;
+function n(_0) {
+  return __async(this, arguments, function* (l, n2 = {}) {
+    const { size: s2, maxSize: c2, node: m2, opacity: r2 } = n2, y2 = n2.cimOptions || n2, { feature: d2, fieldMap: h, geometryType: p2, style: u2 } = y2, g = n$2(l), f2 = Math.min(s2 != null ? s2 : g, c2 != null ? c2 : e$2(o));
+    f2 !== g && (l = l.clone(), i$2(l, f2, { preserveOutlineWidth: true }));
+    let M2 = 3;
+    l && l.data && l.data.symbol && l.data.symbol.type !== "CIMPointSymbol" && (M2 = 1);
+    const b = yield i.rasterizeCIMSymbolAsync(l, d2, h, p2, { scaleFactor: M2, style: u2 }), w = document.createElement("canvas");
+    w.width = b.imageData.width, w.height = b.imageData.height;
+    w.getContext("2d").putImageData(b.imageData, 0, 0);
+    let C2 = w.width / M2, D = w.height / M2;
+    if (s2 != null && ((n2 == null ? void 0 : n2.scale) == null || (n2 == null ? void 0 : n2.scale))) {
+      const t = C2 / D;
+      C2 = t <= 1 ? Math.ceil(f2 * t) : f2, D = t <= 1 ? f2 : Math.ceil(f2 / t);
+    }
+    const I2 = new Image(C2, D);
+    return I2.src = w.toDataURL(), r2 != null && (I2.style.opacity = `${r2}`), m2 && m2.appendChild(I2), I2;
+  });
+}
+export { n as previewCIMSymbol };

@@ -1,1 +1,71 @@
-import{dY as e,dZ as t,d_ as r,e1 as o,v as l,ae as a,af as n,c_ as i,dQ as s,ag as u}from"./vendor.74d5941c.js";let c=class extends(e(t(r(o)))){constructor(...e){super(...e),this.type="route"}get barrierLines(){return this._getNamedFeatureLayer("PolylineBarriers")}get barrierPoints(){return this._getNamedFeatureLayer("Barriers")}get barrierPolygons(){return this._getNamedFeatureLayer("PolygonBarriers")}get directionLines(){return this._getNamedFeatureLayer("DirectionLines")}get directionPoints(){return this._getNamedFeatureLayer("DirectionPoints")}readFeatureCollectionsFromItem(e,t,r){return this.revert("featureCollections","portal-item"),t.layers.map((e=>{const t=new l;return t.read(e,r),t}))}readFeatureCollectionsFromWebMap(e,t,r){return t.featureCollection.layers.map((e=>{const t=new l;return t.read(e,r),t}))}get fullExtent(){return this.featureCollections?this.featureCollections.reduce(((e,t)=>e?e.union(t.fullExtent):t.fullExtent),null):null}get maxScale(){return this.featureCollections?this.featureCollections.reduce(((e,t)=>null==e?t.maxScale:Math.min(e,t.maxScale)),null):0}set maxScale(e){this.featureCollections.forEach((t=>{t.maxScale=e})),this._set("maxScale",e)}get minScale(){return this.featureCollections?this.featureCollections.reduce(((e,t)=>null==e?t.minScale:Math.min(e,t.minScale)),null):0}set minScale(e){this.featureCollections.forEach((t=>{t.minScale=e})),this._set("minScale",e)}get routeInfo(){return this._getNamedFeatureLayer("RouteInfo")}get stops(){return this._getNamedFeatureLayer("Stops")}load(e){return this.addResolvingPromise(this.loadFromPortal({supportedTypes:["Feature Collection"]},e)),Promise.resolve(this)}_getNamedFeatureLayer(e){if(this.featureCollections)return this.featureCollections.find((t=>t.title===e))}};a([n()],c.prototype,"barrierLines",null),a([n()],c.prototype,"barrierPoints",null),a([n()],c.prototype,"barrierPolygons",null),a([n()],c.prototype,"directionLines",null),a([n()],c.prototype,"directionPoints",null),a([n({type:i.ofType(l)})],c.prototype,"featureCollections",void 0),a([s("portal-item","featureCollections",["layers"])],c.prototype,"readFeatureCollectionsFromItem",null),a([s("web-map","featureCollections",["featureCollection.layers"])],c.prototype,"readFeatureCollectionsFromWebMap",null),a([n({readOnly:!0})],c.prototype,"fullExtent",null),a([n({type:["show","hide"]})],c.prototype,"listMode",void 0),a([n()],c.prototype,"maxScale",null),a([n()],c.prototype,"minScale",null),a([n()],c.prototype,"routeInfo",null),a([n()],c.prototype,"stops",null),a([n({readOnly:!0,json:{read:!1}})],c.prototype,"type",void 0),c=a([u("esri.layers.RouteLayer")],c);var p=c;export default p;
+import { dY as l, dZ as u, d_ as l$1, e1 as b, v as ke, ae as e, af as y, c_ as L, dQ as e$1, ag as i } from "./vendor.74d5941c.js";
+let p = class extends l(u(l$1(b))) {
+  constructor(...e2) {
+    super(...e2), this.type = "route";
+  }
+  get barrierLines() {
+    return this._getNamedFeatureLayer("PolylineBarriers");
+  }
+  get barrierPoints() {
+    return this._getNamedFeatureLayer("Barriers");
+  }
+  get barrierPolygons() {
+    return this._getNamedFeatureLayer("PolygonBarriers");
+  }
+  get directionLines() {
+    return this._getNamedFeatureLayer("DirectionLines");
+  }
+  get directionPoints() {
+    return this._getNamedFeatureLayer("DirectionPoints");
+  }
+  readFeatureCollectionsFromItem(e2, t, r) {
+    return this.revert("featureCollections", "portal-item"), t.layers.map((e3) => {
+      const t2 = new ke();
+      return t2.read(e3, r), t2;
+    });
+  }
+  readFeatureCollectionsFromWebMap(e2, t, r) {
+    return t.featureCollection.layers.map((e3) => {
+      const t2 = new ke();
+      return t2.read(e3, r), t2;
+    });
+  }
+  get fullExtent() {
+    const e2 = null;
+    return this.featureCollections ? this.featureCollections.reduce((e3, t) => e3 ? e3.union(t.fullExtent) : t.fullExtent, e2) : e2;
+  }
+  get maxScale() {
+    const e2 = null;
+    return this.featureCollections ? this.featureCollections.reduce((e3, t) => e3 == null ? t.maxScale : Math.min(e3, t.maxScale), e2) : 0;
+  }
+  set maxScale(e2) {
+    this.featureCollections.forEach((t) => {
+      t.maxScale = e2;
+    }), this._set("maxScale", e2);
+  }
+  get minScale() {
+    const e2 = null;
+    return this.featureCollections ? this.featureCollections.reduce((e3, t) => e3 == null ? t.minScale : Math.min(e3, t.minScale), e2) : 0;
+  }
+  set minScale(e2) {
+    this.featureCollections.forEach((t) => {
+      t.minScale = e2;
+    }), this._set("minScale", e2);
+  }
+  get routeInfo() {
+    return this._getNamedFeatureLayer("RouteInfo");
+  }
+  get stops() {
+    return this._getNamedFeatureLayer("Stops");
+  }
+  load(e2) {
+    return this.addResolvingPromise(this.loadFromPortal({ supportedTypes: ["Feature Collection"] }, e2)), Promise.resolve(this);
+  }
+  _getNamedFeatureLayer(e2) {
+    if (this.featureCollections)
+      return this.featureCollections.find((t) => t.title === e2);
+  }
+};
+e([y()], p.prototype, "barrierLines", null), e([y()], p.prototype, "barrierPoints", null), e([y()], p.prototype, "barrierPolygons", null), e([y()], p.prototype, "directionLines", null), e([y()], p.prototype, "directionPoints", null), e([y({ type: L.ofType(ke) })], p.prototype, "featureCollections", void 0), e([e$1("portal-item", "featureCollections", ["layers"])], p.prototype, "readFeatureCollectionsFromItem", null), e([e$1("web-map", "featureCollections", ["featureCollection.layers"])], p.prototype, "readFeatureCollectionsFromWebMap", null), e([y({ readOnly: true })], p.prototype, "fullExtent", null), e([y({ type: ["show", "hide"] })], p.prototype, "listMode", void 0), e([y()], p.prototype, "maxScale", null), e([y()], p.prototype, "minScale", null), e([y()], p.prototype, "routeInfo", null), e([y()], p.prototype, "stops", null), e([y({ readOnly: true, json: { read: false } })], p.prototype, "type", void 0), p = e([i("esri.layers.RouteLayer")], p);
+var c = p;
+export default c;

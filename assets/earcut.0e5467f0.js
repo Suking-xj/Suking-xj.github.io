@@ -1,1 +1,281 @@
-const e=!0,n=32,t=1.5,x=200;function r(e,n,t){const x=n&&n.length,r=x?n[0]*t:e.length;let l=i(e,0,r,t,!0);const f=new Array;if(!l||l.next===l.prev)return f;let y,p,v,h,d;if(x&&(l=function(e,n,t,x){const r=new Array;for(let u=0,o=n.length;u<o;u++){const t=i(e,n[u]*x,u<o-1?n[u+1]*x:e.length,x,!1);t===t.next&&(t.steiner=!0),r.push(s(t))}r.sort(b);for(const i of r)c(i,t),t=u(t,t.next);return t}(e,n,l,t)),e.length>80*t){y=v=e[0],p=h=e[1];for(let n=t;n<r;n+=t){const t=e[n],x=e[n+1];y=Math.min(y,t),p=Math.min(p,x),v=Math.max(v,t),h=Math.max(h,x)}d=Math.max(v-y,h-p),d=0!==d?1/d:0}return o(l,f,t,y,p,d),f}function i(e,n,t,x,r){let i;if(r===Z(e,n,t,x)>0)for(let u=n;u<t;u+=x)i=y(u,e[u],e[u+1],i);else for(let u=t-x;u>=n;u-=x)i=y(u,e[u],e[u+1],i);return i&&z(i,i.next)&&(p(i),i=i.next),i}function u(e,n=e){if(!e)return e;let t,x=e;do{if(t=!1,x.steiner||!z(x,x.next)&&0!==d(x.prev,x,x.next))x=x.next;else{if(p(x),x=n=x.prev,x===x.next)break;t=!0}}while(t||x!==n);return n}function o(e,n,t,x,r,i,y=0){if(!e)return;!y&&i&&(e=v(e,x,r,i));let s=e;for(;e.prev!==e.next;){const c=e.prev,v=e.next;if(i?f(e,x,r,i):l(e))n.push(c.index/t),n.push(e.index/t),n.push(v.index/t),p(e),e=v.next,s=v.next;else if((e=v)===s){y?1===y?o(e=m(e,n,t),n,t,x,r,i,2):2===y&&k(e,n,t,x,r,i):o(u(e),n,t,x,r,i,1);break}}}function l(e){const n=e.prev,t=e,x=e.next;if(d(n,t,x)>=0)return!1;let r=e.next.next;const i=r;let u=0;for(;r!==e.prev&&(0===u||r!==i);){if(u++,w(n.x,n.y,t.x,t.y,x.x,x.y,r.x,r.y)&&d(r.prev,r,r.next)>=0)return!1;r=r.next}return!0}function f(e,n,t,x){const r=e.prev,i=e,u=e.next;if(d(r,i,u)>=0)return!1;const o=r.x<i.x?r.x<u.x?r.x:u.x:i.x<u.x?i.x:u.x,l=r.y<i.y?r.y<u.y?r.y:u.y:i.y<u.y?i.y:u.y,f=r.x>i.x?r.x>u.x?r.x:u.x:i.x>u.x?i.x:u.x,y=r.y>i.y?r.y>u.y?r.y:u.y:i.y>u.y?i.y:u.y,p=M(o,l,n,t,x),s=M(f,y,n,t,x);let c=e.prevZ,v=e.nextZ;for(;c&&c.z>=p&&v&&v.z<=s;){if(c!==e.prev&&c!==e.next&&w(r.x,r.y,i.x,i.y,u.x,u.y,c.x,c.y)&&d(c.prev,c,c.next)>=0)return!1;if(c=c.prevZ,v!==e.prev&&v!==e.next&&w(r.x,r.y,i.x,i.y,u.x,u.y,v.x,v.y)&&d(v.prev,v,v.next)>=0)return!1;v=v.nextZ}for(;c&&c.z>=p;){if(c!==e.prev&&c!==e.next&&w(r.x,r.y,i.x,i.y,u.x,u.y,c.x,c.y)&&d(c.prev,c,c.next)>=0)return!1;c=c.prevZ}for(;v&&v.z<=s;){if(v!==e.prev&&v!==e.next&&w(r.x,r.y,i.x,i.y,u.x,u.y,v.x,v.y)&&d(v.prev,v,v.next)>=0)return!1;v=v.nextZ}return!0}function y(e,n,t,x){const r=new q(e,n,t);return x?(r.next=x.next,r.prev=x,x.next.prev=r,x.next=r):(r.prev=r,r.next=r),r}function p(e){e.next.prev=e.prev,e.prev.next=e.next,e.prevZ&&(e.prevZ.nextZ=e.nextZ),e.nextZ&&(e.nextZ.prevZ=e.prevZ)}function s(e){let n=e,t=e;do{(n.x<t.x||n.x===t.x&&n.y<t.y)&&(t=n),n=n.next}while(n!==e);return t}function c(e,n){if(n=function(e,n){let t=n;const x=e.x,r=e.y;let i,u=-1/0;do{if(r<=t.y&&r>=t.next.y&&t.next.y!==t.y){const e=t.x+(r-t.y)*(t.next.x-t.x)/(t.next.y-t.y);if(e<=x&&e>u){if(u=e,e===x){if(r===t.y)return t;if(r===t.next.y)return t.next}i=t.x<t.next.x?t:t.next}}t=t.next}while(t!==n);if(!i)return null;if(x===u)return i.prev;const o=i,l=i.x,f=i.y;let y,p=1/0;for(t=i.next;t!==o;)x>=t.x&&t.x>=l&&x!==t.x&&w(r<f?x:u,r,l,f,r<f?u:x,r,t.x,t.y)&&(y=Math.abs(r-t.y)/(x-t.x),(y<p||y===p&&t.x>i.x)&&g(t,e)&&(i=t,p=y)),t=t.next;return i}(e,n)){const t=j(n,e);u(t,t.next)}}function v(e,n,t,x){for(let r;r!==e;r=r.next){if(r=r||e,null===r.z&&(r.z=M(r.x,r.y,n,t,x)),r.prev.next!==r||r.next.prev!==r)return r.prev.next=r,r.next.prev=r,v(e,n,t,x);r.prevZ=r.prev,r.nextZ=r.next}return e.prevZ.nextZ=null,e.prevZ=null,function(e){let n,t=1;for(;;){let x,r=e;e=null,n=null;let i=0;for(;r;){i++,x=r;let u=0;for(;u<t&&x;u++)x=x.nextZ;let o=t;for(;u>0||o>0&&x;){let t;0===u?(t=x,x=x.nextZ,o--):0!==o&&x?r.z<=x.z?(t=r,r=r.nextZ,u--):(t=x,x=x.nextZ,o--):(t=r,r=r.nextZ,u--),n?n.nextZ=t:e=t,t.prevZ=n,n=t}r=x}if(n.nextZ=null,t*=2,i<2)return e}}(e)}function h(e,n,t,x){const r=n&&n.length,i=r?n[0]*t:e.length;let u=Math.abs(Z(e,0,i,t));if(r)for(let l=0,f=n.length;l<f;l++){const x=n[l]*t,r=l<f-1?n[l+1]*t:e.length;u-=Math.abs(Z(e,x,r,t))}let o=0;for(let l=0;l<x.length;l+=3){const n=x[l]*t,r=x[l+1]*t,i=x[l+2]*t;o+=Math.abs((e[n]-e[i])*(e[r+1]-e[n+1])-(e[n]-e[r])*(e[i+1]-e[n+1]))}return 0===u&&0===o?0:Math.abs((o-u)/u)}function d(e,n,t){return(n.y-e.y)*(t.x-n.x)-(n.x-e.x)*(t.y-n.y)}function a(e,n,t,x){return!!(z(e,n)&&z(t,x)||z(e,x)&&z(t,n))||d(e,n,t)>0!=d(e,n,x)>0&&d(t,x,e)>0!=d(t,x,n)>0}function Z(e,n,t,x){let r=0;for(let i=n,u=t-x;i<t;i+=x)r+=(e[u]-e[i])*(e[i+1]+e[u+1]),u=i;return r}function w(e,n,t,x,r,i,u,o){return(r-u)*(n-o)-(e-u)*(i-o)>=0&&(e-u)*(x-o)-(t-u)*(n-o)>=0&&(t-u)*(i-o)-(r-u)*(x-o)>=0}function g(e,n){return d(e.prev,e,e.next)<0?d(e,n,e.next)>=0&&d(e,e.prev,n)>=0:d(e,n,e.prev)<0||d(e,e.next,n)<0}function M(e,n,t,x,r){return(e=1431655765&((e=858993459&((e=252645135&((e=16711935&((e=32767*(e-t)*r)|e<<8))|e<<4))|e<<2))|e<<1))|(n=1431655765&((n=858993459&((n=252645135&((n=16711935&((n=32767*(n-x)*r)|n<<8))|n<<4))|n<<2))|n<<1))<<1}function z(e,n){return e.x===n.x&&e.y===n.y}function b(e,n){return e.x-n.x}function m(e,n,t){let x=e;do{const r=x.prev,i=x.next.next;!z(r,i)&&a(r,x,x.next,i)&&g(r,i)&&g(i,r)&&(n.push(r.index/t),n.push(x.index/t),n.push(i.index/t),p(x),p(x.next),x=e=i),x=x.next}while(x!==e);return x}function k(e,n,t,x,r,i){let l=e;do{let e=l.next.next;for(;e!==l.prev;){if(l.index!==e.index&&A(l,e)){let f=j(l,e);return l=u(l,l.next),f=u(f,f.next),o(l,n,t,x,r,i),void o(f,n,t,x,r,i)}e=e.next}l=l.next}while(l!==e)}function A(e,n){return e.next.index!==n.index&&e.prev.index!==n.index&&!function(e,n){let t=e;do{if(t.index!==e.index&&t.next.index!==e.index&&t.index!==n.index&&t.next.index!==n.index&&a(t,t.next,e,n))return!0;t=t.next}while(t!==e);return!1}(e,n)&&g(e,n)&&g(n,e)&&function(e,n){let t=e,x=!1;const r=(e.x+n.x)/2,i=(e.y+n.y)/2;do{t.y>i!=t.next.y>i&&t.next.y!==t.y&&r<(t.next.x-t.x)*(i-t.y)/(t.next.y-t.y)+t.x&&(x=!x),t=t.next}while(t!==e);return x}(e,n)}function j(e,n){const t=new q(e.index,e.x,e.y),x=new q(n.index,n.x,n.y),r=e.next,i=n.prev;return e.next=n,n.prev=e,t.next=r,r.prev=t,x.next=t,t.prev=x,i.next=x,x.prev=i,x}class q{constructor(e,n,t){this.index=e,this.x=n,this.y=t,this.prev=null,this.next=null,this.z=null,this.prevZ=null,this.nextZ=null,this.steiner=!1}}export{r as a,t as c,x as e,e as o,h as s,n as t};
+const o$1 = true, t$1 = 32, c$1 = 1.5, e$1 = 200;
+function e(e2, t2, r2) {
+  const i2 = t2 && t2.length, u2 = i2 ? t2[0] * r2 : e2.length;
+  let o2 = n(e2, 0, u2, r2, true);
+  const l2 = new Array();
+  if (!o2 || o2.next === o2.prev)
+    return l2;
+  let y2, p2, c2, v2, s2;
+  if (i2 && (o2 = f(e2, t2, o2, r2)), e2.length > 80 * r2) {
+    y2 = c2 = e2[0], p2 = v2 = e2[1];
+    for (let n2 = r2; n2 < u2; n2 += r2) {
+      const t3 = e2[n2], x2 = e2[n2 + 1];
+      y2 = Math.min(y2, t3), p2 = Math.min(p2, x2), c2 = Math.max(c2, t3), v2 = Math.max(v2, x2);
+    }
+    s2 = Math.max(c2 - y2, v2 - p2), s2 = s2 !== 0 ? 1 / s2 : 0;
+  }
+  return x(o2, l2, r2, y2, p2, s2), l2;
+}
+function n(e2, n2, t2, x2, r2) {
+  let i2;
+  if (r2 === a(e2, n2, t2, x2) > 0)
+    for (let o2 = n2; o2 < t2; o2 += x2)
+      i2 = u(o2, e2[o2], e2[o2 + 1], i2);
+  else
+    for (let o2 = t2 - x2; o2 >= n2; o2 -= x2)
+      i2 = u(o2, e2[o2], e2[o2 + 1], i2);
+  return i2 && z(i2, i2.next) && (o(i2), i2 = i2.next), i2;
+}
+function t(e2, n2 = e2) {
+  if (!e2)
+    return e2;
+  let t2, x2 = e2;
+  do {
+    if (t2 = false, x2.steiner || !z(x2, x2.next) && h(x2.prev, x2, x2.next) !== 0)
+      x2 = x2.next;
+    else {
+      if (o(x2), x2 = n2 = x2.prev, x2 === x2.next)
+        break;
+      t2 = true;
+    }
+  } while (t2 || x2 !== n2);
+  return n2;
+}
+function x(e2, n2, u2, l2, f2, y2, p2 = 0) {
+  if (!e2)
+    return;
+  !p2 && y2 && (e2 = c(e2, l2, f2, y2));
+  let v2 = e2;
+  for (; e2.prev !== e2.next; ) {
+    const c2 = e2.prev, s2 = e2.next;
+    if (y2 ? i(e2, l2, f2, y2) : r(e2))
+      n2.push(c2.index / u2), n2.push(e2.index / u2), n2.push(s2.index / u2), o(e2), e2 = s2.next, v2 = s2.next;
+    else if ((e2 = s2) === v2) {
+      p2 ? p2 === 1 ? x(e2 = m(e2, n2, u2), n2, u2, l2, f2, y2, 2) : p2 === 2 && k(e2, n2, u2, l2, f2, y2) : x(t(e2), n2, u2, l2, f2, y2, 1);
+      break;
+    }
+  }
+}
+function r(e2) {
+  const n2 = e2.prev, t2 = e2, x2 = e2.next;
+  if (h(n2, t2, x2) >= 0)
+    return false;
+  let r2 = e2.next.next;
+  const i2 = r2;
+  let u2 = 0;
+  for (; r2 !== e2.prev && (u2 === 0 || r2 !== i2); ) {
+    if (u2++, w(n2.x, n2.y, t2.x, t2.y, x2.x, x2.y, r2.x, r2.y) && h(r2.prev, r2, r2.next) >= 0)
+      return false;
+    r2 = r2.next;
+  }
+  return true;
+}
+function i(e2, n2, t2, x2) {
+  const r2 = e2.prev, i2 = e2, u2 = e2.next;
+  if (h(r2, i2, u2) >= 0)
+    return false;
+  const o2 = r2.x < i2.x ? r2.x < u2.x ? r2.x : u2.x : i2.x < u2.x ? i2.x : u2.x, l2 = r2.y < i2.y ? r2.y < u2.y ? r2.y : u2.y : i2.y < u2.y ? i2.y : u2.y, f2 = r2.x > i2.x ? r2.x > u2.x ? r2.x : u2.x : i2.x > u2.x ? i2.x : u2.x, y2 = r2.y > i2.y ? r2.y > u2.y ? r2.y : u2.y : i2.y > u2.y ? i2.y : u2.y, p2 = M(o2, l2, n2, t2, x2), c2 = M(f2, y2, n2, t2, x2);
+  let v2 = e2.prevZ, s2 = e2.nextZ;
+  for (; v2 && v2.z >= p2 && s2 && s2.z <= c2; ) {
+    if (v2 !== e2.prev && v2 !== e2.next && w(r2.x, r2.y, i2.x, i2.y, u2.x, u2.y, v2.x, v2.y) && h(v2.prev, v2, v2.next) >= 0)
+      return false;
+    if (v2 = v2.prevZ, s2 !== e2.prev && s2 !== e2.next && w(r2.x, r2.y, i2.x, i2.y, u2.x, u2.y, s2.x, s2.y) && h(s2.prev, s2, s2.next) >= 0)
+      return false;
+    s2 = s2.nextZ;
+  }
+  for (; v2 && v2.z >= p2; ) {
+    if (v2 !== e2.prev && v2 !== e2.next && w(r2.x, r2.y, i2.x, i2.y, u2.x, u2.y, v2.x, v2.y) && h(v2.prev, v2, v2.next) >= 0)
+      return false;
+    v2 = v2.prevZ;
+  }
+  for (; s2 && s2.z <= c2; ) {
+    if (s2 !== e2.prev && s2 !== e2.next && w(r2.x, r2.y, i2.x, i2.y, u2.x, u2.y, s2.x, s2.y) && h(s2.prev, s2, s2.next) >= 0)
+      return false;
+    s2 = s2.nextZ;
+  }
+  return true;
+}
+function u(e2, n2, t2, x2) {
+  const r2 = new B(e2, n2, t2);
+  return x2 ? (r2.next = x2.next, r2.prev = x2, x2.next.prev = r2, x2.next = r2) : (r2.prev = r2, r2.next = r2), r2;
+}
+function o(e2) {
+  e2.next.prev = e2.prev, e2.prev.next = e2.next, e2.prevZ && (e2.prevZ.nextZ = e2.nextZ), e2.nextZ && (e2.nextZ.prevZ = e2.prevZ);
+}
+function l(e2) {
+  let n2 = e2, t2 = e2;
+  do {
+    (n2.x < t2.x || n2.x === t2.x && n2.y < t2.y) && (t2 = n2), n2 = n2.next;
+  } while (n2 !== e2);
+  return t2;
+}
+function f(e2, x2, r2, i2) {
+  const u2 = new Array();
+  for (let t2 = 0, o2 = x2.length; t2 < o2; t2++) {
+    const r3 = n(e2, x2[t2] * i2, t2 < o2 - 1 ? x2[t2 + 1] * i2 : e2.length, i2, false);
+    r3 === r3.next && (r3.steiner = true), u2.push(l(r3));
+  }
+  u2.sort(b);
+  for (const n2 of u2)
+    y(n2, r2), r2 = t(r2, r2.next);
+  return r2;
+}
+function y(e2, n2) {
+  if (n2 = p(e2, n2)) {
+    const x2 = q(n2, e2);
+    t(x2, x2.next);
+  }
+}
+function p(e2, n2) {
+  let t2 = n2;
+  const x2 = e2.x, r2 = e2.y;
+  let i2, u2 = -1 / 0;
+  do {
+    if (r2 <= t2.y && r2 >= t2.next.y && t2.next.y !== t2.y) {
+      const e3 = t2.x + (r2 - t2.y) * (t2.next.x - t2.x) / (t2.next.y - t2.y);
+      if (e3 <= x2 && e3 > u2) {
+        if (u2 = e3, e3 === x2) {
+          if (r2 === t2.y)
+            return t2;
+          if (r2 === t2.next.y)
+            return t2.next;
+        }
+        i2 = t2.x < t2.next.x ? t2 : t2.next;
+      }
+    }
+    t2 = t2.next;
+  } while (t2 !== n2);
+  if (!i2)
+    return null;
+  if (x2 === u2)
+    return i2.prev;
+  const o2 = i2, l2 = i2.x, f2 = i2.y;
+  let y2, p2 = 1 / 0;
+  for (t2 = i2.next; t2 !== o2; )
+    x2 >= t2.x && t2.x >= l2 && x2 !== t2.x && w(r2 < f2 ? x2 : u2, r2, l2, f2, r2 < f2 ? u2 : x2, r2, t2.x, t2.y) && (y2 = Math.abs(r2 - t2.y) / (x2 - t2.x), (y2 < p2 || y2 === p2 && t2.x > i2.x) && g(t2, e2) && (i2 = t2, p2 = y2)), t2 = t2.next;
+  return i2;
+}
+function c(e2, n2, t2, x2) {
+  for (let r2; r2 !== e2; r2 = r2.next) {
+    if (r2 = r2 || e2, r2.z === null && (r2.z = M(r2.x, r2.y, n2, t2, x2)), r2.prev.next !== r2 || r2.next.prev !== r2)
+      return r2.prev.next = r2, r2.next.prev = r2, c(e2, n2, t2, x2);
+    r2.prevZ = r2.prev, r2.nextZ = r2.next;
+  }
+  return e2.prevZ.nextZ = null, e2.prevZ = null, v(e2);
+}
+function v(e2) {
+  let n2, t2 = 1;
+  for (; ; ) {
+    let x2, r2 = e2;
+    e2 = null, n2 = null;
+    let i2 = 0;
+    for (; r2; ) {
+      i2++, x2 = r2;
+      let u2 = 0;
+      for (; u2 < t2 && x2; u2++)
+        x2 = x2.nextZ;
+      let o2 = t2;
+      for (; u2 > 0 || o2 > 0 && x2; ) {
+        let t3;
+        u2 === 0 ? (t3 = x2, x2 = x2.nextZ, o2--) : o2 !== 0 && x2 ? r2.z <= x2.z ? (t3 = r2, r2 = r2.nextZ, u2--) : (t3 = x2, x2 = x2.nextZ, o2--) : (t3 = r2, r2 = r2.nextZ, u2--), n2 ? n2.nextZ = t3 : e2 = t3, t3.prevZ = n2, n2 = t3;
+      }
+      r2 = x2;
+    }
+    if (n2.nextZ = null, t2 *= 2, i2 < 2)
+      return e2;
+  }
+}
+function s(e2, n2, t2, x2) {
+  const r2 = n2 && n2.length, i2 = r2 ? n2[0] * t2 : e2.length;
+  let u2 = Math.abs(a(e2, 0, i2, t2));
+  if (r2)
+    for (let l2 = 0, f2 = n2.length; l2 < f2; l2++) {
+      const x3 = n2[l2] * t2, r3 = l2 < f2 - 1 ? n2[l2 + 1] * t2 : e2.length;
+      u2 -= Math.abs(a(e2, x3, r3, t2));
+    }
+  let o2 = 0;
+  for (let l2 = 0; l2 < x2.length; l2 += 3) {
+    const n3 = x2[l2] * t2, r3 = x2[l2 + 1] * t2, i3 = x2[l2 + 2] * t2;
+    o2 += Math.abs((e2[n3] - e2[i3]) * (e2[r3 + 1] - e2[n3 + 1]) - (e2[n3] - e2[r3]) * (e2[i3 + 1] - e2[n3 + 1]));
+  }
+  return u2 === 0 && o2 === 0 ? 0 : Math.abs((o2 - u2) / u2);
+}
+function h(e2, n2, t2) {
+  return (n2.y - e2.y) * (t2.x - n2.x) - (n2.x - e2.x) * (t2.y - n2.y);
+}
+function d(e2, n2, t2, x2) {
+  return !!(z(e2, n2) && z(t2, x2) || z(e2, x2) && z(t2, n2)) || h(e2, n2, t2) > 0 != h(e2, n2, x2) > 0 && h(t2, x2, e2) > 0 != h(t2, x2, n2) > 0;
+}
+function Z(e2, n2) {
+  let t2 = e2;
+  do {
+    if (t2.index !== e2.index && t2.next.index !== e2.index && t2.index !== n2.index && t2.next.index !== n2.index && d(t2, t2.next, e2, n2))
+      return true;
+    t2 = t2.next;
+  } while (t2 !== e2);
+  return false;
+}
+function a(e2, n2, t2, x2) {
+  let r2 = 0;
+  for (let i2 = n2, u2 = t2 - x2; i2 < t2; i2 += x2)
+    r2 += (e2[u2] - e2[i2]) * (e2[i2 + 1] + e2[u2 + 1]), u2 = i2;
+  return r2;
+}
+function w(e2, n2, t2, x2, r2, i2, u2, o2) {
+  return (r2 - u2) * (n2 - o2) - (e2 - u2) * (i2 - o2) >= 0 && (e2 - u2) * (x2 - o2) - (t2 - u2) * (n2 - o2) >= 0 && (t2 - u2) * (i2 - o2) - (r2 - u2) * (x2 - o2) >= 0;
+}
+function g(e2, n2) {
+  return h(e2.prev, e2, e2.next) < 0 ? h(e2, n2, e2.next) >= 0 && h(e2, e2.prev, n2) >= 0 : h(e2, n2, e2.prev) < 0 || h(e2, e2.next, n2) < 0;
+}
+function M(e2, n2, t2, x2, r2) {
+  return (e2 = 1431655765 & ((e2 = 858993459 & ((e2 = 252645135 & ((e2 = 16711935 & ((e2 = 32767 * (e2 - t2) * r2) | e2 << 8)) | e2 << 4)) | e2 << 2)) | e2 << 1)) | (n2 = 1431655765 & ((n2 = 858993459 & ((n2 = 252645135 & ((n2 = 16711935 & ((n2 = 32767 * (n2 - x2) * r2) | n2 << 8)) | n2 << 4)) | n2 << 2)) | n2 << 1)) << 1;
+}
+function z(e2, n2) {
+  return e2.x === n2.x && e2.y === n2.y;
+}
+function b(e2, n2) {
+  return e2.x - n2.x;
+}
+function m(e2, n2, t2) {
+  let x2 = e2;
+  do {
+    const r2 = x2.prev, i2 = x2.next.next;
+    !z(r2, i2) && d(r2, x2, x2.next, i2) && g(r2, i2) && g(i2, r2) && (n2.push(r2.index / t2), n2.push(x2.index / t2), n2.push(i2.index / t2), o(x2), o(x2.next), x2 = e2 = i2), x2 = x2.next;
+  } while (x2 !== e2);
+  return x2;
+}
+function k(e2, n2, r2, i2, u2, o2) {
+  let l2 = e2;
+  do {
+    let e3 = l2.next.next;
+    for (; e3 !== l2.prev; ) {
+      if (l2.index !== e3.index && A(l2, e3)) {
+        let f2 = q(l2, e3);
+        return l2 = t(l2, l2.next), f2 = t(f2, f2.next), x(l2, n2, r2, i2, u2, o2), void x(f2, n2, r2, i2, u2, o2);
+      }
+      e3 = e3.next;
+    }
+    l2 = l2.next;
+  } while (l2 !== e2);
+}
+function A(e2, n2) {
+  return e2.next.index !== n2.index && e2.prev.index !== n2.index && !Z(e2, n2) && g(e2, n2) && g(n2, e2) && j(e2, n2);
+}
+function j(e2, n2) {
+  let t2 = e2, x2 = false;
+  const r2 = (e2.x + n2.x) / 2, i2 = (e2.y + n2.y) / 2;
+  do {
+    t2.y > i2 != t2.next.y > i2 && t2.next.y !== t2.y && r2 < (t2.next.x - t2.x) * (i2 - t2.y) / (t2.next.y - t2.y) + t2.x && (x2 = !x2), t2 = t2.next;
+  } while (t2 !== e2);
+  return x2;
+}
+function q(e2, n2) {
+  const t2 = new B(e2.index, e2.x, e2.y), x2 = new B(n2.index, n2.x, n2.y), r2 = e2.next, i2 = n2.prev;
+  return e2.next = n2, n2.prev = e2, t2.next = r2, r2.prev = t2, x2.next = t2, t2.prev = x2, i2.next = x2, x2.prev = i2, x2;
+}
+class B {
+  constructor(e2, n2, t2) {
+    this.index = e2, this.x = n2, this.y = t2, this.prev = null, this.next = null, this.z = null, this.prevZ = null, this.nextZ = null, this.steiner = false;
+  }
+}
+export { e as a, c$1 as c, e$1 as e, o$1 as o, s, t$1 as t };

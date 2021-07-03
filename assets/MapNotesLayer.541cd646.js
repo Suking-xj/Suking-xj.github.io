@@ -1,1 +1,257 @@
-var e=Object.defineProperty,t=Object.getOwnPropertySymbols,r=Object.prototype.hasOwnProperty,o=Object.prototype.propertyIsEnumerable,a=(t,r,o)=>r in t?e(t,r,{enumerable:!0,configurable:!0,writable:!0,value:o}):t[r]=o,i=(e,i)=>{for(var l in i||(i={}))r.call(i,l)&&a(e,l,i[l]);if(t)for(var l of t(i))o.call(i,l)&&a(e,l,i[l]);return e};import{gR as l,gS as n,e1 as s,eT as y,ae as p,af as u,gY as d,i7 as c,ag as m,e6 as f,ho as g,hl as h,hn as b,i8 as S,dY as v,dZ as O,d_ as w,bF as N,c_ as J,v as L,bT as T,cr as x,d1 as C,a0 as M,aa as I,a5 as j,d7 as R,d0 as E,h0 as P,dQ as _,c4 as D,cm as G,hW as F,eV as z,eX as A,di as W}from"./vendor.74d5941c.js";import{n as B}from"./objectIdUtils.8e3fb893.js";let k=class extends(l(n(s))){constructor(e){super(e),this.elevationInfo=null,this.graphics=new y,this.screenSizePerspectiveEnabled=!0,this.type="graphics",this.internal=!1}destroy(){this.removeAll(),this.graphics.destroy()}add(e){return this.graphics.add(e),this}addMany(e){return this.graphics.addMany(e),this}removeAll(){return this.graphics.removeAll(),this}remove(e){this.graphics.remove(e)}removeMany(e){this.graphics.removeMany(e)}on(e,t){return super.on(e,t)}graphicChanged(e){this.emit("graphic-update",e)}};p([u({type:d})],k.prototype,"elevationInfo",void 0),p([u(c())],k.prototype,"graphics",void 0),p([u({type:["show","hide"]})],k.prototype,"listMode",void 0),p([u()],k.prototype,"screenSizePerspectiveEnabled",void 0),p([u({readOnly:!0})],k.prototype,"type",void 0),p([u({constructOnly:!0})],k.prototype,"internal",void 0),k=p([m("esri.layers.GraphicsLayer")],k);var Y=k;function $(e){return e.layers.some((e=>null!=e.layerDefinition.visibilityField))}const Q=new f({name:"OBJECTID",alias:"OBJECTID",type:"oid",nullable:!1,editable:!1}),U=new f({name:"title",alias:"Title",type:"string",nullable:!0,editable:!0});let V=class extends Y{constructor(){super(...arguments),this.visibilityMode="inherited"}initialize(){for(const e of this.graphics)e.sourceLayer=this.layer;this.graphics.on("after-add",(e=>{e.item.sourceLayer=this.layer})),this.graphics.on("after-remove",(e=>{e.item.sourceLayer=null}))}get sublayers(){return this.graphics}};p([u({readOnly:!0})],V.prototype,"sublayers",null),p([u()],V.prototype,"layer",void 0),p([u({readOnly:!0})],V.prototype,"visibilityMode",void 0),V=p([m("esri.layers.MapNotesLayer.MapNotesSublayer")],V);const X=[{geometryType:"polygon",geometryTypeJSON:"esriGeometryPolygon",layerId:"polygonLayer",title:"Polygons",identifyingSymbol:(new g).toJSON()},{geometryType:"polyline",geometryTypeJSON:"esriGeometryPolyline",layerId:"polylineLayer",title:"Polylines",identifyingSymbol:(new h).toJSON()},{geometryType:"multipoint",geometryTypeJSON:"esriGeometryMultipoint",layerId:"multipointLayer",title:"Multipoints",identifyingSymbol:(new b).toJSON()},{geometryType:"point",geometryTypeJSON:"esriGeometryPoint",layerId:"pointLayer",title:"Points",identifyingSymbol:(new b).toJSON()},{geometryType:"point",geometryTypeJSON:"esriGeometryPoint",layerId:"textLayer",title:"Text",identifyingSymbol:(new S).toJSON()}];let Z=class extends(l(n(v(O(w(s)))))){constructor(e){super(e),this.capabilities={operations:{supportsMapNotesEditing:!0}},this.featureCollections=null,this.featureCollectionJSON=null,this.featureCollectionType="notes",this.legendEnabled=!1,this.minScale=0,this.maxScale=0,this.spatialReference=N.WGS84,this.sublayers=new J(X.map((e=>new V({id:e.layerId,title:e.title,layer:this})))),this.title="Map Notes",this.type="map-notes",this.visibilityMode="inherited"}readCapabilities(e,t,r){return{operations:{supportsMapNotesEditing:!$(t)&&"portal-item"!==(null==r?void 0:r.origin)}}}readFeatureCollections(e,t,r){if(!$(t))return null;const o=t.layers.map((e=>{const t=new L;return t.read(e,r),t}));return new J({items:o})}readLegacyfeatureCollectionJSON(e,t){return $(t)?T(t.featureCollection):null}readFullExtent(e,t){if(!t.layers.length)return new x({xmin:-180,ymin:-90,xmax:180,ymax:90,spatialReference:N.WGS84});const r=N.fromJSON(t.layers[0].layerDefinition.spatialReference);return t.layers.reduce(((e,t)=>{const r=t.layerDefinition.extent;return r?x.fromJSON(r).union(e):e}),new x({spatialReference:r}))}readMinScale(e,t){for(const r of t.layers)if(null!=r.layerDefinition.minScale)return r.layerDefinition.minScale;return 0}readMaxScale(e,t){for(const r of t.layers)if(null!=r.layerDefinition.maxScale)return r.layerDefinition.maxScale;return 0}get multipointLayer(){return this._findSublayer("multipointLayer")}get pointLayer(){return this._findSublayer("pointLayer")}get polygonLayer(){return this._findSublayer("polygonLayer")}get polylineLayer(){return this._findSublayer("polylineLayer")}readSpatialReference(e,t){return t.layers.length?N.fromJSON(t.layers[0].layerDefinition.spatialReference):N.WGS84}readSublayers(e,t,r){if($(t))return null;const o=[];for(let i=0;i<t.layers.length;i++){var a;const{layerDefinition:e,featureSet:r}=t.layers[i],l=null!=(a=e.geometryType)?a:r.geometryType,n=X.find((t=>{var r,o,a;return l===t.geometryTypeJSON&&(null==(r=e.drawingInfo)||null==(o=r.renderer)||null==(a=o.symbol)?void 0:a.type)===t.identifyingSymbol.type}));if(n){const t=new V({id:n.layerId,title:e.name,layer:this,graphics:r.features.map((({geometry:e,symbol:t,attributes:r,popupInfo:o})=>C.fromJSON({attributes:r,geometry:e,symbol:t,popupTemplate:o})))});o.push(t)}}return new J(o)}writeSublayers(e,t,r,o){const{minScale:a,maxScale:i}=this;if(M(e))return;const l=e.some((e=>e.graphics.length>0));var n;if(!this.capabilities.operations.supportsMapNotesEditing)return void(l&&(null==o||null==(n=o.messages)||n.push(new I("map-notes-layer:editing-not-supported","New map notes cannot be added to this layer"))));const s=[];let y=this.spatialReference.toJSON();e:for(const p of e)for(const e of p.graphics)if(j(e.geometry)){y=e.geometry.spatialReference.toJSON();break e}for(const p of X){const t=e.find((e=>p.layerId===e.id));this._writeMapNoteSublayer(s,t,p,a,i,y,o)}R("featureCollection.layers",s,t)}get textLayer(){return this._findSublayer("textLayer")}load(e){return this.addResolvingPromise(this.loadFromPortal({supportedTypes:["Feature Collection"]},e)),Promise.resolve(this)}read(e,t){"featureCollection"in e&&(e=T(e),Object.assign(e,e.featureCollection)),super.read(e,t)}async beforeSave(){if(M(this.sublayers))return;let e=null;const t=[];for(const o of this.sublayers)for(const r of o.graphics)if(j(r.geometry)){const o=r.geometry;e?G(o.spatialReference,e)||(F(o.spatialReference,e)||z()||await A(),r.geometry=W(o,e)):e=o.spatialReference,t.push(r)}const r=await E(t.map((e=>e.geometry)));t.forEach(((e,t)=>e.geometry=r[t]))}_findSublayer(e){var t,r;return M(this.sublayers)?null:null!=(t=null==(r=this.sublayers)?void 0:r.find((t=>t.id===e)))?t:null}_writeMapNoteSublayer(e,t,r,o,a,i,l){const n=[];if(!M(t)){for(const e of t.graphics)this._writeMapNote(n,e,r.geometryType,l);this._normalizeObjectIds(n,Q),e.push({layerDefinition:{name:t.title,drawingInfo:{renderer:{type:"simple",symbol:T(r.identifyingSymbol)}},geometryType:r.geometryTypeJSON,minScale:o,maxScale:a,objectIdField:"OBJECTID",fields:[Q.toJSON(),U.toJSON()],spatialReference:i},featureSet:{features:n,geometryType:r.geometryTypeJSON}})}}_writeMapNote(e,t,r,o){if(M(t))return;const{geometry:a,symbol:l,popupTemplate:n}=t;if(M(a))return;var s,y;if(a.type!==r)return void(null==o||null==(s=o.messages)||s.push(new P("map-notes-layer:invalid-geometry-type",`Geometry "${a.type}" cannot be saved in "${r}" layer`,{graphic:t})));if(M(l))return void(null==o||null==(y=o.messages)||y.push(new P("map-notes-layer:no-symbol","Skipping map notes with no symbol",{graphic:t})));const p={attributes:i({},t.attributes),geometry:a.toJSON(),symbol:l.toJSON()};j(n)&&(p.popupInfo=n.toJSON()),e.push(p)}_normalizeObjectIds(e,t){const r=t.name;let o=B(r,e)+1;const a=new Set;for(const i of e){i.attributes||(i.attributes={});const{attributes:e}=i;(null==e[r]||a.has(e[r]))&&(e[r]=o++),a.add(e[r])}}};p([u({readOnly:!0})],Z.prototype,"capabilities",void 0),p([_(["portal-item","web-map"],"capabilities",["layers"])],Z.prototype,"readCapabilities",null),p([u({readOnly:!0})],Z.prototype,"featureCollections",void 0),p([_(["web-map","portal-item"],"featureCollections",["layers"])],Z.prototype,"readFeatureCollections",null),p([u({readOnly:!0,json:{origins:{"web-map":{write:{enabled:!0,target:"featureCollection"}}}}})],Z.prototype,"featureCollectionJSON",void 0),p([_(["web-map","portal-item"],"featureCollectionJSON",["featureCollection"])],Z.prototype,"readLegacyfeatureCollectionJSON",null),p([u({readOnly:!0,json:{read:!1,write:{enabled:!0,ignoreOrigin:!0}}})],Z.prototype,"featureCollectionType",void 0),p([u({json:{write:!1}})],Z.prototype,"fullExtent",void 0),p([_(["web-map","portal-item"],"fullExtent",["layers"])],Z.prototype,"readFullExtent",null),p([u({readOnly:!0,json:{origins:{"web-map":{write:{target:"featureCollection.showLegend",overridePolicy(){return{enabled:null!=this.featureCollectionJSON}}}}}}})],Z.prototype,"legendEnabled",void 0),p([u({type:["show","hide"]})],Z.prototype,"listMode",void 0),p([u({type:Number,nonNullable:!0,json:{write:!1}})],Z.prototype,"minScale",void 0),p([_(["web-map","portal-item"],"minScale",["layers"])],Z.prototype,"readMinScale",null),p([u({type:Number,nonNullable:!0,json:{write:!1}})],Z.prototype,"maxScale",void 0),p([_(["web-map","portal-item"],"maxScale",["layers"])],Z.prototype,"readMaxScale",null),p([u({readOnly:!0})],Z.prototype,"multipointLayer",null),p([u({value:"ArcGISFeatureLayer",type:["ArcGISFeatureLayer"]})],Z.prototype,"operationalLayerType",void 0),p([u({readOnly:!0})],Z.prototype,"pointLayer",null),p([u({readOnly:!0})],Z.prototype,"polygonLayer",null),p([u({readOnly:!0})],Z.prototype,"polylineLayer",null),p([u({type:N})],Z.prototype,"spatialReference",void 0),p([_(["web-map","portal-item"],"spatialReference",["layers"])],Z.prototype,"readSpatialReference",null),p([u({readOnly:!0,json:{origins:{"web-map":{write:{ignoreOrigin:!0}}}}})],Z.prototype,"sublayers",void 0),p([_("web-map","sublayers",["layers"])],Z.prototype,"readSublayers",null),p([D("web-map","sublayers")],Z.prototype,"writeSublayers",null),p([u({readOnly:!0})],Z.prototype,"textLayer",null),p([u()],Z.prototype,"title",void 0),p([u({readOnly:!0,json:{read:!1}})],Z.prototype,"type",void 0),Z=p([m("esri.layers.MapNotesLayer")],Z);var q=Z;export default q;
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b2) => {
+  for (var prop in b2 || (b2 = {}))
+    if (__hasOwnProp.call(b2, prop))
+      __defNormalProp(a, prop, b2[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b2)) {
+      if (__propIsEnum.call(b2, prop))
+        __defNormalProp(a, prop, b2[prop]);
+    }
+  return a;
+};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { gR as t, gS as s, e1 as b, eT as m, ae as e, af as y, gY as x, i7 as u, ag as i, e6 as y$1, ho as u$1, hl as d, hn as y$2, i8 as y$3, dY as l, dZ as u$2, d_ as l$1, bF as k$1, c_ as L, v as ke, bT as y$4, cr as M, d1 as n$1, a0 as t$1, aa as s$1, a5 as r, d7 as o, d0 as L$1, h0 as t$2, dQ as e$1, c4 as o$1, cm as d$1, hW as nn, eV as V, eX as D, di as H } from "./vendor.74d5941c.js";
+import { n as n$2 } from "./objectIdUtils.8e3fb893.js";
+let n = class extends t(s(b)) {
+  constructor(r2) {
+    super(r2), this.elevationInfo = null, this.graphics = new m(), this.screenSizePerspectiveEnabled = true, this.type = "graphics", this.internal = false;
+  }
+  destroy() {
+    this.removeAll(), this.graphics.destroy();
+  }
+  add(r2) {
+    return this.graphics.add(r2), this;
+  }
+  addMany(r2) {
+    return this.graphics.addMany(r2), this;
+  }
+  removeAll() {
+    return this.graphics.removeAll(), this;
+  }
+  remove(r2) {
+    this.graphics.remove(r2);
+  }
+  removeMany(r2) {
+    this.graphics.removeMany(r2);
+  }
+  on(r2, e2) {
+    return super.on(r2, e2);
+  }
+  graphicChanged(r2) {
+    this.emit("graphic-update", r2);
+  }
+};
+e([y({ type: x })], n.prototype, "elevationInfo", void 0), e([y(u())], n.prototype, "graphics", void 0), e([y({ type: ["show", "hide"] })], n.prototype, "listMode", void 0), e([y()], n.prototype, "screenSizePerspectiveEnabled", void 0), e([y({ readOnly: true })], n.prototype, "type", void 0), e([y({ constructOnly: true })], n.prototype, "internal", void 0), n = e([i("esri.layers.GraphicsLayer")], n);
+var h = n;
+function F(e2) {
+  return e2.layers.some((e3) => e3.layerDefinition.visibilityField != null);
+}
+const G = new y$1({ name: "OBJECTID", alias: "OBJECTID", type: "oid", nullable: false, editable: false }), _ = new y$1({ name: "title", alias: "Title", type: "string", nullable: true, editable: true });
+let P = class extends h {
+  constructor() {
+    super(...arguments), this.visibilityMode = "inherited";
+  }
+  initialize() {
+    for (const e2 of this.graphics)
+      e2.sourceLayer = this.layer;
+    this.graphics.on("after-add", (e2) => {
+      e2.item.sourceLayer = this.layer;
+    }), this.graphics.on("after-remove", (e2) => {
+      e2.item.sourceLayer = null;
+    });
+  }
+  get sublayers() {
+    return this.graphics;
+  }
+};
+e([y({ readOnly: true })], P.prototype, "sublayers", null), e([y()], P.prototype, "layer", void 0), e([y({ readOnly: true })], P.prototype, "visibilityMode", void 0), P = e([i("esri.layers.MapNotesLayer.MapNotesSublayer")], P);
+const k = [{ geometryType: "polygon", geometryTypeJSON: "esriGeometryPolygon", layerId: "polygonLayer", title: "Polygons", identifyingSymbol: new u$1().toJSON() }, { geometryType: "polyline", geometryTypeJSON: "esriGeometryPolyline", layerId: "polylineLayer", title: "Polylines", identifyingSymbol: new d().toJSON() }, { geometryType: "multipoint", geometryTypeJSON: "esriGeometryMultipoint", layerId: "multipointLayer", title: "Multipoints", identifyingSymbol: new y$2().toJSON() }, { geometryType: "point", geometryTypeJSON: "esriGeometryPoint", layerId: "pointLayer", title: "Points", identifyingSymbol: new y$2().toJSON() }, { geometryType: "point", geometryTypeJSON: "esriGeometryPoint", layerId: "textLayer", title: "Text", identifyingSymbol: new y$3().toJSON() }];
+let z = class extends t(s(l(u$2(l$1(b))))) {
+  constructor(e2) {
+    super(e2), this.capabilities = { operations: { supportsMapNotesEditing: true } }, this.featureCollections = null, this.featureCollectionJSON = null, this.featureCollectionType = "notes", this.legendEnabled = false, this.minScale = 0, this.maxScale = 0, this.spatialReference = k$1.WGS84, this.sublayers = new L(k.map((e3) => new P({ id: e3.layerId, title: e3.title, layer: this }))), this.title = "Map Notes", this.type = "map-notes", this.visibilityMode = "inherited";
+  }
+  readCapabilities(e2, t2, r2) {
+    return { operations: { supportsMapNotesEditing: !F(t2) && (r2 == null ? void 0 : r2.origin) !== "portal-item" } };
+  }
+  readFeatureCollections(e2, t2, r2) {
+    if (!F(t2))
+      return null;
+    const o2 = t2.layers.map((e3) => {
+      const t3 = new ke();
+      return t3.read(e3, r2), t3;
+    });
+    return new L({ items: o2 });
+  }
+  readLegacyfeatureCollectionJSON(e2, r2) {
+    return F(r2) ? y$4(r2.featureCollection) : null;
+  }
+  readFullExtent(e2, t2) {
+    if (!t2.layers.length)
+      return new M({ xmin: -180, ymin: -90, xmax: 180, ymax: 90, spatialReference: k$1.WGS84 });
+    const r2 = k$1.fromJSON(t2.layers[0].layerDefinition.spatialReference);
+    return t2.layers.reduce((e3, t3) => {
+      const r3 = t3.layerDefinition.extent;
+      return r3 ? M.fromJSON(r3).union(e3) : e3;
+    }, new M({ spatialReference: r2 }));
+  }
+  readMinScale(e2, t2) {
+    for (const r2 of t2.layers)
+      if (r2.layerDefinition.minScale != null)
+        return r2.layerDefinition.minScale;
+    return 0;
+  }
+  readMaxScale(e2, t2) {
+    for (const r2 of t2.layers)
+      if (r2.layerDefinition.maxScale != null)
+        return r2.layerDefinition.maxScale;
+    return 0;
+  }
+  get multipointLayer() {
+    return this._findSublayer("multipointLayer");
+  }
+  get pointLayer() {
+    return this._findSublayer("pointLayer");
+  }
+  get polygonLayer() {
+    return this._findSublayer("polygonLayer");
+  }
+  get polylineLayer() {
+    return this._findSublayer("polylineLayer");
+  }
+  readSpatialReference(e2, t2) {
+    return t2.layers.length ? k$1.fromJSON(t2.layers[0].layerDefinition.spatialReference) : k$1.WGS84;
+  }
+  readSublayers(e2, t2, r2) {
+    if (F(t2))
+      return null;
+    const o2 = [];
+    for (let l2 = 0; l2 < t2.layers.length; l2++) {
+      var i2;
+      const { layerDefinition: e3, featureSet: r3 } = t2.layers[l2], a = (i2 = e3.geometryType) != null ? i2 : r3.geometryType, n2 = k.find((t3) => {
+        var r4, o3, i3;
+        return a === t3.geometryTypeJSON && ((r4 = e3.drawingInfo) == null || (o3 = r4.renderer) == null || (i3 = o3.symbol) == null ? void 0 : i3.type) === t3.identifyingSymbol.type;
+      });
+      if (n2) {
+        const t3 = new P({ id: n2.layerId, title: e3.name, layer: this, graphics: r3.features.map(({ geometry: e4, symbol: t4, attributes: r4, popupInfo: o3 }) => n$1.fromJSON({ attributes: r4, geometry: e4, symbol: t4, popupTemplate: o3 })) });
+        o2.push(t3);
+      }
+    }
+    return new L(o2);
+  }
+  writeSublayers(e2, t2, l2, a) {
+    const { minScale: n2, maxScale: s2 } = this;
+    if (t$1(e2))
+      return;
+    const p = e2.some((e3) => e3.graphics.length > 0);
+    if (!this.capabilities.operations.supportsMapNotesEditing) {
+      var m2;
+      if (p)
+        a == null || (m2 = a.messages) == null || m2.push(new s$1("map-notes-layer:editing-not-supported", "New map notes cannot be added to this layer"));
+      return;
+    }
+    const u2 = [];
+    let c = this.spatialReference.toJSON();
+    e:
+      for (const r$1 of e2)
+        for (const e3 of r$1.graphics)
+          if (r(e3.geometry)) {
+            c = e3.geometry.spatialReference.toJSON();
+            break e;
+          }
+    for (const r2 of k) {
+      const t3 = e2.find((e3) => r2.layerId === e3.id);
+      this._writeMapNoteSublayer(u2, t3, r2, n2, s2, c, a);
+    }
+    o("featureCollection.layers", u2, t2);
+  }
+  get textLayer() {
+    return this._findSublayer("textLayer");
+  }
+  load(e2) {
+    return this.addResolvingPromise(this.loadFromPortal({ supportedTypes: ["Feature Collection"] }, e2)), Promise.resolve(this);
+  }
+  read(e2, r2) {
+    "featureCollection" in e2 && (e2 = y$4(e2), Object.assign(e2, e2.featureCollection)), super.read(e2, r2);
+  }
+  beforeSave() {
+    return __async(this, null, function* () {
+      if (t$1(this.sublayers))
+        return;
+      let e2 = null;
+      const t2 = [];
+      for (const o2 of this.sublayers)
+        for (const r$12 of o2.graphics)
+          if (r(r$12.geometry)) {
+            const o3 = r$12.geometry;
+            e2 ? d$1(o3.spatialReference, e2) || (nn(o3.spatialReference, e2) || V() || (yield D()), r$12.geometry = H(o3, e2)) : e2 = o3.spatialReference, t2.push(r$12);
+          }
+      const r$1 = yield L$1(t2.map((e3) => e3.geometry));
+      t2.forEach((e3, t3) => e3.geometry = r$1[t3]);
+    });
+  }
+  _findSublayer(e2) {
+    var t2, r2;
+    return t$1(this.sublayers) ? null : (t2 = (r2 = this.sublayers) == null ? void 0 : r2.find((t3) => t3.id === e2)) != null ? t2 : null;
+  }
+  _writeMapNoteSublayer(e2, r2, i2, l2, a, n2, s2) {
+    const p = [];
+    if (!t$1(r2)) {
+      for (const e3 of r2.graphics)
+        this._writeMapNote(p, e3, i2.geometryType, s2);
+      this._normalizeObjectIds(p, G), e2.push({ layerDefinition: { name: r2.title, drawingInfo: { renderer: { type: "simple", symbol: y$4(i2.identifyingSymbol) } }, geometryType: i2.geometryTypeJSON, minScale: l2, maxScale: a, objectIdField: "OBJECTID", fields: [G.toJSON(), _.toJSON()], spatialReference: n2 }, featureSet: { features: p, geometryType: i2.geometryTypeJSON } });
+    }
+  }
+  _writeMapNote(e2, t2, r$1, l2) {
+    if (t$1(t2))
+      return;
+    const { geometry: a, symbol: s2, popupTemplate: p } = t2;
+    if (t$1(a))
+      return;
+    var y2, m2;
+    if (a.type !== r$1)
+      return void (l2 == null || (y2 = l2.messages) == null || y2.push(new t$2("map-notes-layer:invalid-geometry-type", `Geometry "${a.type}" cannot be saved in "${r$1}" layer`, { graphic: t2 })));
+    if (t$1(s2))
+      return void (l2 == null || (m2 = l2.messages) == null || m2.push(new t$2("map-notes-layer:no-symbol", "Skipping map notes with no symbol", { graphic: t2 })));
+    const u2 = { attributes: __spreadValues({}, t2.attributes), geometry: a.toJSON(), symbol: s2.toJSON() };
+    r(p) && (u2.popupInfo = p.toJSON()), e2.push(u2);
+  }
+  _normalizeObjectIds(e2, t2) {
+    const r2 = t2.name;
+    let o2 = n$2(r2, e2) + 1;
+    const i2 = new Set();
+    for (const l2 of e2) {
+      l2.attributes || (l2.attributes = {});
+      const { attributes: e3 } = l2;
+      (e3[r2] == null || i2.has(e3[r2])) && (e3[r2] = o2++), i2.add(e3[r2]);
+    }
+  }
+};
+e([y({ readOnly: true })], z.prototype, "capabilities", void 0), e([e$1(["portal-item", "web-map"], "capabilities", ["layers"])], z.prototype, "readCapabilities", null), e([y({ readOnly: true })], z.prototype, "featureCollections", void 0), e([e$1(["web-map", "portal-item"], "featureCollections", ["layers"])], z.prototype, "readFeatureCollections", null), e([y({ readOnly: true, json: { origins: { "web-map": { write: { enabled: true, target: "featureCollection" } } } } })], z.prototype, "featureCollectionJSON", void 0), e([e$1(["web-map", "portal-item"], "featureCollectionJSON", ["featureCollection"])], z.prototype, "readLegacyfeatureCollectionJSON", null), e([y({ readOnly: true, json: { read: false, write: { enabled: true, ignoreOrigin: true } } })], z.prototype, "featureCollectionType", void 0), e([y({ json: { write: false } })], z.prototype, "fullExtent", void 0), e([e$1(["web-map", "portal-item"], "fullExtent", ["layers"])], z.prototype, "readFullExtent", null), e([y({ readOnly: true, json: { origins: { "web-map": { write: { target: "featureCollection.showLegend", overridePolicy() {
+  return { enabled: this.featureCollectionJSON != null };
+} } } } } })], z.prototype, "legendEnabled", void 0), e([y({ type: ["show", "hide"] })], z.prototype, "listMode", void 0), e([y({ type: Number, nonNullable: true, json: { write: false } })], z.prototype, "minScale", void 0), e([e$1(["web-map", "portal-item"], "minScale", ["layers"])], z.prototype, "readMinScale", null), e([y({ type: Number, nonNullable: true, json: { write: false } })], z.prototype, "maxScale", void 0), e([e$1(["web-map", "portal-item"], "maxScale", ["layers"])], z.prototype, "readMaxScale", null), e([y({ readOnly: true })], z.prototype, "multipointLayer", null), e([y({ value: "ArcGISFeatureLayer", type: ["ArcGISFeatureLayer"] })], z.prototype, "operationalLayerType", void 0), e([y({ readOnly: true })], z.prototype, "pointLayer", null), e([y({ readOnly: true })], z.prototype, "polygonLayer", null), e([y({ readOnly: true })], z.prototype, "polylineLayer", null), e([y({ type: k$1 })], z.prototype, "spatialReference", void 0), e([e$1(["web-map", "portal-item"], "spatialReference", ["layers"])], z.prototype, "readSpatialReference", null), e([y({ readOnly: true, json: { origins: { "web-map": { write: { ignoreOrigin: true } } } } })], z.prototype, "sublayers", void 0), e([e$1("web-map", "sublayers", ["layers"])], z.prototype, "readSublayers", null), e([o$1("web-map", "sublayers")], z.prototype, "writeSublayers", null), e([y({ readOnly: true })], z.prototype, "textLayer", null), e([y()], z.prototype, "title", void 0), e([y({ readOnly: true, json: { read: false } })], z.prototype, "type", void 0), z = e([i("esri.layers.MapNotesLayer")], z);
+var B = z;
+export default B;

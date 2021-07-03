@@ -1,1 +1,139 @@
-var e=Object.defineProperty,t=Object.defineProperties,o=Object.getOwnPropertyDescriptors,r=Object.getOwnPropertySymbols,i=Object.prototype.hasOwnProperty,s=Object.prototype.propertyIsEnumerable,n=(t,o,r)=>o in t?e(t,o,{enumerable:!0,configurable:!0,writable:!0,value:r}):t[o]=r,l=(e,t)=>{for(var o in t||(t={}))i.call(t,o)&&n(e,o,t[o]);if(r)for(var o of r(t))s.call(t,o)&&n(e,o,t[o]);return e};import{ae as a,af as u,ag as p,d2 as d,a5 as c,dR as y,cr as h,dU as f,ai as g,dQ as m,hd as v,he as b,v as O,bF as w,fs as F,ec as I}from"./vendor.74d5941c.js";let S=class extends d{constructor(e){super(e),this.type="csv"}load(e){const t=c(e)?e.signal:null;return this.addResolvingPromise(this._startWorker(t)),Promise.resolve(this)}destroy(){var e;null==(e=this._connection)||e.close(),this._connection=null}openPorts(){return this.load().then((()=>this._connection.openPorts()))}queryFeatures(e,t={}){return this.load(t).then((()=>this._connection.invoke("queryFeatures",e?e.toJSON():null,t))).then((e=>y.fromJSON(e)))}queryFeaturesJSON(e,t={}){return this.load(t).then((()=>this._connection.invoke("queryFeatures",e?e.toJSON():null,t)))}queryFeatureCount(e,t={}){return this.load(t).then((()=>this._connection.invoke("queryFeatureCount",e?e.toJSON():null,t)))}queryObjectIds(e,t={}){return this.load(t).then((()=>this._connection.invoke("queryObjectIds",e?e.toJSON():null,t)))}queryExtent(e,t={}){return this.load(t).then((()=>this._connection.invoke("queryExtent",e?e.toJSON():null,t))).then((e=>({count:e.count,extent:h.fromJSON(e.extent)})))}querySnapping(e,t={}){return this.load(t).then((()=>this._connection.invoke("querySnapping",e,t)))}async _startWorker(e){this._connection=await f("CSVSourceWorker",{strategy:g("feature-layers-workers")?"dedicated":"local",signal:e});const t=await this._connection.invoke("load",{url:this.url,parsing:{columnDelimiter:this.delimiter,fields:this.fields&&this.fields.map((e=>e.toJSON())),latitudeField:this.latitudeField,longitudeField:this.longitudeField,spatialReference:this.spatialReference&&this.spatialReference.toJSON(),timeInfo:this.timeInfo&&this.timeInfo.toJSON()}},{signal:e});this.locationInfo=t.locationInfo,this.sourceJSON=t.layerDefinition,this.columnDelimiter=t.columnDelimiter}};a([u()],S.prototype,"type",void 0),a([u()],S.prototype,"url",void 0),a([u()],S.prototype,"delimiter",void 0),a([u()],S.prototype,"fields",void 0),a([u()],S.prototype,"latitudeField",void 0),a([u()],S.prototype,"longitudeField",void 0),a([u()],S.prototype,"spatialReference",void 0),a([u()],S.prototype,"timeInfo",void 0),a([u()],S.prototype,"locationInfo",void 0),a([u()],S.prototype,"sourceJSON",void 0),a([u()],S.prototype,"columnDelimiter",void 0),S=a([p("esri.layers.graphics.sources.CSVSource")],S);var q=S;let j=class extends O{constructor(...e){super(...e),this.delimiter=null,this.editingEnabled=!1,this.fields=null,this.latitudeField=null,this.locationType="coordinates",this.longitudeField=null,this.operationalLayerType="CSV",this.outFields=["*"],this.path=null,this.portalItem=null,this.spatialReference=w.WGS84,this.source=null,this.type="csv"}normalizeCtorArgs(e,t){return"string"==typeof e?l({url:e},t):e}get capabilities(){return{data:{supportsAttachment:!1,supportsM:!1,supportsZ:!1},operations:{supportsCalculate:!1,supportsTruncate:!1,supportsValidateSql:!1,supportsAdd:!1,supportsDelete:!1,supportsEditing:!1,supportsQuery:!0,supportsResizeAttachments:!1,supportsUpdate:!1},query:F,queryRelated:{supportsCount:!1,supportsOrderBy:!1,supportsPagination:!1},editing:{supportsGeometryUpdate:!1,supportsGlobalId:!1,supportsRollbackOnFailure:!1,supportsUpdateWithoutM:!1,supportsUploadWithItemId:!1,supportsDeleteByAnonymous:!1,supportsDeleteByOthers:!1,supportsUpdateByAnonymous:!1,supportsUpdateByOthers:!1}}}get isTable(){return this.loaded&&null==this.geometryType}readWebMapLabelsVisible(e,t){return null!=t.showLabels?t.showLabels:!!(t.layerDefinition&&t.layerDefinition.drawingInfo&&t.layerDefinition.drawingInfo.labelingInfo)}set url(e){this._set("url",e)}async createGraphicsSource(e){const t=new q({delimiter:this.delimiter,fields:this.fields,latitudeField:this.latitudeField,longitudeField:this.longitudeField,spatialReference:this.spatialReference,timeInfo:this.timeInfo,url:this.url});return this._set("source",t),await t.load({signal:e}),this.read({locationInfo:t.locationInfo,columnDelimiter:t.columnDelimiter},{origin:"service",url:this.parsedUrl}),t}queryFeatures(e,t){return this.load().then((()=>this.source.queryFeatures(I.from(e)||this.createQuery()))).then((e=>{if(e&&e.features)for(const t of e.features)t.layer=t.sourceLayer=this;return e}))}queryObjectIds(e,t){return this.load().then((()=>this.source.queryObjectIds(I.from(e)||this.createQuery())))}queryFeatureCount(e,t){return this.load().then((()=>this.source.queryFeatureCount(I.from(e)||this.createQuery())))}queryExtent(e,t){return this.load().then((()=>this.source.queryExtent(I.from(e)||this.createQuery())))}write(e,r){return super.write(e,(i=l({},r),t(i,o({writeLayerSchema:!0}))));var i}_verifyFields(){}_verifySource(){}_hasMemorySource(){return!1}};a([u({readOnly:!0,dependsOn:["loaded"],json:{read:!1,write:!1}})],j.prototype,"capabilities",null),a([u({type:[","," ",";","|","\t"],json:{read:{source:"columnDelimiter"},write:{target:"columnDelimiter",ignoreOrigin:!0}}})],j.prototype,"delimiter",void 0),a([u({readOnly:!0,type:Boolean,json:{origins:{"web-scene":{read:!1,write:!1}}}})],j.prototype,"editingEnabled",void 0),a([u({json:{read:{source:"layerDefinition.fields"},write:{target:"layerDefinition.fields"}}})],j.prototype,"fields",void 0),a([u({type:Boolean,readOnly:!0})],j.prototype,"isTable",null),a([m("web-map","labelsVisible",["layerDefinition.drawingInfo.labelingInfo","showLabels"])],j.prototype,"readWebMapLabelsVisible",null),a([u({type:String,json:{read:{source:"locationInfo.latitudeFieldName"},write:{target:"locationInfo.latitudeFieldName",ignoreOrigin:!0}}})],j.prototype,"latitudeField",void 0),a([u({type:["show","hide"]})],j.prototype,"listMode",void 0),a([u({type:["coordinates"],json:{read:{source:"locationInfo.locationType"},write:{target:"locationInfo.locationType",ignoreOrigin:!0,isRequired:!0}}})],j.prototype,"locationType",void 0),a([u({type:String,json:{read:{source:"locationInfo.longitudeFieldName"},write:{target:"locationInfo.longitudeFieldName",ignoreOrigin:!0}}})],j.prototype,"longitudeField",void 0),a([u({type:["CSV"]})],j.prototype,"operationalLayerType",void 0),a([u()],j.prototype,"outFields",void 0),a([u({type:String,json:{origins:{"web-scene":{read:!1,write:!1}},read:!1,write:!1}})],j.prototype,"path",void 0),a([u({json:{read:!1,write:!1,origins:{"web-document":{read:!1,write:!1}}}})],j.prototype,"portalItem",void 0),a([u({json:{read:!1},cast:null,type:q,readOnly:!0})],j.prototype,"source",void 0),a([u({json:{read:!1},value:"csv",readOnly:!0})],j.prototype,"type",void 0),a([u({json:{read:v,write:{isRequired:!0,ignoreOrigin:!0,writer:b}}})],j.prototype,"url",null),j=a([p("esri.layers.CSVLayer")],j);var D=j;export default D;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { ae as e, af as y, ag as i, d2 as f, a5 as r, dR as g, cr as M, dU as p, ai as t, dQ as e$1, hd as m, he as p$1, v as ke, bF as k, fs as t$1, ec as R } from "./vendor.74d5941c.js";
+let u = class extends f {
+  constructor(e2) {
+    super(e2), this.type = "csv";
+  }
+  load(e2) {
+    const t2 = r(e2) ? e2.signal : null;
+    return this.addResolvingPromise(this._startWorker(t2)), Promise.resolve(this);
+  }
+  destroy() {
+    var e2;
+    (e2 = this._connection) == null || e2.close(), this._connection = null;
+  }
+  openPorts() {
+    return this.load().then(() => this._connection.openPorts());
+  }
+  queryFeatures(e2, t2 = {}) {
+    return this.load(t2).then(() => this._connection.invoke("queryFeatures", e2 ? e2.toJSON() : null, t2)).then((e3) => g.fromJSON(e3));
+  }
+  queryFeaturesJSON(e2, t2 = {}) {
+    return this.load(t2).then(() => this._connection.invoke("queryFeatures", e2 ? e2.toJSON() : null, t2));
+  }
+  queryFeatureCount(e2, t2 = {}) {
+    return this.load(t2).then(() => this._connection.invoke("queryFeatureCount", e2 ? e2.toJSON() : null, t2));
+  }
+  queryObjectIds(e2, t2 = {}) {
+    return this.load(t2).then(() => this._connection.invoke("queryObjectIds", e2 ? e2.toJSON() : null, t2));
+  }
+  queryExtent(e2, t2 = {}) {
+    return this.load(t2).then(() => this._connection.invoke("queryExtent", e2 ? e2.toJSON() : null, t2)).then((e3) => ({ count: e3.count, extent: M.fromJSON(e3.extent) }));
+  }
+  querySnapping(e2, t2 = {}) {
+    return this.load(t2).then(() => this._connection.invoke("querySnapping", e2, t2));
+  }
+  _startWorker(e2) {
+    return __async(this, null, function* () {
+      this._connection = yield p("CSVSourceWorker", { strategy: t("feature-layers-workers") ? "dedicated" : "local", signal: e2 });
+      const o = yield this._connection.invoke("load", { url: this.url, parsing: { columnDelimiter: this.delimiter, fields: this.fields && this.fields.map((e3) => e3.toJSON()), latitudeField: this.latitudeField, longitudeField: this.longitudeField, spatialReference: this.spatialReference && this.spatialReference.toJSON(), timeInfo: this.timeInfo && this.timeInfo.toJSON() } }, { signal: e2 });
+      this.locationInfo = o.locationInfo, this.sourceJSON = o.layerDefinition, this.columnDelimiter = o.columnDelimiter;
+    });
+  }
+};
+e([y()], u.prototype, "type", void 0), e([y()], u.prototype, "url", void 0), e([y()], u.prototype, "delimiter", void 0), e([y()], u.prototype, "fields", void 0), e([y()], u.prototype, "latitudeField", void 0), e([y()], u.prototype, "longitudeField", void 0), e([y()], u.prototype, "spatialReference", void 0), e([y()], u.prototype, "timeInfo", void 0), e([y()], u.prototype, "locationInfo", void 0), e([y()], u.prototype, "sourceJSON", void 0), e([y()], u.prototype, "columnDelimiter", void 0), u = e([i("esri.layers.graphics.sources.CSVSource")], u);
+var a = u;
+let d = class extends ke {
+  constructor(...e2) {
+    super(...e2), this.delimiter = null, this.editingEnabled = false, this.fields = null, this.latitudeField = null, this.locationType = "coordinates", this.longitudeField = null, this.operationalLayerType = "CSV", this.outFields = ["*"], this.path = null, this.portalItem = null, this.spatialReference = k.WGS84, this.source = null, this.type = "csv";
+  }
+  normalizeCtorArgs(e2, t2) {
+    return typeof e2 == "string" ? __spreadValues({ url: e2 }, t2) : e2;
+  }
+  get capabilities() {
+    return { data: { supportsAttachment: false, supportsM: false, supportsZ: false }, operations: { supportsCalculate: false, supportsTruncate: false, supportsValidateSql: false, supportsAdd: false, supportsDelete: false, supportsEditing: false, supportsQuery: true, supportsResizeAttachments: false, supportsUpdate: false }, query: t$1, queryRelated: { supportsCount: false, supportsOrderBy: false, supportsPagination: false }, editing: { supportsGeometryUpdate: false, supportsGlobalId: false, supportsRollbackOnFailure: false, supportsUpdateWithoutM: false, supportsUploadWithItemId: false, supportsDeleteByAnonymous: false, supportsDeleteByOthers: false, supportsUpdateByAnonymous: false, supportsUpdateByOthers: false } };
+  }
+  get isTable() {
+    return this.loaded && this.geometryType == null;
+  }
+  readWebMapLabelsVisible(e2, t2) {
+    return t2.showLabels != null ? t2.showLabels : !!(t2.layerDefinition && t2.layerDefinition.drawingInfo && t2.layerDefinition.drawingInfo.labelingInfo);
+  }
+  set url(e2) {
+    this._set("url", e2);
+  }
+  createGraphicsSource(e2) {
+    return __async(this, null, function* () {
+      const t2 = new a({ delimiter: this.delimiter, fields: this.fields, latitudeField: this.latitudeField, longitudeField: this.longitudeField, spatialReference: this.spatialReference, timeInfo: this.timeInfo, url: this.url });
+      return this._set("source", t2), yield t2.load({ signal: e2 }), this.read({ locationInfo: t2.locationInfo, columnDelimiter: t2.columnDelimiter }, { origin: "service", url: this.parsedUrl }), t2;
+    });
+  }
+  queryFeatures(e2, t2) {
+    return this.load().then(() => this.source.queryFeatures(R.from(e2) || this.createQuery())).then((e3) => {
+      if (e3 && e3.features)
+        for (const t3 of e3.features)
+          t3.layer = t3.sourceLayer = this;
+      return e3;
+    });
+  }
+  queryObjectIds(e2, t2) {
+    return this.load().then(() => this.source.queryObjectIds(R.from(e2) || this.createQuery()));
+  }
+  queryFeatureCount(e2, t2) {
+    return this.load().then(() => this.source.queryFeatureCount(R.from(e2) || this.createQuery()));
+  }
+  queryExtent(e2, t2) {
+    return this.load().then(() => this.source.queryExtent(R.from(e2) || this.createQuery()));
+  }
+  write(e2, t2) {
+    return super.write(e2, __spreadProps(__spreadValues({}, t2), { writeLayerSchema: true }));
+  }
+  _verifyFields() {
+  }
+  _verifySource() {
+  }
+  _hasMemorySource() {
+    return false;
+  }
+};
+e([y({ readOnly: true, dependsOn: ["loaded"], json: { read: false, write: false } })], d.prototype, "capabilities", null), e([y({ type: [",", " ", ";", "|", "	"], json: { read: { source: "columnDelimiter" }, write: { target: "columnDelimiter", ignoreOrigin: true } } })], d.prototype, "delimiter", void 0), e([y({ readOnly: true, type: Boolean, json: { origins: { "web-scene": { read: false, write: false } } } })], d.prototype, "editingEnabled", void 0), e([y({ json: { read: { source: "layerDefinition.fields" }, write: { target: "layerDefinition.fields" } } })], d.prototype, "fields", void 0), e([y({ type: Boolean, readOnly: true })], d.prototype, "isTable", null), e([e$1("web-map", "labelsVisible", ["layerDefinition.drawingInfo.labelingInfo", "showLabels"])], d.prototype, "readWebMapLabelsVisible", null), e([y({ type: String, json: { read: { source: "locationInfo.latitudeFieldName" }, write: { target: "locationInfo.latitudeFieldName", ignoreOrigin: true } } })], d.prototype, "latitudeField", void 0), e([y({ type: ["show", "hide"] })], d.prototype, "listMode", void 0), e([y({ type: ["coordinates"], json: { read: { source: "locationInfo.locationType" }, write: { target: "locationInfo.locationType", ignoreOrigin: true, isRequired: true } } })], d.prototype, "locationType", void 0), e([y({ type: String, json: { read: { source: "locationInfo.longitudeFieldName" }, write: { target: "locationInfo.longitudeFieldName", ignoreOrigin: true } } })], d.prototype, "longitudeField", void 0), e([y({ type: ["CSV"] })], d.prototype, "operationalLayerType", void 0), e([y()], d.prototype, "outFields", void 0), e([y({ type: String, json: { origins: { "web-scene": { read: false, write: false } }, read: false, write: false } })], d.prototype, "path", void 0), e([y({ json: { read: false, write: false, origins: { "web-document": { read: false, write: false } } } })], d.prototype, "portalItem", void 0), e([y({ json: { read: false }, cast: null, type: a, readOnly: true })], d.prototype, "source", void 0), e([y({ json: { read: false }, value: "csv", readOnly: true })], d.prototype, "type", void 0), e([y({ json: { read: m, write: { isRequired: true, ignoreOrigin: true, writer: p$1 } } })], d.prototype, "url", null), d = e([i("esri.layers.CSVLayer")], d);
+var c = d;
+export default c;

@@ -1,1 +1,392 @@
-var t=Object.defineProperty,e=Object.defineProperties,n=Object.getOwnPropertyDescriptors,o=Object.getOwnPropertySymbols,r=Object.prototype.hasOwnProperty,s=Object.prototype.propertyIsEnumerable,i=(e,n,o)=>n in e?t(e,n,{enumerable:!0,configurable:!0,writable:!0,value:o}):e[n]=o,a=(t,e)=>{for(var n in e||(e={}))r.call(e,n)&&i(t,n,e[n]);if(o)for(var n of o(e))s.call(e,n)&&i(t,n,e[n]);return t};import{cj as c,cG as l,fJ as f,fK as u,aP as g,fL as d,fM as p,fN as h,aQ as m,fO as w,fP as v,fQ as y,fR as A,fS as b,fT as I,fU as L}from"./vendor.74d5941c.js";import{A as N,f as S,u as U,a as E,p as V,c as O,o as P,i as x,m as j,T as M,d as D,b as W,l as F,h as k,e as B,O as T,x as z,g as C,w as R,E as q,L as H,F as G,I as Q,U as $,j as J,V as K,M as _,S as X,k as Y,q as Z,v as tt,z as et,B as nt,C as ot,D as rt,G as st,H as it}from"./InterleavedLayout.07204280.js";import"./vec4.44fdb266.js";function at(t,e,n,o){for(let r=0;r<o;r++)if(t[e+r]!==t[n+r])return!1;return!0}function ct(t,e,n,o,r){for(let s=0;s<r;s++)n[o+s]=t[e+s]}function lt(t,e,n){let o=0;for(let r=0;r<n;r++)o=t[e+r]+o|0,o=o+(o<<11)+(o>>>2)|0;return o>>>0}let ft=null;const ut={divisor:0};function gt(t,e={}){e=a(a({},ut),e);const n=t.stride;return t.fieldNames.filter((e=>{const n=t.fields.get(e).optional;return!(n&&n.glPadding)})).map((o=>{const r=t.fields.get(o),s=r.constructor.ElementCount,i=function(t){const e=dt[t];if(e)return e;throw new Error("BufferType not supported in WebGL")}(r.constructor.ElementType),a=r.offset,c=!(!r.optional||!r.optional.glNormalized);return{name:o,stride:n,count:s,type:i,offset:a,normalized:c,divisor:e.divisor}}))}const dt={u8:5121,u16:5123,u32:5125,i8:5120,i16:5122,i32:5124,f32:5126},pt=N().vec3f("position").u16("componentIndex").u16("u16padding");gt(N().vec2u8("sideness"));const ht=N().vec3f("position0").vec3f("position1").u16("componentIndex").u8("variantOffset",{glNormalized:!0}).u8("variantStroke").u8("variantExtension",{glNormalized:!0}).u8("u8padding",{glPadding:!0}).u16("u16padding",{glPadding:!0}),mt=ht.clone().vec3f("normal"),wt=ht.clone().vec3f("normalA").vec3f("normalB");class vt{updateSettings(t){this.settings=t,this.edgeHashFunction=t.reducedPrecision?Lt:It}write(t,e,n){const o=this.edgeHashFunction(n);Vt.seed=o;const r=Vt.getIntRange(0,255),s=Vt.getIntRange(0,this.settings.variants-1),i=Vt.getFloat(),a=255*(.5*function(t,e){const n=t<0?-1:1;return Math.abs(t)**e*n}(-(1-Math.min(i/.7,1))+Math.max(0,i-.7)/(1-.7),1.2)+.5);t.position0.setVec(e,n.position0),t.position1.setVec(e,n.position1),t.componentIndex.set(e,n.componentIndex),t.variantOffset.set(e,r),t.variantStroke.set(e,s),t.variantExtension.set(e,a)}trim(t,e){return t.slice(0,e)}}const yt=new Float32Array(6),At=new Uint32Array(yt.buffer),bt=new Uint32Array(1);function It(t){const e=yt;e[0]=t.position0[0],e[1]=t.position0[1],e[2]=t.position0[2],e[3]=t.position1[0],e[4]=t.position1[1],e[5]=t.position1[2],bt[0]=5381;for(let n=0;n<At.length;n++)bt[0]=31*bt[0]+At[n];return bt[0]}function Lt(t){const e=yt;e[0]=Nt(t.position0[0]),e[1]=Nt(t.position0[1]),e[2]=Nt(t.position0[2]),e[3]=Nt(t.position1[0]),e[4]=Nt(t.position1[1]),e[5]=Nt(t.position1[2]),bt[0]=5381;for(let n=0;n<At.length;n++)bt[0]=31*bt[0]+At[n];return bt[0]}function Nt(t){return Math.round(1e4*t)/1e4}class St{constructor(){this.commonWriter=new vt}updateSettings(t){this.commonWriter.updateSettings(t)}allocate(t){return mt.createBuffer(t)}write(t,e,n){this.commonWriter.write(t,e,n),f(Et,n.faceNormal0,n.faceNormal1),u(Et,Et),t.normal.setVec(e,Et)}trim(t,e){return this.commonWriter.trim(t,e)}}St.Layout=mt,St.glLayout=gt(mt,{divisor:1});class Ut{constructor(){this.commonWriter=new vt}updateSettings(t){this.commonWriter.updateSettings(t)}allocate(t){return wt.createBuffer(t)}write(t,e,n){this.commonWriter.write(t,e,n),t.normalA.setVec(e,n.faceNormal0),t.normalB.setVec(e,n.faceNormal1)}trim(t,e){return this.commonWriter.trim(t,e)}}Ut.Layout=wt,Ut.glLayout=gt(wt,{divisor:1});const Et=g(),Vt=new l;function Ot(t,e){return e.push(t.buffer),{buffer:t.buffer,layout:Pt(t.layout)}}function Pt(t){const o=new Array;return t.fields.forEach(((t,r)=>{const s=(i=a({},t),c={constructor:jt(t.constructor)},e(i,n(c)));var i,c;o.push([r,s])})),{stride:t.stride,fields:o,fieldNames:t.fieldNames}}const xt=[S,U,E,V,O,P,x,j,M,D,W,F,k,B,T,z,C,R,q,H,G,Q,$,J,K,_,X,Y,Z,tt,et,nt,ot,rt,st,it];function jt(t){return`${t.ElementType}_${t.ElementCount}`}const Mt=new Map;function Dt(t,e,n){const o=e/3,r=new Uint32Array(n+1),s=new Uint32Array(n+1),i=(t,e)=>{t<e?r[t+1]++:s[e+1]++};for(let w=0;w<o;w++){const e=t[3*w],n=t[3*w+1],o=t[3*w+2];i(e,n),i(n,o),i(o,e)}let a=0,c=0;for(let w=0;w<n;w++){const t=r[w+1],e=s[w+1];r[w+1]=a,s[w+1]=c,a+=t,c+=e}const l=new Uint32Array(6*o),f=r[n],u=(t,e,n)=>{if(t<e){const o=r[t+1]++;l[2*o]=e,l[2*o+1]=n}else{const o=s[e+1]++;l[2*f+2*o]=t,l[2*f+2*o+1]=n}};for(let w=0;w<o;w++){const e=t[3*w],n=t[3*w+1],o=t[3*w+2];u(e,n,w),u(n,o,w),u(o,e,w)}const g=(t,e)=>{const n=2*t,o=e-t;for(let r=1;r<o;r++){const t=l[n+2*r],e=l[n+2*r+1];let o=r-1;for(;o>=0&&l[n+2*o]>t;o--)l[n+2*o+2]=l[n+2*o],l[n+2*o+3]=l[n+2*o+1];l[n+2*o+2]=t,l[n+2*o+3]=e}};for(let w=0;w<n;w++)g(r[w],r[w+1]),g(f+s[w],f+s[w+1]);const d=new Int32Array(3*o),p=(e,n)=>e===t[3*n]?0:e===t[3*n+1]?1:e===t[3*n+2]?2:-1,h=(t,e)=>{const n=p(t,e);d[3*e+n]=-1},m=(t,e,n,o)=>{const r=p(t,e);d[3*e+r]=o;const s=p(n,o);d[3*o+s]=e};for(let w=0;w<n;w++){let t=r[w];const e=r[w+1];let n=s[w];const o=s[w+1];for(;t<e&&n<o;){const e=l[2*t],o=l[2*f+2*n];e===o?(m(w,l[2*t+1],o,l[2*f+2*n+1]),t++,n++):e<o?(h(w,l[2*t+1]),t++):(h(o,l[2*f+2*n+1]),n++)}for(;t<e;)h(w,l[2*t+1]),t++;for(;n<o;)h(l[2*f+2*n],l[2*f+2*n+1]),n++}return d}xt.forEach((t=>Mt.set(jt(t),t)));const Wt=-1;function Ft(t,e,n,o=Rt){const r=t.vertices.position,s=t.vertices.componentIndex,i=d(o.anglePlanar),a=d(o.angleSignificantEdge),c=Math.cos(a),l=Math.cos(i),f=zt.edge,g=f.position0,A=f.position1,b=f.faceNormal0,N=f.faceNormal1,S=function(t){const e=t.faces.length/3,n=t.vertices.position,o=t.faces,r=Ct.v0,s=Ct.v1,i=Ct.v2,a=new Float32Array(3*e);for(let c=0;c<e;c++){const t=o[3*c+0],e=o[3*c+1],l=o[3*c+2];n.getVec(t,r),n.getVec(e,s),n.getVec(l,i),I(s,s,r),I(i,i,r),y(r,s,i),u(r,r),a[3*c+0]=r[0],a[3*c+1]=r[1],a[3*c+2]=r[2]}return a}(t),U=function(t){const e=t.faces.length/3,n=t.faces,o=t.neighbors;let r=0;for(let a=0;a<e;a++){const t=o[3*a+0],e=o[3*a+1],s=o[3*a+2],i=n[3*a+0],c=n[3*a+1],l=n[3*a+2];r+=t===Wt||i<c?1:0,r+=e===Wt||c<l?1:0,r+=s===Wt||l<i?1:0}const s=new Int32Array(4*r);let i=0;for(let a=0;a<e;a++){const t=o[3*a+0],e=o[3*a+1],r=o[3*a+2],c=n[3*a+0],l=n[3*a+1],f=n[3*a+2];(t===Wt||c<l)&&(s[i++]=c,s[i++]=l,s[i++]=a,s[i++]=t),(e===Wt||l<f)&&(s[i++]=l,s[i++]=f,s[i++]=a,s[i++]=e),(r===Wt||f<c)&&(s[i++]=f,s[i++]=c,s[i++]=a,s[i++]=r)}return s}(t),E=U.length/4,V=e.allocate(E);let O=0;const P=E,x=n.allocate(P);let j=0,M=0,D=0;const W=p(0,E),F=new Float32Array(E);h(F,((t,e,n)=>{r.getVec(U[4*e+0],g),r.getVec(U[4*e+1],A),n[e]=L(g,A)})),W.sort(((t,e)=>F[e]-F[t]));const k=new Array,B=new Array;for(let u=0;u<E;u++){const t=W[u],o=F[t],a=U[4*t+0],d=U[4*t+1],p=U[4*t+2],h=U[4*t+3],y=h===Wt;if(r.getVec(a,g),r.getVec(d,A),y)m(b,S[3*p+0],S[3*p+1],S[3*p+2]),w(N,b),f.componentIndex=s.get(a),f.cosAngle=v(b,N);else{if(m(b,S[3*p+0],S[3*p+1],S[3*p+2]),m(N,S[3*h+0],S[3*h+1],S[3*h+2]),f.componentIndex=s.get(a),f.cosAngle=v(b,N),Bt(f,l))continue;f.cosAngle<-.9999&&w(N,b)}M+=o,D++,y||kt(f,c)?(e.write(V,O++,f),k.push(o)):Tt(f,i)&&(n.write(x,j++,f),B.push(o))}const T=new Float32Array(k.reverse()),z=new Float32Array(B.reverse());return{regular:{instancesData:e.trim(V,O),lodInfo:{lengths:T}},silhouette:{instancesData:n.trim(x,j),lodInfo:{lengths:z}},averageEdgeLength:M/D}}function kt(t,e){return t.cosAngle<e}function Bt(t,e){return t.cosAngle>e}function Tt(t,e){const n=A(t.cosAngle),o=zt.fwd,r=zt.ortho;return b(o,t.position1,t.position0),n*(v(y(r,t.faceNormal0,t.faceNormal1),o)>0?-1:1)>e}const zt={edge:{position0:g(),position1:g(),faceNormal0:g(),faceNormal1:g(),componentIndex:0,cosAngle:0},ortho:g(),fwd:g()},Ct={v0:g(),v1:g(),v2:g()},Rt={anglePlanar:4,angleSignificantEdge:35};async function qt(t){const e=(r=t,{data:pt.createView(r.dataBuffer),indices:"Uint32Array"===r.indicesType?new Uint32Array(r.indicesBuffer):"Uint16Array"===r.indicesType?new Uint16Array(r.indicesBuffer):void 0,indicesLength:r.indicesLength,writerSettings:r.writerSettings,skipDeduplicate:r.skipDeduplicate}),n=Ht(e),o=[e.data.buffer];var r;return{result:Gt(n,o),transferList:o}}function Ht(t){const e=function(t,e,n,o){if(e)return{faces:n,facesLength:o,neighbors:Dt(n,o,t.count),vertices:t};const r=function(t,e,n){var o;const r=t.byteLength/(4*e),s=new Uint32Array(t,0,r*e);let i=new Uint32Array(r);const a=null!=(o=null==n?void 0:n.minReduction)?o:0,l=(null==n?void 0:n.originalIndices)||null,f=l?l.length:0,u=(null==n?void 0:n.componentOffsets)||null;let g=0;if(u)for(let c=0;c<u.length-1;c++){const t=u[c+1]-u[c];t>g&&(g=t)}else g=r;const d=Math.floor(1.1*g)+1;(null==ft||ft.length<2*d)&&(ft=new Uint32Array(c(2*d)));for(let c=0;c<2*d;c++)ft[c]=0;let p=0;const h=!!u&&!!l,m=h?f:r,w=h?new Uint32Array(f):null,v=1.96;let y=0!==a?Math.ceil(7.84*v/(a*a)*a*(1-a)):m,A=1,b=u?u[1]:m;for(let c=0;c<m;c++){if(c===y){const t=1-p/c;if(t+v*Math.sqrt(t*(1-t)/c)<a)return null;y*=2}if(c===b){for(let t=0;t<2*d;t++)ft[t]=0;if(l)for(let t=u[A-1];t<u[A];t++)w[t]=i[l[t]];b=u[++A]}const t=h?l[c]:c,n=t*e,o=lt(s,n,e);let r=o%d,f=p;for(;0!==ft[2*r+1];){if(ft[2*r]===o){const t=ft[2*r+1]-1;if(at(s,n,t*e,e)){f=i[t];break}}r++,r>=d&&(r-=d)}f===p&&(ft[2*r]=o,ft[2*r+1]=t+1,p++),i[t]=f}if(0!==a&&1-p/r<a)return null;if(h){for(let t=u[A-1];t<w.length;t++)w[t]=i[l[t]];i=w}const I=new Uint32Array(e*p);p=0;for(let c=0;c<m;c++)i[c]===p&&(ct(s,(h?l[c]:c)*e,I,p*e,e),p++);if(l&&!h){const t=new Uint32Array(f);for(let e=0;e<t.length;e++)t[e]=i[l[e]];i=t}return{buffer:I.buffer,indices:i,uniqueCount:p}}(t.buffer,t.stride/4,{originalIndices:n,originalIndicesLength:o}),s=Dt(r.indices,o,r.uniqueCount);return{faces:r.indices,facesLength:r.indices.length,neighbors:s,vertices:pt.createView(r.buffer)}}(t.data,t.skipDeduplicate,t.indices,t.indicesLength);return Qt.updateSettings(t.writerSettings),$t.updateSettings(t.writerSettings),Ft(e,Qt,$t)}function Gt(t,e){return e.push(t.regular.lodInfo.lengths.buffer),e.push(t.silhouette.lodInfo.lengths.buffer),{regular:{instancesData:Ot(t.regular.instancesData,e),lodInfo:{lengths:t.regular.lodInfo.lengths.buffer}},silhouette:{instancesData:Ot(t.silhouette.instancesData,e),lodInfo:{lengths:t.silhouette.lodInfo.lengths.buffer}},averageEdgeLength:t.averageEdgeLength}}const Qt=new St,$t=new Ut;export{Ht as work,qt as wrappedWork};
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __pow = Math.pow;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b2) => {
+  for (var prop in b2 || (b2 = {}))
+    if (__hasOwnProp.call(b2, prop))
+      __defNormalProp(a2, prop, b2[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b2)) {
+      if (__propIsEnum.call(b2, prop))
+        __defNormalProp(a2, prop, b2[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b2) => __defProps(a2, __getOwnPropDescs(b2));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { cj as u$3, cG as t$2, fJ as u$4, fK as j, aP as n$2, fL as m$2, fM as m$3, fN as n$3, aQ as o$3, fO as r$2, fP as z$2, fQ as _, fR as N, fS as w$3, fT as c$3, fU as q$1 } from "./vendor.74d5941c.js";
+import { A as A$1, f as f$2, u as u$5, a as a$3, p as p$2, c as c$2, o as o$2, i as i$1, m as m$1, T, d as d$3, b, l as l$3, h as h$2, e as A$2, O as O$1, x, g as g$2, w as w$2, E, L, F as F$1, I as I$1, U, j as j$1, V as V$1, M, S, k, q, v as v$2, z as z$1, B, C, D, G, H as H$1 } from "./InterleavedLayout.07204280.js";
+import "./vec4.44fdb266.js";
+function n$1(n2, f2, i2) {
+  var u2;
+  const c2 = n2.byteLength / (4 * f2), s2 = new Uint32Array(n2, 0, c2 * f2);
+  let a2 = new Uint32Array(c2);
+  const h2 = (u2 = i2 == null ? void 0 : i2.minReduction) != null ? u2 : 0, d2 = (i2 == null ? void 0 : i2.originalIndices) || null, g2 = d2 ? d2.length : 0, y2 = (i2 == null ? void 0 : i2.componentOffsets) || null;
+  let U2 = 0;
+  if (y2)
+    for (let t2 = 0; t2 < y2.length - 1; t2++) {
+      const n3 = y2[t2 + 1] - y2[t2];
+      n3 > U2 && (U2 = n3);
+    }
+  else
+    U2 = c2;
+  const w2 = Math.floor(1.1 * U2) + 1;
+  (o$1 == null || o$1.length < 2 * w2) && (o$1 = new Uint32Array(u$3(2 * w2)));
+  for (let t2 = 0; t2 < 2 * w2; t2++)
+    o$1[t2] = 0;
+  let A2 = 0;
+  const m2 = !!y2 && !!d2, b2 = m2 ? g2 : c2, p2 = m2 ? new Uint32Array(g2) : null, v2 = 1.96;
+  let M2 = h2 !== 0 ? Math.ceil(4 * v2 * v2 / (h2 * h2) * h2 * (1 - h2)) : b2, q2 = 1, x2 = y2 ? y2[1] : b2;
+  for (let t2 = 0; t2 < b2; t2++) {
+    if (t2 === M2) {
+      const n4 = 1 - A2 / t2;
+      if (n4 + v2 * Math.sqrt(n4 * (1 - n4) / t2) < h2)
+        return null;
+      M2 *= 2;
+    }
+    if (t2 === x2) {
+      for (let t3 = 0; t3 < 2 * w2; t3++)
+        o$1[t3] = 0;
+      if (d2)
+        for (let t3 = y2[q2 - 1]; t3 < y2[q2]; t3++)
+          p2[t3] = a2[d2[t3]];
+      x2 = y2[++q2];
+    }
+    const n3 = m2 ? d2[t2] : t2, l2 = n3 * f2, i3 = r$1(s2, l2, f2);
+    let u3 = i3 % w2, c3 = A2;
+    for (; o$1[2 * u3 + 1] !== 0; ) {
+      if (o$1[2 * u3] === i3) {
+        const t3 = o$1[2 * u3 + 1] - 1;
+        if (e$2(s2, l2, t3 * f2, f2)) {
+          c3 = a2[t3];
+          break;
+        }
+      }
+      u3++, u3 >= w2 && (u3 -= w2);
+    }
+    c3 === A2 && (o$1[2 * u3] = i3, o$1[2 * u3 + 1] = n3 + 1, A2++), a2[n3] = c3;
+  }
+  if (h2 !== 0 && 1 - A2 / c2 < h2)
+    return null;
+  if (m2) {
+    for (let t2 = y2[q2 - 1]; t2 < p2.length; t2++)
+      p2[t2] = a2[d2[t2]];
+    a2 = p2;
+  }
+  const j2 = new Uint32Array(f2 * A2);
+  A2 = 0;
+  for (let t2 = 0; t2 < b2; t2++)
+    if (a2[t2] === A2) {
+      l$2(s2, (m2 ? d2[t2] : t2) * f2, j2, A2 * f2, f2), A2++;
+    }
+  if (d2 && !m2) {
+    const t2 = new Uint32Array(g2);
+    for (let n3 = 0; n3 < t2.length; n3++)
+      t2[n3] = a2[d2[n3]];
+    a2 = t2;
+  }
+  return { buffer: j2.buffer, indices: a2, uniqueCount: A2 };
+}
+function e$2(t2, n2, e2, l2) {
+  for (let r2 = 0; r2 < l2; r2++)
+    if (t2[n2 + r2] !== t2[e2 + r2])
+      return false;
+  return true;
+}
+function l$2(t2, n2, e2, l2, r2) {
+  for (let o2 = 0; o2 < r2; o2++)
+    e2[l2 + o2] = t2[n2 + o2];
+}
+function r$1(t2, n2, e2) {
+  let l2 = 0;
+  for (let r2 = 0; r2 < e2; r2++)
+    l2 = t2[n2 + r2] + l2 | 0, l2 = l2 + (l2 << 11) + (l2 >>> 2) | 0;
+  return l2 >>> 0;
+}
+let o$1 = null;
+const t$1 = { divisor: 0 };
+function o(o2, n2 = {}) {
+  n2 = __spreadValues(__spreadValues({}, t$1), n2);
+  const r2 = o2.stride;
+  return o2.fieldNames.filter((t2) => {
+    const e2 = o2.fields.get(t2).optional;
+    return !(e2 && e2.glPadding);
+  }).map((t2) => {
+    const i2 = o2.fields.get(t2), s2 = i2.constructor.ElementCount, u2 = e$1(i2.constructor.ElementType), f2 = i2.offset, c2 = !(!i2.optional || !i2.optional.glNormalized);
+    return { name: t2, stride: r2, count: s2, type: u2, offset: f2, normalized: c2, divisor: n2.divisor };
+  });
+}
+function e$1(t2) {
+  const o2 = n[t2];
+  if (o2)
+    return o2;
+  throw new Error("BufferType not supported in WebGL");
+}
+const n = { u8: 5121, u16: 5123, u32: 5125, i8: 5120, i16: 5122, i32: 5124, f32: 5126 };
+const e = A$1().vec3f("position").u16("componentIndex").u16("u16padding"), i = A$1().vec2u8("sideness");
+o(i);
+const a$2 = A$1().vec3f("position0").vec3f("position1").u16("componentIndex").u8("variantOffset", { glNormalized: true }).u8("variantStroke").u8("variantExtension", { glNormalized: true }).u8("u8padding", { glPadding: true }).u16("u16padding", { glPadding: true }), r = a$2.clone().vec3f("normal"), s = a$2.clone().vec3f("normalA").vec3f("normalB");
+class a$1 {
+  updateSettings(t2) {
+    this.settings = t2, this.edgeHashFunction = t2.reducedPrecision ? f$1 : p$1;
+  }
+  write(t2, o2, e2) {
+    const n2 = this.edgeHashFunction(e2);
+    y$1.seed = n2;
+    const i2 = y$1.getIntRange(0, 255), r2 = y$1.getIntRange(0, this.settings.variants - 1), s2 = 0.7, a2 = y$1.getFloat(), c2 = 255 * (0.5 * g$1(-(1 - Math.min(a2 / s2, 1)) + Math.max(0, a2 - s2) / (1 - s2), 1.2) + 0.5);
+    t2.position0.setVec(o2, e2.position0), t2.position1.setVec(o2, e2.position1), t2.componentIndex.set(o2, e2.componentIndex), t2.variantOffset.set(o2, i2), t2.variantStroke.set(o2, r2), t2.variantExtension.set(o2, c2);
+  }
+  trim(t2, o2) {
+    return t2.slice(0, o2);
+  }
+}
+const c$1 = new Float32Array(6), m = new Uint32Array(c$1.buffer), u$2 = new Uint32Array(1);
+function p$1(t2) {
+  const o2 = c$1;
+  o2[0] = t2.position0[0], o2[1] = t2.position0[1], o2[2] = t2.position0[2], o2[3] = t2.position1[0], o2[4] = t2.position1[1], o2[5] = t2.position1[2], u$2[0] = 5381;
+  for (let e2 = 0; e2 < m.length; e2++)
+    u$2[0] = 31 * u$2[0] + m[e2];
+  return u$2[0];
+}
+function f$1(t2) {
+  const o2 = c$1;
+  o2[0] = h$1(t2.position0[0]), o2[1] = h$1(t2.position0[1]), o2[2] = h$1(t2.position0[2]), o2[3] = h$1(t2.position1[0]), o2[4] = h$1(t2.position1[1]), o2[5] = h$1(t2.position1[2]), u$2[0] = 5381;
+  for (let e2 = 0; e2 < m.length; e2++)
+    u$2[0] = 31 * u$2[0] + m[e2];
+  return u$2[0];
+}
+const l$1 = 1e4;
+function h$1(t2) {
+  return Math.round(t2 * l$1) / l$1;
+}
+function g$1(t2, o2) {
+  const e2 = t2 < 0 ? -1 : 1;
+  return __pow(Math.abs(t2), o2) * e2;
+}
+class d$2 {
+  constructor() {
+    this.commonWriter = new a$1();
+  }
+  updateSettings(t2) {
+    this.commonWriter.updateSettings(t2);
+  }
+  allocate(t2) {
+    return r.createBuffer(t2);
+  }
+  write(t2, o2, i2) {
+    this.commonWriter.write(t2, o2, i2), u$4(v$1, i2.faceNormal0, i2.faceNormal1), j(v$1, v$1), t2.normal.setVec(o2, v$1);
+  }
+  trim(t2, o2) {
+    return this.commonWriter.trim(t2, o2);
+  }
+}
+d$2.Layout = r, d$2.glLayout = o(r, { divisor: 1 });
+class w$1 {
+  constructor() {
+    this.commonWriter = new a$1();
+  }
+  updateSettings(t2) {
+    this.commonWriter.updateSettings(t2);
+  }
+  allocate(t2) {
+    return s.createBuffer(t2);
+  }
+  write(t2, o2, e2) {
+    this.commonWriter.write(t2, o2, e2), t2.normalA.setVec(o2, e2.faceNormal0), t2.normalB.setVec(o2, e2.faceNormal1);
+  }
+  trim(t2, o2) {
+    return this.commonWriter.trim(t2, o2);
+  }
+}
+w$1.Layout = s, w$1.glLayout = o(s, { divisor: 1 });
+const v$1 = n$2(), y$1 = new t$2();
+function z(e2, t2) {
+  return t2.push(e2.buffer), { buffer: e2.buffer, layout: F(e2.layout) };
+}
+function F(e2) {
+  const t2 = new Array();
+  return e2.fields.forEach((e3, r2) => {
+    const n2 = __spreadProps(__spreadValues({}, e3), { constructor: J(e3.constructor) });
+    t2.push([r2, n2]);
+  }), { stride: e2.stride, fields: t2, fieldNames: e2.fieldNames };
+}
+const H = [f$2, u$5, a$3, p$2, c$2, o$2, i$1, m$1, T, d$3, b, l$3, h$2, A$2, O$1, x, g$2, w$2, E, L, F$1, I$1, U, j$1, V$1, M, S, k, q, v$2, z$1, B, C, D, G, H$1];
+function J(e2) {
+  return `${e2.ElementType}_${e2.ElementCount}`;
+}
+const O = new Map();
+H.forEach((e2) => O.set(J(e2), e2));
+function t(t2, o2, n2) {
+  const r2 = o2 / 3, c2 = new Uint32Array(n2 + 1), e2 = new Uint32Array(n2 + 1), s2 = (t3, o3) => {
+    t3 < o3 ? c2[t3 + 1]++ : e2[o3 + 1]++;
+  };
+  for (let x2 = 0; x2 < r2; x2++) {
+    const o3 = t2[3 * x2], n3 = t2[3 * x2 + 1], r3 = t2[3 * x2 + 2];
+    s2(o3, n3), s2(n3, r3), s2(r3, o3);
+  }
+  let f2 = 0, l2 = 0;
+  for (let x2 = 0; x2 < n2; x2++) {
+    const t3 = c2[x2 + 1], o3 = e2[x2 + 1];
+    c2[x2 + 1] = f2, e2[x2 + 1] = l2, f2 += t3, l2 += o3;
+  }
+  const i2 = new Uint32Array(6 * r2), a2 = c2[n2], w2 = (t3, o3, n3) => {
+    if (t3 < o3) {
+      const r3 = c2[t3 + 1]++;
+      i2[2 * r3] = o3, i2[2 * r3 + 1] = n3;
+    } else {
+      const r3 = e2[o3 + 1]++;
+      i2[2 * a2 + 2 * r3] = t3, i2[2 * a2 + 2 * r3 + 1] = n3;
+    }
+  };
+  for (let x2 = 0; x2 < r2; x2++) {
+    const o3 = t2[3 * x2], n3 = t2[3 * x2 + 1], r3 = t2[3 * x2 + 2];
+    w2(o3, n3, x2), w2(n3, r3, x2), w2(r3, o3, x2);
+  }
+  const y2 = (t3, o3) => {
+    const n3 = 2 * t3, r3 = o3 - t3;
+    for (let c3 = 1; c3 < r3; c3++) {
+      const t4 = i2[n3 + 2 * c3], o4 = i2[n3 + 2 * c3 + 1];
+      let r4 = c3 - 1;
+      for (; r4 >= 0 && i2[n3 + 2 * r4] > t4; r4--)
+        i2[n3 + 2 * r4 + 2] = i2[n3 + 2 * r4], i2[n3 + 2 * r4 + 3] = i2[n3 + 2 * r4 + 1];
+      i2[n3 + 2 * r4 + 2] = t4, i2[n3 + 2 * r4 + 3] = o4;
+    }
+  };
+  for (let x2 = 0; x2 < n2; x2++)
+    y2(c2[x2], c2[x2 + 1]), y2(a2 + e2[x2], a2 + e2[x2 + 1]);
+  const A2 = new Int32Array(3 * r2), U2 = (o3, n3) => o3 === t2[3 * n3] ? 0 : o3 === t2[3 * n3 + 1] ? 1 : o3 === t2[3 * n3 + 2] ? 2 : -1, u2 = (t3, o3) => {
+    const n3 = U2(t3, o3);
+    A2[3 * o3 + n3] = -1;
+  }, p2 = (t3, o3, n3, r3) => {
+    const c3 = U2(t3, o3);
+    A2[3 * o3 + c3] = r3;
+    const e3 = U2(n3, r3);
+    A2[3 * r3 + e3] = o3;
+  };
+  for (let x2 = 0; x2 < n2; x2++) {
+    let t3 = c2[x2];
+    const o3 = c2[x2 + 1];
+    let n3 = e2[x2];
+    const r3 = e2[x2 + 1];
+    for (; t3 < o3 && n3 < r3; ) {
+      const o4 = i2[2 * t3], r4 = i2[2 * a2 + 2 * n3];
+      o4 === r4 ? (p2(x2, i2[2 * t3 + 1], r4, i2[2 * a2 + 2 * n3 + 1]), t3++, n3++) : o4 < r4 ? (u2(x2, i2[2 * t3 + 1]), t3++) : (u2(r4, i2[2 * a2 + 2 * n3 + 1]), n3++);
+    }
+    for (; t3 < o3; )
+      u2(x2, i2[2 * t3 + 1]), t3++;
+    for (; n3 < r3; ) {
+      u2(i2[2 * a2 + 2 * n3], i2[2 * a2 + 2 * n3 + 1]), n3++;
+    }
+  }
+  return A2;
+}
+const p = -1;
+function u$1(n2, r2, l2, g2 = V) {
+  const f2 = n2.vertices.position, m2 = n2.vertices.componentIndex, u2 = m$2(g2.anglePlanar), I2 = m$2(g2.angleSignificantEdge), j2 = Math.cos(I2), N2 = Math.cos(u2), x2 = y.edge, F2 = x2.position0, U2 = x2.position1, k2 = x2.faceNormal0, E2 = x2.faceNormal1, D2 = w(n2), M2 = v(n2), P = M2.length / 4, S2 = r2.allocate(P);
+  let b2 = 0;
+  const L2 = P, q2 = l2.allocate(L2);
+  let z2 = 0, B2 = 0, C2 = 0;
+  const G2 = m$3(0, P), H2 = new Float32Array(P);
+  n$3(H2, (e2, t2, o2) => {
+    f2.getVec(M2[4 * t2 + 0], F2), f2.getVec(M2[4 * t2 + 1], U2), o2[t2] = q$1(F2, U2);
+  }), G2.sort((e2, t2) => H2[t2] - H2[e2]);
+  const J2 = new Array(), K = new Array();
+  for (let e2 = 0; e2 < P; e2++) {
+    const t2 = G2[e2], o2 = H2[t2], n3 = M2[4 * t2 + 0], s2 = M2[4 * t2 + 1], g3 = M2[4 * t2 + 2], v2 = M2[4 * t2 + 3], w2 = v2 === p;
+    if (f2.getVec(n3, F2), f2.getVec(s2, U2), w2)
+      o$3(k2, D2[3 * g3 + 0], D2[3 * g3 + 1], D2[3 * g3 + 2]), r$2(E2, k2), x2.componentIndex = m2.get(n3), x2.cosAngle = z$2(k2, E2);
+    else {
+      if (o$3(k2, D2[3 * g3 + 0], D2[3 * g3 + 1], D2[3 * g3 + 2]), o$3(E2, D2[3 * v2 + 0], D2[3 * v2 + 1], D2[3 * v2 + 2]), x2.componentIndex = m2.get(n3), x2.cosAngle = z$2(k2, E2), d$1(x2, N2))
+        continue;
+      x2.cosAngle < -0.9999 && r$2(E2, k2);
+    }
+    B2 += o2, C2++, w2 || h(x2, j2) ? (r2.write(S2, b2++, x2), J2.push(o2)) : A(x2, u2) && (l2.write(q2, z2++, x2), K.push(o2));
+  }
+  const O2 = new Float32Array(J2.reverse()), Q = new Float32Array(K.reverse());
+  return { regular: { instancesData: r2.trim(S2, b2), lodInfo: { lengths: O2 } }, silhouette: { instancesData: l2.trim(q2, z2), lodInfo: { lengths: Q } }, averageEdgeLength: B2 / C2 };
+}
+function h(e2, t2) {
+  return e2.cosAngle < t2;
+}
+function d$1(e2, t2) {
+  return e2.cosAngle > t2;
+}
+function A(e2, t2) {
+  const o2 = N(e2.cosAngle), r2 = y.fwd, s2 = y.ortho;
+  w$3(r2, e2.position1, e2.position0);
+  return o2 * (z$2(_(s2, e2.faceNormal0, e2.faceNormal1), r2) > 0 ? -1 : 1) > t2;
+}
+function v(e2) {
+  const t2 = e2.faces.length / 3, o2 = e2.faces, n2 = e2.neighbors;
+  let r2 = 0;
+  for (let a2 = 0; a2 < t2; a2++) {
+    const e3 = n2[3 * a2 + 0], t3 = n2[3 * a2 + 1], s3 = n2[3 * a2 + 2], c3 = o2[3 * a2 + 0], i2 = o2[3 * a2 + 1], l2 = o2[3 * a2 + 2];
+    r2 += e3 === p || c3 < i2 ? 1 : 0, r2 += t3 === p || i2 < l2 ? 1 : 0, r2 += s3 === p || l2 < c3 ? 1 : 0;
+  }
+  const s2 = new Int32Array(4 * r2);
+  let c2 = 0;
+  for (let a2 = 0; a2 < t2; a2++) {
+    const e3 = n2[3 * a2 + 0], t3 = n2[3 * a2 + 1], r3 = n2[3 * a2 + 2], i2 = o2[3 * a2 + 0], l2 = o2[3 * a2 + 1], g2 = o2[3 * a2 + 2];
+    (e3 === p || i2 < l2) && (s2[c2++] = i2, s2[c2++] = l2, s2[c2++] = a2, s2[c2++] = e3), (t3 === p || l2 < g2) && (s2[c2++] = l2, s2[c2++] = g2, s2[c2++] = a2, s2[c2++] = t3), (r3 === p || g2 < i2) && (s2[c2++] = g2, s2[c2++] = i2, s2[c2++] = a2, s2[c2++] = r3);
+  }
+  return s2;
+}
+function w(e2) {
+  const t2 = e2.faces.length / 3, o2 = e2.vertices.position, n2 = e2.faces, r2 = I.v0, s2 = I.v1, c2 = I.v2, a2 = new Float32Array(3 * t2);
+  for (let i2 = 0; i2 < t2; i2++) {
+    const e3 = n2[3 * i2 + 0], t3 = n2[3 * i2 + 1], m2 = n2[3 * i2 + 2];
+    o2.getVec(e3, r2), o2.getVec(t3, s2), o2.getVec(m2, c2), c$3(s2, s2, r2), c$3(c2, c2, r2), _(r2, s2, c2), j(r2, r2), a2[3 * i2 + 0] = r2[0], a2[3 * i2 + 1] = r2[1], a2[3 * i2 + 2] = r2[2];
+  }
+  return a2;
+}
+const y = { edge: { position0: n$2(), position1: n$2(), faceNormal0: n$2(), faceNormal1: n$2(), componentIndex: 0, cosAngle: 0 }, ortho: n$2(), fwd: n$2() }, I = { v0: n$2(), v1: n$2(), v2: n$2() }, V = { anglePlanar: 4, angleSignificantEdge: 35 };
+function a(e2) {
+  return __async(this, null, function* () {
+    const t2 = u(e2), n2 = f(t2), r2 = [t2.data.buffer];
+    return { result: c(n2, r2), transferList: r2 };
+  });
+}
+function f(e2) {
+  const t2 = g(e2.data, e2.skipDeduplicate, e2.indices, e2.indicesLength);
+  return d.updateSettings(e2.writerSettings), l.updateSettings(e2.writerSettings), u$1(t2, d, l);
+}
+function u(e$12) {
+  return { data: e.createView(e$12.dataBuffer), indices: e$12.indicesType === "Uint32Array" ? new Uint32Array(e$12.indicesBuffer) : e$12.indicesType === "Uint16Array" ? new Uint16Array(e$12.indicesBuffer) : void 0, indicesLength: e$12.indicesLength, writerSettings: e$12.writerSettings, skipDeduplicate: e$12.skipDeduplicate };
+}
+function c(e2, t2) {
+  t2.push(e2.regular.lodInfo.lengths.buffer), t2.push(e2.silhouette.lodInfo.lengths.buffer);
+  return { regular: { instancesData: z(e2.regular.instancesData, t2), lodInfo: { lengths: e2.regular.lodInfo.lengths.buffer } }, silhouette: { instancesData: z(e2.silhouette.instancesData, t2), lodInfo: { lengths: e2.silhouette.lodInfo.lengths.buffer } }, averageEdgeLength: e2.averageEdgeLength };
+}
+function g(n2, r2, i2, o2) {
+  if (r2) {
+    return { faces: i2, facesLength: o2, neighbors: t(i2, o2, n2.count), vertices: n2 };
+  }
+  const a2 = n$1(n2.buffer, n2.stride / 4, { originalIndices: i2, originalIndicesLength: o2 }), f2 = t(a2.indices, o2, a2.uniqueCount);
+  return { faces: a2.indices, facesLength: a2.indices.length, neighbors: f2, vertices: e.createView(a2.buffer) };
+}
+const d = new d$2(), l = new w$1();
+export { f as work, a as wrappedWork };

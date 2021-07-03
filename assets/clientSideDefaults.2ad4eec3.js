@@ -1,1 +1,38 @@
-var e=Object.defineProperty,r=Object.getOwnPropertySymbols,t=Object.prototype.hasOwnProperty,n=Object.prototype.propertyIsEnumerable,o=(r,t,n)=>t in r?e(r,t,{enumerable:!0,configurable:!0,writable:!0,value:n}):r[t]=n,i=(e,i)=>{for(var s in i||(i={}))t.call(i,s)&&o(e,s,i[s]);if(r)for(var s of r(i))n.call(i,s)&&o(e,s,i[s]);return e};import{d9 as s,da as a,db as l,bT as u,ai as c}from"./vendor.74d5941c.js";function p(e){return{renderer:{type:"simple",symbol:"esriGeometryPoint"===e||"esriGeometryMultipoint"===e?s:"esriGeometryPolyline"===e?a:l}}}function y(e,r){if(c("csp-restrictions"))return()=>i({[r]:null},e);try{let t=`this.${r} = null;`;for(const r in e)t+=`this${r.indexOf(".")?`["${r}"]`:`.${r}`} = ${JSON.stringify(e[r])};`;const n=new Function(t);return()=>new n}catch(t){return()=>i({[r]:null},e)}}function f(e={}){return[{name:"New Feature",description:"",prototype:{attributes:u(e)}}]}export{p as i,y as s,f as u};
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+import { d9 as l, da as o, db as S, bT as y, ai as t } from "./vendor.74d5941c.js";
+function i(t2) {
+  return { renderer: { type: "simple", symbol: t2 === "esriGeometryPoint" || t2 === "esriGeometryMultipoint" ? l : t2 === "esriGeometryPolyline" ? o : S } };
+}
+function s(r, e) {
+  if (t("csp-restrictions"))
+    return () => __spreadValues({ [e]: null }, r);
+  try {
+    let t2 = `this.${e} = null;`;
+    for (const e2 in r) {
+      t2 += `this${e2.indexOf(".") ? `["${e2}"]` : `.${e2}`} = ${JSON.stringify(r[e2])};`;
+    }
+    const n = new Function(t2);
+    return () => new n();
+  } catch (n) {
+    return () => __spreadValues({ [e]: null }, r);
+  }
+}
+function u(t2 = {}) {
+  return [{ name: "New Feature", description: "", prototype: { attributes: y(t2) } }];
+}
+export { i, s, u };

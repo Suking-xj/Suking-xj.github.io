@@ -1,1 +1,119 @@
-import{gr as e,gs as t,a5 as n}from"./vendor.74d5941c.js";function r(t){return e(`esri/libs/i3s/${t}`)}let o,s,i;async function a(e){await p();const t=[e.geometryBuffer];return{result:b(e,t),transferList:t}}async function f(e){var n;await p();const r=[e.geometryBuffer],{geometryBuffer:o}=e,s=o.byteLength,a=i._malloc(s),f=new Uint8Array(i.HEAPU8.buffer,a,s);f.set(new Uint8Array(o));const c=i.dracoDecompressPointCloudData(a,f.byteLength);if(i._free(a),c.error.length>0)throw`i3s.wasm: ${c.error}`;const u=(null==(n=c.featureIds)?void 0:n.length)>0?t(c.featureIds):null,l=t(c.positions);return u&&r.push(u.buffer),r.push(l.buffer),{result:{positions:l,featureIds:u},transferList:r}}async function c(e){await p(),h(e);const t={buffer:e.buffer};return{result:t,transferList:[t.buffer]}}async function u(e){await p(),d(e)}async function l(e){await p(),i.setLegacySchema(e.context,e.jsonSchema)}function y(e){E(e)}function d(e){const t=e.modifications,n=i._malloc(8*t.length),r=new Float64Array(i.HEAPU8.buffer,n,t.length);for(let o=0;o<t.length;++o)r[o]=t[o];i.setModifications(e.context,n,t.length,e.isGeodetic),i._free(n)}function b(e,r){if(!i)return null;const{context:o,localOrigin:s,globalTrafo:a,mbs:f,obb:c,elevationOffset:u,geometryBuffer:l,geometryDescriptor:y,indexToVertexProjector:d,vertexToRenderProjector:b}=e,m=i._malloc(l.byteLength),h=i._malloc(33*Float64Array.BYTES_PER_ELEMENT),E=new Uint8Array(i.HEAPU8.buffer,m,l.byteLength);E.set(new Uint8Array(l));const p=new Float64Array(i.HEAPU8.buffer,h,33);g(p,s);let w=p.byteOffset+3*p.BYTES_PER_ELEMENT,A=new Float64Array(p.buffer,w);g(A,a),w+=16*p.BYTES_PER_ELEMENT,A=new Float64Array(p.buffer,w),g(A,f),w+=4*p.BYTES_PER_ELEMENT,n(c)&&(A=new Float64Array(p.buffer,w),g(A,c.center),w+=3*p.BYTES_PER_ELEMENT,A=new Float64Array(p.buffer,w),g(A,c.halfSize),w+=3*p.BYTES_PER_ELEMENT,A=new Float64Array(p.buffer,w),g(A,c.quaternion));const L=y,_={isDraco:!1,isLegacy:!1,color:e.layouts.some((e=>e.some((e=>"color"===e.name)))),normal:e.needNormals&&e.layouts.some((e=>e.some((e=>"normalCompressed"===e.name)))),uv0:e.layouts.some((e=>e.some((e=>"uv0"===e.name)))),uvRegion:e.layouts.some((e=>e.some((e=>"uvRegion"===e.name)))),featureIndex:L.featureIndex},P=i.process(o,!!e.obb,m,E.byteLength,L,_,h,u,d,b,e.normalReferenceFrame);if(i._free(h),i._free(m),P.error.length>0)throw`i3s.wasm: ${P.error}`;if(P.discarded)return null;const T=P.componentOffsets.length>0?t(P.componentOffsets):null,I=P.featureIds.length>0?t(P.featureIds):null,F=t(P.interleavedVertedData).buffer,M=1===P.indicesType?t(new Uint16Array(P.indices.buffer,P.indices.byteOffset,P.indices.byteLength/2)):t(new Uint32Array(P.indices.buffer,P.indices.byteOffset,P.indices.byteLength/4)),O=t(P.positions),B=1===P.positionIndicesType?t(new Uint16Array(P.positionIndices.buffer,P.positionIndices.byteOffset,P.positionIndices.byteLength/2)):t(new Uint32Array(P.positionIndices.buffer,P.positionIndices.byteOffset,P.positionIndices.byteLength/4)),R={layout:e.layouts[0],interleavedVertexData:F,indices:M,hasColors:P.hasColors,hasModifications:P.hasModifications,positionData:{data:O,indices:B}};return I&&r.push(I.buffer),T&&r.push(T.buffer),r.push(F),r.push(M.buffer),r.push(O.buffer),r.push(B.buffer),{componentOffsets:T,featureIds:I,transformedGeometry:R,obb:P.obb}}function m(e){return 0===e?0:1===e?1:2===e?2:3}function h(e){const{context:t,buffer:n}=e,r=i._malloc(n.byteLength),o=n.byteLength/Float64Array.BYTES_PER_ELEMENT,s=new Float64Array(i.HEAPU8.buffer,r,o),a=new Float64Array(n);s.set(a),i.filterOBBs(t,r,o),a.set(s),i._free(r)}function E(e){i&&i.destroy(e)}function g(e,t){for(let n=0;n<t.length;++n)e[n]=t[n]}function p(){return i?Promise.resolve():(s||(s=(o||(o=new Promise((e=>import("./i3s.05e49d38.js").then((function(e){return e.i})).then((({default:t})=>{const n=t({locateFile:r,onRuntimeInitialized:()=>e(n)});delete n.then})))).catch((e=>Promise.reject(e)))),o).then((e=>{i=e,s=null}))),s)}const w={transform:b,destroy:E};export{y as destroyContext,f as dracoDecompressPointCloudData,c as filterObbsForModifications,h as filterObbsForModificationsSync,p as initialize,m as interpretObbModificationResults,a as process,l as setLegacySchema,u as setModifications,d as setModificationsSync,w as test};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { gr as a$1, gs as r, a5 as r$1 } from "./vendor.74d5941c.js";
+function t() {
+  return i$1 || (i$1 = new Promise((e) => import("./i3s.05e49d38.js").then(function(e2) {
+    return e2.i;
+  }).then(({ default: t2 }) => {
+    const i2 = t2({ locateFile: n$1, onRuntimeInitialized: () => e(i2) });
+    delete i2.then;
+  })).catch((e) => Promise.reject(e))), i$1;
+}
+function n$1(t2) {
+  return a$1(`esri/libs/i3s/${t2}`);
+}
+let i$1;
+function n(e) {
+  return __async(this, null, function* () {
+    yield h();
+    const t2 = [e.geometryBuffer];
+    return { result: y(e, t2), transferList: t2 };
+  });
+}
+function o(t2) {
+  return __async(this, null, function* () {
+    var r$12;
+    yield h();
+    const n2 = [t2.geometryBuffer], { geometryBuffer: o2 } = t2, s2 = o2.byteLength, f2 = c._malloc(s2), i2 = new Uint8Array(c.HEAPU8.buffer, f2, s2);
+    i2.set(new Uint8Array(o2));
+    const a2 = c.dracoDecompressPointCloudData(f2, i2.byteLength);
+    if (c._free(f2), a2.error.length > 0)
+      throw `i3s.wasm: ${a2.error}`;
+    const u2 = ((r$12 = a2.featureIds) == null ? void 0 : r$12.length) > 0 ? r(a2.featureIds) : null, l2 = r(a2.positions);
+    u2 && n2.push(u2.buffer), n2.push(l2.buffer);
+    return { result: { positions: l2, featureIds: u2 }, transferList: n2 };
+  });
+}
+function s(e) {
+  return __async(this, null, function* () {
+    yield h(), m(e);
+    const t2 = { buffer: e.buffer };
+    return { result: t2, transferList: [t2.buffer] };
+  });
+}
+function f(e) {
+  return __async(this, null, function* () {
+    yield h(), l(e);
+  });
+}
+function i(e) {
+  return __async(this, null, function* () {
+    yield h(), c.setLegacySchema(e.context, e.jsonSchema);
+  });
+}
+function a(e) {
+  d(e);
+}
+let u, c;
+function l(e) {
+  const t2 = e.modifications, r2 = c._malloc(8 * t2.length), n2 = new Float64Array(c.HEAPU8.buffer, r2, t2.length);
+  for (let o2 = 0; o2 < t2.length; ++o2)
+    n2[o2] = t2[o2];
+  c.setModifications(e.context, r2, t2.length, e.isGeodetic), c._free(r2);
+}
+function y(r$2, n2) {
+  if (!c)
+    return null;
+  const { context: o2, localOrigin: s2, globalTrafo: f2, mbs: i2, obb: a2, elevationOffset: u2, geometryBuffer: l2, geometryDescriptor: y2, indexToVertexProjector: b2, vertexToRenderProjector: m2 } = r$2, d2 = c._malloc(l2.byteLength), h2 = 33, p2 = c._malloc(h2 * Float64Array.BYTES_PER_ELEMENT), g = new Uint8Array(c.HEAPU8.buffer, d2, l2.byteLength);
+  g.set(new Uint8Array(l2));
+  const w = new Float64Array(c.HEAPU8.buffer, p2, h2);
+  E(w, s2);
+  let A = w.byteOffset + 3 * w.BYTES_PER_ELEMENT, _ = new Float64Array(w.buffer, A);
+  E(_, f2), A += 16 * w.BYTES_PER_ELEMENT, _ = new Float64Array(w.buffer, A), E(_, i2), A += 4 * w.BYTES_PER_ELEMENT, r$1(a2) && (_ = new Float64Array(w.buffer, A), E(_, a2.center), A += 3 * w.BYTES_PER_ELEMENT, _ = new Float64Array(w.buffer, A), E(_, a2.halfSize), A += 3 * w.BYTES_PER_ELEMENT, _ = new Float64Array(w.buffer, A), E(_, a2.quaternion));
+  const L = y2, T = { isDraco: false, isLegacy: false, color: r$2.layouts.some((e) => e.some((e2) => e2.name === "color")), normal: r$2.needNormals && r$2.layouts.some((e) => e.some((e2) => e2.name === "normalCompressed")), uv0: r$2.layouts.some((e) => e.some((e2) => e2.name === "uv0")), uvRegion: r$2.layouts.some((e) => e.some((e2) => e2.name === "uvRegion")), featureIndex: L.featureIndex }, I = c.process(o2, !!r$2.obb, d2, g.byteLength, L, T, p2, u2, b2, m2, r$2.normalReferenceFrame);
+  if (c._free(p2), c._free(d2), I.error.length > 0)
+    throw `i3s.wasm: ${I.error}`;
+  if (I.discarded)
+    return null;
+  const P = I.componentOffsets.length > 0 ? r(I.componentOffsets) : null, U = I.featureIds.length > 0 ? r(I.featureIds) : null, B = r(I.interleavedVertedData).buffer, F = I.indicesType === 1 ? r(new Uint16Array(I.indices.buffer, I.indices.byteOffset, I.indices.byteLength / 2)) : r(new Uint32Array(I.indices.buffer, I.indices.byteOffset, I.indices.byteLength / 4)), v = r(I.positions), x = I.positionIndicesType === 1 ? r(new Uint16Array(I.positionIndices.buffer, I.positionIndices.byteOffset, I.positionIndices.byteLength / 2)) : r(new Uint32Array(I.positionIndices.buffer, I.positionIndices.byteOffset, I.positionIndices.byteLength / 4)), M = { layout: r$2.layouts[0], interleavedVertexData: B, indices: F, hasColors: I.hasColors, hasModifications: I.hasModifications, positionData: { data: v, indices: x } };
+  return U && n2.push(U.buffer), P && n2.push(P.buffer), n2.push(B), n2.push(F.buffer), n2.push(v.buffer), n2.push(x.buffer), { componentOffsets: P, featureIds: U, transformedGeometry: M, obb: I.obb };
+}
+function b(e) {
+  return e === 0 ? 0 : e === 1 ? 1 : e === 2 ? 2 : 3;
+}
+function m(e) {
+  const { context: t2, buffer: r2 } = e, n2 = c._malloc(r2.byteLength), o2 = r2.byteLength / Float64Array.BYTES_PER_ELEMENT, s2 = new Float64Array(c.HEAPU8.buffer, n2, o2), f2 = new Float64Array(r2);
+  s2.set(f2), c.filterOBBs(t2, n2, o2), f2.set(s2), c._free(n2);
+}
+function d(e) {
+  c && c.destroy(e);
+}
+function E(e, t2) {
+  for (let r2 = 0; r2 < t2.length; ++r2)
+    e[r2] = t2[r2];
+}
+function h() {
+  return c ? Promise.resolve() : (u || (u = t().then((e) => {
+    c = e, u = null;
+  })), u);
+}
+const p = { transform: y, destroy: d };
+export { a as destroyContext, o as dracoDecompressPointCloudData, s as filterObbsForModifications, m as filterObbsForModificationsSync, h as initialize, b as interpretObbModificationResults, n as process, i as setLegacySchema, f as setModifications, l as setModificationsSync, p as test };

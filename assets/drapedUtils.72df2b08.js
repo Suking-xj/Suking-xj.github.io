@@ -1,1 +1,14 @@
-import{cr as e,a5 as a,cT as n}from"./vendor.74d5941c.js";function t(t,i,s,r=new e){let c;if("2d"===s.type)c=i*s.resolution;else if("3d"===s.type){const e=s.overlayPixelSizeInMapUnits(t),r=s.basemapSpatialReference;c=a(r)&&!r.equals(s.spatialReference)?n(r)/n(s.spatialReference):i*e}const l=t.x-c,m=t.y-c,p=t.x+c,o=t.y+c,{spatialReference:x}=s;return r.xmin=Math.min(l,p),r.ymin=Math.min(m,o),r.xmax=Math.max(l,p),r.ymax=Math.max(m,o),r.spatialReference=x,r}new e;export{t as a};
+import { cr as M, a5 as r, cT as G } from "./vendor.74d5941c.js";
+function a(t, i, a2, o = new M()) {
+  let s;
+  if (a2.type === "2d")
+    s = i * a2.resolution;
+  else if (a2.type === "3d") {
+    const r$1 = a2.overlayPixelSizeInMapUnits(t), o2 = a2.basemapSpatialReference;
+    s = r(o2) && !o2.equals(a2.spatialReference) ? G(o2) / G(a2.spatialReference) : i * r$1;
+  }
+  const m = t.x - s, p = t.y - s, c = t.x + s, l = t.y + s, { spatialReference: f } = a2;
+  return o.xmin = Math.min(m, c), o.ymin = Math.min(p, l), o.xmax = Math.max(m, c), o.ymax = Math.max(p, l), o.spatialReference = f, o;
+}
+new M();
+export { a };

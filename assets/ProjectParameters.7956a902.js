@@ -1,1 +1,15 @@
-import{ae as t,af as r,ag as e,dA as o,bi as s}from"./vendor.74d5941c.js";let i=class extends o{constructor(t){super(t),this.geometries=null,this.outSpatialReference=null,this.transformation=null,this.transformForward=null}toJSON(){const t=this.geometries.map((function(t){return t.toJSON()})),r=this.geometries[0],e={};return e.outSR=this.outSpatialReference.wkid||JSON.stringify(this.outSpatialReference.toJSON()),e.inSR=r.spatialReference.wkid||JSON.stringify(r.spatialReference.toJSON()),e.geometries=JSON.stringify({geometryType:s(r),geometries:t}),this.transformation&&(e.transformation=this.transformation.wkid||JSON.stringify(this.transformation)),null!=this.transformForward&&(e.transformForward=this.transformForward),e}};t([r()],i.prototype,"geometries",void 0),t([r({json:{read:{source:"outSR"}}})],i.prototype,"outSpatialReference",void 0),t([r()],i.prototype,"transformation",void 0),t([r()],i.prototype,"transformForward",void 0),i=t([e("esri.tasks.support.ProjectParameters")],i);var a=i;export{a};
+import { ae as e, af as y, ag as i$1, dA as a$1, bi as d } from "./vendor.74d5941c.js";
+let i = class extends a$1 {
+  constructor(r) {
+    super(r), this.geometries = null, this.outSpatialReference = null, this.transformation = null, this.transformForward = null;
+  }
+  toJSON() {
+    const r = this.geometries.map(function(r2) {
+      return r2.toJSON();
+    }), t = this.geometries[0], o = {};
+    return o.outSR = this.outSpatialReference.wkid || JSON.stringify(this.outSpatialReference.toJSON()), o.inSR = t.spatialReference.wkid || JSON.stringify(t.spatialReference.toJSON()), o.geometries = JSON.stringify({ geometryType: d(t), geometries: r }), this.transformation && (o.transformation = this.transformation.wkid || JSON.stringify(this.transformation)), this.transformForward != null && (o.transformForward = this.transformForward), o;
+  }
+};
+e([y()], i.prototype, "geometries", void 0), e([y({ json: { read: { source: "outSR" } } })], i.prototype, "outSpatialReference", void 0), e([y()], i.prototype, "transformation", void 0), e([y()], i.prototype, "transformForward", void 0), i = e([i$1("esri.tasks.support.ProjectParameters")], i);
+var a = i;
+export { a };

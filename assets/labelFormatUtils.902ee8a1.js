@@ -1,1 +1,88 @@
-import{a4 as e,iS as t,iT as a,cE as r,iU as n,iV as s,f_ as i,iW as l,aa as u,iX as o,iY as c}from"./vendor.74d5941c.js";const p=e.getLogger("esri.layers.support.labelFormatUtils"),d={type:"simple",evaluate:()=>null},f={getAttribute:(e,t)=>e.field(t)};async function y(e,n,s){if(!e||!e.symbol)return d;const i=e.where,l=t(e),y=i?await import("./WhereClause.f27c6004.js"):null;let g;if("arcade"===l.type){const e=await a(l.expression,s,n);g={type:"arcade",evaluate(t){try{const a=e.evaluate({$feature:"attributes"in t?e.repurposeFeature(t):e.repurposeAdapter(t)});if(null!=a)return a.toString()}catch(a){p.error(new u("bad-arcade-expression","Encountered an error when evaluating label expression for feature",{feature:t,expression:l}))}return null},needsHydrationToEvaluate:()=>null==o(l.expression)}}else g={type:"simple",evaluate:e=>l.expression.replace(/{[^}]*}/g,(t=>{const a=t.slice(1,-1),r=c(n,a);if(!r)return t;let s=null;return"attributes"in e?e&&e.attributes&&(s=e.attributes[r.name]):s=e.field(r.name),null==s?"":m(s,r)}))};if(i){let e;try{e=y.WhereClause.create(i,new r(n))}catch(b){return d}const t=g.evaluate;g.evaluate=a=>{const r="attributes"in a?void 0:f;return e.testFeature(a,r)?t(a):null}}return g}function m(e,t){if(null==e)return"";const a=t.domain;if(a)if("codedValue"===a.type||"coded-value"===a.type){const t=e;for(const e of a.codedValues)if(e.code===t)return e.name}else if("range"===a.type){const t=+e,r="range"in a?a.range[0]:a.minValue,n="range"in a?a.range[1]:a.maxValue;if(r<=t&&t<=n)return a.name}let r=e;return"date"===t.type||"esriFieldTypeDate"===t.type?r=n(r,s("short-date")):i(t)&&(r=l(+r)),r||""}export{y as createLabelFunction,m as formatField};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { a4 as n, iS as x, iT as s, cE as e, iU as L, iV as S, f_ as X, iW as m$1, aa as s$1, iX as _, iY as T } from "./vendor.74d5941c.js";
+const c = n.getLogger("esri.layers.support.labelFormatUtils"), f = { type: "simple", evaluate: () => null }, m = { getAttribute: (e2, t) => e2.field(t) };
+function d(e$1, a, o) {
+  return __async(this, null, function* () {
+    if (!e$1 || !e$1.symbol)
+      return f;
+    const i = e$1.where, l = x(e$1), d2 = i ? yield import("./WhereClause.f27c6004.js") : null;
+    let g;
+    if (l.type === "arcade") {
+      const e2 = yield s(l.expression, o, a);
+      g = { type: "arcade", evaluate(r) {
+        try {
+          const t = e2.evaluate({ $feature: "attributes" in r ? e2.repurposeFeature(r) : e2.repurposeAdapter(r) });
+          if (t != null)
+            return t.toString();
+        } catch (a2) {
+          c.error(new s$1("bad-arcade-expression", "Encountered an error when evaluating label expression for feature", { feature: r, expression: l }));
+        }
+        return null;
+      }, needsHydrationToEvaluate: () => _(l.expression) == null };
+    } else
+      g = { type: "simple", evaluate: (e2) => l.expression.replace(/{[^}]*}/g, (t) => {
+        const r = t.slice(1, -1), o2 = T(a, r);
+        if (!o2)
+          return t;
+        let i2 = null;
+        if ("attributes" in e2) {
+          e2 && e2.attributes && (i2 = e2.attributes[o2.name]);
+        } else
+          i2 = e2.field(o2.name);
+        return i2 == null ? "" : y(i2, o2);
+      }) };
+    if (i) {
+      let e$12;
+      try {
+        e$12 = d2.WhereClause.create(i, new e(a));
+      } catch (b) {
+        return f;
+      }
+      const t = g.evaluate;
+      g.evaluate = (r) => {
+        const a2 = "attributes" in r ? void 0 : m;
+        return e$12.testFeature(r, a2) ? t(r) : null;
+      };
+    }
+    return g;
+  });
+}
+function y(e2, t) {
+  if (e2 == null)
+    return "";
+  const r = t.domain;
+  if (r) {
+    if (r.type === "codedValue" || r.type === "coded-value") {
+      const t2 = e2;
+      for (const e3 of r.codedValues)
+        if (e3.code === t2)
+          return e3.name;
+    } else if (r.type === "range") {
+      const t2 = +e2, a = "range" in r ? r.range[0] : r.minValue, n3 = "range" in r ? r.range[1] : r.maxValue;
+      if (a <= t2 && t2 <= n3)
+        return r.name;
+    }
+  }
+  let n2 = e2;
+  return t.type === "date" || t.type === "esriFieldTypeDate" ? n2 = L(n2, S("short-date")) : X(t) && (n2 = m$1(+n2)), n2 || "";
+}
+export { d as createLabelFunction, y as formatField };

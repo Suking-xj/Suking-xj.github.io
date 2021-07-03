@@ -1,1 +1,54 @@
-import{fc as e,cd as t,an as l}from"./vendor.74d5941c.js";class r{constructor(t){if(t instanceof e)this._tilemapCache=t;else{if(!t||!("index"in t))throw new Error("Invalid tilemap!");this._tilemap=t.index}}dataKey(e,r){if(this._tilemapCache){const{level:i,row:o,col:a}=e,s=new t(e);return this._tilemapCache.fetchAvailabilityUpsample(i,o,a,s,r).then((()=>(s.world=e.world,s))).catch((e=>{if(l(e))throw e;return null}))}return this._getIndexedDataKey(e)}forEach(e,t,l,r,i){this._callback=i,this._maxLevel=t+e,this._forEach(this._tilemap,t,l,r)}_forEach(e,t,l,r){0!==e&&(this._callback(t,l,r),t!==this._maxLevel&&"object"==typeof e&&(this._forEach(e[0],t+1,2*l,2*r),this._forEach(e[1],t+1,2*l,2*r+1),this._forEach(e[2],t+1,2*l+1,2*r),this._forEach(e[3],t+1,2*l+1,2*r+1)))}_getIndexedDataKey(e){const l=[e];if(e.level<0||e.row<0||e.col<0||e.row>>e.level>0||e.col>>e.level>0)return Promise.resolve(null);let r=e;for(;0!==r.level;)r=new t(r.level-1,r.row>>1,r.col>>1,r.world),l.push(r);let i,o,a=this._tilemap,s=l.pop();if(1===a)return Promise.resolve(s);for(;l.length;)if(i=l.pop(),o=(1&i.col)+((1&i.row)<<1),a){if(0===a[o]){s=null;break}if(1===a[o]){s=i;break}s=i,a=a[o]}return Promise.resolve(s)}}export{r};
+import { fc as j, cd as e, an as g } from "./vendor.74d5941c.js";
+class r {
+  constructor(e2) {
+    if (e2 instanceof j)
+      this._tilemapCache = e2;
+    else {
+      if (!e2 || !("index" in e2))
+        throw new Error("Invalid tilemap!");
+      this._tilemap = e2.index;
+    }
+  }
+  dataKey(t, r2) {
+    if (this._tilemapCache) {
+      const { level: i, row: o, col: a } = t, s = new e(t);
+      return this._tilemapCache.fetchAvailabilityUpsample(i, o, a, s, r2).then(() => (s.world = t.world, s)).catch((t2) => {
+        if (g(t2))
+          throw t2;
+        return null;
+      });
+    }
+    return this._getIndexedDataKey(t);
+  }
+  forEach(e2, t, l, r2, i) {
+    this._callback = i, this._maxLevel = t + e2, this._forEach(this._tilemap, t, l, r2);
+  }
+  _forEach(e2, t, l, r2) {
+    e2 !== 0 && (this._callback(t, l, r2), t !== this._maxLevel && typeof e2 == "object" && (this._forEach(e2[0], t + 1, 2 * l, 2 * r2), this._forEach(e2[1], t + 1, 2 * l, 2 * r2 + 1), this._forEach(e2[2], t + 1, 2 * l + 1, 2 * r2), this._forEach(e2[3], t + 1, 2 * l + 1, 2 * r2 + 1)));
+  }
+  _getIndexedDataKey(e$1) {
+    const t = [e$1];
+    if (e$1.level < 0 || e$1.row < 0 || e$1.col < 0 || e$1.row >> e$1.level > 0 || e$1.col >> e$1.level > 0)
+      return Promise.resolve(null);
+    let r2 = e$1;
+    for (; r2.level !== 0; )
+      r2 = new e(r2.level - 1, r2.row >> 1, r2.col >> 1, r2.world), t.push(r2);
+    let i, o, a = this._tilemap, s = t.pop();
+    if (a === 1)
+      return Promise.resolve(s);
+    for (; t.length; )
+      if (i = t.pop(), o = (1 & i.col) + ((1 & i.row) << 1), a) {
+        if (a[o] === 0) {
+          s = null;
+          break;
+        }
+        if (a[o] === 1) {
+          s = i;
+          break;
+        }
+        s = i, a = a[o];
+      }
+    return Promise.resolve(s);
+  }
+}
+export { r };

@@ -1,1 +1,40 @@
-import{ae as e,af as t,ag as i,gf as s}from"./vendor.74d5941c.js";let r=class extends s{constructor(e){super(e),this.tiles=new Map}destroy(){this.tiles.clear(),this.layer=this.layerView=this.tileInfoView=this.tiles=null}get updating(){return this.isUpdating()}acquireTile(e){const t=this.createTile(e);return t.once("isReady",(()=>this.notifyChange("updating"))),this.tiles.set(e.id,t),t}forceAttributeTextureUpload(){}forEachTile(e){this.tiles.forEach(e)}releaseTile(e){this.tiles.delete(e.key.id),this.disposeTile(e)}isUpdating(){let e=!0;return this.tiles.forEach((t=>{e=e&&t.isReady})),!e}setHighlight(){}invalidateLabels(){}requestUpdate(){this.layerView.requestUpdate()}};e([t()],r.prototype,"layer",void 0),e([t()],r.prototype,"layerView",void 0),e([t()],r.prototype,"tileInfoView",void 0),e([t()],r.prototype,"updating",null),r=e([i("esri.views.2d.layers.features.tileRenderers.BaseTileRenderer")],r);var a=r;export{a as o};
+import { ae as e, af as y, ag as i$1, gf as d } from "./vendor.74d5941c.js";
+let i = class extends d {
+  constructor(e2) {
+    super(e2), this.tiles = new Map();
+  }
+  destroy() {
+    this.tiles.clear(), this.layer = this.layerView = this.tileInfoView = this.tiles = null;
+  }
+  get updating() {
+    return this.isUpdating();
+  }
+  acquireTile(e2) {
+    const t = this.createTile(e2);
+    return t.once("isReady", () => this.notifyChange("updating")), this.tiles.set(e2.id, t), t;
+  }
+  forceAttributeTextureUpload() {
+  }
+  forEachTile(e2) {
+    this.tiles.forEach(e2);
+  }
+  releaseTile(e2) {
+    this.tiles.delete(e2.key.id), this.disposeTile(e2);
+  }
+  isUpdating() {
+    let e2 = true;
+    return this.tiles.forEach((t) => {
+      e2 = e2 && t.isReady;
+    }), !e2;
+  }
+  setHighlight() {
+  }
+  invalidateLabels() {
+  }
+  requestUpdate() {
+    this.layerView.requestUpdate();
+  }
+};
+e([y()], i.prototype, "layer", void 0), e([y()], i.prototype, "layerView", void 0), e([y()], i.prototype, "tileInfoView", void 0), e([y()], i.prototype, "updating", null), i = e([i$1("esri.views.2d.layers.features.tileRenderers.BaseTileRenderer")], i);
+var o = i;
+export { o };

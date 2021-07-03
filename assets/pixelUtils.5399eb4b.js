@@ -1,1 +1,751 @@
-import{a4 as t,ae as e,af as i,eZ as s,ag as n,dA as l,aa as r,a0 as a,bT as o}from"./vendor.74d5941c.js";var h;const f=t.getLogger("esri.layers.support.PixelBlock");let u=h=class extends l{constructor(t){super(t),this.width=null,this.height=null,this.pixelType="f32",this.validPixelCount=null,this.mask=null,this.maskIsAlpha=!1,this.pixels=null,this.statistics=null}static createEmptyBand(t,e){return new(h.getPixelArrayConstructor(t))(e)}static getPixelArrayConstructor(t){let e;switch(t){case"u1":case"u2":case"u4":case"u8":e=Uint8Array;break;case"u16":e=Uint16Array;break;case"u32":e=Uint32Array;break;case"s8":e=Int8Array;break;case"s16":e=Int16Array;break;case"s32":e=Int32Array;break;case"u32":e=Uint32Array;break;case"f32":e=Float32Array;break;case"f64":e=Float64Array;break;case"c64":case"c128":case"unknown":e=Float32Array}return e}castPixelType(t){if(!t)return"f32";let e=t.toLowerCase();return["u1","u2","u4"].indexOf(e)>-1?e="u8":-1===["unknown","u8","s8","u16","s16","u32","s32","f32","f64"].indexOf(e)&&(e="f32"),e}getPlaneCount(){return this.pixels&&this.pixels.length}addData(t){if(!t.pixels||t.pixels.length!==this.width*this.height)throw new r("pixelblock:invalid-or-missing-pixels","add data requires valid pixels array that has same length defined by pixel block width * height");this.pixels||(this.pixels=[]),this.statistics||(this.statistics=[]),this.pixels.push(t.pixels),this.statistics.push(t.statistics||{minValue:null,maxValue:null})}getAsRGBA(){const t=new ArrayBuffer(this.width*this.height*4);switch(this.pixelType){case"s8":case"s16":case"u16":case"s32":case"u32":case"f32":case"f64":this._fillFromNon8Bit(t);break;default:this._fillFrom8Bit(t)}return new Uint8ClampedArray(t)}getAsRGBAFloat(){const t=new Float32Array(this.width*this.height*4);return this._fillFrom32Bit(t),t}updateStatistics(){this.statistics=this.pixels.map((t=>this._calculateBandStatistics(t,this.mask)));const t=this.mask;let e=0;if(t)for(let i=0;i<t.length;i++)t[i]&&e++;else e=this.width*this.height;this.validPixelCount=e}clamp(t){if(!t||"f64"===t||"f32"===t)return;let e;switch(t){case"u8":e=[0,255];break;case"u16":e=[0,65535];break;case"u32":e=[0,4294967295];break;case"s8":e=[-128,127];break;case"s16":e=[-32768,32767];break;case"s32":e=[-2147483648,2147483647];break;default:e=[-34e38,34e38]}const[i,s]=e,n=this.pixels,l=this.width*this.height,r=n.length;let a,o,f;const u=[];for(let c=0;c<r;c++){f=h.createEmptyBand(t,l),a=n[c];for(let t=0;t<l;t++)o=a[t],f[t]=o>s?s:o<i?i:o;u.push(f)}this.pixels=u,this.pixelType=t}extractBands(t){if(a(t)||0===t.length||null==this.pixels||0===this.pixels.length)return this;const e=this.pixels.length,i=t.some((t=>t>=this.pixels.length)),s=e===t.length&&!t.some(((t,e)=>t!==e));return i||s?this:new h({pixelType:this.pixelType,width:this.width,height:this.height,mask:this.mask,validPixelCount:this.validPixelCount,maskIsAlpha:this.maskIsAlpha,pixels:t.map((t=>this.pixels[t])),statistics:this.statistics&&t.map((t=>this.statistics[t]))})}clone(){const t=new h({width:this.width,height:this.height,pixelType:this.pixelType,maskIsAlpha:this.maskIsAlpha,validPixelCount:this.validPixelCount});let e;this.mask&&(this.mask instanceof Uint8Array?t.mask=new Uint8Array(this.mask):t.mask=this.mask.slice(0));const i=h.getPixelArrayConstructor(this.pixelType);if(this.pixels&&this.pixels.length>0){t.pixels=[];const s=this.pixels[0].slice;for(e=0;e<this.pixels.length;e++)t.pixels[e]=s?this.pixels[e].slice(0,this.pixels[e].length):new i(this.pixels[e])}if(this.statistics)for(t.statistics=[],e=0;e<this.statistics.length;e++)t.statistics[e]=o(this.statistics[e]);return t}_fillFrom8Bit(t){const{mask:e,maskIsAlpha:i,pixels:s}=this;if(!t||!s||!s.length)return void f.error("getAsRGBA()","Unable to convert to RGBA. The input pixel block is empty.");let n,l,r,a;n=l=r=s[0],s.length>=3?(l=s[1],r=s[2]):2===s.length&&(l=s[1]);const o=new Uint32Array(t),h=this.width*this.height;if(n.length===h)if(e&&e.length===h)if(i)for(a=0;a<h;a++)e[a]&&(o[a]=e[a]<<24|r[a]<<16|l[a]<<8|n[a]);else for(a=0;a<h;a++)e[a]&&(o[a]=255<<24|r[a]<<16|l[a]<<8|n[a]);else for(a=0;a<h;a++)o[a]=255<<24|r[a]<<16|l[a]<<8|n[a];else f.error("getAsRGBA()","Unable to convert to RGBA. The pixelblock is invalid.")}_fillFromNon8Bit(t){const{pixels:e,mask:i,statistics:s}=this;if(!t||!e||!e.length)return void f.error("getAsRGBA()","Unable to convert to RGBA. The input pixel block is empty.");const n=this.pixelType;let l=1,r=0,a=1;if(s&&s.length>0)r=s.map((t=>t.minValue)).reduce(((t,e)=>Math.min(t,e))),a=s.map((t=>t.maxValue-t.minValue)).reduce(((t,e)=>Math.max(t,e))),l=255/a;else{let t=255;"s8"===n?(r=-128,t=127):"u16"===n?t=65535:"s16"===n?(r=-32768,t=32767):"u32"===n?t=4294967295:"s32"===n?(r=-2147483648,t=2147483647):"f32"===n?(r=-34e38,t=34e38):"f64"===n&&(r=-Number.MAX_VALUE,t=Number.MAX_VALUE),l=255/(t-r)}const o=new Uint32Array(t),h=this.width*this.height;let u,c,p,x,m;if(u=c=p=e[0],u.length!==h)return f.error("getAsRGBA()","Unable to convert to RGBA. The pixelblock is invalid.");if(e.length>=2)if(c=e[1],e.length>=3&&(p=e[2]),i&&i.length===h)for(x=0;x<h;x++)i[x]&&(o[x]=255<<24|(p[x]-r)*l<<16|(c[x]-r)*l<<8|(u[x]-r)*l);else for(x=0;x<h;x++)o[x]=255<<24|(p[x]-r)*l<<16|(c[x]-r)*l<<8|(u[x]-r)*l;else if(i&&i.length===h)for(x=0;x<h;x++)m=(u[x]-r)*l,i[x]&&(o[x]=255<<24|m<<16|m<<8|m);else for(x=0;x<h;x++)m=(u[x]-r)*l,o[x]=255<<24|m<<16|m<<8|m}_fillFrom32Bit(t){const{pixels:e,mask:i}=this;if(!t||!e||!e.length)return f.error("getAsRGBAFloat()","Unable to convert to RGBA. The input pixel block is empty.");let s,n,l,r;s=n=l=e[0],e.length>=3?(n=e[1],l=e[2]):2===e.length&&(n=e[1]);const a=this.width*this.height;if(s.length!==a)return f.error("getAsRGBAFloat()","Unable to convert to RGBA. The pixelblock is invalid.");let o=0;if(i&&i.length===a)for(r=0;r<a;r++)t[o++]=s[r],t[o++]=n[r],t[o++]=l[r],t[o++]=1&i[r];else for(r=0;r<a;r++)t[o++]=s[r],t[o++]=n[r],t[o++]=l[r],t[o++]=1}_calculateBandStatistics(t,e){let i=1/0,s=-1/0;const n=t.length;let l,r=0;if(e)for(l=0;l<n;l++)e[l]&&(r=t[l],i=r<i?r:i,s=r>s?r:s);else for(l=0;l<n;l++)r=t[l],i=r<i?r:i,s=r>s?r:s;return{minValue:i,maxValue:s}}};e([i({json:{write:!0}})],u.prototype,"width",void 0),e([i({json:{write:!0}})],u.prototype,"height",void 0),e([i({json:{write:!0}})],u.prototype,"pixelType",void 0),e([s("pixelType")],u.prototype,"castPixelType",null),e([i({json:{write:!0}})],u.prototype,"validPixelCount",void 0),e([i({json:{write:!0}})],u.prototype,"mask",void 0),e([i({json:{write:!0}})],u.prototype,"maskIsAlpha",void 0),e([i({json:{write:!0}})],u.prototype,"pixels",void 0),e([i({json:{write:!0}})],u.prototype,"statistics",void 0),u=h=e([n("esri.layers.support.PixelBlock")],u);var c=u;const p=function(t){return t&&"esri.layers.support.PixelBlock"===t.declaredClass&&t.pixels&&t.pixels.length>0};function x(t,e){if(null==e||!e.length||!p(t))return t;const i=t.pixels.length;return e&&e.some((t=>t>=i))||1===i&&1===e.length&&0===e[0]?t:i!==e.length||e.some(((t,e)=>t!==e))?new c({pixelType:t.pixelType,width:t.width,height:t.height,mask:t.mask,validPixelCount:t.validPixelCount,maskIsAlpha:t.maskIsAlpha,pixels:e.map((e=>t.pixels[e])),statistics:t.statistics&&e.map((e=>t.statistics[e]))}):t}function m(t){if(!t)return;const e=t.colormap;if(!e||0===e.length)return;const i=e.sort(((t,e)=>t[0]-e[0]));let s=0;i[0][0]<0&&(s=i[0][0]);const n=Math.max(256,i[i.length-1][0]-s+1),l=new Uint8Array(4*n),r=[];let a,o=0,h=0;const f=5===i[0].length;if(n>65536)return i.forEach((t=>{r[t[0]-s]=f?t.slice(1):t.slice(1).concat([255])})),{indexed2DColormap:r,offset:s,alphaSpecified:f};if(t.fillUnspecified)for(a=i[h],o=a[0]-s;o<n;o++)l[4*o]=a[1],l[4*o+1]=a[2],l[4*o+2]=a[3],l[4*o+3]=f?a[4]:255,o===a[0]-s&&(a=h===i.length-1?a:i[++h]);else for(o=0;o<i.length;o++)a=i[o],h=4*(a[0]-s),l[h]=a[1],l[h+1]=a[2],l[h+2]=a[3],l[h+3]=f?a[4]:255;return{indexedColormap:l,offset:s,alphaSpecified:f}}function d(t,e){if(!p(t))return t;if(!e&&(e.indexedColormap||e.indexed2DColormap))return t;const i=t.clone(),s=i.pixels;let n=i.mask;const l=i.width*i.height;if(1!==s.length)return t;const{indexedColormap:r,indexed2DColormap:a,offset:o,alphaSpecified:h}=e,f=r.length-1;let u=0;const c=s[0],x=new Uint8Array(c.length),m=new Uint8Array(c.length),d=new Uint8Array(c.length);let g,y=0;if(r)if(n)for(u=0;u<l;u++)n[u]&&(y=4*(c[u]-o),y<o||y>f?n[u]=0:(x[u]=r[y],m[u]=r[y+1],d[u]=r[y+2],n[u]=r[y+3]));else{for(n=new Uint8Array(l),u=0;u<l;u++)y=4*(c[u]-o),y<o||y>f?n[u]=0:(x[u]=r[y],m[u]=r[y+1],d[u]=r[y+2],n[u]=r[y+3]);i.mask=n}else if(n)for(u=0;u<l;u++)n[u]&&(g=a[c[u]],x[u]=g[0],m[u]=g[1],d[u]=g[2],n[u]=g[3]);else{for(n=new Uint8Array(l),u=0;u<l;u++)g=a[c[u]],x[u]=g[0],m[u]=g[1],d[u]=g[2],n[u]=g[3];i.mask=n}return i.pixels=[x,m,d],i.statistics=null,i.pixelType="u8",i.maskIsAlpha=h,i}function g(t){if(!p(t))return null;t.statistics||t.updateStatistics();const{pixels:e,mask:i,pixelType:s,statistics:n}=t,l=t.width*t.height,r=e.length;let a,o,h,f,u;const c=[],x=[];let m,d,g,y,w,k,A,M,v,U;const b=256;for(f=0;f<r;f++){if(m=new Uint32Array(b),g=e[f],"u8"===s)if(a=-.5,o=255.5,i)for(u=0;u<l;u++)i[u]&&m[g[u]]++;else for(u=0;u<l;u++)m[g[u]]++;else{if(a=n[f].minValue,o=n[f].maxValue,h=(o-a)/b,d=new Uint32Array(257),i)for(u=0;u<l;u++)i[u]&&d[Math.floor((g[u]-a)/h)]++;else for(u=0;u<l;u++)d[Math.floor((g[u]-a)/h)]++;for(u=0;u<255;u++)m[u]=d[u];m[255]=d[255]+d[256]}for(c.push({min:a,max:o,size:b,counts:m}),y=0,w=0,M=0,u=0;u<b;u++)y+=m[u],w+=u*m[u];for(v=w/y,u=0;u<b;u++)M+=m[u]*(u-v)**2;U=Math.sqrt(M/(y-1)),h=(o-a)/b,k=(v+.5)*h+a,A=U*h,x.push({min:a,max:o,avg:k,stddev:A})}return{statistics:x,histograms:c}}function y(t){const e=[];for(let i=0;i<t.length;i++){const{min:s,max:n,size:l,counts:r}=t[i];let a=0,o=0;for(let t=0;t<l;t++)a+=r[t],o+=t*r[t];const h=o/a;let f=0;for(let t=0;t<l;t++)f+=r[t]*(t-h)**2;const u=(n-s)/l,c=(h+.5)*u+s,p=Math.sqrt(f/(a-1))*u;e.push({min:s,max:n,avg:c,stddev:p})}return e}function w(t){const{minCutOff:e,maxCutOff:i,gamma:s,pixelType:n}=t,l=t.outMin||0,r=t.outMax||255;if(-1===["u8","u16","s8","s16"].indexOf(n))return null;const a=e.length;let o,h,f=0;"s8"===n?f=-127:"s16"===n&&(f=-32767);let u=256;["u16","s16"].indexOf(n)>-1&&(u=65536);const c=[],p=[],x=r-l;for(o=0;o<a;o++)p[o]=i[o]-e[o],c[o]=x/(i[o]-e[o]);const m=s&&s.length>=a,d=[];if(m)for(o=0;o<a;o++)s[o]>1?s[o]>2?d[o]=6.5+(s[o]-2)**2.5:d[o]=6.5+100*(2-s[o])**4:d[o]=1;let g;const y=[];let w,k,A;if(m)for(o=0;o<a;o++){for(A=[],h=0;h<u;h++)w=h+f,g=(w-e[o])/p[o],k=1,s[o]>1&&(k-=(1/x)**(g*d[o])),w<i[o]&&w>e[o]?A[h]=Math.floor(k*x*g**(1/s[o]))+l:w>=i[o]?A[h]=r:A[h]=l;y[o]=A}else for(o=0;o<a;o++){for(A=[],h=0;h<u;h++)w=h+f,w<=e[o]?A[h]=l:w>=i[o]?A[h]=r:A[h]=Math.floor((w-e[o])/p[o]*x)+l;y[o]=A}if(null!=t.contrastOffset){const e=function(t,e){const i=Math.min(Math.max(t,-100),100),s=Math.min(Math.max(e,-100),100),n=255,l=128;let r,a;const o=new Uint8Array(256);for(r=0;r<256;r++)i>0&&i<100?a=(200*r-100*n+2*n*s)/(2*(100-i))+l:i<=0&&i>-100?a=(200*r-100*n+2*n*s)*(100+i)/2e4+l:100===i?(a=200*r-100*n+(n+1)*(100-i)+2*n*s,a=a>0?n:0):-100===i&&(a=l),o[r]=a>n?n:a<0?0:a;return o}(t.contrastOffset,t.brightnessOffset);for(o=0;o<a;o++)for(A=y[o],h=0;h<u;h++)A[h]=e[A[h]]}return{lut:y,offset:f}}function k(t,e=256){e=Math.min(e,256);const{size:i,counts:s}=t,n=new Uint8Array(i),l=s.reduce(((t,i)=>t+i/e),0);let r=0,a=0,o=0,h=l;for(let f=0;f<i;f++)if(o+=s[f],!(f<i-1&&o+s[f+1]<h)){for(;r<e-1&&h<o;)r++,h+=l;for(let t=a;t<=f;t++)n[t]=r;a=f+1}for(let f=a;f<i;f++)n[f]=e-1;return n}function A(t,e){if(!p(t))return null;const i=t.clone(),{pixels:s,mask:n}=i,{minCutOff:l,maxCutOff:r,gamma:a}=e,o=e.outMin||0,h=e.outMax||255,f=i.width*i.height,u=s.length;let c,x,m,d,g;const y=h-o,w=[],k=[];for(c=0;c<u;c++)k[c]=r[c]-l[c],w[c]=y/(r[c]-l[c]);const A=a&&a.length>=u,M=[];if(A)for(c=0;c<u;c++)a[c]>1?a[c]>2?M[c]=6.5+(a[c]-2)**2.5:M[c]=6.5+100*(2-a[c])**4:M[c]=1;if(A)if(null!=n){for(x=0;x<f;x++)if(n[x])for(c=0;c<u;c++)m=s[c][x],g=(m-l[c])/k[c],d=1,a[c]>1&&(d-=(1/y)**(g*M[c])),m<r[c]&&m>l[c]?s[c][x]=Math.floor(d*y*g**(1/a[c]))+o:m>=r[c]?s[c][x]=h:s[c][x]=o}else for(x=0;x<f;x++)for(c=0;c<u;c++)m=s[c][x],g=(m-l[c])/k[c],d=1,a[c]>1&&(d-=(1/y)**(g*M[c])),m<r[c]&&m>l[c]?s[c][x]=Math.floor(d*y*g**(1/a[c]))+o:m>=r[c]?s[c][x]=h:s[c][x]=o;else if(null!=n){for(x=0;x<f;x++)if(n[x])for(c=0;c<u;c++)m=s[c][x],m<r[c]&&m>l[c]?s[c][x]=Math.floor((m-l[c])/k[c]*y)+o:m>=r[c]?s[c][x]=h:s[c][x]=o}else for(x=0;x<f;x++)for(c=0;c<u;c++)m=s[c][x],m<r[c]&&m>l[c]?s[c][x]=Math.floor((m-l[c])/k[c]*y)+o:m>=r[c]?s[c][x]=h:s[c][x]=o;return i.pixelType="u8",i.updateStatistics(),i}function M(t,e){if(!p(t))return null;const{pixels:i,mask:s}=t,n=t.width*t.height,l=i.length;let r=e.lut;const{offset:a}=e;let o,h;r&&1===r[0].length&&(r=i.map((()=>r)));const f=[];let u,x,m;if(a)if(null==s)for(o=0;o<l;o++){for(u=i[o],x=r[o],m=new Uint8Array(n),h=0;h<n;h++)m[h]=x[u[h]-a];f.push(m)}else for(o=0;o<l;o++){for(u=i[o],x=r[o],m=new Uint8Array(n),h=0;h<n;h++)s[h]&&(m[h]=x[u[h]-a]);f.push(m)}else if(null==s)for(o=0;o<l;o++){for(u=i[o],x=r[o],m=new Uint8Array(n),h=0;h<n;h++)m[h]=x[u[h]];f.push(m)}else for(o=0;o<l;o++){for(u=i[o],x=r[o],m=new Uint8Array(n),h=0;h<n;h++)s[h]&&(m[h]=x[u[h]]);f.push(m)}const d=new c({width:t.width,height:t.height,pixels:f,mask:s,pixelType:"u8"});return d.updateStatistics(),d}function v(t,e){if(!p(t))return null;const i=t.clone(),{pixels:s}=i,n=i.width*i.height,l=e.length,r=Math.floor(l/2),a=e[Math.floor(r)],o=s[0];let h,f,u,c,x,m,d=!1;const g=new Uint8Array(n),y=new Uint8Array(n),w=new Uint8Array(n);let k=i.mask;const A=4===e[0].mappedColor.length;for(k||(k=new Uint8Array(n),k.fill(A?255:1),i.mask=k),x=0;x<n;x++)if(k[x]){for(h=o[x],d=!1,m=r,f=a,u=0,c=l-1;c-u>1;){if(h===f.value){d=!0;break}h>f.value?u=m:c=m,m=Math.floor((u+c)/2),f=e[Math.floor(m)]}d||(h===e[u].value?(f=e[u],d=!0):h===e[c].value?(f=e[c],d=!0):h<e[u].value?(d=!1,f=null):h>e[u].value&&(h<e[c].value?(f=e[u],d=!0):c===l-1?(d=!1,f=null):(f=e[c],d=!0))),d?(g[x]=f.mappedColor[0],y[x]=f.mappedColor[1],w[x]=f.mappedColor[2],k[x]=f.mappedColor[3]):g[x]=y[x]=w[x]=k[x]=0}return i.pixels=[g,y,w],i.mask=k,i.pixelType="u8",i.maskIsAlpha=A,i}function U(t,e,i,s,n,l,r,a){return{xmin:n<=i*t?0:n<i*t+t?n-i*t:t,ymin:l<=s*e?0:l<s*e+e?l-s*e:e,xmax:n+r<=i*t?0:n+r<i*t+t?n+r-i*t:t,ymax:l+a<=s*e?0:l+a<s*e+e?l+a-s*e:e}}function b(t,e){if(!t||0===t.length)return null;const i=t.filter((t=>t.pixelBlock))[0];if(!i)return null;const s=(i.extent.xmax-i.extent.xmin)/i.pixelBlock.width,n=(i.extent.ymax-i.extent.ymin)/i.pixelBlock.height,l=.01*Math.min(s,n),r=t.sort(((t,e)=>Math.abs(t.extent.ymax-e.extent.ymax)>l?e.extent.ymax-t.extent.ymax:Math.abs(t.extent.xmin-e.extent.xmin)>l?t.extent.xmin-e.extent.xmin:0)),a=Math.min.apply(null,r.map((t=>t.extent.xmin))),o=Math.min.apply(null,r.map((t=>t.extent.ymin))),h=Math.max.apply(null,r.map((t=>t.extent.xmax))),f=Math.max.apply(null,r.map((t=>t.extent.ymax))),u={x:Math.round((e.xmin-a)/s),y:Math.round((f-e.ymax)/n)},c={width:Math.round((h-a)/s),height:Math.round((f-o)/n)},p={width:Math.round((e.xmax-e.xmin)/s),height:Math.round((e.ymax-e.ymin)/n)};return Math.round(c.width/i.pixelBlock.width)*Math.round(c.height/i.pixelBlock.height)!==r.length||u.x<0||u.y<0||c.width<p.width||c.height<p.height?null:{extent:e,pixelBlock:B(r.map((t=>t.pixelBlock)),c,u,p)}}function B(t,e,i,s){const n=t.filter((t=>p(t)))[0];if(null==n)return null;const l=s?s.width:e.width,r=s?s.height:e.height,a=n.width,o=n.height,h=e.width/a,f=e.height/o,u=i?i.x:0,x=i?i.y:0,m=n.pixelType,d=c.getPixelArrayConstructor(m),g=n.pixels.length,y=[];let w,k,A,M,v,b,B,T,C,P,F,G,I;for(b=0;b<g;b++){for(k=new d(l*r),B=0;B<f;B++)for(T=0;T<h;T++)if(A=t[B*h+T],p(A))for(w=A.pixels[b],F=U(a,o,T,B,u,x,l,r),C=F.ymin;C<F.ymax;C++)for(M=(B*o+C-x)*l+(T*a-u),v=C*a,P=F.xmin;P<F.xmax;P++)k[M+P]=w[v+P];y.push(k)}if(t.some((t=>null==t||t.mask&&t.mask.length>0)))for(G=new Uint8Array(l*r),B=0;B<f;B++)for(T=0;T<h;T++)if(A=t[B*h+T],I=A?A.mask:null,F=U(a,o,T,B,u,x,l,r),I)for(C=F.ymin;C<F.ymax;C++)for(M=(B*o+C-x)*l+(T*a-u),v=C*a,P=F.xmin;P<F.xmax;P++)G[M+P]=I[v+P];else if(A)for(C=F.ymin;C<F.ymax;C++)for(M=(B*o+C-x)*l+(T*a-u),v=C*a,P=F.xmin;P<F.xmax;P++)G[M+P]=1;else for(C=F.ymin;C<F.ymax;C++)for(M=(B*o+C-x)*l+(T*a-u),v=C*a,P=F.xmin;P<F.xmax;P++)G[M+P]=0;const R=new c({width:l,height:r,pixels:y,pixelType:m,mask:G});return R.updateStatistics(),R}function T(t,e,i){if(!p(t))return null;const{width:s,height:n}=t,l=e.x,r=e.y,a=i.width+l,o=i.height+r;if(l<0||r<0||a>s||o>n)return t;if(0===l&&0===r&&a===s&&o===n)return t;t.mask||(t.mask=new Uint8Array(s*n));const h=t.mask;for(let f=0;f<n;f++){const t=f*s;for(let e=0;e<s;e++)h[t+e]=f<r||f>=o||e<l||e>=a?0:1}return t.updateStatistics(),t}function C(t){if(0===t.size)return 0;let e=0,i=-1,s=0;const n=t.keys();let l=n.next();for(;!l.done;)s=t.get(l.value),s>e&&(i=l.value,e=s),l=n.next();return i}function P(t,e,i){if(0===i)return;const s=t.get(e);1===s?t.delete(e):t.set(e,s-1)}function F(t,e,i){0!==i&&t.set(e,t.has(e)?t.get(e)+1:1)}function G(t,e,i){let{x:s,y:n}=e;const{width:l,height:r}=i;if(0===s&&0===n&&r===t.height&&l===t.width)return t;const{width:a,height:o}=t,h=Math.max(0,n),f=Math.max(0,s),u=Math.min(s+l,a),x=Math.min(n+r,o);if(u<0||x<0||!p(t))return null;s=Math.max(0,-s),n=Math.max(0,-n);const{pixels:m,mask:d}=t,g=l*r,y=m.length,w=[];for(let p=0;p<y;p++){const e=m[p],i=c.createEmptyBand(t.pixelType,g);for(let t=h;t<x;t++){const r=t*a;let o=(t+n-h)*l+s;for(let t=f;t<u;t++)i[o++]=e[r+t]}w.push(i)}const k=new Uint8Array(g);for(let c=h;c<x;c++){const t=c*a;let e=(c+n-h)*l+s;for(let i=f;i<u;i++)k[e++]=d?d[t+i]:1}const A=new c({width:i.width,height:i.height,pixelType:t.pixelType,pixels:w,mask:k});return A.updateStatistics(),A}function I(t,e=!0){if(!p(t))return null;const{pixels:i,width:s,height:n,mask:l,pixelType:r}=t,a=[],o=Math.round(s/2),h=Math.round(n/2),f=n-1,u=s-1;for(let p=0;p<i.length;p++){const t=i[p],l=c.createEmptyBand(r,o*h);let x=0;for(let i=0;i<n;i+=2)for(let n=0;n<s;n+=2){const r=t[i*s+n];if(e){const e=n===u?r:t[i*s+n+1],a=i===f?r:t[i*s+n+s],o=n===u?a:i===f?e:t[i*s+n+s+1];l[x++]=(r+e+a+o)/4}else l[x++]=r}a.push(l)}let x=null;if(l){x=new Uint8Array(o*h);let t=0;for(let i=0;i<n;i+=2)for(let n=0;n<s;n+=2){const r=l[i*s+n];if(e){const e=n===u?r:l[i*s+n+1],a=i===f?r:l[i*s+n+s],o=n===u?a:i===f?e:l[i*s+n+s+1];x[t++]=r*e*a*o?1:0}else x[t++]=r}}return new c({width:o,height:h,pixelType:r,pixels:a,mask:x})}function R(t,e,i){if(!p(t))return null;const{width:s,height:n}=e;let{width:l,height:r}=t;const a=new Map,o={x:0,y:0},h=null==i?1:1+i;let f=t;for(let u=0;u<h;u++){const t=Math.ceil(l/s),i=Math.ceil(r/n);for(let l=0;l<i;l++){o.y=l*n;for(let i=0;i<t;i++){o.x=i*s;const t=G(f,o,e);a.set(`${u}/${l}/${i}`,t)}}u<h-1&&(f=I(f)),l=Math.round(l/2),r=Math.round(r/2)}return a}function S(t,e,i,s,n="nearest"){if(!p(t))return null;"majority"===n&&(t=function(t){if(!p(t))return null;const e=t.clone(),{width:i,height:s,pixels:n,mask:l}=t,r=n[0],a=e.pixels[0];for(let o=2;o<s-1;o++){const t=new Map;for(let s=o-2;s<o+2;s++)for(let e=0;e<4;e++){const n=s*i+e;F(t,r[n],l?l[n]:1)}a[o*i]=C(t),a[o*i+1]=a[o*i+2]=a[o*i];let e=3;for(;e<i-1;e++){let s=(o-2)*i+e+1;F(t,r[s],l?l[s]:1),s=(o-1)*i+e+1,F(t,r[s],l?l[s]:1),s=o*i+e+1,F(t,r[s],l?l[s]:1),s=(o+1)*i+e+1,F(t,r[s],l?l[s]:1),s=(o-2)*i+e-3,P(t,r[s],l?l[s]:1),s=(o-1)*i+e-3,P(t,r[s],l?l[s]:1),s=o*i+e-3,P(t,r[s],l?l[s]:1),s=(o+1)*i+e-3,P(t,r[s],l?l[s]:1),a[o*i+e]=C(t)}a[o*i+e+1]=a[o*i+e]}for(let o=0;o<i;o++)a[o]=a[i+o]=a[2*i+o],a[(s-1)*i+o]=a[(s-2)*i+o];return e.updateStatistics(),e}(t));const{pixels:l,mask:r,pixelType:a}=t,o=t.width,h=t.height,f=c.getPixelArrayConstructor(a),u=l.length,{width:x,height:m}=e,d=s.cols,g=s.rows,y=Math.ceil(x/d),w=Math.ceil(m/g);let k,A,M,v,U,b,B,T=!1;for(let c=0;c<i.length;c+=3)-1===i[c]&&-1===i[c+1]&&-1===i[c+2]&&(T=!0);const G=new Float32Array(x*m),I=new Float32Array(x*m);let R,S,j=0;const O="majority"===n?0:.5;for(let c=0;c<w;c++)for(let t=0;t<y;t++){k=12*(c*y+t),A=i[k],M=i[k+1],v=i[k+2],U=i[k+3],b=i[k+4],B=i[k+5];for(let e=0;e<g;e++){j=(c*g+e)*x+t*d,S=(e+.5)/g;for(let t=0;t<e;t++)R=(t+.5)/d,G[j+t]=Math.round((A*R+M*S+v)*o-O),I[j+t]=Math.round((U*R+b*S+B)*h-O)}k+=6,A=i[k],M=i[k+1],v=i[k+2],U=i[k+3],b=i[k+4],B=i[k+5];for(let e=0;e<g;e++){j=(c*g+e)*x+t*d,S=(e+.5)/g;for(let t=e;t<d;t++)R=(t+.5)/d,G[j+t]=Math.round((A*R+M*S+v)*o-O),I[j+t]=Math.round((U*R+b*S+B)*h-O)}}const V=(t,e)=>{for(let i=0;i<m;i++){k=i*x;for(let i=0;i<x;i++)G[k]<0||I[k]<0?t[k]=0:t[k]=e[G[k]+I[k]*o],k++}},_=[];let E;for(let c=0;c<u;c++)E=new f(x*m),V(E,l[c]),_.push(E);const z=new c({width:x,height:m,pixelType:a,pixels:_});if(r)z.mask=new Uint8Array(x*m),V(z.mask,r);else if(T){z.mask=new Uint8Array(x*m);for(let t=0;t<x*m;t++)z.mask[t]=G[t]<0||I[t]<0?0:1}return z.updateStatistics(),z}export{S as C,R as U,M as a,v as c,T as d,k as f,A as h,m as i,d as l,b as m,x as n,y as o,B as p,g as r,w as s,c as u};
+var __pow = Math.pow;
+import { a4 as n$2, ae as e$1, af as y$1, eZ as c$2, ag as i$1, dA as a$1, aa as s$1, a0 as t, bT as y$2 } from "./vendor.74d5941c.js";
+var n$1;
+const p$1 = n$2.getLogger("esri.layers.support.PixelBlock");
+let c$1 = n$1 = class extends a$1 {
+  constructor(t2) {
+    super(t2), this.width = null, this.height = null, this.pixelType = "f32", this.validPixelCount = null, this.mask = null, this.maskIsAlpha = false, this.pixels = null, this.statistics = null;
+  }
+  static createEmptyBand(t2, e2) {
+    return new (n$1.getPixelArrayConstructor(t2))(e2);
+  }
+  static getPixelArrayConstructor(t2) {
+    let e2;
+    switch (t2) {
+      case "u1":
+      case "u2":
+      case "u4":
+      case "u8":
+        e2 = Uint8Array;
+        break;
+      case "u16":
+        e2 = Uint16Array;
+        break;
+      case "u32":
+        e2 = Uint32Array;
+        break;
+      case "s8":
+        e2 = Int8Array;
+        break;
+      case "s16":
+        e2 = Int16Array;
+        break;
+      case "s32":
+        e2 = Int32Array;
+        break;
+      case "u32":
+        e2 = Uint32Array;
+        break;
+      case "f32":
+        e2 = Float32Array;
+        break;
+      case "f64":
+        e2 = Float64Array;
+        break;
+      case "c64":
+      case "c128":
+      case "unknown":
+        e2 = Float32Array;
+    }
+    return e2;
+  }
+  castPixelType(t2) {
+    if (!t2)
+      return "f32";
+    let e2 = t2.toLowerCase();
+    return ["u1", "u2", "u4"].indexOf(e2) > -1 ? e2 = "u8" : ["unknown", "u8", "s8", "u16", "s16", "u32", "s32", "f32", "f64"].indexOf(e2) === -1 && (e2 = "f32"), e2;
+  }
+  getPlaneCount() {
+    return this.pixels && this.pixels.length;
+  }
+  addData(t2) {
+    if (!t2.pixels || t2.pixels.length !== this.width * this.height)
+      throw new s$1("pixelblock:invalid-or-missing-pixels", "add data requires valid pixels array that has same length defined by pixel block width * height");
+    this.pixels || (this.pixels = []), this.statistics || (this.statistics = []), this.pixels.push(t2.pixels), this.statistics.push(t2.statistics || { minValue: null, maxValue: null });
+  }
+  getAsRGBA() {
+    const t2 = new ArrayBuffer(this.width * this.height * 4);
+    switch (this.pixelType) {
+      case "s8":
+      case "s16":
+      case "u16":
+      case "s32":
+      case "u32":
+      case "f32":
+      case "f64":
+        this._fillFromNon8Bit(t2);
+        break;
+      default:
+        this._fillFrom8Bit(t2);
+    }
+    return new Uint8ClampedArray(t2);
+  }
+  getAsRGBAFloat() {
+    const t2 = new Float32Array(this.width * this.height * 4);
+    return this._fillFrom32Bit(t2), t2;
+  }
+  updateStatistics() {
+    this.statistics = this.pixels.map((t3) => this._calculateBandStatistics(t3, this.mask));
+    const t2 = this.mask;
+    let e2 = 0;
+    if (t2)
+      for (let s2 = 0; s2 < t2.length; s2++)
+        t2[s2] && e2++;
+    else
+      e2 = this.width * this.height;
+    this.validPixelCount = e2;
+  }
+  clamp(t2) {
+    if (!t2 || t2 === "f64" || t2 === "f32")
+      return;
+    let e2;
+    switch (t2) {
+      case "u8":
+        e2 = [0, 255];
+        break;
+      case "u16":
+        e2 = [0, 65535];
+        break;
+      case "u32":
+        e2 = [0, 4294967295];
+        break;
+      case "s8":
+        e2 = [-128, 127];
+        break;
+      case "s16":
+        e2 = [-32768, 32767];
+        break;
+      case "s32":
+        e2 = [-2147483648, 2147483647];
+        break;
+      default:
+        e2 = [-34e38, 34e38];
+    }
+    const [s2, i2] = e2, r2 = this.pixels, l2 = this.width * this.height, a2 = r2.length;
+    let o2, h2, p2;
+    const c2 = [];
+    for (let u2 = 0; u2 < a2; u2++) {
+      p2 = n$1.createEmptyBand(t2, l2), o2 = r2[u2];
+      for (let t3 = 0; t3 < l2; t3++)
+        h2 = o2[t3], p2[t3] = h2 > i2 ? i2 : h2 < s2 ? s2 : h2;
+      c2.push(p2);
+    }
+    this.pixels = c2, this.pixelType = t2;
+  }
+  extractBands(t$1) {
+    if (t(t$1) || t$1.length === 0 || this.pixels == null || this.pixels.length === 0)
+      return this;
+    const e2 = this.pixels.length, i2 = t$1.some((t2) => t2 >= this.pixels.length), r2 = e2 === t$1.length && !t$1.some((t2, e3) => t2 !== e3);
+    return i2 || r2 ? this : new n$1({ pixelType: this.pixelType, width: this.width, height: this.height, mask: this.mask, validPixelCount: this.validPixelCount, maskIsAlpha: this.maskIsAlpha, pixels: t$1.map((t2) => this.pixels[t2]), statistics: this.statistics && t$1.map((t2) => this.statistics[t2]) });
+  }
+  clone() {
+    const t2 = new n$1({ width: this.width, height: this.height, pixelType: this.pixelType, maskIsAlpha: this.maskIsAlpha, validPixelCount: this.validPixelCount });
+    let s2;
+    this.mask && (this.mask instanceof Uint8Array ? t2.mask = new Uint8Array(this.mask) : t2.mask = this.mask.slice(0));
+    const i2 = n$1.getPixelArrayConstructor(this.pixelType);
+    if (this.pixels && this.pixels.length > 0) {
+      t2.pixels = [];
+      const e2 = this.pixels[0].slice;
+      for (s2 = 0; s2 < this.pixels.length; s2++)
+        t2.pixels[s2] = e2 ? this.pixels[s2].slice(0, this.pixels[s2].length) : new i2(this.pixels[s2]);
+    }
+    if (this.statistics)
+      for (t2.statistics = [], s2 = 0; s2 < this.statistics.length; s2++)
+        t2.statistics[s2] = y$2(this.statistics[s2]);
+    return t2;
+  }
+  _fillFrom8Bit(t2) {
+    const { mask: e2, maskIsAlpha: s2, pixels: i2 } = this;
+    if (!t2 || !i2 || !i2.length)
+      return void p$1.error("getAsRGBA()", "Unable to convert to RGBA. The input pixel block is empty.");
+    let r2, l2, a2, o2;
+    r2 = l2 = a2 = i2[0], i2.length >= 3 ? (l2 = i2[1], a2 = i2[2]) : i2.length === 2 && (l2 = i2[1]);
+    const h2 = new Uint32Array(t2), n2 = this.width * this.height;
+    if (r2.length === n2)
+      if (e2 && e2.length === n2)
+        if (s2)
+          for (o2 = 0; o2 < n2; o2++)
+            e2[o2] && (h2[o2] = e2[o2] << 24 | a2[o2] << 16 | l2[o2] << 8 | r2[o2]);
+        else
+          for (o2 = 0; o2 < n2; o2++)
+            e2[o2] && (h2[o2] = 255 << 24 | a2[o2] << 16 | l2[o2] << 8 | r2[o2]);
+      else
+        for (o2 = 0; o2 < n2; o2++)
+          h2[o2] = 255 << 24 | a2[o2] << 16 | l2[o2] << 8 | r2[o2];
+    else
+      p$1.error("getAsRGBA()", "Unable to convert to RGBA. The pixelblock is invalid.");
+  }
+  _fillFromNon8Bit(t2) {
+    const { pixels: e2, mask: s2, statistics: i2 } = this;
+    if (!t2 || !e2 || !e2.length)
+      return void p$1.error("getAsRGBA()", "Unable to convert to RGBA. The input pixel block is empty.");
+    const r2 = this.pixelType;
+    let l2 = 1, a2 = 0, o2 = 1;
+    if (i2 && i2.length > 0)
+      a2 = i2.map((t3) => t3.minValue).reduce((t3, e3) => Math.min(t3, e3)), o2 = i2.map((t3) => t3.maxValue - t3.minValue).reduce((t3, e3) => Math.max(t3, e3)), l2 = 255 / o2;
+    else {
+      let t3 = 255;
+      r2 === "s8" ? (a2 = -128, t3 = 127) : r2 === "u16" ? t3 = 65535 : r2 === "s16" ? (a2 = -32768, t3 = 32767) : r2 === "u32" ? t3 = 4294967295 : r2 === "s32" ? (a2 = -2147483648, t3 = 2147483647) : r2 === "f32" ? (a2 = -34e38, t3 = 34e38) : r2 === "f64" && (a2 = -Number.MAX_VALUE, t3 = Number.MAX_VALUE), l2 = 255 / (t3 - a2);
+    }
+    const h2 = new Uint32Array(t2), n2 = this.width * this.height;
+    let c2, u2, m2, x2, f2;
+    if (c2 = u2 = m2 = e2[0], c2.length !== n2)
+      return p$1.error("getAsRGBA()", "Unable to convert to RGBA. The pixelblock is invalid.");
+    if (e2.length >= 2)
+      if (u2 = e2[1], e2.length >= 3 && (m2 = e2[2]), s2 && s2.length === n2)
+        for (x2 = 0; x2 < n2; x2++)
+          s2[x2] && (h2[x2] = 255 << 24 | (m2[x2] - a2) * l2 << 16 | (u2[x2] - a2) * l2 << 8 | (c2[x2] - a2) * l2);
+      else
+        for (x2 = 0; x2 < n2; x2++)
+          h2[x2] = 255 << 24 | (m2[x2] - a2) * l2 << 16 | (u2[x2] - a2) * l2 << 8 | (c2[x2] - a2) * l2;
+    else if (s2 && s2.length === n2)
+      for (x2 = 0; x2 < n2; x2++)
+        f2 = (c2[x2] - a2) * l2, s2[x2] && (h2[x2] = 255 << 24 | f2 << 16 | f2 << 8 | f2);
+    else
+      for (x2 = 0; x2 < n2; x2++)
+        f2 = (c2[x2] - a2) * l2, h2[x2] = 255 << 24 | f2 << 16 | f2 << 8 | f2;
+  }
+  _fillFrom32Bit(t2) {
+    const { pixels: e2, mask: s2 } = this;
+    if (!t2 || !e2 || !e2.length)
+      return p$1.error("getAsRGBAFloat()", "Unable to convert to RGBA. The input pixel block is empty.");
+    let i2, r2, l2, a2;
+    i2 = r2 = l2 = e2[0], e2.length >= 3 ? (r2 = e2[1], l2 = e2[2]) : e2.length === 2 && (r2 = e2[1]);
+    const o2 = this.width * this.height;
+    if (i2.length !== o2)
+      return p$1.error("getAsRGBAFloat()", "Unable to convert to RGBA. The pixelblock is invalid.");
+    let h2 = 0;
+    if (s2 && s2.length === o2)
+      for (a2 = 0; a2 < o2; a2++)
+        t2[h2++] = i2[a2], t2[h2++] = r2[a2], t2[h2++] = l2[a2], t2[h2++] = 1 & s2[a2];
+    else
+      for (a2 = 0; a2 < o2; a2++)
+        t2[h2++] = i2[a2], t2[h2++] = r2[a2], t2[h2++] = l2[a2], t2[h2++] = 1;
+  }
+  _calculateBandStatistics(t2, e2) {
+    let s2 = 1 / 0, i2 = -1 / 0;
+    const r2 = t2.length;
+    let l2, a2 = 0;
+    if (e2)
+      for (l2 = 0; l2 < r2; l2++)
+        e2[l2] && (a2 = t2[l2], s2 = a2 < s2 ? a2 : s2, i2 = a2 > i2 ? a2 : i2);
+    else
+      for (l2 = 0; l2 < r2; l2++)
+        a2 = t2[l2], s2 = a2 < s2 ? a2 : s2, i2 = a2 > i2 ? a2 : i2;
+    return { minValue: s2, maxValue: i2 };
+  }
+};
+e$1([y$1({ json: { write: true } })], c$1.prototype, "width", void 0), e$1([y$1({ json: { write: true } })], c$1.prototype, "height", void 0), e$1([y$1({ json: { write: true } })], c$1.prototype, "pixelType", void 0), e$1([c$2("pixelType")], c$1.prototype, "castPixelType", null), e$1([y$1({ json: { write: true } })], c$1.prototype, "validPixelCount", void 0), e$1([y$1({ json: { write: true } })], c$1.prototype, "mask", void 0), e$1([y$1({ json: { write: true } })], c$1.prototype, "maskIsAlpha", void 0), e$1([y$1({ json: { write: true } })], c$1.prototype, "pixels", void 0), e$1([y$1({ json: { write: true } })], c$1.prototype, "statistics", void 0), c$1 = n$1 = e$1([i$1("esri.layers.support.PixelBlock")], c$1);
+var u$1 = c$1;
+const e = function(t2) {
+  return t2 && t2.declaredClass === "esri.layers.support.PixelBlock" && t2.pixels && t2.pixels.length > 0;
+};
+function n(n2, i2) {
+  if (i2 == null || !i2.length || !e(n2))
+    return n2;
+  const l2 = n2.pixels.length;
+  return i2 && i2.some((t2) => t2 >= l2) || l2 === 1 && i2.length === 1 && i2[0] === 0 ? n2 : l2 !== i2.length || i2.some((t2, e2) => t2 !== e2) ? new u$1({ pixelType: n2.pixelType, width: n2.width, height: n2.height, mask: n2.mask, validPixelCount: n2.validPixelCount, maskIsAlpha: n2.maskIsAlpha, pixels: i2.map((t2) => n2.pixels[t2]), statistics: n2.statistics && i2.map((t2) => n2.statistics[t2]) }) : n2;
+}
+function i(t2) {
+  if (!t2)
+    return;
+  const e2 = t2.colormap;
+  if (!e2 || e2.length === 0)
+    return;
+  const n2 = e2.sort((t3, e3) => t3[0] - e3[0]);
+  let i2 = 0;
+  n2[0][0] < 0 && (i2 = n2[0][0]);
+  const l2 = Math.max(256, n2[n2.length - 1][0] - i2 + 1), r2 = new Uint8Array(4 * l2), o2 = [];
+  let s2, a2 = 0, f2 = 0;
+  const h2 = n2[0].length === 5;
+  if (l2 > 65536)
+    return n2.forEach((t3) => {
+      o2[t3[0] - i2] = h2 ? t3.slice(1) : t3.slice(1).concat([255]);
+    }), { indexed2DColormap: o2, offset: i2, alphaSpecified: h2 };
+  if (t2.fillUnspecified)
+    for (s2 = n2[f2], a2 = s2[0] - i2; a2 < l2; a2++)
+      r2[4 * a2] = s2[1], r2[4 * a2 + 1] = s2[2], r2[4 * a2 + 2] = s2[3], r2[4 * a2 + 3] = h2 ? s2[4] : 255, a2 === s2[0] - i2 && (s2 = f2 === n2.length - 1 ? s2 : n2[++f2]);
+  else
+    for (a2 = 0; a2 < n2.length; a2++)
+      s2 = n2[a2], f2 = 4 * (s2[0] - i2), r2[f2] = s2[1], r2[f2 + 1] = s2[2], r2[f2 + 2] = s2[3], r2[f2 + 3] = h2 ? s2[4] : 255;
+  return { indexedColormap: r2, offset: i2, alphaSpecified: h2 };
+}
+function l(t2, n2) {
+  if (!e(t2))
+    return t2;
+  if (!n2 && (n2.indexedColormap || n2.indexed2DColormap))
+    return t2;
+  const i2 = t2.clone(), l2 = i2.pixels;
+  let r2 = i2.mask;
+  const o2 = i2.width * i2.height;
+  if (l2.length !== 1)
+    return t2;
+  const { indexedColormap: s2, indexed2DColormap: a2, offset: f2, alphaSpecified: h2 } = n2, u2 = s2.length - 1;
+  let c2 = 0;
+  const x2 = l2[0], m2 = new Uint8Array(x2.length), p2 = new Uint8Array(x2.length), d2 = new Uint8Array(x2.length);
+  let y2, g2 = 0;
+  if (s2)
+    if (r2)
+      for (c2 = 0; c2 < o2; c2++)
+        r2[c2] && (g2 = 4 * (x2[c2] - f2), g2 < f2 || g2 > u2 ? r2[c2] = 0 : (m2[c2] = s2[g2], p2[c2] = s2[g2 + 1], d2[c2] = s2[g2 + 2], r2[c2] = s2[g2 + 3]));
+    else {
+      for (r2 = new Uint8Array(o2), c2 = 0; c2 < o2; c2++)
+        g2 = 4 * (x2[c2] - f2), g2 < f2 || g2 > u2 ? r2[c2] = 0 : (m2[c2] = s2[g2], p2[c2] = s2[g2 + 1], d2[c2] = s2[g2 + 2], r2[c2] = s2[g2 + 3]);
+      i2.mask = r2;
+    }
+  else if (r2)
+    for (c2 = 0; c2 < o2; c2++)
+      r2[c2] && (y2 = a2[x2[c2]], m2[c2] = y2[0], p2[c2] = y2[1], d2[c2] = y2[2], r2[c2] = y2[3]);
+  else {
+    for (r2 = new Uint8Array(o2), c2 = 0; c2 < o2; c2++)
+      y2 = a2[x2[c2]], m2[c2] = y2[0], p2[c2] = y2[1], d2[c2] = y2[2], r2[c2] = y2[3];
+    i2.mask = r2;
+  }
+  return i2.pixels = [m2, p2, d2], i2.statistics = null, i2.pixelType = "u8", i2.maskIsAlpha = h2, i2;
+}
+function r(t2) {
+  if (!e(t2))
+    return null;
+  t2.statistics || t2.updateStatistics();
+  const { pixels: n2, mask: i2, pixelType: l2, statistics: r2 } = t2, o2 = t2.width * t2.height, s2 = n2.length;
+  let a2, f2, h2, u2, c2;
+  const x2 = [], m2 = [];
+  let p2, d2, y2, g2, w2, M2, k2, A2, U2, C2;
+  const T = 256;
+  for (u2 = 0; u2 < s2; u2++) {
+    if (p2 = new Uint32Array(T), y2 = n2[u2], l2 === "u8")
+      if (a2 = -0.5, f2 = 255.5, i2)
+        for (c2 = 0; c2 < o2; c2++)
+          i2[c2] && p2[y2[c2]]++;
+      else
+        for (c2 = 0; c2 < o2; c2++)
+          p2[y2[c2]]++;
+    else {
+      if (a2 = r2[u2].minValue, f2 = r2[u2].maxValue, h2 = (f2 - a2) / T, d2 = new Uint32Array(T + 1), i2)
+        for (c2 = 0; c2 < o2; c2++)
+          i2[c2] && d2[Math.floor((y2[c2] - a2) / h2)]++;
+      else
+        for (c2 = 0; c2 < o2; c2++)
+          d2[Math.floor((y2[c2] - a2) / h2)]++;
+      for (c2 = 0; c2 < 255; c2++)
+        p2[c2] = d2[c2];
+      p2[255] = d2[255] + d2[256];
+    }
+    for (x2.push({ min: a2, max: f2, size: T, counts: p2 }), g2 = 0, w2 = 0, A2 = 0, c2 = 0; c2 < T; c2++)
+      g2 += p2[c2], w2 += c2 * p2[c2];
+    for (U2 = w2 / g2, c2 = 0; c2 < T; c2++)
+      A2 += p2[c2] * __pow(c2 - U2, 2);
+    C2 = Math.sqrt(A2 / (g2 - 1)), h2 = (f2 - a2) / T, M2 = (U2 + 0.5) * h2 + a2, k2 = C2 * h2, m2.push({ min: a2, max: f2, avg: M2, stddev: k2 });
+  }
+  return { statistics: m2, histograms: x2 };
+}
+function o(t2) {
+  const e2 = [];
+  for (let n2 = 0; n2 < t2.length; n2++) {
+    const { min: i2, max: l2, size: r2, counts: o2 } = t2[n2];
+    let s2 = 0, a2 = 0;
+    for (let t3 = 0; t3 < r2; t3++)
+      s2 += o2[t3], a2 += t3 * o2[t3];
+    const f2 = a2 / s2;
+    let h2 = 0;
+    for (let t3 = 0; t3 < r2; t3++)
+      h2 += o2[t3] * __pow(t3 - f2, 2);
+    const u2 = (l2 - i2) / r2, c2 = (f2 + 0.5) * u2 + i2, x2 = Math.sqrt(h2 / (s2 - 1)) * u2;
+    e2.push({ min: i2, max: l2, avg: c2, stddev: x2 });
+  }
+  return e2;
+}
+function s(t2) {
+  const { minCutOff: e2, maxCutOff: n2, gamma: i2, pixelType: l2 } = t2, r2 = t2.outMin || 0, o2 = t2.outMax || 255;
+  if (["u8", "u16", "s8", "s16"].indexOf(l2) === -1)
+    return null;
+  const s2 = e2.length;
+  let f2, h2, u2 = 0;
+  l2 === "s8" ? u2 = -127 : l2 === "s16" && (u2 = -32767);
+  let c2 = 256;
+  ["u16", "s16"].indexOf(l2) > -1 && (c2 = 65536);
+  const x2 = [], m2 = [], p2 = o2 - r2;
+  for (f2 = 0; f2 < s2; f2++)
+    m2[f2] = n2[f2] - e2[f2], x2[f2] = p2 / (n2[f2] - e2[f2]);
+  const d2 = i2 && i2.length >= s2, y2 = [];
+  if (d2)
+    for (f2 = 0; f2 < s2; f2++)
+      i2[f2] > 1 ? i2[f2] > 2 ? y2[f2] = 6.5 + __pow(i2[f2] - 2, 2.5) : y2[f2] = 6.5 + 100 * __pow(2 - i2[f2], 4) : y2[f2] = 1;
+  let g2;
+  const w2 = [];
+  let M2, k2, A2;
+  if (d2)
+    for (f2 = 0; f2 < s2; f2++) {
+      for (A2 = [], h2 = 0; h2 < c2; h2++)
+        M2 = h2 + u2, g2 = (M2 - e2[f2]) / m2[f2], k2 = 1, i2[f2] > 1 && (k2 -= __pow(1 / p2, g2 * y2[f2])), M2 < n2[f2] && M2 > e2[f2] ? A2[h2] = Math.floor(k2 * p2 * __pow(g2, 1 / i2[f2])) + r2 : M2 >= n2[f2] ? A2[h2] = o2 : A2[h2] = r2;
+      w2[f2] = A2;
+    }
+  else
+    for (f2 = 0; f2 < s2; f2++) {
+      for (A2 = [], h2 = 0; h2 < c2; h2++)
+        M2 = h2 + u2, M2 <= e2[f2] ? A2[h2] = r2 : M2 >= n2[f2] ? A2[h2] = o2 : A2[h2] = Math.floor((M2 - e2[f2]) / m2[f2] * p2) + r2;
+      w2[f2] = A2;
+    }
+  if (t2.contrastOffset != null) {
+    const e3 = a(t2.contrastOffset, t2.brightnessOffset);
+    for (f2 = 0; f2 < s2; f2++)
+      for (A2 = w2[f2], h2 = 0; h2 < c2; h2++)
+        A2[h2] = e3[A2[h2]];
+  }
+  return { lut: w2, offset: u2 };
+}
+function a(t2, e2) {
+  const n2 = Math.min(Math.max(t2, -100), 100), i2 = Math.min(Math.max(e2, -100), 100), l2 = 255, r2 = 128;
+  let o2, s2;
+  const a2 = new Uint8Array(256);
+  for (o2 = 0; o2 < 256; o2++)
+    n2 > 0 && n2 < 100 ? s2 = (200 * o2 - 100 * l2 + 2 * l2 * i2) / (2 * (100 - n2)) + r2 : n2 <= 0 && n2 > -100 ? s2 = (200 * o2 - 100 * l2 + 2 * l2 * i2) * (100 + n2) / 2e4 + r2 : n2 === 100 ? (s2 = 200 * o2 - 100 * l2 + (l2 + 1) * (100 - n2) + 2 * l2 * i2, s2 = s2 > 0 ? l2 : 0) : n2 === -100 && (s2 = r2), a2[o2] = s2 > l2 ? l2 : s2 < 0 ? 0 : s2;
+  return a2;
+}
+function f(t2, e2 = 256) {
+  e2 = Math.min(e2, 256);
+  const { size: n2, counts: i2 } = t2, l2 = new Uint8Array(n2), r2 = i2.reduce((t3, n3) => t3 + n3 / e2, 0);
+  let o2 = 0, s2 = 0, a2 = 0, f2 = r2;
+  for (let h2 = 0; h2 < n2; h2++)
+    if (a2 += i2[h2], !(h2 < n2 - 1 && a2 + i2[h2 + 1] < f2)) {
+      for (; o2 < e2 - 1 && f2 < a2; )
+        o2++, f2 += r2;
+      for (let t3 = s2; t3 <= h2; t3++)
+        l2[t3] = o2;
+      s2 = h2 + 1;
+    }
+  for (let h2 = s2; h2 < n2; h2++)
+    l2[h2] = e2 - 1;
+  return l2;
+}
+function h(t2, n2) {
+  if (!e(t2))
+    return null;
+  const i2 = t2.clone(), { pixels: l2, mask: r2 } = i2, { minCutOff: o2, maxCutOff: s2, gamma: a2 } = n2, f2 = n2.outMin || 0, h2 = n2.outMax || 255, u2 = i2.width * i2.height, c2 = l2.length;
+  let x2, m2, p2, d2, y2;
+  const g2 = h2 - f2, w2 = [], M2 = [];
+  for (x2 = 0; x2 < c2; x2++)
+    M2[x2] = s2[x2] - o2[x2], w2[x2] = g2 / (s2[x2] - o2[x2]);
+  const k2 = a2 && a2.length >= c2, A2 = [];
+  if (k2)
+    for (x2 = 0; x2 < c2; x2++)
+      a2[x2] > 1 ? a2[x2] > 2 ? A2[x2] = 6.5 + __pow(a2[x2] - 2, 2.5) : A2[x2] = 6.5 + 100 * __pow(2 - a2[x2], 4) : A2[x2] = 1;
+  if (k2)
+    if (r2 != null) {
+      for (m2 = 0; m2 < u2; m2++)
+        if (r2[m2])
+          for (x2 = 0; x2 < c2; x2++)
+            p2 = l2[x2][m2], y2 = (p2 - o2[x2]) / M2[x2], d2 = 1, a2[x2] > 1 && (d2 -= __pow(1 / g2, y2 * A2[x2])), p2 < s2[x2] && p2 > o2[x2] ? l2[x2][m2] = Math.floor(d2 * g2 * __pow(y2, 1 / a2[x2])) + f2 : p2 >= s2[x2] ? l2[x2][m2] = h2 : l2[x2][m2] = f2;
+    } else
+      for (m2 = 0; m2 < u2; m2++)
+        for (x2 = 0; x2 < c2; x2++)
+          p2 = l2[x2][m2], y2 = (p2 - o2[x2]) / M2[x2], d2 = 1, a2[x2] > 1 && (d2 -= __pow(1 / g2, y2 * A2[x2])), p2 < s2[x2] && p2 > o2[x2] ? l2[x2][m2] = Math.floor(d2 * g2 * __pow(y2, 1 / a2[x2])) + f2 : p2 >= s2[x2] ? l2[x2][m2] = h2 : l2[x2][m2] = f2;
+  else if (r2 != null) {
+    for (m2 = 0; m2 < u2; m2++)
+      if (r2[m2])
+        for (x2 = 0; x2 < c2; x2++)
+          p2 = l2[x2][m2], p2 < s2[x2] && p2 > o2[x2] ? l2[x2][m2] = Math.floor((p2 - o2[x2]) / M2[x2] * g2) + f2 : p2 >= s2[x2] ? l2[x2][m2] = h2 : l2[x2][m2] = f2;
+  } else
+    for (m2 = 0; m2 < u2; m2++)
+      for (x2 = 0; x2 < c2; x2++)
+        p2 = l2[x2][m2], p2 < s2[x2] && p2 > o2[x2] ? l2[x2][m2] = Math.floor((p2 - o2[x2]) / M2[x2] * g2) + f2 : p2 >= s2[x2] ? l2[x2][m2] = h2 : l2[x2][m2] = f2;
+  return i2.pixelType = "u8", i2.updateStatistics(), i2;
+}
+function u(n2, i2) {
+  if (!e(n2))
+    return null;
+  const { pixels: l2, mask: r2 } = n2, o2 = n2.width * n2.height, s2 = l2.length;
+  let a2 = i2.lut;
+  const { offset: f2 } = i2;
+  let h2, u2;
+  a2 && a2[0].length === 1 && (a2 = l2.map(() => a2));
+  const c2 = [];
+  let x2, m2, p2;
+  if (f2)
+    if (r2 == null)
+      for (h2 = 0; h2 < s2; h2++) {
+        for (x2 = l2[h2], m2 = a2[h2], p2 = new Uint8Array(o2), u2 = 0; u2 < o2; u2++)
+          p2[u2] = m2[x2[u2] - f2];
+        c2.push(p2);
+      }
+    else
+      for (h2 = 0; h2 < s2; h2++) {
+        for (x2 = l2[h2], m2 = a2[h2], p2 = new Uint8Array(o2), u2 = 0; u2 < o2; u2++)
+          r2[u2] && (p2[u2] = m2[x2[u2] - f2]);
+        c2.push(p2);
+      }
+  else if (r2 == null)
+    for (h2 = 0; h2 < s2; h2++) {
+      for (x2 = l2[h2], m2 = a2[h2], p2 = new Uint8Array(o2), u2 = 0; u2 < o2; u2++)
+        p2[u2] = m2[x2[u2]];
+      c2.push(p2);
+    }
+  else
+    for (h2 = 0; h2 < s2; h2++) {
+      for (x2 = l2[h2], m2 = a2[h2], p2 = new Uint8Array(o2), u2 = 0; u2 < o2; u2++)
+        r2[u2] && (p2[u2] = m2[x2[u2]]);
+      c2.push(p2);
+    }
+  const d2 = new u$1({ width: n2.width, height: n2.height, pixels: c2, mask: r2, pixelType: "u8" });
+  return d2.updateStatistics(), d2;
+}
+function c(t2, n2) {
+  if (!e(t2))
+    return null;
+  const i2 = t2.clone(), { pixels: l2 } = i2, r2 = i2.width * i2.height, o2 = n2.length, s2 = Math.floor(o2 / 2), a2 = n2[Math.floor(s2)], f2 = l2[0];
+  let h2, u2, c2, x2, m2, p2, d2 = false;
+  const y2 = new Uint8Array(r2), g2 = new Uint8Array(r2), w2 = new Uint8Array(r2);
+  let M2 = i2.mask;
+  const k2 = n2[0].mappedColor.length === 4;
+  for (M2 || (M2 = new Uint8Array(r2), M2.fill(k2 ? 255 : 1), i2.mask = M2), m2 = 0; m2 < r2; m2++)
+    if (M2[m2]) {
+      for (h2 = f2[m2], d2 = false, p2 = s2, u2 = a2, c2 = 0, x2 = o2 - 1; x2 - c2 > 1; ) {
+        if (h2 === u2.value) {
+          d2 = true;
+          break;
+        }
+        h2 > u2.value ? c2 = p2 : x2 = p2, p2 = Math.floor((c2 + x2) / 2), u2 = n2[Math.floor(p2)];
+      }
+      d2 || (h2 === n2[c2].value ? (u2 = n2[c2], d2 = true) : h2 === n2[x2].value ? (u2 = n2[x2], d2 = true) : h2 < n2[c2].value ? (d2 = false, u2 = null) : h2 > n2[c2].value && (h2 < n2[x2].value ? (u2 = n2[c2], d2 = true) : x2 === o2 - 1 ? (d2 = false, u2 = null) : (u2 = n2[x2], d2 = true))), d2 ? (y2[m2] = u2.mappedColor[0], g2[m2] = u2.mappedColor[1], w2[m2] = u2.mappedColor[2], M2[m2] = u2.mappedColor[3]) : y2[m2] = g2[m2] = w2[m2] = M2[m2] = 0;
+    }
+  return i2.pixels = [y2, g2, w2], i2.mask = M2, i2.pixelType = "u8", i2.maskIsAlpha = k2, i2;
+}
+function x(t2, e2, n2, i2, l2, r2, o2, s2) {
+  return { xmin: l2 <= n2 * t2 ? 0 : l2 < n2 * t2 + t2 ? l2 - n2 * t2 : t2, ymin: r2 <= i2 * e2 ? 0 : r2 < i2 * e2 + e2 ? r2 - i2 * e2 : e2, xmax: l2 + o2 <= n2 * t2 ? 0 : l2 + o2 < n2 * t2 + t2 ? l2 + o2 - n2 * t2 : t2, ymax: r2 + s2 <= i2 * e2 ? 0 : r2 + s2 < i2 * e2 + e2 ? r2 + s2 - i2 * e2 : e2 };
+}
+function m(t2, e2) {
+  if (!t2 || t2.length === 0)
+    return null;
+  const n2 = t2.filter((t3) => t3.pixelBlock)[0];
+  if (!n2)
+    return null;
+  const i2 = (n2.extent.xmax - n2.extent.xmin) / n2.pixelBlock.width, l2 = (n2.extent.ymax - n2.extent.ymin) / n2.pixelBlock.height, r2 = 0.01 * Math.min(i2, l2), o2 = t2.sort((t3, e3) => Math.abs(t3.extent.ymax - e3.extent.ymax) > r2 ? e3.extent.ymax - t3.extent.ymax : Math.abs(t3.extent.xmin - e3.extent.xmin) > r2 ? t3.extent.xmin - e3.extent.xmin : 0), s2 = Math.min.apply(null, o2.map((t3) => t3.extent.xmin)), a2 = Math.min.apply(null, o2.map((t3) => t3.extent.ymin)), f2 = Math.max.apply(null, o2.map((t3) => t3.extent.xmax)), h2 = Math.max.apply(null, o2.map((t3) => t3.extent.ymax)), u2 = { x: Math.round((e2.xmin - s2) / i2), y: Math.round((h2 - e2.ymax) / l2) }, c2 = { width: Math.round((f2 - s2) / i2), height: Math.round((h2 - a2) / l2) }, x2 = { width: Math.round((e2.xmax - e2.xmin) / i2), height: Math.round((e2.ymax - e2.ymin) / l2) };
+  if (Math.round(c2.width / n2.pixelBlock.width) * Math.round(c2.height / n2.pixelBlock.height) !== o2.length || u2.x < 0 || u2.y < 0 || c2.width < x2.width || c2.height < x2.height)
+    return null;
+  return { extent: e2, pixelBlock: p(o2.map((t3) => t3.pixelBlock), c2, u2, x2) };
+}
+function p(n2, i2, l2, r2) {
+  const o2 = n2.filter((t2) => e(t2))[0];
+  if (o2 == null)
+    return null;
+  const s2 = r2 ? r2.width : i2.width, a2 = r2 ? r2.height : i2.height, f2 = o2.width, h2 = o2.height, u2 = i2.width / f2, c2 = i2.height / h2, m2 = l2 ? l2.x : 0, p2 = l2 ? l2.y : 0, d2 = o2.pixelType, y2 = u$1.getPixelArrayConstructor(d2), g2 = o2.pixels.length, w2 = [];
+  let M2, k2, A2, U2, C2, T, v, B, S, O, P;
+  for (T = 0; T < g2; T++) {
+    for (k2 = new y2(s2 * a2), v = 0; v < c2; v++)
+      for (B = 0; B < u2; B++)
+        if (A2 = n2[v * u2 + B], e(A2))
+          for (M2 = A2.pixels[T], P = x(f2, h2, B, v, m2, p2, s2, a2), S = P.ymin; S < P.ymax; S++)
+            for (U2 = (v * h2 + S - p2) * s2 + (B * f2 - m2), C2 = S * f2, O = P.xmin; O < P.xmax; O++)
+              k2[U2 + O] = M2[C2 + O];
+    w2.push(k2);
+  }
+  let b, z;
+  if (n2.some((t2) => t2 == null || t2.mask && t2.mask.length > 0))
+    for (b = new Uint8Array(s2 * a2), v = 0; v < c2; v++)
+      for (B = 0; B < u2; B++)
+        if (A2 = n2[v * u2 + B], z = A2 ? A2.mask : null, P = x(f2, h2, B, v, m2, p2, s2, a2), z)
+          for (S = P.ymin; S < P.ymax; S++)
+            for (U2 = (v * h2 + S - p2) * s2 + (B * f2 - m2), C2 = S * f2, O = P.xmin; O < P.xmax; O++)
+              b[U2 + O] = z[C2 + O];
+        else if (A2)
+          for (S = P.ymin; S < P.ymax; S++)
+            for (U2 = (v * h2 + S - p2) * s2 + (B * f2 - m2), C2 = S * f2, O = P.xmin; O < P.xmax; O++)
+              b[U2 + O] = 1;
+        else
+          for (S = P.ymin; S < P.ymax; S++)
+            for (U2 = (v * h2 + S - p2) * s2 + (B * f2 - m2), C2 = S * f2, O = P.xmin; O < P.xmax; O++)
+              b[U2 + O] = 0;
+  const I = new u$1({ width: s2, height: a2, pixels: w2, pixelType: d2, mask: b });
+  return I.updateStatistics(), I;
+}
+function d(t2, n2, i2) {
+  if (!e(t2))
+    return null;
+  const { width: l2, height: r2 } = t2, o2 = n2.x, s2 = n2.y, a2 = i2.width + o2, f2 = i2.height + s2;
+  if (o2 < 0 || s2 < 0 || a2 > l2 || f2 > r2)
+    return t2;
+  if (o2 === 0 && s2 === 0 && a2 === l2 && f2 === r2)
+    return t2;
+  t2.mask || (t2.mask = new Uint8Array(l2 * r2));
+  const h2 = t2.mask;
+  for (let e2 = 0; e2 < r2; e2++) {
+    const t3 = e2 * l2;
+    for (let n3 = 0; n3 < l2; n3++)
+      h2[t3 + n3] = e2 < s2 || e2 >= f2 || n3 < o2 || n3 >= a2 ? 0 : 1;
+  }
+  return t2.updateStatistics(), t2;
+}
+function y(t2) {
+  if (!e(t2))
+    return null;
+  const n2 = t2.clone(), { width: i2, height: l2, pixels: r2, mask: o2 } = t2, s2 = r2[0], a2 = n2.pixels[0];
+  for (let e2 = 2; e2 < l2 - 1; e2++) {
+    const t3 = new Map();
+    for (let l3 = e2 - 2; l3 < e2 + 2; l3++)
+      for (let e3 = 0; e3 < 4; e3++) {
+        const n4 = l3 * i2 + e3;
+        M(t3, s2[n4], o2 ? o2[n4] : 1);
+      }
+    a2[e2 * i2] = g(t3), a2[e2 * i2 + 1] = a2[e2 * i2 + 2] = a2[e2 * i2];
+    let n3 = 3;
+    for (; n3 < i2 - 1; n3++) {
+      let l3 = (e2 - 2) * i2 + n3 + 1;
+      M(t3, s2[l3], o2 ? o2[l3] : 1), l3 = (e2 - 1) * i2 + n3 + 1, M(t3, s2[l3], o2 ? o2[l3] : 1), l3 = e2 * i2 + n3 + 1, M(t3, s2[l3], o2 ? o2[l3] : 1), l3 = (e2 + 1) * i2 + n3 + 1, M(t3, s2[l3], o2 ? o2[l3] : 1), l3 = (e2 - 2) * i2 + n3 - 3, w(t3, s2[l3], o2 ? o2[l3] : 1), l3 = (e2 - 1) * i2 + n3 - 3, w(t3, s2[l3], o2 ? o2[l3] : 1), l3 = e2 * i2 + n3 - 3, w(t3, s2[l3], o2 ? o2[l3] : 1), l3 = (e2 + 1) * i2 + n3 - 3, w(t3, s2[l3], o2 ? o2[l3] : 1), a2[e2 * i2 + n3] = g(t3);
+    }
+    a2[e2 * i2 + n3 + 1] = a2[e2 * i2 + n3];
+  }
+  for (let e2 = 0; e2 < i2; e2++)
+    a2[e2] = a2[i2 + e2] = a2[2 * i2 + e2], a2[(l2 - 1) * i2 + e2] = a2[(l2 - 2) * i2 + e2];
+  return n2.updateStatistics(), n2;
+}
+function g(t2) {
+  if (t2.size === 0)
+    return 0;
+  let e2 = 0, n2 = -1, i2 = 0;
+  const l2 = t2.keys();
+  let r2 = l2.next();
+  for (; !r2.done; )
+    i2 = t2.get(r2.value), i2 > e2 && (n2 = r2.value, e2 = i2), r2 = l2.next();
+  return n2;
+}
+function w(t2, e2, n2) {
+  if (n2 === 0)
+    return;
+  const i2 = t2.get(e2);
+  i2 === 1 ? t2.delete(e2) : t2.set(e2, i2 - 1);
+}
+function M(t2, e2, n2) {
+  n2 !== 0 && t2.set(e2, t2.has(e2) ? t2.get(e2) + 1 : 1);
+}
+function k(n2, i2, l2) {
+  let { x: r2, y: o2 } = i2;
+  const { width: s2, height: a2 } = l2;
+  if (r2 === 0 && o2 === 0 && a2 === n2.height && s2 === n2.width)
+    return n2;
+  const { width: f2, height: h2 } = n2, u2 = Math.max(0, o2), c2 = Math.max(0, r2), x2 = Math.min(r2 + s2, f2), m2 = Math.min(o2 + a2, h2);
+  if (x2 < 0 || m2 < 0 || !e(n2))
+    return null;
+  r2 = Math.max(0, -r2), o2 = Math.max(0, -o2);
+  const { pixels: p2, mask: d2 } = n2, y2 = s2 * a2, g2 = p2.length, w2 = [];
+  for (let e2 = 0; e2 < g2; e2++) {
+    const i3 = p2[e2], l3 = u$1.createEmptyBand(n2.pixelType, y2);
+    for (let t2 = u2; t2 < m2; t2++) {
+      const e3 = t2 * f2;
+      let n3 = (t2 + o2 - u2) * s2 + r2;
+      for (let t3 = c2; t3 < x2; t3++)
+        l3[n3++] = i3[e3 + t3];
+    }
+    w2.push(l3);
+  }
+  const M2 = new Uint8Array(y2);
+  for (let t2 = u2; t2 < m2; t2++) {
+    const e2 = t2 * f2;
+    let n3 = (t2 + o2 - u2) * s2 + r2;
+    for (let t3 = c2; t3 < x2; t3++)
+      M2[n3++] = d2 ? d2[e2 + t3] : 1;
+  }
+  const k2 = new u$1({ width: l2.width, height: l2.height, pixelType: n2.pixelType, pixels: w2, mask: M2 });
+  return k2.updateStatistics(), k2;
+}
+function A(n2, i2 = true) {
+  if (!e(n2))
+    return null;
+  const { pixels: l2, width: r2, height: o2, mask: s2, pixelType: a2 } = n2, f2 = [], h2 = Math.round(r2 / 2), u2 = Math.round(o2 / 2), c2 = o2 - 1, x2 = r2 - 1;
+  for (let e2 = 0; e2 < l2.length; e2++) {
+    const n3 = l2[e2], s3 = u$1.createEmptyBand(a2, h2 * u2);
+    let m3 = 0;
+    for (let t2 = 0; t2 < o2; t2 += 2)
+      for (let e3 = 0; e3 < r2; e3 += 2) {
+        const l3 = n3[t2 * r2 + e3];
+        if (i2) {
+          const i3 = e3 === x2 ? l3 : n3[t2 * r2 + e3 + 1], o3 = t2 === c2 ? l3 : n3[t2 * r2 + e3 + r2], a3 = e3 === x2 ? o3 : t2 === c2 ? i3 : n3[t2 * r2 + e3 + r2 + 1];
+          s3[m3++] = (l3 + i3 + o3 + a3) / 4;
+        } else
+          s3[m3++] = l3;
+      }
+    f2.push(s3);
+  }
+  let m2 = null;
+  if (s2) {
+    m2 = new Uint8Array(h2 * u2);
+    let t2 = 0;
+    for (let e2 = 0; e2 < o2; e2 += 2)
+      for (let n3 = 0; n3 < r2; n3 += 2) {
+        const l3 = s2[e2 * r2 + n3];
+        if (i2) {
+          const i3 = n3 === x2 ? l3 : s2[e2 * r2 + n3 + 1], o3 = e2 === c2 ? l3 : s2[e2 * r2 + n3 + r2], a3 = n3 === x2 ? o3 : e2 === c2 ? i3 : s2[e2 * r2 + n3 + r2 + 1];
+          m2[t2++] = l3 * i3 * o3 * a3 ? 1 : 0;
+        } else
+          m2[t2++] = l3;
+      }
+  }
+  return new u$1({ width: h2, height: u2, pixelType: a2, pixels: f2, mask: m2 });
+}
+function U(t2, n2, i2) {
+  if (!e(t2))
+    return null;
+  const { width: l2, height: r2 } = n2;
+  let { width: o2, height: s2 } = t2;
+  const a2 = new Map(), f2 = { x: 0, y: 0 }, h2 = i2 == null ? 1 : 1 + i2;
+  let u2 = t2;
+  for (let e2 = 0; e2 < h2; e2++) {
+    const t3 = Math.ceil(o2 / l2), i3 = Math.ceil(s2 / r2);
+    for (let o3 = 0; o3 < i3; o3++) {
+      f2.y = o3 * r2;
+      for (let i4 = 0; i4 < t3; i4++) {
+        f2.x = i4 * l2;
+        const t4 = k(u2, f2, n2);
+        a2.set(`${e2}/${o3}/${i4}`, t4);
+      }
+    }
+    e2 < h2 - 1 && (u2 = A(u2)), o2 = Math.round(o2 / 2), s2 = Math.round(s2 / 2);
+  }
+  return a2;
+}
+function C(n2, i2, l2, r2, o2 = "nearest") {
+  if (!e(n2))
+    return null;
+  o2 === "majority" && (n2 = y(n2));
+  const { pixels: s2, mask: a2, pixelType: f2 } = n2, h2 = n2.width, u2 = n2.height, c2 = u$1.getPixelArrayConstructor(f2), x2 = s2.length, { width: m2, height: p2 } = i2, d2 = r2.cols, g2 = r2.rows, w2 = Math.ceil(m2 / d2), M2 = Math.ceil(p2 / g2);
+  let k2, A2, U2, C2, T, v, B, S = false;
+  for (let t2 = 0; t2 < l2.length; t2 += 3)
+    l2[t2] === -1 && l2[t2 + 1] === -1 && l2[t2 + 2] === -1 && (S = true);
+  const O = new Float32Array(m2 * p2), P = new Float32Array(m2 * p2);
+  let b, z, I = 0;
+  const j = o2 === "majority" ? 0 : 0.5;
+  for (let t2 = 0; t2 < M2; t2++)
+    for (let e2 = 0; e2 < w2; e2++) {
+      k2 = 12 * (t2 * w2 + e2), A2 = l2[k2], U2 = l2[k2 + 1], C2 = l2[k2 + 2], T = l2[k2 + 3], v = l2[k2 + 4], B = l2[k2 + 5];
+      for (let n3 = 0; n3 < g2; n3++) {
+        I = (t2 * g2 + n3) * m2 + e2 * d2, z = (n3 + 0.5) / g2;
+        for (let t3 = 0; t3 < n3; t3++)
+          b = (t3 + 0.5) / d2, O[I + t3] = Math.round((A2 * b + U2 * z + C2) * h2 - j), P[I + t3] = Math.round((T * b + v * z + B) * u2 - j);
+      }
+      k2 += 6, A2 = l2[k2], U2 = l2[k2 + 1], C2 = l2[k2 + 2], T = l2[k2 + 3], v = l2[k2 + 4], B = l2[k2 + 5];
+      for (let n3 = 0; n3 < g2; n3++) {
+        I = (t2 * g2 + n3) * m2 + e2 * d2, z = (n3 + 0.5) / g2;
+        for (let t3 = n3; t3 < d2; t3++)
+          b = (t3 + 0.5) / d2, O[I + t3] = Math.round((A2 * b + U2 * z + C2) * h2 - j), P[I + t3] = Math.round((T * b + v * z + B) * u2 - j);
+      }
+    }
+  const D = (t2, e2) => {
+    for (let n3 = 0; n3 < p2; n3++) {
+      k2 = n3 * m2;
+      for (let n4 = 0; n4 < m2; n4++)
+        O[k2] < 0 || P[k2] < 0 ? t2[k2] = 0 : t2[k2] = e2[O[k2] + P[k2] * h2], k2++;
+    }
+  }, E = [];
+  let $;
+  for (let t2 = 0; t2 < x2; t2++)
+    $ = new c2(m2 * p2), D($, s2[t2]), E.push($);
+  const q = new u$1({ width: m2, height: p2, pixelType: f2, pixels: E });
+  if (a2)
+    q.mask = new Uint8Array(m2 * p2), D(q.mask, a2);
+  else if (S) {
+    q.mask = new Uint8Array(m2 * p2);
+    for (let t2 = 0; t2 < m2 * p2; t2++)
+      q.mask[t2] = O[t2] < 0 || P[t2] < 0 ? 0 : 1;
+  }
+  return q.updateStatistics(), q;
+}
+export { C, U, u as a, c, d, f, h, i, l, m, n, o, p, r, s, u$1 as u };

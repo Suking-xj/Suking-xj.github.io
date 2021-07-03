@@ -1,1 +1,53 @@
-import{b6 as e}from"./vendor.74d5941c.js";import{I as t}from"./Utils.3f1577e5.js";import{g as s}from"./WGLContainer.74815466.js";import{r,i}from"./TileContainer.763b6c09.js";import{_ as a}from"./Bitmap.0855f65e.js";class n extends r{constructor(e,t,s,r=null){super(e,t,s,s),this.bitmap=new a(r,"standard",!1),this.bitmap.coordScale=s,this.bitmap.once("isReady",(()=>this.ready()))}destroy(){super.destroy(),this.bitmap.destroy()}beforeRender(e){super.beforeRender(e),this.bitmap.beforeRender(e)}afterRender(e){super.afterRender(e),this.bitmap.afterRender(e)}set stencilRef(e){this.bitmap.stencilRef=e}get stencilRef(){return this.bitmap.stencilRef}setTransform(e,t){super.setTransform(e,t),this.bitmap.transforms.dvs=this.transforms.dvs}onAttach(){this.bitmap.stage=this.stage}onDetach(){this.bitmap&&(this.bitmap.stage=null)}}class o extends i{get requiresDedicatedFBO(){return this.children.some((e=>"additive"===e.bitmap.blendFunction))}createTile(t){const s=this._tileInfoView.getTileBounds(e(),t);return new n(t,s,this._tileInfoView.tileInfo.size)}destroyTile(){}prepareRenderPasses(e){const r=e.registerRenderPass({name:"bitmap (tile)",brushes:[s.bitmap],target:()=>this.children.map((e=>e.bitmap)),drawPhase:t.MAP});return[...super.prepareRenderPasses(e),r]}doRender(e){this.visible&&e.drawPhase===t.MAP&&super.doRender(e)}}export{o as n};
+import { b6 as i$1 } from "./vendor.74d5941c.js";
+import { I } from "./Utils.3f1577e5.js";
+import { g } from "./WGLContainer.74815466.js";
+import { r, i } from "./TileContainer.763b6c09.js";
+import { _ } from "./Bitmap.0855f65e.js";
+class s extends r {
+  constructor(t, s2, r2, i2 = null) {
+    super(t, s2, r2, r2), this.bitmap = new _(i2, "standard", false), this.bitmap.coordScale = r2, this.bitmap.once("isReady", () => this.ready());
+  }
+  destroy() {
+    super.destroy(), this.bitmap.destroy();
+  }
+  beforeRender(t) {
+    super.beforeRender(t), this.bitmap.beforeRender(t);
+  }
+  afterRender(t) {
+    super.afterRender(t), this.bitmap.afterRender(t);
+  }
+  set stencilRef(t) {
+    this.bitmap.stencilRef = t;
+  }
+  get stencilRef() {
+    return this.bitmap.stencilRef;
+  }
+  setTransform(t, e) {
+    super.setTransform(t, e), this.bitmap.transforms.dvs = this.transforms.dvs;
+  }
+  onAttach() {
+    this.bitmap.stage = this.stage;
+  }
+  onDetach() {
+    this.bitmap && (this.bitmap.stage = null);
+  }
+}
+class n extends i {
+  get requiresDedicatedFBO() {
+    return this.children.some((e) => e.bitmap.blendFunction === "additive");
+  }
+  createTile(r2) {
+    const s$1 = this._tileInfoView.getTileBounds(i$1(), r2);
+    return new s(r2, s$1, this._tileInfoView.tileInfo.size);
+  }
+  destroyTile() {
+  }
+  prepareRenderPasses(e) {
+    const t = e.registerRenderPass({ name: "bitmap (tile)", brushes: [g.bitmap], target: () => this.children.map((e2) => e2.bitmap), drawPhase: I.MAP });
+    return [...super.prepareRenderPasses(e), t];
+  }
+  doRender(e) {
+    this.visible && e.drawPhase === I.MAP && super.doRender(e);
+  }
+}
+export { n };

@@ -1,3 +1,103 @@
-import{a as e,c as o}from"./moment.399d2139.js";var a,s,r={};a=o,s=function(e){
-//! moment.js locale configuration
-var o="ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"),a="ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic".split("_"),s=[/^ene/i,/^feb/i,/^mar/i,/^abr/i,/^may/i,/^jun/i,/^jul/i,/^ago/i,/^sep/i,/^oct/i,/^nov/i,/^dic/i],r=/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;return e.defineLocale("es-us",{months:"enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split("_"),monthsShort:function(e,s){return e?/-MMM-/.test(s)?a[e.month()]:o[e.month()]:o},monthsRegex:r,monthsShortRegex:r,monthsStrictRegex:/^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,monthsShortStrictRegex:/^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,monthsParse:s,longMonthsParse:s,shortMonthsParse:s,weekdays:"domingo_lunes_martes_miércoles_jueves_viernes_sábado".split("_"),weekdaysShort:"dom._lun._mar._mié._jue._vie._sáb.".split("_"),weekdaysMin:"do_lu_ma_mi_ju_vi_sá".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"MM/DD/YYYY",LL:"D [de] MMMM [de] YYYY",LLL:"D [de] MMMM [de] YYYY h:mm A",LLLL:"dddd, D [de] MMMM [de] YYYY h:mm A"},calendar:{sameDay:function(){return"[hoy a la"+(1!==this.hours()?"s":"")+"] LT"},nextDay:function(){return"[mañana a la"+(1!==this.hours()?"s":"")+"] LT"},nextWeek:function(){return"dddd [a la"+(1!==this.hours()?"s":"")+"] LT"},lastDay:function(){return"[ayer a la"+(1!==this.hours()?"s":"")+"] LT"},lastWeek:function(){return"[el] dddd [pasado a la"+(1!==this.hours()?"s":"")+"] LT"},sameElse:"L"},relativeTime:{future:"en %s",past:"hace %s",s:"unos segundos",ss:"%d segundos",m:"un minuto",mm:"%d minutos",h:"una hora",hh:"%d horas",d:"un día",dd:"%d días",w:"una semana",ww:"%d semanas",M:"un mes",MM:"%d meses",y:"un año",yy:"%d años"},dayOfMonthOrdinalParse:/\d{1,2}º/,ordinal:"%dº",week:{dow:0,doy:6}})},"function"==typeof require?s(e.exports):s(a.moment);var n=r,t=Object.freeze(Object.assign(Object.create(null),r,{[Symbol.toStringTag]:"Module",default:n}));export{t as e};
+import { a as moment, c as commonjsGlobal } from "./moment.399d2139.js";
+var esUs$2 = { exports: {} };
+(function(module, exports) {
+  (function(global, factory) {
+    typeof require === "function" ? factory(moment.exports) : factory(global.moment);
+  })(commonjsGlobal, function(moment2) {
+    //! moment.js locale configuration
+    var monthsShortDot = "ene._feb._mar._abr._may._jun._jul._ago._sep._oct._nov._dic.".split("_"), monthsShort = "ene_feb_mar_abr_may_jun_jul_ago_sep_oct_nov_dic".split("_"), monthsParse = [
+      /^ene/i,
+      /^feb/i,
+      /^mar/i,
+      /^abr/i,
+      /^may/i,
+      /^jun/i,
+      /^jul/i,
+      /^ago/i,
+      /^sep/i,
+      /^oct/i,
+      /^nov/i,
+      /^dic/i
+    ], monthsRegex = /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i;
+    var esUs2 = moment2.defineLocale("es-us", {
+      months: "enero_febrero_marzo_abril_mayo_junio_julio_agosto_septiembre_octubre_noviembre_diciembre".split("_"),
+      monthsShort: function(m, format) {
+        if (!m) {
+          return monthsShortDot;
+        } else if (/-MMM-/.test(format)) {
+          return monthsShort[m.month()];
+        } else {
+          return monthsShortDot[m.month()];
+        }
+      },
+      monthsRegex,
+      monthsShortRegex: monthsRegex,
+      monthsStrictRegex: /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)/i,
+      monthsShortStrictRegex: /^(ene\.?|feb\.?|mar\.?|abr\.?|may\.?|jun\.?|jul\.?|ago\.?|sep\.?|oct\.?|nov\.?|dic\.?)/i,
+      monthsParse,
+      longMonthsParse: monthsParse,
+      shortMonthsParse: monthsParse,
+      weekdays: "domingo_lunes_martes_mi\xE9rcoles_jueves_viernes_s\xE1bado".split("_"),
+      weekdaysShort: "dom._lun._mar._mi\xE9._jue._vie._s\xE1b.".split("_"),
+      weekdaysMin: "do_lu_ma_mi_ju_vi_s\xE1".split("_"),
+      weekdaysParseExact: true,
+      longDateFormat: {
+        LT: "h:mm A",
+        LTS: "h:mm:ss A",
+        L: "MM/DD/YYYY",
+        LL: "D [de] MMMM [de] YYYY",
+        LLL: "D [de] MMMM [de] YYYY h:mm A",
+        LLLL: "dddd, D [de] MMMM [de] YYYY h:mm A"
+      },
+      calendar: {
+        sameDay: function() {
+          return "[hoy a la" + (this.hours() !== 1 ? "s" : "") + "] LT";
+        },
+        nextDay: function() {
+          return "[ma\xF1ana a la" + (this.hours() !== 1 ? "s" : "") + "] LT";
+        },
+        nextWeek: function() {
+          return "dddd [a la" + (this.hours() !== 1 ? "s" : "") + "] LT";
+        },
+        lastDay: function() {
+          return "[ayer a la" + (this.hours() !== 1 ? "s" : "") + "] LT";
+        },
+        lastWeek: function() {
+          return "[el] dddd [pasado a la" + (this.hours() !== 1 ? "s" : "") + "] LT";
+        },
+        sameElse: "L"
+      },
+      relativeTime: {
+        future: "en %s",
+        past: "hace %s",
+        s: "unos segundos",
+        ss: "%d segundos",
+        m: "un minuto",
+        mm: "%d minutos",
+        h: "una hora",
+        hh: "%d horas",
+        d: "un d\xEDa",
+        dd: "%d d\xEDas",
+        w: "una semana",
+        ww: "%d semanas",
+        M: "un mes",
+        MM: "%d meses",
+        y: "un a\xF1o",
+        yy: "%d a\xF1os"
+      },
+      dayOfMonthOrdinalParse: /\d{1,2}º/,
+      ordinal: "%d\xBA",
+      week: {
+        dow: 0,
+        doy: 6
+      }
+    });
+    return esUs2;
+  });
+})();
+var esUs = esUs$2.exports;
+var esUs$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.assign(/* @__PURE__ */ Object.create(null), esUs$2.exports, {
+  [Symbol.toStringTag]: "Module",
+  "default": esUs
+}));
+export { esUs$1 as e };

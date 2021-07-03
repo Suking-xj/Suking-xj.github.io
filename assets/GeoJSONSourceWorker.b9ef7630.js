@@ -1,1 +1,223 @@
-var e=Object.defineProperty,t=Object.defineProperties,i=Object.getOwnPropertyDescriptors,s=Object.getOwnPropertySymbols,n=Object.prototype.hasOwnProperty,r=Object.prototype.propertyIsEnumerable,a=(t,i,s)=>i in t?e(t,i,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[i]=s,o=(e,t)=>{for(var i in t||(t={}))n.call(t,i)&&a(e,i,t[i]);if(s)for(var i of s(t))r.call(t,i)&&a(e,i,t[i]);return e},l=(e,s)=>t(e,i(s));import{aj as d,fn as u,aa as p,fX as y,fY as c,cE as f,cm as m,ci as h,cy as g,bi as b,cv as j,cx as I,fZ as F}from"./vendor.74d5941c.js";import{I as _,N as E,T}from"./geojson.689424f4.js";import{i as q,u as x,s as w}from"./clientSideDefaults.2ad4eec3.js";import{y as O,p as D}from"./projectionSupport.62084d5a.js";import{u as R}from"./FeatureStore.2d2de89b.js";import{Z as S}from"./QueryEngine.202b3395.js";import{y as v,d as Q,c as k,u as P,h as Z}from"./sourceUtils.446906a0.js";import"./json.7989af9b.js";import"./aaBoundingBox.b76947f8.js";import"./PooledRBush.257a80e4.js";import"./quickselect.e4940b29.js";import"./_commonjsHelpers.f2a458db.js";import"./centroid.93c1b848.js";import"./WhereClause.f27c6004.js";import"./timeSupport.2cea3b6f.js";const C={hasAttachments:!1,capabilities:"query, editing, create, delete, update",useStandardizedQueries:!0,supportsCoordinatesQuantization:!0,supportsReturningQueryGeometry:!0,advancedQueryCapabilities:{supportsQueryAttachments:!1,supportsStatistics:!0,supportsPercentileStatistics:!0,supportsReturningGeometryCentroid:!0,supportsQueryWithDistance:!0,supportsDistinct:!0,supportsReturningQueryExtent:!0,supportsReturningGeometryProperties:!1,supportsHavingClause:!0,supportsOrderBy:!0,supportsPagination:!0,supportsQueryWithResultType:!1,supportsSqlExpression:!0,supportsDisjointSpatialRel:!0}};export default class{constructor(){this._queryEngine=null}destroy(){this._queryEngine&&this._queryEngine&&this._queryEngine.destroy(),this._queryEngine=this._requiredFields=this._fieldsIndex=this._createDefaultAttributes=null}async load(e){const t=[];await this._checkProjection(e.spatialReference);let i=null;e.url&&(i=(await d(e.url,{responseType:"json"})).data,await _(i));const s=E(i,{geometryType:e.geometryType}),n=e.fields||s.fields||[],r=null!=e.hasZ?e.hasZ:s.hasZ,a=s.geometryType,b=e.objectIdField||("number"===s.objectIdFieldType?s.objectIdFieldName:"OBJECTID")||"OBJECTID",j=e.spatialReference||u;let I=e.timeInfo;if(!a)throw new p("geojson-layer:missing-property","geometryType not set and couldn't be inferred from the provided features");if("string"===s.objectIdFieldType&&t.push({name:"geojson-layer:unsupported-id-type",message:"Feature ids are of type string and can't be honored."}),n===s.fields&&s.unknownFields.length>0&&t.push({name:"geojson-layer:unknown-field-types",message:"Some fields types couldn't be inferred from the features and were dropped",details:{unknownFields:s.unknownFields}}),b){let e=null;n.some((t=>t.name===b&&(e=t,!0)))?(e.type="esriFieldTypeOID",e.editable=!1,e.nullable=!1):n.unshift({alias:b,name:b,type:"esriFieldTypeOID",editable:!1,nullable:!1})}for(const o of n){if(null==o.name&&(o.name=o.alias),null==o.alias&&(o.alias=o.name),!o.name)throw new p("geojson-layer:invalid-field-name","field name is missing",{field:o});if(o.name===b&&(o.type="esriFieldTypeOID"),-1===y.jsonValues.indexOf(o.type))throw new p("geojson-layer:invalid-field-type",`invalid type for field "${o.name}"`,{field:o})}const F={};this._requiredFields=[];for(const o of n)if("esriFieldTypeOID"!==o.type&&"esriFieldTypeGlobalID"!==o.type){o.editable=null==o.editable||!!o.editable,o.nullable=null==o.nullable||!!o.nullable;const e=c(o);o.nullable||void 0!==e?F[o.name]=e:this._requiredFields.push(o)}if(this._fieldsIndex=new f(n),I){if(I.startTimeField){const e=this._fieldsIndex.get(I.startTimeField);e?(I.startTimeField=e.name,e.type="esriFieldTypeDate"):I.startTimeField=null}if(I.endTimeField){const e=this._fieldsIndex.get(I.endTimeField);e?(I.endTimeField=e.name,e.type="esriFieldTypeDate"):I.endTimeField=null}if(I.trackIdField){const e=this._fieldsIndex.get(I.trackIdField);e?I.trackIdField=e.name:(I.trackIdField=null,t.push({name:"geojson-layer:invalid-timeInfo-trackIdField",message:"trackIdField is missing",details:{timeInfo:I}}))}I.startTimeField||I.endTimeField||(t.push({name:"geojson-layer:invalid-timeInfo",message:"startTimeField and endTimeField are missing",details:{timeInfo:I}}),I=null)}const D={warnings:t,featureErrors:[],layerDefinition:l(o({},C),{drawingInfo:q(a),templates:x(F),extent:null,geometryType:a,objectIdField:b,fields:n,hasZ:!!r,timeInfo:I})};this._queryEngine=new S({fields:n,geometryType:a,hasM:!1,hasZ:r,objectIdField:b,spatialReference:j,timeInfo:I,featureStore:new R({geometryType:a,hasM:!1,hasZ:r}),cacheSpatialQueries:!0}),this._createDefaultAttributes=w(F,b),this._nextObjectId=s.maxObjectId+1;const v=T(i,{geometryType:a,hasZ:r,objectIdFieldName:"number"===s.objectIdFieldType?b:null});if(!m(j,u))for(const o of v)o.geometry&&(o.geometry=h(O(g(o.geometry,a,r,!1),u,j)));return this._loadInitialFeatures(D,v),D}async applyEdits(e){const{spatialReference:t,geometryType:i}=this._queryEngine;return await Promise.all([v(t,i),D(e.adds,t),D(e.updates,t)]),this._applyEdits(e)}queryFeatures(e={},t={}){return this._queryEngine.executeQuery(e,t.signal)}queryFeatureCount(e={},t={}){return this._queryEngine.executeQueryForCount(e,t.signal)}queryObjectIds(e={},t={}){return this._queryEngine.executeQueryForIds(e,t.signal)}queryExtent(e={},t={}){return this._queryEngine.executeQueryForExtent(e,t.signal)}querySnapping(e,t={}){return this._queryEngine.executeQueryForSnapping(e,t.signal)}_loadInitialFeatures(e,t){const{featureStore:i,objectIdField:s}=this._queryEngine,n=[];for(const r of t){const t=this._createDefaultAttributes(),i=Q(this._fieldsIndex,this._requiredFields,t,r.attributes,!0,e.warnings);i?e.featureErrors.push(i):(this._assignObjectId(t,r.attributes,!0),r.attributes=t,r.objectId=t[s],n.push(r))}if(i.addMany(n),e.layerDefinition.extent=this._queryEngine.fullExtent,e.layerDefinition.timeInfo){const{start:t,end:i}=this._queryEngine.timeExtent;e.layerDefinition.timeInfo.timeExtent=[t,i]}return e}_applyEdits(e){const{adds:t,updates:i,deletes:s}=e,n={addResults:[],deleteResults:[],updateResults:[],uidToObjectId:{}};if(t&&t.length&&this._applyAddEdits(n,t),i&&i.length&&this._applyUpdateEdits(n,i),s&&s.length){for(const e of s)n.deleteResults.push(k(e));this._queryEngine.featureStore.removeManyById(s)}return{fullExtent:this._queryEngine.fullExtent,timeExtent:this._queryEngine.timeExtent,featureEditResults:n}}_applyAddEdits(e,t){const{addResults:i}=e,{geometryType:s,hasM:n,hasZ:r,objectIdField:a,spatialReference:o,featureStore:l}=this._queryEngine,d=[];for(const u of t){if(u.geometry&&s!==b(u.geometry)){i.push(P("Incorrect geometry type."));continue}const t=this._createDefaultAttributes(),n=Q(this._fieldsIndex,this._requiredFields,t,u.attributes);if(n)i.push(n);else{if(this._assignObjectId(t,u.attributes),u.attributes=t,null!=u.uid){const t=u.attributes[a];e.uidToObjectId[u.uid]=t}u.geometry&&(u.geometry=O(Z(u.geometry,o),u.geometry.spatialReference,o)),d.push(u),i.push(k(u.attributes[a]))}}l.addMany(j([],d,s,r,n,a))}_applyUpdateEdits({updateResults:e},t){const{geometryType:i,hasM:s,hasZ:n,objectIdField:r,spatialReference:a,featureStore:o}=this._queryEngine;for(const l of t){const{attributes:t,geometry:d}=l,u=t&&t[r];if(null==u){e.push(P(`Identifier field ${r} missing`));continue}if(!o.has(u)){e.push(P(`Feature with object id ${u} missing`));continue}const p=I(o.getFeature(u),i,n,s);if(d){if(i!==b(d)){e.push(P("Incorrect geometry type."));continue}p.geometry=O(Z(d,a),d.spatialReference,a)}if(t){const i=Q(this._fieldsIndex,this._requiredFields,p.attributes,t);if(i){e.push(i);continue}}o.add(F(p,i,n,s,r)),e.push(k(u))}}_assignObjectId(e,t,i=!1){const s=this._queryEngine.objectIdField;i&&isFinite(t[s])?e[s]=t[s]:e[s]=this._nextObjectId++}async _checkProjection(e){try{await D(u,e)}catch{throw new p("geojson-layer","Projection not supported")}}}
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { aj as U, fn as I$1, aa as s, fX as i, fY as j, cE as e, cm as d, ci as X, cy as ee, bi as d$2, cv as K, cx as W, fZ as J } from "./vendor.74d5941c.js";
+import { I, N, T } from "./geojson.689424f4.js";
+import { i as i$1, u, s as s$1 } from "./clientSideDefaults.2ad4eec3.js";
+import { y, p } from "./projectionSupport.62084d5a.js";
+import { u as u$1 } from "./FeatureStore.2d2de89b.js";
+import { Z } from "./QueryEngine.202b3395.js";
+import { y as y$1, d as d$1, c, u as u$2, h } from "./sourceUtils.446906a0.js";
+import "./json.7989af9b.js";
+import "./aaBoundingBox.b76947f8.js";
+import "./PooledRBush.257a80e4.js";
+import "./quickselect.e4940b29.js";
+import "./_commonjsHelpers.f2a458db.js";
+import "./centroid.93c1b848.js";
+import "./WhereClause.f27c6004.js";
+import "./timeSupport.2cea3b6f.js";
+const R = { hasAttachments: false, capabilities: "query, editing, create, delete, update", useStandardizedQueries: true, supportsCoordinatesQuantization: true, supportsReturningQueryGeometry: true, advancedQueryCapabilities: { supportsQueryAttachments: false, supportsStatistics: true, supportsPercentileStatistics: true, supportsReturningGeometryCentroid: true, supportsQueryWithDistance: true, supportsDistinct: true, supportsReturningQueryExtent: true, supportsReturningGeometryProperties: false, supportsHavingClause: true, supportsOrderBy: true, supportsPagination: true, supportsQueryWithResultType: false, supportsSqlExpression: true, supportsDisjointSpatialRel: true } };
+class D {
+  constructor() {
+    this._queryEngine = null;
+  }
+  destroy() {
+    this._queryEngine && this._queryEngine && this._queryEngine.destroy(), this._queryEngine = this._requiredFields = this._fieldsIndex = this._createDefaultAttributes = null;
+  }
+  load(s$2) {
+    return __async(this, null, function* () {
+      const d$12 = [];
+      yield this._checkProjection(s$2.spatialReference);
+      let u$22 = null;
+      if (s$2.url) {
+        u$22 = (yield U(s$2.url, { responseType: "json" })).data, yield I(u$22);
+      }
+      const p2 = N(u$22, { geometryType: s$2.geometryType }), b = s$2.fields || p2.fields || [], E = s$2.hasZ != null ? s$2.hasZ : p2.hasZ, T$1 = p2.geometryType, q = s$2.objectIdField || (p2.objectIdFieldType === "number" ? p2.objectIdFieldName : "OBJECTID") || "OBJECTID", x = s$2.spatialReference || I$1;
+      let w = s$2.timeInfo;
+      if (!T$1)
+        throw new s("geojson-layer:missing-property", "geometryType not set and couldn't be inferred from the provided features");
+      if (p2.objectIdFieldType === "string" && d$12.push({ name: "geojson-layer:unsupported-id-type", message: "Feature ids are of type string and can't be honored." }), b === p2.fields && p2.unknownFields.length > 0 && d$12.push({ name: "geojson-layer:unknown-field-types", message: "Some fields types couldn't be inferred from the features and were dropped", details: { unknownFields: p2.unknownFields } }), q) {
+        let e2 = null;
+        b.some((t) => t.name === q && (e2 = t, true)) ? (e2.type = "esriFieldTypeOID", e2.editable = false, e2.nullable = false) : b.unshift({ alias: q, name: q, type: "esriFieldTypeOID", editable: false, nullable: false });
+      }
+      for (const t of b) {
+        if (t.name == null && (t.name = t.alias), t.alias == null && (t.alias = t.name), !t.name)
+          throw new s("geojson-layer:invalid-field-name", "field name is missing", { field: t });
+        if (t.name === q && (t.type = "esriFieldTypeOID"), i.jsonValues.indexOf(t.type) === -1)
+          throw new s("geojson-layer:invalid-field-type", `invalid type for field "${t.name}"`, { field: t });
+      }
+      const D2 = {};
+      this._requiredFields = [];
+      for (const e2 of b)
+        if (e2.type !== "esriFieldTypeOID" && e2.type !== "esriFieldTypeGlobalID") {
+          e2.editable = e2.editable == null || !!e2.editable, e2.nullable = e2.nullable == null || !!e2.nullable;
+          const t = j(e2);
+          e2.nullable || t !== void 0 ? D2[e2.name] = t : this._requiredFields.push(e2);
+        }
+      if (this._fieldsIndex = new e(b), w) {
+        if (w.startTimeField) {
+          const e2 = this._fieldsIndex.get(w.startTimeField);
+          e2 ? (w.startTimeField = e2.name, e2.type = "esriFieldTypeDate") : w.startTimeField = null;
+        }
+        if (w.endTimeField) {
+          const e2 = this._fieldsIndex.get(w.endTimeField);
+          e2 ? (w.endTimeField = e2.name, e2.type = "esriFieldTypeDate") : w.endTimeField = null;
+        }
+        if (w.trackIdField) {
+          const e2 = this._fieldsIndex.get(w.trackIdField);
+          e2 ? w.trackIdField = e2.name : (w.trackIdField = null, d$12.push({ name: "geojson-layer:invalid-timeInfo-trackIdField", message: "trackIdField is missing", details: { timeInfo: w } }));
+        }
+        w.startTimeField || w.endTimeField || (d$12.push({ name: "geojson-layer:invalid-timeInfo", message: "startTimeField and endTimeField are missing", details: { timeInfo: w } }), w = null);
+      }
+      const O = { warnings: d$12, featureErrors: [], layerDefinition: __spreadProps(__spreadValues({}, R), { drawingInfo: i$1(T$1), templates: u(D2), extent: null, geometryType: T$1, objectIdField: q, fields: b, hasZ: !!E, timeInfo: w }) };
+      this._queryEngine = new Z({ fields: b, geometryType: T$1, hasM: false, hasZ: E, objectIdField: q, spatialReference: x, timeInfo: w, featureStore: new u$1({ geometryType: T$1, hasM: false, hasZ: E }), cacheSpatialQueries: true }), this._createDefaultAttributes = s$1(D2, q), this._nextObjectId = p2.maxObjectId + 1;
+      const S = T(u$22, { geometryType: T$1, hasZ: E, objectIdFieldName: p2.objectIdFieldType === "number" ? q : null });
+      if (!d(x, I$1))
+        for (const e2 of S)
+          e2.geometry && (e2.geometry = X(y(ee(e2.geometry, T$1, E, false), I$1, x)));
+      return this._loadInitialFeatures(O, S), O;
+    });
+  }
+  applyEdits(e2) {
+    return __async(this, null, function* () {
+      const { spatialReference: t, geometryType: i2 } = this._queryEngine;
+      return yield Promise.all([y$1(t, i2), p(e2.adds, t), p(e2.updates, t)]), this._applyEdits(e2);
+    });
+  }
+  queryFeatures(e2 = {}, t = {}) {
+    return this._queryEngine.executeQuery(e2, t.signal);
+  }
+  queryFeatureCount(e2 = {}, t = {}) {
+    return this._queryEngine.executeQueryForCount(e2, t.signal);
+  }
+  queryObjectIds(e2 = {}, t = {}) {
+    return this._queryEngine.executeQueryForIds(e2, t.signal);
+  }
+  queryExtent(e2 = {}, t = {}) {
+    return this._queryEngine.executeQueryForExtent(e2, t.signal);
+  }
+  querySnapping(e2, t = {}) {
+    return this._queryEngine.executeQueryForSnapping(e2, t.signal);
+  }
+  _loadInitialFeatures(e2, t) {
+    const { featureStore: i2, objectIdField: s2 } = this._queryEngine, r = [];
+    for (const n of t) {
+      const t2 = this._createDefaultAttributes(), i3 = d$1(this._fieldsIndex, this._requiredFields, t2, n.attributes, true, e2.warnings);
+      i3 ? e2.featureErrors.push(i3) : (this._assignObjectId(t2, n.attributes, true), n.attributes = t2, n.objectId = t2[s2], r.push(n));
+    }
+    if (i2.addMany(r), e2.layerDefinition.extent = this._queryEngine.fullExtent, e2.layerDefinition.timeInfo) {
+      const { start: t2, end: i3 } = this._queryEngine.timeExtent;
+      e2.layerDefinition.timeInfo.timeExtent = [t2, i3];
+    }
+    return e2;
+  }
+  _applyEdits(e2) {
+    const { adds: t, updates: i2, deletes: s2 } = e2, r = { addResults: [], deleteResults: [], updateResults: [], uidToObjectId: {} };
+    if (t && t.length && this._applyAddEdits(r, t), i2 && i2.length && this._applyUpdateEdits(r, i2), s2 && s2.length) {
+      for (const e3 of s2)
+        r.deleteResults.push(c(e3));
+      this._queryEngine.featureStore.removeManyById(s2);
+    }
+    return { fullExtent: this._queryEngine.fullExtent, timeExtent: this._queryEngine.timeExtent, featureEditResults: r };
+  }
+  _applyAddEdits(e2, t) {
+    const { addResults: i2 } = e2, { geometryType: r, hasM: n, hasZ: o, objectIdField: a, spatialReference: l, featureStore: u2 } = this._queryEngine, p2 = [];
+    for (const d2 of t) {
+      if (d2.geometry && r !== d$2(d2.geometry)) {
+        i2.push(u$2("Incorrect geometry type."));
+        continue;
+      }
+      const t2 = this._createDefaultAttributes(), n2 = d$1(this._fieldsIndex, this._requiredFields, t2, d2.attributes);
+      if (n2)
+        i2.push(n2);
+      else {
+        if (this._assignObjectId(t2, d2.attributes), d2.attributes = t2, d2.uid != null) {
+          const t3 = d2.attributes[a];
+          e2.uidToObjectId[d2.uid] = t3;
+        }
+        d2.geometry && (d2.geometry = y(h(d2.geometry, l), d2.geometry.spatialReference, l)), p2.push(d2), i2.push(c(d2.attributes[a]));
+      }
+    }
+    u2.addMany(K([], p2, r, o, n, a));
+  }
+  _applyUpdateEdits({ updateResults: e2 }, t) {
+    const { geometryType: i2, hasM: r, hasZ: n, objectIdField: o, spatialReference: a, featureStore: l } = this._queryEngine;
+    for (const d2 of t) {
+      const { attributes: t2, geometry: y$12 } = d2, f = t2 && t2[o];
+      if (f == null) {
+        e2.push(u$2(`Identifier field ${o} missing`));
+        continue;
+      }
+      if (!l.has(f)) {
+        e2.push(u$2(`Feature with object id ${f} missing`));
+        continue;
+      }
+      const m = W(l.getFeature(f), i2, n, r);
+      if (y$12) {
+        if (i2 !== d$2(y$12)) {
+          e2.push(u$2("Incorrect geometry type."));
+          continue;
+        }
+        m.geometry = y(h(y$12, a), y$12.spatialReference, a);
+      }
+      if (t2) {
+        const i3 = d$1(this._fieldsIndex, this._requiredFields, m.attributes, t2);
+        if (i3) {
+          e2.push(i3);
+          continue;
+        }
+      }
+      l.add(J(m, i2, n, r, o)), e2.push(c(f));
+    }
+  }
+  _assignObjectId(e2, t, i2 = false) {
+    const s2 = this._queryEngine.objectIdField;
+    i2 && isFinite(t[s2]) ? e2[s2] = t[s2] : e2[s2] = this._nextObjectId++;
+  }
+  _checkProjection(i2) {
+    return __async(this, null, function* () {
+      try {
+        yield p(I$1, i2);
+      } catch (e2) {
+        throw new s("geojson-layer", "Projection not supported");
+      }
+    });
+  }
+}
+export default D;

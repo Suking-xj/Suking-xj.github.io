@@ -1,1 +1,1645 @@
-import{dr as e,ai as t}from"./vendor.74d5941c.js";import{o as r}from"./_commonjsHelpers.f2a458db.js";const n={min:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.min.apply(Math,e[0])},max:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.max.apply(Math,e[0])},avg:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:a(e[0])},sum:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:function(e){let t=0;for(let r=0;r<e.length;r++)t+=e[r];return t}(e[0])},stddev:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.sqrt(s(e[0]))},count:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:e[0].length},var:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:s(e[0])}};function a(e){let t=0;for(let r=0;r<e.length;r++)t+=e[r];return t/e.length}function s(e){const t=a(e),r=e.length;let n=0;for(const a of e)n+=(a-t)**2;return r>1?n/(r-1):0}class u{constructor(){this.op="+",this.day=0,this.second=0,this.hour=0,this.month=0,this.year=0,this.minute=0}static fixDefaults(e){if(null!==e.precision||null!==e.secondary)throw new Error("Primary and Secondary SqlInterval qualifiers not supported")}static createFromMilliseconds(e){const t=new u;return t.second=e/1e3,t}static createFromValueAndQualifer(e,t,r){let n=null;const a=new u;if(a.op="-"===r?"-":"+","interval-period"===t.type){u.fixDefaults(t);const r=new RegExp("^[0-9]{1,}$");if("year"===t.period||"month"===t.period)throw new Error("Year-Month Intervals not supported");if(!r.test(e))throw new Error("Illegal Interval");a[t.period]=parseFloat(e)}else{if(u.fixDefaults(t.start),u.fixDefaults(t.end),"year"===t.start.period||"month"===t.start.period)throw new Error("Year-Month Intervals not supported");if("year"===t.end.period||"month"===t.end.period)throw new Error("Year-Month Intervals not supported");switch(t.start.period){case"day":switch(t.end.period){case"hour":if(n=new RegExp("^[0-9]{1,} [0-9]{1,}$"),!n.test(e))throw new Error("Illegal Interval");a[t.start.period]=parseFloat(e.split(" ")[0]),a[t.end.period]=parseFloat(e.split(" ")[1]);break;case"minute":if(n=new RegExp("^[0-9]{1,} [0-9]{1,2}:[0-9]{1,}$"),!n.test(e))throw new Error("Illegal Interval");{a[t.start.period]=parseFloat(e.split(" ")[0]);const r=e.split(" ")[1].split(":");a.hour=parseFloat(r[0]),a.minute=parseFloat(r[1])}break;case"second":if(n=new RegExp("^[0-9]{1,} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,}([.]{1}[0-9]{1,}){0,1}$"),!n.test(e))throw new Error("Illegal Interval");{a[t.start.period]=parseFloat(e.split(" ")[0]);const r=e.split(" ")[1].split(":");a.hour=parseFloat(r[0]),a.minute=parseFloat(r[1]),a.second=parseFloat(r[2])}break;default:throw"Invalid Interval."}break;case"hour":switch(t.end.period){case"minute":if(n=new RegExp("^[0-9]{1,}:[0-9]{1,}$"),!n.test(e))throw new Error("Illegal Interval");a.hour=parseFloat(e.split(":")[0]),a.minute=parseFloat(e.split(":")[1]);break;case"second":if(n=new RegExp("^[0-9]{1,}:[0-9]{1,2}:[0-9]{1,}([.]{1}[0-9]{1,}){0,1}$"),!n.test(e))throw new Error("Illegal Interval");{const t=e.split(":");a.hour=parseFloat(t[0]),a.minute=parseFloat(t[1]),a.second=parseFloat(t[2])}break;default:throw"Invalid Interval."}break;case"minute":switch(t.end.period){case"second":if(n=new RegExp("^[0-9]{1,}:[0-9]{1,}([.]{1}[0-9]{1,}){0,1}$"),!n.test(e))throw new Error("Illegal Interval");{const t=e.split(":");a.minute=parseFloat(t[0]),a.second=parseFloat(t[1])}break;default:throw"Invalid Interval."}break;default:throw"Invalid Interval."}}return a}valueInMilliseconds(){return("-"===this.op?-1:1)*(1e3*this.second+60*this.minute*1e3+60*this.hour*60*1e3+24*this.day*60*60*1e3+this.month*(365/12)*24*60*60*1e3+365*this.year*24*60*60*1e3)}}function i(e,t){const r=o[e.toLowerCase()];if(null==r)throw new Error("Function Not Recognised");if(t.length<r.minParams||t.length>r.maxParams)throw new Error(`Invalid Parameter count for call to ${e.toUpperCase()}`);return r.evaluate(t)}const o={extract:{minParams:2,maxParams:2,evaluate:([e,t])=>{if(null==t)return null;if(t instanceof Date)switch(e.toUpperCase()){case"SECOND":return t.getSeconds();case"MINUTE":return t.getMinutes();case"HOUR":return t.getHours();case"DAY":return t.getDate();case"MONTH":return t.getMonth()+1;case"YEAR":return t.getFullYear()}throw new Error("Invalid Parameter for call to EXTRACT")}},substring:{minParams:2,maxParams:3,evaluate:e=>{if(2===e.length){const[t,r]=e;return null==t||null==r?null:t.toString().substring(r-1)}if(3===e.length){const[t,r,n]=e;return null==t||null==r||null==n?null:n<=0?"":t.toString().substring(r-1,r+n-1)}}},position:{minParams:2,maxParams:2,evaluate:([e,t])=>null==e||null==t?null:t.indexOf(e)+1},trim:{minParams:2,maxParams:3,evaluate:t=>{const r=3===t.length,n=r?t[1]:" ",a=r?t[2]:t[1];if(null==n||null==a)return null;const s=`(${e(n)})`;switch(t[0]){case"BOTH":return a.replace(new RegExp(`^${s}*|${s}*$`,"g"),"");case"LEADING":return a.replace(new RegExp(`^${s}*`,"g"),"");case"TRAILING":return a.replace(new RegExp(`${s}*$`,"g"),"")}throw new Error("Invalid Parameter for call to TRIM")}},abs:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.abs(e[0])},ceiling:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.ceil(e[0])},floor:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.floor(e[0])},log:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.log(e[0])},log10:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.log(e[0])*Math.LOG10E},sin:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.sin(e[0])},cos:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.cos(e[0])},tan:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.tan(e[0])},asin:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.asin(e[0])},acos:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.acos(e[0])},atan:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:Math.atan(e[0])},sign:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:e[0]>0?1:e[1]<0?-1:0},power:{minParams:2,maxParams:2,evaluate:e=>null==e[0]||null==e[1]?null:e[0]**e[1]},mod:{minParams:2,maxParams:2,evaluate:e=>null==e[0]||null==e[1]?null:e[0]%e[1]},round:{minParams:1,maxParams:2,evaluate:e=>{const t=e[0],r=2===e.length?10**e[1]:1;return null==t?null:Math.round(t*r)/r}},truncate:{minParams:1,maxParams:2,evaluate:e=>null==e[0]?null:1===e.length?parseInt(e[0].toFixed(0),10):parseFloat(e[0].toFixed(e[1]))},char_length:{minParams:1,maxParams:1,evaluate:e=>"string"==typeof e[0]||e[0]instanceof String?e[0].length:0},concat:{minParams:1,maxParams:1/0,evaluate:e=>{let t="";for(let r=0;r<e.length;r++){if(null==e[r])return null;t+=e[r].toString()}return t}},lower:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:e[0].toString().toLowerCase()},upper:{minParams:1,maxParams:1,evaluate:e=>null==e[0]?null:e[0].toString().toUpperCase()}};var l=r((function(e){var t;t=function(){function e(t,r,n,a){this.message=t,this.expected=r,this.found=n,this.location=a,this.name="SyntaxError","function"==typeof Error.captureStackTrace&&Error.captureStackTrace(this,e)}return function(e,t){function r(){this.constructor=e}r.prototype=t.prototype,e.prototype=new r}(e,Error),e.buildMessage=function(e,t){var r,n={literal:function(e){return'"'+s(e.text)+'"'},class:function(e){var t,r="";for(t=0;t<e.parts.length;t++)r+=e.parts[t]instanceof Array?u(e.parts[t][0])+"-"+u(e.parts[t][1]):u(e.parts[t]);return"["+(e.inverted?"^":"")+r+"]"},any:function(e){return"any character"},end:function(e){return"end of input"},other:function(e){return e.description}};function a(e){return e.charCodeAt(0).toString(16).toUpperCase()}function s(e){return e.replace(/\\/g,"\\\\").replace(/"/g,'\\"').replace(/\0/g,"\\0").replace(/\t/g,"\\t").replace(/\n/g,"\\n").replace(/\r/g,"\\r").replace(/[\x00-\x0F]/g,(function(e){return"\\x0"+a(e)})).replace(/[\x10-\x1F\x7F-\x9F]/g,(function(e){return"\\x"+a(e)}))}function u(e){return e.replace(/\\/g,"\\\\").replace(/\]/g,"\\]").replace(/\^/g,"\\^").replace(/-/g,"\\-").replace(/\0/g,"\\0").replace(/\t/g,"\\t").replace(/\n/g,"\\n").replace(/\r/g,"\\r").replace(/[\x00-\x0F]/g,(function(e){return"\\x0"+a(e)})).replace(/[\x10-\x1F\x7F-\x9F]/g,(function(e){return"\\x"+a(e)}))}function i(e){return n[e.type](e)}return"Expected "+function(e){var t,r,n=new Array(e.length);for(t=0;t<e.length;t++)n[t]=i(e[t]);if(n.sort(),n.length>0){for(t=1,r=1;t<n.length;t++)n[t-1]!==n[t]&&(n[r]=n[t],r++);n.length=r}switch(n.length){case 1:return n[0];case 2:return n[0]+" or "+n[1];default:return n.slice(0,-1).join(", ")+", or "+n[n.length-1]}}(e)+" but "+(((r=t)?'"'+s(r)+'"':"end of input")+" found.")},{SyntaxError:e,parse:function(t,r){r=void 0!==r?r:{};var n,a,s,u,i={},o={start:pt},l=pt,c=function(e,t){var r={type:"expr_list"},n=function(e,t,r){return function(e,t){for(var r=[e],n=0;n<t.length;n++)r.push(t[n][3]);return r}(e,t)}(e,t);return r.value=n,r},p=function(e,t){return mr(e,t)},f=ut("!",!1),v=ut("=",!1),h=ut(">=",!1),d=ut(">",!1),m=ut("<=",!1),g=ut("<>",!1),w=ut("<",!1),y=ut("!=",!1),N=function(e){return e[0]+" "+e[2]},b="+",T=ut("+",!1),x="-",I=ut("-",!1),A=ut("*",!1),E=ut("/",!1),S=function(e,t){return e+t.join("")},C=/^[A-Za-z_\x80-\uFFFF]/,P=it([["A","Z"],["a","z"],"_",["","￿"]],!1,!1),L=/^[A-Za-z0-9_]/,F=it([["A","Z"],["a","z"],["0","9"],"_"],!1,!1),M=/^[A-Za-z0-9_.\x80-\uFFFF]/,O=it([["A","Z"],["a","z"],["0","9"],"_",".",["","￿"]],!1,!1),_=ut("@",!1),D=function(e){return{type:"interval-period",period:e.value,precision:null,secondary:null}},R=function(e,t){return{type:"interval-period",period:"second",precision:e,secondary:t}},J=function(e){return parseFloat(e)},$=ut("'",!1),k=ut("N'",!1),H="''",U=ut("''",!1),V=/^[^']/,q=it(["'"],!0,!1),B=function(e,t){return{type:"when_clause",operand:e,value:t}},j=ut(".",!1),Y=/^[0-9]/,z=it([["0","9"]],!1,!1),G=/^[eE]/,W=it(["e","E"],!1,!1),K=/^[+\-]/,Z=it(["+","-"],!1,!1),Q="null",X=ut("NULL",!0),ee="true",te=ut("TRUE",!0),re="false",ne=ut("FALSE",!0),ae=ut("IN",!0),se=ut("IS",!0),ue=ut("LIKE",!0),ie="escape",oe=ut("ESCAPE",!0),le=ut("NOT",!0),ce=ut("AND",!0),pe=ut("OR",!0),fe=ut("BETWEEN",!0),ve=ut("FROM",!0),he=ut("FOR",!0),de="substring",me=ut("SUBSTRING",!0),ge="extract",we=ut("EXTRACT",!0),ye=ut("TRIM",!0),Ne="position",be=ut("POSITION",!0),Te="timestamp",xe=ut("TIMESTAMP",!0),Ie="date",Ae=ut("DATE",!0),Ee="leading",Se=ut("LEADING",!0),Ce="trailing",Pe=ut("TRAILING",!0),Le="both",Fe=ut("BOTH",!0),Me=ut("TO",!0),Oe=ut("INTERVAL",!0),_e=ut("YEAR",!0),De=ut("MONTH",!0),Re=ut("DAY",!0),Je=ut("HOUR",!0),$e=ut("MINUTE",!0),ke=ut("SECOND",!0),He=ut("CASE",!0),Ue=ut("END",!0),Ve=ut("WHEN",!0),qe=ut("THEN",!0),Be="else",je=ut("ELSE",!0),Ye=ut(",",!1),ze=ut("(",!1),Ge=ut(")",!1),We=/^[ \t\n\r]/,Ke=it([" ","\t","\n","\r"],!1,!1),Ze="`",Qe=ut("`",!1),Xe=/^[^`]/,et=it(["`"],!0,!1),tt=0,rt=[{line:1,column:1}],nt=0,at=[],st=0;if("startRule"in r){if(!(r.startRule in o))throw new Error("Can't start parsing from rule \""+r.startRule+'".');l=o[r.startRule]}function ut(e,t){return{type:"literal",text:e,ignoreCase:t}}function it(e,t,r){return{type:"class",parts:e,inverted:t,ignoreCase:r}}function ot(e){var r,n=rt[e];if(n)return n;for(r=e-1;!rt[r];)r--;for(n={line:(n=rt[r]).line,column:n.column};r<e;)10===t.charCodeAt(r)?(n.line++,n.column=1):n.column++,r++;return rt[e]=n,n}function lt(e,t){var r=ot(e),n=ot(t);return{start:{offset:e,line:r.line,column:r.column},end:{offset:t,line:n.line,column:n.column}}}function ct(e){tt<nt||(tt>nt&&(nt=tt,at=[]),at.push(e))}function pt(){var e,t;return e=tt,vr()!==i&&(t=vt())!==i&&vr()!==i?e=t:(tt=e,e=i),e}function ft(){var e,t,r,n,a,s,u,o;if(e=tt,(t=vt())!==i){for(r=[],n=tt,(a=vr())!==i&&(s=cr())!==i&&(u=vr())!==i&&(o=vt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);n!==i;)r.push(n),n=tt,(a=vr())!==i&&(s=cr())!==i&&(u=vr())!==i&&(o=vt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);r!==i?e=t=c(t,r):(tt=e,e=i)}else tt=e,e=i;return e}function vt(){var e,t,r,n,a,s,u,o;if(e=tt,(t=ht())!==i){for(r=[],n=tt,(a=vr())!==i&&(s=Wt())!==i&&(u=vr())!==i&&(o=ht())!==i?n=a=[a,s,u,o]:(tt=n,n=i);n!==i;)r.push(n),n=tt,(a=vr())!==i&&(s=Wt())!==i&&(u=vr())!==i&&(o=ht())!==i?n=a=[a,s,u,o]:(tt=n,n=i);r!==i?e=t=p(t,r):(tt=e,e=i)}else tt=e,e=i;return e}function ht(){var e,t,r,n,a,s,u,o;if(e=tt,(t=dt())!==i){for(r=[],n=tt,(a=vr())!==i&&(s=Gt())!==i&&(u=vr())!==i&&(o=dt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);n!==i;)r.push(n),n=tt,(a=vr())!==i&&(s=Gt())!==i&&(u=vr())!==i&&(o=dt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);r!==i?e=t=p(t,r):(tt=e,e=i)}else tt=e,e=i;return e}function dt(){var e,r,n,a,s;return e=tt,(r=zt())===i&&(r=tt,33===t.charCodeAt(tt)?(n="!",tt++):(n=i,0===st&&ct(f)),n!==i?(a=tt,st++,61===t.charCodeAt(tt)?(s="=",tt++):(s=i,0===st&&ct(v)),st--,s===i?a=void 0:(tt=a,a=i),a!==i?r=n=[n,a]:(tt=r,r=i)):(tt=r,r=i)),r!==i&&(n=vr())!==i&&(a=dt())!==i?e=r=function(e,t){return{type:"unary_expr",operator:"NOT",expr:t}}(0,a):(tt=e,e=i),e===i&&(e=function(){var e,r,n;return e=tt,(r=yt())!==i&&vr()!==i?((n=function(){var e;return(e=function(){var e,t,r,n,a,s;if(e=[],t=tt,(r=vr())!==i&&(n=mt())!==i&&(a=vr())!==i&&(s=yt())!==i?t=r=[r,n,a,s]:(tt=t,t=i),t!==i)for(;t!==i;)e.push(t),t=tt,(r=vr())!==i&&(n=mt())!==i&&(a=vr())!==i&&(s=yt())!==i?t=r=[r,n,a,s]:(tt=t,t=i);else e=i;return e!==i&&(e=function(e){return{type:"arithmetic",tail:e}}(e)),e}())===i&&(e=function(){var e,t,r,n;return e=tt,(t=wt())!==i&&vr()!==i&&(r=pr())!==i&&vr()!==i&&(n=ft())!==i&&vr()!==i&&fr()!==i?e=t=function(e,t){return{op:e,right:t}}(t,n):(tt=e,e=i),e===i&&(e=tt,(t=wt())!==i&&vr()!==i&&(r=pr())!==i&&vr()!==i&&(n=fr())!==i?e=t=function(e){return{op:e,right:{type:"expr_list",value:[]}}}(t):(tt=e,e=i),e===i&&(e=tt,(t=wt())!==i&&vr()!==i&&(r=Ct())!==i?e=t=function(e,t){return{op:e,right:t}}(t,r):(tt=e,e=i))),e}())===i&&(e=function(){var e,t,r,n,a,s;return e=tt,(t=zt())!==i&&vr()!==i&&(r=Kt())!==i&&vr()!==i&&(n=yt())!==i&&vr()!==i&&(a=Gt())!==i&&vr()!==i&&(s=yt())!==i?e=t=function(e,t,r){return{op:"NOT"+e,right:{type:"expr_list",value:[t,r]}}}(r,n,s):(tt=e,e=i),e===i&&(e=tt,(t=Kt())!==i&&vr()!==i&&(r=yt())!==i&&vr()!==i&&(n=Gt())!==i&&vr()!==i&&(a=yt())!==i?e=t=function(e,t,r){return{op:e,right:{type:"expr_list",value:[t,r]}}}(t,r,a):(tt=e,e=i)),e}())===i&&(e=function(){var e,t,r,n;return e=tt,(t=jt())!==i&&vr()!==i&&(r=zt())!==i&&vr()!==i&&(n=yt())!==i?e=t=function(e,t){return{op:e+"NOT",right:t}}(t,n):(tt=e,e=i),e===i&&(e=tt,(t=jt())!==i&&vr()!==i&&(r=yt())!==i?e=t=function(e,t){return{op:e,right:t}}(t,r):(tt=e,e=i)),e}())===i&&(e=function(){var e,r,n,a;return e=tt,(r=gt())!==i&&vr()!==i&&(n=_t())!==i&&vr()!==i&&function(){var e,r,n,a;return e=tt,t.substr(tt,6).toLowerCase()===ie?(r=t.substr(tt,6),tt+=6):(r=i,0===st&&ct(oe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="ESCAPE":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&(a=Dt())!==i?e=r=function(e,t,r){return{op:e,right:t,escape:r.value}}(r,n,a):(tt=e,e=i),e===i&&(e=tt,(r=gt())!==i&&vr()!==i&&(n=_t())!==i?e=r=function(e,t){return{op:e,right:t,escape:""}}(r,n):(tt=e,e=i)),e}()),e}())===i&&(n=null),n!==i?e=r=function(e,t){return""==t||null==t||null==t?e:"arithmetic"==t.type?mr(e,t.tail):dr(t.op,e,t.right,t.escape)}(r,n):(tt=e,e=i)):(tt=e,e=i),e}()),e}function mt(){var e;return">="===t.substr(tt,2)?(e=">=",tt+=2):(e=i,0===st&&ct(h)),e===i&&(62===t.charCodeAt(tt)?(e=">",tt++):(e=i,0===st&&ct(d)),e===i&&("<="===t.substr(tt,2)?(e="<=",tt+=2):(e=i,0===st&&ct(m)),e===i&&("<>"===t.substr(tt,2)?(e="<>",tt+=2):(e=i,0===st&&ct(g)),e===i&&(60===t.charCodeAt(tt)?(e="<",tt++):(e=i,0===st&&ct(w)),e===i&&(61===t.charCodeAt(tt)?(e="=",tt++):(e=i,0===st&&ct(v)),e===i&&("!="===t.substr(tt,2)?(e="!=",tt+=2):(e=i,0===st&&ct(y)))))))),e}function gt(){var e,t,r,n,a;return e=tt,t=tt,(r=zt())!==i&&(n=vr())!==i&&(a=Yt())!==i?t=r=[r,n,a]:(tt=t,t=i),t!==i&&(t=N(t)),(e=t)===i&&(e=Yt()),e}function wt(){var e,t,r,n,a;return e=tt,t=tt,(r=zt())!==i&&(n=vr())!==i&&(a=Bt())!==i?t=r=[r,n,a]:(tt=t,t=i),t!==i&&(t=N(t)),(e=t)===i&&(e=Bt()),e}function yt(){var e,t,r,n,a,s,u,o;if(e=tt,(t=bt())!==i){for(r=[],n=tt,(a=vr())!==i&&(s=Nt())!==i&&(u=vr())!==i&&(o=bt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);n!==i;)r.push(n),n=tt,(a=vr())!==i&&(s=Nt())!==i&&(u=vr())!==i&&(o=bt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);r!==i?e=t=p(t,r):(tt=e,e=i)}else tt=e,e=i;return e}function Nt(){var e;return 43===t.charCodeAt(tt)?(e="+",tt++):(e=i,0===st&&ct(T)),e===i&&(45===t.charCodeAt(tt)?(e="-",tt++):(e=i,0===st&&ct(I))),e}function bt(){var e,t,r,n,a,s,u,o;if(e=tt,(t=xt())!==i){for(r=[],n=tt,(a=vr())!==i&&(s=Tt())!==i&&(u=vr())!==i&&(o=xt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);n!==i;)r.push(n),n=tt,(a=vr())!==i&&(s=Tt())!==i&&(u=vr())!==i&&(o=xt())!==i?n=a=[a,s,u,o]:(tt=n,n=i);r!==i?e=t=function(e,t){return mr(e,t)}(t,r):(tt=e,e=i)}else tt=e,e=i;return e}function Tt(){var e;return 42===t.charCodeAt(tt)?(e="*",tt++):(e=i,0===st&&ct(A)),e===i&&(47===t.charCodeAt(tt)?(e="/",tt++):(e=i,0===st&&ct(E))),e}function xt(){var e,r;return(e=function(){var e;return(e=Dt())===i&&(e=function(){var e,t,r,n;return e=tt,(t=function(){var e,t,r,n;return e=tt,(t=kt())!==i&&(r=Ht())!==i&&(n=Ut())!==i?e=t=function(e,t,r){return parseFloat(e+t+r)}(t,r,n):(tt=e,e=i),e===i&&(e=tt,(t=kt())!==i&&(r=Ht())!==i?e=t=function(e,t){return parseFloat(e+t)}(t,r):(tt=e,e=i),e===i&&(e=tt,(t=kt())!==i&&(r=Ut())!==i?e=t=function(e,t){return parseFloat(e+t)}(t,r):(tt=e,e=i),e===i&&(e=tt,(t=kt())!==i&&(t=function(e){return parseFloat(e)}(t)),e=t))),e}())!==i?(r=tt,st++,n=At(),st--,n===i?r=void 0:(tt=r,r=i),r!==i?e=t=function(e){return{type:"number",value:e}}(t):(tt=e,e=i)):(tt=e,e=i),e}())===i&&(e=function(){var e,r;return e=tt,(r=function(){var e,r,n,a;return e=tt,t.substr(tt,4).toLowerCase()===ee?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(te)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r=[r,n]:(tt=e,e=i)):(tt=e,e=i),e}())!==i&&(r={type:"bool",value:!0}),(e=r)===i&&(e=tt,(r=function(){var e,r,n,a;return e=tt,t.substr(tt,5).toLowerCase()===re?(r=t.substr(tt,5),tt+=5):(r=i,0===st&&ct(ne)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r=[r,n]:(tt=e,e=i)):(tt=e,e=i),e}())!==i&&(r={type:"bool",value:!1}),e=r),e}())===i&&(e=function(){var e;return(e=function(){var e,r,n,a;return e=tt,t.substr(tt,4).toLowerCase()===Q?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(X)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r=[r,n]:(tt=e,e=i)):(tt=e,e=i),e}())!==i&&(e={type:"null",value:null}),e}())===i&&(e=function(){var e,r;return e=tt,function(){var e,r,n,a;return e=tt,t.substr(tt,4).toLowerCase()===Ie?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(Ae)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="DATE":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&(r=_t())!==i?e=function(e){return{type:"date",value:e.value}}(r):(tt=e,e=i),e}())===i&&(e=function(){var e,r;return e=tt,function(){var e,r,n,a;return e=tt,t.substr(tt,9).toLowerCase()===Te?(r=t.substr(tt,9),tt+=9):(r=i,0===st&&ct(xe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="TIMESTAMP":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&(r=_t())!==i?e=function(e){return{type:"timestamp",value:e.value}}(r):(tt=e,e=i),e}())===i&&(e=function(){var e,r,n,a;return e=tt,Xt()!==i&&vr()!==i?(45===t.charCodeAt(tt)?(r=x,tt++):(r=i,0===st&&ct(I)),r===i&&(43===t.charCodeAt(tt)?(r=b,tt++):(r=i,0===st&&ct(T))),r!==i&&vr()!==i&&(n=_t())!==i&&vr()!==i&&(a=Lt())!==i?e=function(e,t,r){return{type:"interval",value:t,qualifier:r,op:e}}(r,n,a):(tt=e,e=i)):(tt=e,e=i),e===i&&(e=tt,Xt()!==i&&vr()!==i&&(r=_t())!==i&&vr()!==i&&(n=Lt())!==i?e=function(e,t){return{type:"interval",value:e,qualifier:t,op:""}}(r,n):(tt=e,e=i)),e}()),e}())===i&&(e=function(){var e,r,n;return e=tt,function(){var e,r,n,a;return e=tt,t.substr(tt,7).toLowerCase()===ge?(r=t.substr(tt,7),tt+=7):(r=i,0===st&&ct(we)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="EXTRACT":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=function(){var e;return(e=er())===i&&(e=tr())===i&&(e=rr())===i&&(e=nr())===i&&(e=ar())===i&&(e=sr()),e}())!==i&&vr()!==i&&Zt()!==i&&vr()!==i&&(n=vt())!==i&&vr()!==i&&fr()!==i?e=function(e,t){return{type:"function",name:"extract",args:{type:"expr_list",value:[{type:"string",value:e},t]}}}(r,n):(tt=e,e=i),e}())===i&&(e=function(){var e,r,n,a,s,u,o,l;return e=tt,function(){var e,r,n,a;return e=tt,t.substr(tt,9).toLowerCase()===de?(r=t.substr(tt,9),tt+=9):(r=i,0===st&&ct(me)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="SUBSTRING":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=vt())!==i&&vr()!==i&&Zt()!==i&&vr()!==i&&(n=vt())!==i&&vr()!==i?(a=tt,(s=function(){var e,r,n,a;return e=tt,"for"===t.substr(tt,3).toLowerCase()?(r=t.substr(tt,3),tt+=3):(r=i,0===st&&ct(he)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="FOR":(tt=e,e=i)):(tt=e,e=i),e}())!==i&&(u=vr())!==i&&(o=vt())!==i&&(l=vr())!==i?a=s=[s,u,o,l]:(tt=a,a=i),a===i&&(a=null),a!==i&&(s=fr())!==i?e=function(e,t,r){return{type:"function",name:"substring",args:{type:"expr_list",value:r?[e,t,r[2]]:[e,t]}}}(r,n,a):(tt=e,e=i)):(tt=e,e=i),e}())===i&&(e=function(){var e,t,r,n;return e=tt,Qt()!==i&&vr()!==i&&pr()!==i&&vr()!==i?((t=Pt())===i&&(t=null),t!==i&&vr()!==i&&(r=vt())!==i&&vr()!==i&&Zt()!==i&&vr()!==i&&(n=vt())!==i&&vr()!==i&&fr()!==i?e=function(e,t,r){return{type:"function",name:"trim",args:{type:"expr_list",value:[{type:"string",value:null==e?"BOTH":e},t,r]}}}(t,r,n):(tt=e,e=i)):(tt=e,e=i),e===i&&(e=tt,Qt()!==i&&vr()!==i&&pr()!==i&&vr()!==i?((t=Pt())===i&&(t=null),t!==i&&vr()!==i&&(r=vt())!==i&&vr()!==i&&fr()!==i?e=function(e,t){return{type:"function",name:"trim",args:{type:"expr_list",value:[{type:"string",value:null==e?"BOTH":e},t]}}}(t,r):(tt=e,e=i)):(tt=e,e=i)),e}())===i&&(e=function(){var e,r,n;return e=tt,function(){var e,r,n,a;return e=tt,t.substr(tt,8).toLowerCase()===Ne?(r=t.substr(tt,8),tt+=8):(r=i,0===st&&ct(be)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="POSITION":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=vt())!==i&&vr()!==i&&Bt()!==i&&vr()!==i&&(n=vt())!==i&&vr()!==i&&fr()!==i?e=function(e,t){return{type:"function",name:"position",args:{type:"expr_list",value:[e,t]}}}(r,n):(tt=e,e=i),e}())===i&&(e=function(){var e,r,n;return e=tt,(r=function(){var e,r,n,a;if(e=tt,(r=It())!==i&&(r=r),(e=r)===i)if(e=tt,96===t.charCodeAt(tt)?(r=Ze,tt++):(r=i,0===st&&ct(Qe)),r!==i){if(n=[],Xe.test(t.charAt(tt))?(a=t.charAt(tt),tt++):(a=i,0===st&&ct(et)),a!==i)for(;a!==i;)n.push(a),Xe.test(t.charAt(tt))?(a=t.charAt(tt),tt++):(a=i,0===st&&ct(et));else n=i;n!==i?(96===t.charCodeAt(tt)?(a=Ze,tt++):(a=i,0===st&&ct(Qe)),a!==i?e=r=function(e){return e.join("")}(n):(tt=e,e=i)):(tt=e,e=i)}else tt=e,e=i;return e}())!==i&&vr()!==i&&pr()!==i&&vr()!==i?((n=ft())===i&&(n=null),n!==i&&vr()!==i&&fr()!==i?e=r=function(e,t){return{type:"function",name:e,args:t||{type:"expr_list",value:[]}}}(r,n):(tt=e,e=i)):(tt=e,e=i),e}())===i&&(e=function(){var e;return(e=function(){var e,t,r,n,a;if(e=tt,ur()!==i)if(vr()!==i)if((t=vt())!==i)if(vr()!==i){for(r=[],n=Jt();n!==i;)r.push(n),n=Jt();r!==i&&(n=vr())!==i&&(a=ir())!==i?e=function(e,t){return{type:"case_expression",format:"simple",operand:e,clauses:t,else:null}}(t,r):(tt=e,e=i)}else tt=e,e=i;else tt=e,e=i;else tt=e,e=i;else tt=e,e=i;if(e===i)if(e=tt,ur()!==i)if(vr()!==i)if((t=vt())!==i)if(vr()!==i){for(r=[],n=Jt();n!==i;)r.push(n),n=Jt();r!==i&&(n=vr())!==i&&(a=$t())!==i&&vr()!==i&&ir()!==i?e=function(e,t,r){return{type:"case_expression",format:"simple",operand:e,clauses:t,else:r.value}}(t,r,a):(tt=e,e=i)}else tt=e,e=i;else tt=e,e=i;else tt=e,e=i;else tt=e,e=i;return e}())===i&&(e=function(){var e,t,r,n;if(e=tt,ur()!==i)if(vr()!==i){for(t=[],r=Rt();r!==i;)t.push(r),r=Rt();t!==i&&(r=vr())!==i&&(n=ir())!==i?e=function(e){return{type:"case_expression",format:"searched",clauses:e,else:null}}(t):(tt=e,e=i)}else tt=e,e=i;else tt=e,e=i;if(e===i)if(e=tt,ur()!==i)if(vr()!==i){for(t=[],r=Rt();r!==i;)t.push(r),r=Rt();t!==i&&(r=vr())!==i&&(n=$t())!==i&&vr()!==i&&ir()!==i?e=function(e,t){return{type:"case_expression",format:"searched",clauses:e,else:t.value}}(t,n):(tt=e,e=i)}else tt=e,e=i;else tt=e,e=i;return e}()),e}())===i&&(e=function(){var e;return(e=function(){var e;return(e=function(){var e,t,r,n;if(e=tt,(t=At())!==i){for(r=[],n=St();n!==i;)r.push(n),n=St();r!==i?e=t=S(t,r):(tt=e,e=i)}else tt=e,e=i;return e}())!==i&&(e=e),e}())!==i&&(e=function(e){return/^CURRENT_DATE$/i.test(e)?{type:"current_time",mode:"date"}:/^CURRENT_TIMESTAMP$/i.test(e)?{type:"current_time",mode:"timestamp"}:{type:"column_ref",table:"",column:e}}(e)),e}())===i&&(e=Ct())===i&&(e=tt,pr()!==i&&vr()!==i&&(r=vt())!==i&&vr()!==i&&fr()!==i?e=function(e){return e.paren=!0,e}(r):(tt=e,e=i)),e}function It(){var e,t,r,n;if(e=tt,(t=At())!==i){for(r=[],n=Et();n!==i;)r.push(n),n=Et();r!==i?e=t=S(t,r):(tt=e,e=i)}else tt=e,e=i;return e}function At(){var e;return C.test(t.charAt(tt))?(e=t.charAt(tt),tt++):(e=i,0===st&&ct(P)),e}function Et(){var e;return L.test(t.charAt(tt))?(e=t.charAt(tt),tt++):(e=i,0===st&&ct(F)),e}function St(){var e;return M.test(t.charAt(tt))?(e=t.charAt(tt),tt++):(e=i,0===st&&ct(O)),e}function Ct(){var e,r,n;return e=tt,64===t.charCodeAt(tt)?(r="@",tt++):(r=i,0===st&&ct(_)),r!==i&&(n=It())!==i?e=r=[r,n]:(tt=e,e=i),e!==i&&(e={type:"param",value:e[1]}),e}function Pt(){var e,r,n,a,s;return r=tt,t.substr(tt,7).toLowerCase()===Ee?(n=t.substr(tt,7),tt+=7):(n=i,0===st&&ct(Se)),n!==i?(a=tt,st++,s=Et(),st--,s===i?a=void 0:(tt=a,a=i),a!==i?r=n="LEADING":(tt=r,r=i)):(tt=r,r=i),(e=r)===i&&(e=function(){var e,r,n,a;return e=tt,t.substr(tt,8).toLowerCase()===Ce?(r=t.substr(tt,8),tt+=8):(r=i,0===st&&ct(Pe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="TRAILING":(tt=e,e=i)):(tt=e,e=i),e}())===i&&(e=function(){var e,r,n,a;return e=tt,t.substr(tt,4).toLowerCase()===Le?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(Fe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="BOTH":(tt=e,e=i)):(tt=e,e=i),e}()),e}function Lt(){var e,r,n;return e=tt,(r=function(){var e,t,r;return e=tt,(t=Ft())!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=Ot())!==i&&vr()!==i&&fr()!==i?e=t=function(e,t){return{type:"interval-period",period:e.value,precision:t,secondary:null}}(t,r):(tt=e,e=i),e===i&&(e=tt,(t=Ft())!==i&&(t=D(t)),e=t),e}())!==i&&vr()!==i&&function(){var e,r,n,a;return e=tt,"to"===t.substr(tt,2).toLowerCase()?(r=t.substr(tt,2),tt+=2):(r=i,0===st&&ct(Me)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="TO":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&(n=function(){var e,t,r,n;return e=tt,(t=Ft())!==i&&(t=function(e){return{type:"interval-period",period:e.value,precision:null,secondary:null}}(t)),(e=t)===i&&(e=tt,(t=sr())!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=Ot())!==i&&vr()!==i&&cr()!==i&&vr()!==i&&(n=Mt())!==i&&vr()!==i&&fr()!==i?e=t=R(r,n):(tt=e,e=i),e===i&&(e=tt,(t=sr())!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=Ot())!==i&&vr()!==i&&fr()!==i?e=t=function(e){return{type:"interval-period",period:"second",precision:e,secondary:null}}(r):(tt=e,e=i),e===i&&(e=tt,(t=sr())!==i&&(t={type:"interval-period",period:"second",precision:null,secondary:null}),e=t))),e}())!==i?e=r=function(e,t){return{type:"interval-qualifier",start:e,end:t}}(r,n):(tt=e,e=i),e===i&&(e=function(){var e,t,r,n;return e=tt,(t=Ft())!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=Mt())!==i&&vr()!==i&&fr()!==i?e=t=function(e,t){return{type:"interval-period",period:e.value,precision:t,secondary:null}}(t,r):(tt=e,e=i),e===i&&(e=tt,(t=Ft())!==i&&(t=D(t)),(e=t)===i&&(e=tt,(t=sr())!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=Ot())!==i&&vr()!==i&&cr()!==i&&vr()!==i&&(n=Mt())!==i&&vr()!==i&&fr()!==i?e=t=R(r,n):(tt=e,e=i),e===i&&(e=tt,(t=sr())!==i&&vr()!==i&&pr()!==i&&vr()!==i&&(r=Mt())!==i&&vr()!==i&&fr()!==i?e=t=function(e){return{type:"interval-period",period:"second",precision:e,secondary:null}}(r):(tt=e,e=i),e===i&&(e=tt,(t=sr())!==i&&(t={type:"interval-period",period:"second",precision:null,secondary:null}),e=t)))),e}()),e}function Ft(){var e,t;return e=tt,(t=rr())!==i&&(t={type:"string",value:"day"}),(e=t)===i&&(e=tt,(t=nr())!==i&&(t={type:"string",value:"hour"}),(e=t)===i&&(e=tt,(t=ar())!==i&&(t={type:"string",value:"minute"}),(e=t)===i&&(e=tt,(t=tr())!==i&&(t={type:"string",value:"month"}),(e=t)===i&&(e=tt,(t=er())!==i&&(t={type:"string",value:"year"}),e=t)))),e}function Mt(){var e;return(e=Vt())!==i&&(e=J(e)),e}function Ot(){var e;return(e=Vt())!==i&&(e=J(e)),e}function _t(){var e;return(e=Dt())===i&&(e=Ct()),e}function Dt(){var e,r,n,a,s;if(e=tt,39===t.charCodeAt(tt)?(r="'",tt++):(r=i,0===st&&ct($)),r===i&&("N'"===t.substr(tt,2)?(r="N'",tt+=2):(r=i,0===st&&ct(k))),r!==i){for(n=[],a=tt,t.substr(tt,2)===H?(s=H,tt+=2):(s=i,0===st&&ct(U)),s!==i&&(s="'"),(a=s)===i&&(V.test(t.charAt(tt))?(a=t.charAt(tt),tt++):(a=i,0===st&&ct(q)));a!==i;)n.push(a),a=tt,t.substr(tt,2)===H?(s=H,tt+=2):(s=i,0===st&&ct(U)),s!==i&&(s="'"),(a=s)===i&&(V.test(t.charAt(tt))?(a=t.charAt(tt),tt++):(a=i,0===st&&ct(q)));n!==i?(39===t.charCodeAt(tt)?(a="'",tt++):(a=i,0===st&&ct($)),a!==i?e=r={type:"string",value:n.join("")}:(tt=e,e=i)):(tt=e,e=i)}else tt=e,e=i;return e}function Rt(){var e,t,r;return e=tt,or()!==i&&vr()!==i&&(t=vt())!==i&&vr()!==i&&lr()!==i&&vr()!==i&&(r=vt())!==i?e=B(t,r):(tt=e,e=i),e}function Jt(){var e,t,r;return e=tt,or()!==i&&vr()!==i&&(t=vt())!==i&&vr()!==i&&lr()!==i&&vr()!==i&&(r=vt())!==i?e=B(t,r):(tt=e,e=i),e}function $t(){var e,r;return e=tt,function(){var e,r,n,a;return e=tt,t.substr(tt,4).toLowerCase()===Be?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(je)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="ELSE":(tt=e,e=i)):(tt=e,e=i),e}()!==i&&vr()!==i&&(r=vt())!==i?e=function(e){return{type:"else_clause",value:e}}(r):(tt=e,e=i),e}function kt(){var e,r,n;return(e=Vt())===i&&(e=tt,45===t.charCodeAt(tt)?(r=x,tt++):(r=i,0===st&&ct(I)),r===i&&(43===t.charCodeAt(tt)?(r=b,tt++):(r=i,0===st&&ct(T))),r!==i&&(n=Vt())!==i?e=r=function(e,t){return e[0]+t}(r,n):(tt=e,e=i)),e}function Ht(){var e,r,n,a;return e=tt,46===t.charCodeAt(tt)?(r=".",tt++):(r=i,0===st&&ct(j)),r!==i?((n=Vt())===i&&(n=null),n!==i?e=r="."+(null!=(a=n)?a:""):(tt=e,e=i)):(tt=e,e=i),e}function Ut(){var e,r,n;return e=tt,(r=function(){var e,r,n;return e=tt,G.test(t.charAt(tt))?(r=t.charAt(tt),tt++):(r=i,0===st&&ct(W)),r!==i?(K.test(t.charAt(tt))?(n=t.charAt(tt),tt++):(n=i,0===st&&ct(Z)),n===i&&(n=null),n!==i?e=r=function(e,t){return"e"+(null===t?"":t)}(0,n):(tt=e,e=i)):(tt=e,e=i),e}())!==i&&(n=Vt())!==i?e=r=function(e,t){return e+t}(r,n):(tt=e,e=i),e}function Vt(){var e,t;if(e=[],(t=qt())!==i)for(;t!==i;)e.push(t),t=qt();else e=i;return e!==i&&(e=function(e){return e.join("")}(e)),e}function qt(){var e;return Y.test(t.charAt(tt))?(e=t.charAt(tt),tt++):(e=i,0===st&&ct(z)),e}function Bt(){var e,r,n,a;return e=tt,"in"===t.substr(tt,2).toLowerCase()?(r=t.substr(tt,2),tt+=2):(r=i,0===st&&ct(ae)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="IN":(tt=e,e=i)):(tt=e,e=i),e}function jt(){var e,r,n,a;return e=tt,"is"===t.substr(tt,2).toLowerCase()?(r=t.substr(tt,2),tt+=2):(r=i,0===st&&ct(se)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="IS":(tt=e,e=i)):(tt=e,e=i),e}function Yt(){var e,r,n,a;return e=tt,"like"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(ue)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="LIKE":(tt=e,e=i)):(tt=e,e=i),e}function zt(){var e,r,n,a;return e=tt,"not"===t.substr(tt,3).toLowerCase()?(r=t.substr(tt,3),tt+=3):(r=i,0===st&&ct(le)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="NOT":(tt=e,e=i)):(tt=e,e=i),e}function Gt(){var e,r,n,a;return e=tt,"and"===t.substr(tt,3).toLowerCase()?(r=t.substr(tt,3),tt+=3):(r=i,0===st&&ct(ce)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="AND":(tt=e,e=i)):(tt=e,e=i),e}function Wt(){var e,r,n,a;return e=tt,"or"===t.substr(tt,2).toLowerCase()?(r=t.substr(tt,2),tt+=2):(r=i,0===st&&ct(pe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="OR":(tt=e,e=i)):(tt=e,e=i),e}function Kt(){var e,r,n,a;return e=tt,"between"===t.substr(tt,7).toLowerCase()?(r=t.substr(tt,7),tt+=7):(r=i,0===st&&ct(fe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="BETWEEN":(tt=e,e=i)):(tt=e,e=i),e}function Zt(){var e,r,n,a;return e=tt,"from"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(ve)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="FROM":(tt=e,e=i)):(tt=e,e=i),e}function Qt(){var e,r,n,a;return e=tt,"trim"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(ye)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="TRIM":(tt=e,e=i)):(tt=e,e=i),e}function Xt(){var e,r,n,a;return e=tt,"interval"===t.substr(tt,8).toLowerCase()?(r=t.substr(tt,8),tt+=8):(r=i,0===st&&ct(Oe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="INTERVAL":(tt=e,e=i)):(tt=e,e=i),e}function er(){var e,r,n,a;return e=tt,"year"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(_e)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="YEAR":(tt=e,e=i)):(tt=e,e=i),e}function tr(){var e,r,n,a;return e=tt,"month"===t.substr(tt,5).toLowerCase()?(r=t.substr(tt,5),tt+=5):(r=i,0===st&&ct(De)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="MONTH":(tt=e,e=i)):(tt=e,e=i),e}function rr(){var e,r,n,a;return e=tt,"day"===t.substr(tt,3).toLowerCase()?(r=t.substr(tt,3),tt+=3):(r=i,0===st&&ct(Re)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="DAY":(tt=e,e=i)):(tt=e,e=i),e}function nr(){var e,r,n,a;return e=tt,"hour"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(Je)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="HOUR":(tt=e,e=i)):(tt=e,e=i),e}function ar(){var e,r,n,a;return e=tt,"minute"===t.substr(tt,6).toLowerCase()?(r=t.substr(tt,6),tt+=6):(r=i,0===st&&ct($e)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="MINUTE":(tt=e,e=i)):(tt=e,e=i),e}function sr(){var e,r,n,a;return e=tt,"second"===t.substr(tt,6).toLowerCase()?(r=t.substr(tt,6),tt+=6):(r=i,0===st&&ct(ke)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="SECOND":(tt=e,e=i)):(tt=e,e=i),e}function ur(){var e,r,n,a;return e=tt,"case"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(He)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="CASE":(tt=e,e=i)):(tt=e,e=i),e}function ir(){var e,r,n,a;return e=tt,"end"===t.substr(tt,3).toLowerCase()?(r=t.substr(tt,3),tt+=3):(r=i,0===st&&ct(Ue)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="END":(tt=e,e=i)):(tt=e,e=i),e}function or(){var e,r,n,a;return e=tt,"when"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(Ve)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="WHEN":(tt=e,e=i)):(tt=e,e=i),e}function lr(){var e,r,n,a;return e=tt,"then"===t.substr(tt,4).toLowerCase()?(r=t.substr(tt,4),tt+=4):(r=i,0===st&&ct(qe)),r!==i?(n=tt,st++,a=Et(),st--,a===i?n=void 0:(tt=n,n=i),n!==i?e=r="THEN":(tt=e,e=i)):(tt=e,e=i),e}function cr(){var e;return 44===t.charCodeAt(tt)?(e=",",tt++):(e=i,0===st&&ct(Ye)),e}function pr(){var e;return 40===t.charCodeAt(tt)?(e="(",tt++):(e=i,0===st&&ct(ze)),e}function fr(){var e;return 41===t.charCodeAt(tt)?(e=")",tt++):(e=i,0===st&&ct(Ge)),e}function vr(){var e,t;for(e=[],t=hr();t!==i;)e.push(t),t=hr();return e}function hr(){var e;return We.test(t.charAt(tt))?(e=t.charAt(tt),tt++):(e=i,0===st&&ct(Ke)),e}function dr(e,t,r,n){var a={type:"binary_expr",operator:e,left:t,right:r};return void 0!==n&&(a.escape=n),a}function mr(e,t){for(var r=e,n=0;n<t.length;n++)r=dr(t[n][1],r,t[n][3]);return r}if((n=l())!==i&&tt===t.length)return n;throw n!==i&&tt<t.length&&ct({type:"end"}),a=at,s=nt<t.length?t.charAt(nt):null,u=nt<t.length?lt(nt,nt+1):lt(nt,nt),new e(e.buildMessage(a,s),a,s,u)}}},e.exports&&(e.exports=t())}));const c=/^(\d{4})-(\d{1,2})-(\d{1,2})$/,p=/^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2}(\.[0-9]+)?)$/,f=/^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2}(\.[0-9]+)?)(\+|\-)(\d{1,2}):(\d{1,2})$/,v=/^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2})(\+|\-)(\d{1,2}):(\d{1,2})$/,h=/^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2})$/;function d(e,t){return(e+="").length>=t?e:new Array(t-e.length+1).join("0")+e}function m(e,t,r="0",n="0",a="0",s="0",u="",i="0",o="0"){if("+"===u||"-"===u){const l=`${d(parseInt(e,10),4)}-${d(parseInt(t,10),2)}-${d(parseInt(r,10),2)}`;let c="";parseFloat(s)<10&&(c="0");const p=`${d(parseInt(n,10),2)}:${d(parseInt(a,10),2)}:${c+parseFloat(s).toString()}`,f=`${u}${d(parseInt(i,10),2)}:${d(parseInt(o,10),2)}`;return new Date(l+"T"+p+f)}return new Date(parseInt(e,10),parseInt(t,10)-1,parseInt(r,10),parseInt(n,10),parseInt(a,10),parseFloat(s))}class g{static makeBool(e){return b(e)}static featureValue(e,t,r,n){return M(e,t,r,n)}static equalsNull(e){return null===e}static applyLike(e,t,r){return S(e,t,r)}static ensureArray(e){return T(e)}static applyIn(e,t){return E(e,t)}static currentDate(){const e=new Date;return e.setHours(0,0,0,0),e}static makeSqlInterval(e,t,r){return u.createFromValueAndQualifer(e,t,r)}static convertInterval(e){return e instanceof u?e.valueInMilliseconds():e}static currentTimestamp(){return new Date}static compare(e,t,r){return P(e,t,r)}static calculate(e,t,r){return F(e,t,r)}static makeComparable(e){return C(e)}static evaluateFunction(e,t){return i(e,t)}static lookup(e,t){const r=t[e];return void 0===r?null:r}static between(e,t){return null==e||null==t[0]||null==t[1]?null:e>=t[0]&&e<=t[1]}static notbetween(e,t){return null==e||null==t[0]||null==t[1]?null:e<t[0]||e>t[1]}static ternaryNot(e){return x(e)}static ternaryAnd(e,t){return I(e,t)}static ternaryOr(e,t){return A(e,t)}}class w{constructor(e,t){this.fieldsIndex=t,this.datefields={},this.parameters={},this.parseTree=class{static parse(e){return l.parse(e)}}.parse(e);const{isStandardized:r,isAggregate:n,referencedFieldNames:a}=this.extractExpressionInfo(t);this.referencedFieldNames=a,this.isStandardized=r,this.isAggregate=n}static create(e,t){return new w(e,t)}get fieldNames(){return this.referencedFieldNames}testSet(e,t=O){const r={};for(const n of this.fieldNames)r[n]=e.map((e=>t.getAttribute(e,n)));return!!this.evaluateNode(this.parseTree,{attributes:r},O)}calculateValue(e,t=O){const r=this.evaluateNode(this.parseTree,e,t);return r instanceof u?r.valueInMilliseconds()/864e5:r}calculateValueCompiled(e,r=O){return null!=this.parseTree._compiledVersion?this.parseTree._compiledVersion(e,this.parameters,r,this.datefields):t("csp-restrictions")?this.calculateValue(e,r):(this.compileMe(),this.parseTree._compiledVersion(e,this.parameters,r,this.datefields))}testFeature(e,t=O){return!!this.evaluateNode(this.parseTree,e,t)}testFeatureCompiled(e,r=O){return null!=this.parseTree._compiledVersion?!!this.parseTree._compiledVersion(e,this.parameters,r,this.datefields):t("csp-restrictions")?this.testFeature(e,r):(this.compileMe(),!!this.parseTree._compiledVersion(e,this.parameters,r,this.datefields))}getFunctions(){const e=[];return this.visitAll(this.parseTree,(t=>{"function"===t.type&&e.push(t.name.toLowerCase())})),L(e)}getExpressions(){const e=new Map;return this.visitAll(this.parseTree,(t=>{if("function"===t.type){const r=t.name.toLowerCase(),n=t.args.value[0];if("column_ref"===n.type){const t=n.column,a=`${r}-${t}`;e.has(a)||e.set(a,{aggregateType:r,field:t})}}})),[...e.values()]}getVariables(){const e=[];return this.visitAll(this.parseTree,(t=>{"param"===t.type&&e.push(t.value.toLowerCase())})),L(e)}compileMe(){const e="return this.convertInterval("+this.evaluateNodeToJavaScript(this.parseTree)+")";this.parseTree._compiledVersion=new Function("feature","lookups","attributeAdapter","datefields",e).bind(g)}extractExpressionInfo(e){const t=[];let r=!0,a=!0;return this.visitAll(this.parseTree,(s=>{switch(s.type){case"column_ref":{const r=e.get(s.column),n=r&&r.name;!r||"date"!==r.type&&"esriFieldTypeDate"!==r.type||(this.datefields[r.name]=1),void 0!==n?(t.push(n),s.column=n):t.push(s.column);break}case"function":{const{name:e,args:t}=s,u=t.value.length;r&&(r=function(e,t){const r=o[e.toLowerCase()];return null!=r&&t>=r.minParams&&t<=r.maxParams}(e,u)),a&&(a=function(e,t){const r=n[e.toLowerCase()];return null!=r&&t>=r.minParams&&t<=r.maxParams}(e,u));break}}})),{referencedFieldNames:L(t),isStandardized:r,isAggregate:a}}visitAll(e,t){if(null!=e)switch(t(e),e.type){case"when_clause":this.visitAll(e.operand,t),this.visitAll(e.value,t);break;case"case_expression":for(const r of e.clauses)this.visitAll(r,t);"simple"===e.format&&this.visitAll(e.operand,t),null!==e.else&&this.visitAll(e.else,t);break;case"expr_list":for(const r of e.value)this.visitAll(r,t);break;case"unary_expr":this.visitAll(e.expr,t);break;case"binary_expr":this.visitAll(e.left,t),this.visitAll(e.right,t);break;case"function":this.visitAll(e.args,t)}}evaluateNodeToJavaScript(e){switch(e.type){case"interval":return"this.makeSqlInterval("+this.evaluateNodeToJavaScript(e.value)+", "+JSON.stringify(e.qualifier)+","+JSON.stringify(e.op)+")";case"case_expression":{let t="";if("simple"===e.format){const r="this.makeComparable("+this.evaluateNodeToJavaScript(e.operand)+")";t="( ";for(let n=0;n<e.clauses.length;n++)t+=" ("+r+" === this.makeComparable("+this.evaluateNodeToJavaScript(e.clauses[n].operand)+")) ? ("+this.evaluateNodeToJavaScript(e.clauses[n].value)+") : ";null!==e.else?t+=this.evaluateNodeToJavaScript(e.else):t+="null",t+=" )"}else{t="( ";for(let r=0;r<e.clauses.length;r++)t+=" this.makeBool("+this.evaluateNodeToJavaScript(e.clauses[r].operand)+")===true ? ("+this.evaluateNodeToJavaScript(e.clauses[r].value)+") : ";null!==e.else?t+=this.evaluateNodeToJavaScript(e.else):t+="null",t+=" )"}return t}case"param":return"this.lookup("+JSON.stringify(e.value.toLowerCase())+",lookups)";case"expr_list":{let t="[";for(const r of e.value)"["!==t&&(t+=","),t+=this.evaluateNodeToJavaScript(r);return t+="]",t}case"unary_expr":return"this.ternaryNot("+this.evaluateNodeToJavaScript(e.expr)+")";case"binary_expr":switch(e.operator){case"AND":return"this.ternaryAnd("+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+" )";case"OR":return"this.ternaryOr("+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+" )";case"IS":if("null"!==e.right.type)throw new Error("Unsupported RHS for IS");return"this.equalsNull("+this.evaluateNodeToJavaScript(e.left)+")";case"ISNOT":if("null"!==e.right.type)throw new Error("Unsupported RHS for IS");return"(!(this.equalsNull("+this.evaluateNodeToJavaScript(e.left)+")))";case"IN":return"this.applyIn("+this.evaluateNodeToJavaScript(e.left)+",this.ensureArray("+this.evaluateNodeToJavaScript(e.right)+"))";case"NOT IN":return"this.ternaryNot(this.applyIn("+this.evaluateNodeToJavaScript(e.left)+",this.ensureArray("+this.evaluateNodeToJavaScript(e.right)+")))";case"BETWEEN":return"this.between("+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+")";case"NOTBETWEEN":return"this.notbetween("+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+")";case"LIKE":return"this.applyLike("+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+","+JSON.stringify(e.escape)+")";case"NOT LIKE":return"this.ternaryNot(this.applyLike("+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+","+JSON.stringify(e.escape)+"))";case"<>":case"<":case">":case">=":case"<=":case"=":return"this.compare("+JSON.stringify(e.operator)+","+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+")";case"*":case"-":case"+":case"/":return"this.calculate("+JSON.stringify(e.operator)+","+this.evaluateNodeToJavaScript(e.left)+","+this.evaluateNodeToJavaScript(e.right)+")"}throw new Error("Not Supported Operator "+e.operator);case"null":case"bool":case"string":case"number":return JSON.stringify(e.value);case"date":return"(new Date("+N(e.value).getTime().toString()+"))";case"timestamp":return"(new Date("+y(e.value).getTime().toString()+"))";case"current_time":return"date"===e.mode?"this.currentDate()":"this.currentTimestamp()";case"column_ref":return"this.featureValue(feature,"+JSON.stringify(e.column)+",datefields,attributeAdapter)";case"function":return"this.evaluateFunction("+JSON.stringify(e.name)+","+this.evaluateNodeToJavaScript(e.args)+")"}throw new Error("Unsupported sql syntax "+e.type)}evaluateNode(e,t,r){switch(e.type){case"interval":{const n=this.evaluateNode(e.value,t,r);return u.createFromValueAndQualifer(n,e.qualifier,e.op)}case"case_expression":if("simple"===e.format){const n=C(this.evaluateNode(e.operand,t,r));for(let a=0;a<e.clauses.length;a++)if(n===C(this.evaluateNode(e.clauses[a].operand,t,r)))return this.evaluateNode(e.clauses[a].value,t,r);if(null!==e.else)return this.evaluateNode(e.else,t,r)}else{for(let n=0;n<e.clauses.length;n++)if(b(this.evaluateNode(e.clauses[n].operand,t,r)))return this.evaluateNode(e.clauses[n].value,t,r);if(null!==e.else)return this.evaluateNode(e.else,t,r)}return null;case"param":return this.parameters[e.value.toLowerCase()];case"expr_list":{const n=[];for(const a of e.value)n.push(this.evaluateNode(a,t,r));return n}case"unary_expr":return x(this.evaluateNode(e.expr,t,r));case"binary_expr":switch(e.operator){case"AND":return I(this.evaluateNode(e.left,t,r),this.evaluateNode(e.right,t,r));case"OR":return A(this.evaluateNode(e.left,t,r),this.evaluateNode(e.right,t,r));case"IS":if("null"!==e.right.type)throw new Error("Unsupported RHS for IS");return null===this.evaluateNode(e.left,t,r);case"ISNOT":if("null"!==e.right.type)throw new Error("Unsupported RHS for IS");return null!==this.evaluateNode(e.left,t,r);case"IN":{const n=T(this.evaluateNode(e.right,t,r));return E(this.evaluateNode(e.left,t,r),n)}case"NOT IN":{const n=T(this.evaluateNode(e.right,t,r));return x(E(this.evaluateNode(e.left,t,r),n))}case"BETWEEN":{const n=this.evaluateNode(e.left,t,r),a=this.evaluateNode(e.right,t,r);return null==n||null==a[0]||null==a[1]?null:n>=C(a[0])&&n<=C(a[1])}case"NOTBETWEEN":{const n=this.evaluateNode(e.left,t,r),a=this.evaluateNode(e.right,t,r);return null==n||null==a[0]||null==a[1]?null:n<C(a[0])||n>C(a[1])}case"LIKE":return S(this.evaluateNode(e.left,t,r),this.evaluateNode(e.right,t,r),e.escape);case"NOT LIKE":return x(S(this.evaluateNode(e.left,t,r),this.evaluateNode(e.right,t,r),e.escape));case"<>":case"<":case">":case">=":case"<=":case"=":return P(e.operator,this.evaluateNode(e.left,t,r),this.evaluateNode(e.right,t,r));case"-":case"+":case"*":case"/":return F(e.operator,this.evaluateNode(e.left,t,r),this.evaluateNode(e.right,t,r))}case"null":case"bool":case"string":case"number":return e.value;case"date":return N(e.value);case"timestamp":return y(e.value);case"current_time":{const t=new Date;return"date"===e.mode&&t.setHours(0,0,0,0),t}case"column_ref":return M(t,e.column,this.datefields,r);case"function":{const a=this.evaluateNode(e.args,t,r);return this.isAggregate?function(e,t){const r=n[e.toLowerCase()];if(null==r)throw new Error("Function Not Recognised");if(t.length<r.minParams||t.length>r.maxParams)throw new Error(`Invalid Parameter count for call to ${e.toUpperCase()}`);return r.evaluate(t)}(e.name,a):i(e.name,a)}}throw new Error("Unsupported sql syntax "+e.type)}}function y(e){let t=p.exec(e);if(null!==t){const[,e,r,n,a,s,u]=t;return m(e,r,n,a,s,u)}if(t=f.exec(e),null!==t){const[,e,r,n,a,s,u,i,o,l]=t;return m(e,r,n,a,s,u,i,o,l)}if(t=v.exec(e),null!==t){const[,e,r,n,a,s,u,i,o]=t;return m(e,r,n,a,s,"0",u,i,o)}if(t=h.exec(e),null!==t){const[,e,r,n,a,s]=t;return m(e,r,n,a,s)}if(t=c.exec(e),null!==t){const[,e,r,n]=t;return m(e,r,n)}throw new Error("SQL Invalid Timestamp")}function N(e){const t=c.exec(e);if(null===t)throw new Error("SQL Invalid Date");const[,r,n,a]=t;return new Date(parseInt(r,10),parseInt(n,10)-1,parseInt(a,10))}function b(e){return!0===e}function T(e){return Array.isArray(e)?e:[e]}function x(e){return null!==e?!0!==e:null}function I(e,t){return null!=e&&null!=t?!0===e&&!0===t:!1!==e&&!1!==t&&null}function A(e,t){return null!=e&&null!=t?!0===e||!0===t:!0===e||!0===t||null}function E(e,t){if(null==e)return null;let r=!1;for(const n of t)if(null==n)r=null;else if(e===n){r=!0;break}return r}function S(e,t,r){if(null==e)return null;const n=t,a=r;let s="";const u="-[]/{}()*+?.\\^$|";let i=0;for(let o=0;o<n.length;o++){const e=n.charAt(o);switch(i){case 0:e===a?i=1:u.indexOf(e)>=0?s+="\\"+e:s+="%"===e?".*":"_"===e?".":e;break;case 1:u.indexOf(e)>=0?s+="\\"+e:s+=e,i=0}}return new RegExp("^"+s+"$").test(e)}function C(e){return e instanceof Date?e.valueOf():e}function P(e,t,r){if(null==t||null==r)return null;const n=C(t),a=C(r);switch(e){case"<>":return n!==a;case"=":return n===a;case">":return n>a;case"<":return n<a;case">=":return n>=a;case"<=":return n<=a}}function L(e){const t=[],r={};for(const n of e){const e=n.toLowerCase();void 0===r[e]&&(t.push(n),r[e]=1)}return t}function F(e,t,r){if(t instanceof u)if(r instanceof Date)switch(e){case"+":return new Date(t.valueInMilliseconds()+r.getTime());case"-":return t.valueInMilliseconds()-r.getTime();case"*":return t.valueInMilliseconds()*r.getTime();case"/":return t.valueInMilliseconds()/r.getTime()}else if(r instanceof u)switch(e){case"+":return u.createFromMilliseconds(t.valueInMilliseconds()+r.valueInMilliseconds());case"-":return u.createFromMilliseconds(t.valueInMilliseconds()-r.valueInMilliseconds());case"*":return t.valueInMilliseconds()*r.valueInMilliseconds();case"/":return t.valueInMilliseconds()/r.valueInMilliseconds()}else t=t.valueInMilliseconds();else if(r instanceof u)if(t instanceof Date)switch(e){case"+":return new Date(r.valueInMilliseconds()+t.getTime());case"-":return new Date(t.getTime()-r.valueInMilliseconds());case"*":return t.getTime()*r.valueInMilliseconds();case"/":return t.getTime()/r.valueInMilliseconds()}else r=r.valueInMilliseconds();else if(t instanceof Date&&"number"==typeof r)switch(r=24*r*60*60*1e3,t=t.getTime(),e){case"+":return new Date(t+r);case"-":return new Date(t-r);case"*":return new Date(t*r);case"/":return new Date(t/r)}else if(r instanceof Date&&"number"==typeof t)switch(t=24*t*60*60*1e3,r=r.getTime(),e){case"+":return new Date(t+r);case"-":return new Date(t-r);case"*":return new Date(t*r);case"/":return new Date(t/r)}switch(e){case"+":return t+r;case"-":return t-r;case"*":return t*r;case"/":return t/r}}function M(e,t,r,n){const a=n.getAttribute(e,t);return null!=a&&1===r[t]?new Date(a):a}const O={getAttribute:(e,t)=>(function(e){return e&&"object"==typeof e.attributes}(e)?e.attributes:e)[t]};export{w as WhereClause,O as defaultAttributeAdapter};
+var __pow = Math.pow;
+import { dr as o$1, ai as t$2 } from "./vendor.74d5941c.js";
+import { o as o$2 } from "./_commonjsHelpers.f2a458db.js";
+function a(a2, n2) {
+  const t2 = l$1[a2.toLowerCase()];
+  if (t2 == null)
+    throw new Error("Function Not Recognised");
+  if (n2.length < t2.minParams || n2.length > t2.maxParams)
+    throw new Error(`Invalid Parameter count for call to ${a2.toUpperCase()}`);
+  return t2.evaluate(n2);
+}
+function n$2(a2, n2) {
+  const t2 = l$1[a2.toLowerCase()];
+  return t2 != null && n2 >= t2.minParams && n2 <= t2.maxParams;
+}
+const l$1 = { min: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.min.apply(Math, a2[0]) }, max: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.max.apply(Math, a2[0]) }, avg: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : t$1(a2[0]) }, sum: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : r$1(a2[0]) }, stddev: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.sqrt(e$2(a2[0])) }, count: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : a2[0].length }, var: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : e$2(a2[0]) } };
+function t$1(a2) {
+  let n2 = 0;
+  for (let l2 = 0; l2 < a2.length; l2++)
+    n2 += a2[l2];
+  return n2 / a2.length;
+}
+function r$1(a2) {
+  let n2 = 0;
+  for (let l2 = 0; l2 < a2.length; l2++)
+    n2 += a2[l2];
+  return n2;
+}
+function e$2(a2) {
+  const n2 = t$1(a2), l2 = a2.length;
+  let r2 = 0;
+  for (const t2 of a2)
+    r2 += __pow(t2 - n2, 2);
+  return l2 > 1 ? r2 / (l2 - 1) : 0;
+}
+class e$1 {
+  constructor() {
+    this.op = "+", this.day = 0, this.second = 0, this.hour = 0, this.month = 0, this.year = 0, this.minute = 0;
+  }
+  static fixDefaults(a2) {
+    if (a2.precision !== null || a2.secondary !== null)
+      throw new Error("Primary and Secondary SqlInterval qualifiers not supported");
+  }
+  static createFromMilliseconds(a2) {
+    const t2 = new e$1();
+    return t2.second = a2 / 1e3, t2;
+  }
+  static createFromValueAndQualifer(a2, t2, r2) {
+    let n2 = null;
+    const l2 = new e$1();
+    if (l2.op = r2 === "-" ? "-" : "+", t2.type === "interval-period") {
+      e$1.fixDefaults(t2);
+      const r3 = new RegExp("^[0-9]{1,}$");
+      if (t2.period === "year" || t2.period === "month")
+        throw new Error("Year-Month Intervals not supported");
+      if (!r3.test(a2))
+        throw new Error("Illegal Interval");
+      l2[t2.period] = parseFloat(a2);
+    } else {
+      if (e$1.fixDefaults(t2.start), e$1.fixDefaults(t2.end), t2.start.period === "year" || t2.start.period === "month")
+        throw new Error("Year-Month Intervals not supported");
+      if (t2.end.period === "year" || t2.end.period === "month")
+        throw new Error("Year-Month Intervals not supported");
+      switch (t2.start.period) {
+        case "day":
+          switch (t2.end.period) {
+            case "hour":
+              if (n2 = new RegExp("^[0-9]{1,} [0-9]{1,}$"), !n2.test(a2))
+                throw new Error("Illegal Interval");
+              l2[t2.start.period] = parseFloat(a2.split(" ")[0]), l2[t2.end.period] = parseFloat(a2.split(" ")[1]);
+              break;
+            case "minute":
+              if (n2 = new RegExp("^[0-9]{1,} [0-9]{1,2}:[0-9]{1,}$"), !n2.test(a2))
+                throw new Error("Illegal Interval");
+              {
+                l2[t2.start.period] = parseFloat(a2.split(" ")[0]);
+                const e2 = a2.split(" ")[1].split(":");
+                l2.hour = parseFloat(e2[0]), l2.minute = parseFloat(e2[1]);
+              }
+              break;
+            case "second":
+              if (n2 = new RegExp("^[0-9]{1,} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,}([.]{1}[0-9]{1,}){0,1}$"), !n2.test(a2))
+                throw new Error("Illegal Interval");
+              {
+                l2[t2.start.period] = parseFloat(a2.split(" ")[0]);
+                const e2 = a2.split(" ")[1].split(":");
+                l2.hour = parseFloat(e2[0]), l2.minute = parseFloat(e2[1]), l2.second = parseFloat(e2[2]);
+              }
+              break;
+            default:
+              throw "Invalid Interval.";
+          }
+          break;
+        case "hour":
+          switch (t2.end.period) {
+            case "minute":
+              if (n2 = new RegExp("^[0-9]{1,}:[0-9]{1,}$"), !n2.test(a2))
+                throw new Error("Illegal Interval");
+              l2.hour = parseFloat(a2.split(":")[0]), l2.minute = parseFloat(a2.split(":")[1]);
+              break;
+            case "second":
+              if (n2 = new RegExp("^[0-9]{1,}:[0-9]{1,2}:[0-9]{1,}([.]{1}[0-9]{1,}){0,1}$"), !n2.test(a2))
+                throw new Error("Illegal Interval");
+              {
+                const e2 = a2.split(":");
+                l2.hour = parseFloat(e2[0]), l2.minute = parseFloat(e2[1]), l2.second = parseFloat(e2[2]);
+              }
+              break;
+            default:
+              throw "Invalid Interval.";
+          }
+          break;
+        case "minute":
+          switch (t2.end.period) {
+            case "second":
+              if (n2 = new RegExp("^[0-9]{1,}:[0-9]{1,}([.]{1}[0-9]{1,}){0,1}$"), !n2.test(a2))
+                throw new Error("Illegal Interval");
+              {
+                const e2 = a2.split(":");
+                l2.minute = parseFloat(e2[0]), l2.second = parseFloat(e2[1]);
+              }
+              break;
+            default:
+              throw "Invalid Interval.";
+          }
+          break;
+        default:
+          throw "Invalid Interval.";
+      }
+    }
+    return l2;
+  }
+  valueInMilliseconds() {
+    return (this.op === "-" ? -1 : 1) * (1e3 * this.second + 60 * this.minute * 1e3 + 60 * this.hour * 60 * 1e3 + 24 * this.day * 60 * 60 * 1e3 + this.month * (365 / 12) * 24 * 60 * 60 * 1e3 + 365 * this.year * 24 * 60 * 60 * 1e3);
+  }
+}
+function t(a2, e2) {
+  const t2 = n$1[a2.toLowerCase()];
+  if (t2 == null)
+    throw new Error("Function Not Recognised");
+  if (e2.length < t2.minParams || e2.length > t2.maxParams)
+    throw new Error(`Invalid Parameter count for call to ${a2.toUpperCase()}`);
+  return t2.evaluate(e2);
+}
+function r(a2, e2) {
+  const t2 = n$1[a2.toLowerCase()];
+  return t2 != null && e2 >= t2.minParams && e2 <= t2.maxParams;
+}
+const n$1 = { extract: { minParams: 2, maxParams: 2, evaluate: ([a2, e2]) => {
+  if (e2 == null)
+    return null;
+  if (e2 instanceof Date)
+    switch (a2.toUpperCase()) {
+      case "SECOND":
+        return e2.getSeconds();
+      case "MINUTE":
+        return e2.getMinutes();
+      case "HOUR":
+        return e2.getHours();
+      case "DAY":
+        return e2.getDate();
+      case "MONTH":
+        return e2.getMonth() + 1;
+      case "YEAR":
+        return e2.getFullYear();
+    }
+  throw new Error("Invalid Parameter for call to EXTRACT");
+} }, substring: { minParams: 2, maxParams: 3, evaluate: (a2) => {
+  if (a2.length === 2) {
+    const [e2, t2] = a2;
+    return e2 == null || t2 == null ? null : e2.toString().substring(t2 - 1);
+  }
+  if (a2.length === 3) {
+    const [e2, t2, r2] = a2;
+    return e2 == null || t2 == null || r2 == null ? null : r2 <= 0 ? "" : e2.toString().substring(t2 - 1, t2 + r2 - 1);
+  }
+} }, position: { minParams: 2, maxParams: 2, evaluate: ([a2, e2]) => a2 == null || e2 == null ? null : e2.indexOf(a2) + 1 }, trim: { minParams: 2, maxParams: 3, evaluate: (e2) => {
+  const t2 = e2.length === 3, r2 = t2 ? e2[1] : " ", n2 = t2 ? e2[2] : e2[1];
+  if (r2 == null || n2 == null)
+    return null;
+  const l2 = `(${o$1(r2)})`;
+  switch (e2[0]) {
+    case "BOTH":
+      return n2.replace(new RegExp(`^${l2}*|${l2}*$`, "g"), "");
+    case "LEADING":
+      return n2.replace(new RegExp(`^${l2}*`, "g"), "");
+    case "TRAILING":
+      return n2.replace(new RegExp(`${l2}*$`, "g"), "");
+  }
+  throw new Error("Invalid Parameter for call to TRIM");
+} }, abs: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.abs(a2[0]) }, ceiling: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.ceil(a2[0]) }, floor: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.floor(a2[0]) }, log: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.log(a2[0]) }, log10: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.log(a2[0]) * Math.LOG10E }, sin: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.sin(a2[0]) }, cos: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.cos(a2[0]) }, tan: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.tan(a2[0]) }, asin: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.asin(a2[0]) }, acos: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.acos(a2[0]) }, atan: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : Math.atan(a2[0]) }, sign: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : a2[0] > 0 ? 1 : a2[1] < 0 ? -1 : 0 }, power: { minParams: 2, maxParams: 2, evaluate: (a2) => a2[0] == null || a2[1] == null ? null : __pow(a2[0], a2[1]) }, mod: { minParams: 2, maxParams: 2, evaluate: (a2) => a2[0] == null || a2[1] == null ? null : a2[0] % a2[1] }, round: { minParams: 1, maxParams: 2, evaluate: (a2) => {
+  const e2 = a2[0], t2 = a2.length === 2 ? __pow(10, a2[1]) : 1;
+  return e2 == null ? null : Math.round(e2 * t2) / t2;
+} }, truncate: { minParams: 1, maxParams: 2, evaluate: (a2) => a2[0] == null ? null : a2.length === 1 ? parseInt(a2[0].toFixed(0), 10) : parseFloat(a2[0].toFixed(a2[1])) }, char_length: { minParams: 1, maxParams: 1, evaluate: (a2) => typeof a2[0] == "string" || a2[0] instanceof String ? a2[0].length : 0 }, concat: { minParams: 1, maxParams: 1 / 0, evaluate: (a2) => {
+  let e2 = "";
+  for (let t2 = 0; t2 < a2.length; t2++) {
+    if (a2[t2] == null)
+      return null;
+    e2 += a2[t2].toString();
+  }
+  return e2;
+} }, lower: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : a2[0].toString().toLowerCase() }, upper: { minParams: 1, maxParams: 1, evaluate: (a2) => a2[0] == null ? null : a2[0].toString().toUpperCase() } };
+var n = o$2(function(r2) {
+  var t2;
+  t2 = function() {
+    function r3(r4, t4) {
+      function n3() {
+        this.constructor = r4;
+      }
+      n3.prototype = t4.prototype, r4.prototype = new n3();
+    }
+    function t3(r4, n3, e2, u2) {
+      this.message = r4, this.expected = n3, this.found = e2, this.location = u2, this.name = "SyntaxError", typeof Error.captureStackTrace == "function" && Error.captureStackTrace(this, t3);
+    }
+    function n2(r4, n3) {
+      n3 = n3 !== void 0 ? n3 : {};
+      var e2, u2 = {}, o2 = { start: He }, i = He, a2 = function(r5) {
+        return r5;
+      }, s = function(r5, t4) {
+        var n4 = { type: "expr_list" }, e3 = Uo(r5, t4);
+        return n4.value = e3, n4;
+      }, c2 = function(r5, t4) {
+        return Bo(r5, t4);
+      }, f2 = "!", l2 = Re("!", false), v2 = "=", p2 = Re("=", false), d2 = function(r5) {
+        return Mo("NOT", r5);
+      }, h2 = function(r5, t4) {
+        return t4 == "" || t4 == null || t4 == null ? r5 : t4.type == "arithmetic" ? Bo(r5, t4.tail) : Do(t4.op, r5, t4.right, t4.escape);
+      }, b2 = function(r5) {
+        return { type: "arithmetic", tail: r5 };
+      }, y2 = ">=", A2 = Re(">=", false), C = ">", g2 = Re(">", false), E2 = "<=", m2 = Re("<=", false), L = "<>", T2 = Re("<>", false), x2 = "<", w2 = Re("<", false), N2 = "!=", _2 = Re("!=", false), R = function(r5, t4) {
+        return { op: r5 + "NOT", right: t4 };
+      }, I2 = function(r5, t4) {
+        return { op: r5, right: t4 };
+      }, O = function(r5, t4, n4) {
+        return { op: "NOT" + r5, right: { type: "expr_list", value: [t4, n4] } };
+      }, F = function(r5, t4, n4) {
+        return { op: r5, right: { type: "expr_list", value: [t4, n4] } };
+      }, S2 = function(r5) {
+        return r5[0] + " " + r5[2];
+      }, M2 = function(r5, t4, n4) {
+        return { op: r5, right: t4, escape: n4.value };
+      }, D2 = function(r5, t4) {
+        return { op: r5, right: t4, escape: "" };
+      }, H = function(r5, t4) {
+        return { op: r5, right: t4 };
+      }, U = function(r5) {
+        return { op: r5, right: { type: "expr_list", value: [] } };
+      }, B = function(r5, t4) {
+        return { op: r5, right: t4 };
+      }, j = "+", P = Re("+", false), z = "-", G = Re("-", false), Z = function(r5, t4) {
+        return Bo(r5, t4);
+      }, k = "*", W = Re("*", false), Y = "/", q = Re("/", false), K = function(r5) {
+        return r5.paren = true, r5;
+      }, V = function(r5) {
+        return /^CURRENT_DATE$/i.test(r5) ? { type: "current_time", mode: "date" } : /^CURRENT_TIMESTAMP$/i.test(r5) ? { type: "current_time", mode: "timestamp" } : { type: "column_ref", table: "", column: r5 };
+      }, X = function(r5) {
+        return r5;
+      }, $ = function(r5, t4) {
+        return r5 + t4.join("");
+      }, J2 = /^[A-Za-z_\x80-\uFFFF]/, Q = Ie([["A", "Z"], ["a", "z"], "_", ["\x80", "\uFFFF"]], false, false), rr = /^[A-Za-z0-9_]/, tr = Ie([["A", "Z"], ["a", "z"], ["0", "9"], "_"], false, false), nr = /^[A-Za-z0-9_.\x80-\uFFFF]/, er = Ie([["A", "Z"], ["a", "z"], ["0", "9"], "_", ".", ["\x80", "\uFFFF"]], false, false), ur = "@", or = Re("@", false), ir = function(r5) {
+        return { type: "param", value: r5[1] };
+      }, ar = function(r5, t4) {
+        return { type: "function", name: "extract", args: { type: "expr_list", value: [{ type: "string", value: r5 }, t4] } };
+      }, sr = function(r5, t4, n4) {
+        return { type: "function", name: "substring", args: { type: "expr_list", value: n4 ? [r5, t4, n4[2]] : [r5, t4] } };
+      }, cr = function(r5, t4, n4) {
+        return { type: "function", name: "trim", args: { type: "expr_list", value: [{ type: "string", value: r5 == null ? "BOTH" : r5 }, t4, n4] } };
+      }, fr = function(r5, t4) {
+        return { type: "function", name: "trim", args: { type: "expr_list", value: [{ type: "string", value: r5 == null ? "BOTH" : r5 }, t4] } };
+      }, lr = function(r5, t4) {
+        return { type: "function", name: "position", args: { type: "expr_list", value: [r5, t4] } };
+      }, vr = function(r5, t4) {
+        return { type: "function", name: r5, args: t4 || { type: "expr_list", value: [] } };
+      }, pr = function(r5) {
+        return { type: "timestamp", value: r5.value };
+      }, dr = function(r5, t4, n4) {
+        return { type: "interval", value: t4, qualifier: n4, op: r5 };
+      }, hr = function(r5, t4) {
+        return { type: "interval", value: r5, qualifier: t4, op: "" };
+      }, br = function(r5, t4) {
+        return { type: "interval-qualifier", start: r5, end: t4 };
+      }, yr = function(r5, t4) {
+        return { type: "interval-period", period: r5.value, precision: t4, secondary: null };
+      }, Ar = function(r5) {
+        return { type: "interval-period", period: r5.value, precision: null, secondary: null };
+      }, Cr = function(r5) {
+        return { type: "interval-period", period: r5.value, precision: null, secondary: null };
+      }, gr = function(r5, t4) {
+        return { type: "interval-period", period: "second", precision: r5, secondary: t4 };
+      }, Er = function(r5) {
+        return { type: "interval-period", period: "second", precision: r5, secondary: null };
+      }, mr = function() {
+        return { type: "interval-period", period: "second", precision: null, secondary: null };
+      }, Lr = function(r5, t4) {
+        return { type: "interval-period", period: r5.value, precision: t4, secondary: null };
+      }, Tr = function(r5) {
+        return { type: "interval-period", period: "second", precision: r5, secondary: null };
+      }, xr = function() {
+        return { type: "interval-period", period: "second", precision: null, secondary: null };
+      }, wr = function() {
+        return { type: "string", value: "day" };
+      }, Nr = function() {
+        return { type: "string", value: "hour" };
+      }, _r = function() {
+        return { type: "string", value: "minute" };
+      }, Rr = function() {
+        return { type: "string", value: "month" };
+      }, Ir = function() {
+        return { type: "string", value: "year" };
+      }, Or = function(r5) {
+        return parseFloat(r5);
+      }, Fr = function(r5) {
+        return { type: "date", value: r5.value };
+      }, Sr = function() {
+        return { type: "null", value: null };
+      }, Mr = function() {
+        return { type: "bool", value: true };
+      }, Dr = function() {
+        return { type: "bool", value: false };
+      }, Hr = "'", Ur = Re("'", false), Br = "N'", jr = Re("N'", false), Pr = "''", zr = Re("''", false), Gr = function() {
+        return "'";
+      }, Zr = /^[^']/, kr = Ie(["'"], true, false), Wr = function(r5) {
+        return { type: "string", value: r5.join("") };
+      }, Yr = function(r5, t4) {
+        return { type: "case_expression", format: "simple", operand: r5, clauses: t4, else: null };
+      }, qr = function(r5, t4, n4) {
+        return { type: "case_expression", format: "simple", operand: r5, clauses: t4, else: n4.value };
+      }, Kr = function(r5) {
+        return { type: "case_expression", format: "searched", clauses: r5, else: null };
+      }, Vr = function(r5, t4) {
+        return { type: "case_expression", format: "searched", clauses: r5, else: t4.value };
+      }, Xr = function(r5, t4) {
+        return { type: "when_clause", operand: r5, value: t4 };
+      }, $r = function(r5) {
+        return { type: "else_clause", value: r5 };
+      }, Jr = function(r5) {
+        return { type: "number", value: r5 };
+      }, Qr = function(r5, t4, n4) {
+        return parseFloat(r5 + t4 + n4);
+      }, rt = function(r5, t4) {
+        return parseFloat(r5 + t4);
+      }, tt = function(r5, t4) {
+        return parseFloat(r5 + t4);
+      }, nt = function(r5) {
+        return parseFloat(r5);
+      }, et = function(r5, t4) {
+        return r5[0] + t4;
+      }, ut = ".", ot = Re(".", false), it = function(r5) {
+        return "." + (r5 != null ? r5 : "");
+      }, at = function(r5, t4) {
+        return r5 + t4;
+      }, st = function(r5) {
+        return r5.join("");
+      }, ct = /^[0-9]/, ft = Ie([["0", "9"]], false, false), lt = /^[eE]/, vt = Ie(["e", "E"], false, false), pt = /^[+\-]/, dt = Ie(["+", "-"], false, false), ht = function(r5, t4) {
+        return "e" + (t4 === null ? "" : t4);
+      }, bt = "null", yt = Re("NULL", true), At = "true", Ct = Re("TRUE", true), gt = "false", Et = Re("FALSE", true), mt = "in", Lt = Re("IN", true), Tt = function() {
+        return "IN";
+      }, xt = "is", wt = Re("IS", true), Nt = function() {
+        return "IS";
+      }, _t = "like", Rt = Re("LIKE", true), It = function() {
+        return "LIKE";
+      }, Ot = "escape", Ft = Re("ESCAPE", true), St = function() {
+        return "ESCAPE";
+      }, Mt = "not", Dt = Re("NOT", true), Ht = function() {
+        return "NOT";
+      }, Ut = "and", Bt = Re("AND", true), jt = function() {
+        return "AND";
+      }, Pt = "or", zt = Re("OR", true), Gt = function() {
+        return "OR";
+      }, Zt = "between", kt = Re("BETWEEN", true), Wt = function() {
+        return "BETWEEN";
+      }, Yt = "from", qt = Re("FROM", true), Kt = function() {
+        return "FROM";
+      }, Vt = "for", Xt = Re("FOR", true), $t = function() {
+        return "FOR";
+      }, Jt = "substring", Qt = Re("SUBSTRING", true), rn = function() {
+        return "SUBSTRING";
+      }, tn = "extract", nn = Re("EXTRACT", true), en = function() {
+        return "EXTRACT";
+      }, un = "trim", on = Re("TRIM", true), an = function() {
+        return "TRIM";
+      }, sn = "position", cn = Re("POSITION", true), fn = function() {
+        return "POSITION";
+      }, ln = "timestamp", vn = Re("TIMESTAMP", true), pn = function() {
+        return "TIMESTAMP";
+      }, dn = "date", hn = Re("DATE", true), bn = function() {
+        return "DATE";
+      }, yn = "leading", An = Re("LEADING", true), Cn = function() {
+        return "LEADING";
+      }, gn = "trailing", En = Re("TRAILING", true), mn = function() {
+        return "TRAILING";
+      }, Ln = "both", Tn = Re("BOTH", true), xn = function() {
+        return "BOTH";
+      }, wn = "to", Nn = Re("TO", true), _n = function() {
+        return "TO";
+      }, Rn = "interval", In = Re("INTERVAL", true), On = function() {
+        return "INTERVAL";
+      }, Fn = "year", Sn = Re("YEAR", true), Mn = function() {
+        return "YEAR";
+      }, Dn = "month", Hn = Re("MONTH", true), Un = function() {
+        return "MONTH";
+      }, Bn = "day", jn = Re("DAY", true), Pn = function() {
+        return "DAY";
+      }, zn = "hour", Gn = Re("HOUR", true), Zn = function() {
+        return "HOUR";
+      }, kn = "minute", Wn = Re("MINUTE", true), Yn = function() {
+        return "MINUTE";
+      }, qn = "second", Kn = Re("SECOND", true), Vn = function() {
+        return "SECOND";
+      }, Xn = "case", $n = Re("CASE", true), Jn = function() {
+        return "CASE";
+      }, Qn = "end", re = Re("END", true), te = function() {
+        return "END";
+      }, ne = "when", ee = Re("WHEN", true), ue = function() {
+        return "WHEN";
+      }, oe = "then", ie = Re("THEN", true), ae = function() {
+        return "THEN";
+      }, se = "else", ce = Re("ELSE", true), fe = function() {
+        return "ELSE";
+      }, le = ",", ve = Re(",", false), pe = "(", de = Re("(", false), he = ")", be = Re(")", false), ye = /^[ \t\n\r]/, Ae = Ie([" ", "	", "\n", "\r"], false, false), Ce = "`", ge = Re("`", false), Ee = /^[^`]/, me = Ie(["`"], true, false), Le = function(r5) {
+        return r5.join("");
+      }, Te = 0, xe = [{ line: 1, column: 1 }], we = 0, Ne = [], _e = 0;
+      if ("startRule" in n3) {
+        if (!(n3.startRule in o2))
+          throw new Error(`Can't start parsing from rule "` + n3.startRule + '".');
+        i = o2[n3.startRule];
+      }
+      function Re(r5, t4) {
+        return { type: "literal", text: r5, ignoreCase: t4 };
+      }
+      function Ie(r5, t4, n4) {
+        return { type: "class", parts: r5, inverted: t4, ignoreCase: n4 };
+      }
+      function Oe() {
+        return { type: "end" };
+      }
+      function Fe(t4) {
+        var n4, e3 = xe[t4];
+        if (e3)
+          return e3;
+        for (n4 = t4 - 1; !xe[n4]; )
+          n4--;
+        for (e3 = { line: (e3 = xe[n4]).line, column: e3.column }; n4 < t4; )
+          r4.charCodeAt(n4) === 10 ? (e3.line++, e3.column = 1) : e3.column++, n4++;
+        return xe[t4] = e3, e3;
+      }
+      function Se(r5, t4) {
+        var n4 = Fe(r5), e3 = Fe(t4);
+        return { start: { offset: r5, line: n4.line, column: n4.column }, end: { offset: t4, line: e3.line, column: e3.column } };
+      }
+      function Me(r5) {
+        Te < we || (Te > we && (we = Te, Ne = []), Ne.push(r5));
+      }
+      function De(r5, n4, e3) {
+        return new t3(t3.buildMessage(r5, n4), r5, n4, e3);
+      }
+      function He() {
+        var r5, t4;
+        return r5 = Te, Oo() !== u2 && (t4 = Be()) !== u2 && Oo() !== u2 ? r5 = a2(t4) : (Te = r5, r5 = u2), r5;
+      }
+      function Ue() {
+        var r5, t4, n4, e3, o3, i2, a3, c3;
+        if (r5 = Te, (t4 = Be()) !== u2) {
+          for (n4 = [], e3 = Te, (o3 = Oo()) !== u2 && (i2 = _o()) !== u2 && (a3 = Oo()) !== u2 && (c3 = Be()) !== u2 ? e3 = o3 = [o3, i2, a3, c3] : (Te = e3, e3 = u2); e3 !== u2; )
+            n4.push(e3), e3 = Te, (o3 = Oo()) !== u2 && (i2 = _o()) !== u2 && (a3 = Oo()) !== u2 && (c3 = Be()) !== u2 ? e3 = o3 = [o3, i2, a3, c3] : (Te = e3, e3 = u2);
+          n4 !== u2 ? r5 = t4 = s(t4, n4) : (Te = r5, r5 = u2);
+        } else
+          Te = r5, r5 = u2;
+        return r5;
+      }
+      function Be() {
+        var r5, t4, n4, e3, o3, i2, a3, s2;
+        if (r5 = Te, (t4 = je()) !== u2) {
+          for (n4 = [], e3 = Te, (o3 = Oo()) !== u2 && (i2 = to()) !== u2 && (a3 = Oo()) !== u2 && (s2 = je()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2); e3 !== u2; )
+            n4.push(e3), e3 = Te, (o3 = Oo()) !== u2 && (i2 = to()) !== u2 && (a3 = Oo()) !== u2 && (s2 = je()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2);
+          n4 !== u2 ? r5 = t4 = c2(t4, n4) : (Te = r5, r5 = u2);
+        } else
+          Te = r5, r5 = u2;
+        return r5;
+      }
+      function je() {
+        var r5, t4, n4, e3, o3, i2, a3, s2;
+        if (r5 = Te, (t4 = Pe()) !== u2) {
+          for (n4 = [], e3 = Te, (o3 = Oo()) !== u2 && (i2 = ro()) !== u2 && (a3 = Oo()) !== u2 && (s2 = Pe()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2); e3 !== u2; )
+            n4.push(e3), e3 = Te, (o3 = Oo()) !== u2 && (i2 = ro()) !== u2 && (a3 = Oo()) !== u2 && (s2 = Pe()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2);
+          n4 !== u2 ? r5 = t4 = c2(t4, n4) : (Te = r5, r5 = u2);
+        } else
+          Te = r5, r5 = u2;
+        return r5;
+      }
+      function Pe() {
+        var t4, n4, e3, o3, i2;
+        return t4 = Te, (n4 = Qu()) === u2 && (n4 = Te, r4.charCodeAt(Te) === 33 ? (e3 = f2, Te++) : (e3 = u2, _e === 0 && Me(l2)), e3 !== u2 ? (o3 = Te, _e++, r4.charCodeAt(Te) === 61 ? (i2 = v2, Te++) : (i2 = u2, _e === 0 && Me(p2)), _e--, i2 === u2 ? o3 = void 0 : (Te = o3, o3 = u2), o3 !== u2 ? n4 = e3 = [e3, o3] : (Te = n4, n4 = u2)) : (Te = n4, n4 = u2)), n4 !== u2 && (e3 = Oo()) !== u2 && (o3 = Pe()) !== u2 ? t4 = n4 = d2(o3) : (Te = t4, t4 = u2), t4 === u2 && (t4 = ze()), t4;
+      }
+      function ze() {
+        var r5, t4, n4;
+        return r5 = Te, (t4 = $e()) !== u2 && Oo() !== u2 ? ((n4 = Ge()) === u2 && (n4 = null), n4 !== u2 ? r5 = t4 = h2(t4, n4) : (Te = r5, r5 = u2)) : (Te = r5, r5 = u2), r5;
+      }
+      function Ge() {
+        var r5;
+        return (r5 = Ze()) === u2 && (r5 = Xe()) === u2 && (r5 = Ye()) === u2 && (r5 = We()) === u2 && (r5 = Ve()), r5;
+      }
+      function Ze() {
+        var r5, t4, n4, e3, o3, i2;
+        if (r5 = [], t4 = Te, (n4 = Oo()) !== u2 && (e3 = ke()) !== u2 && (o3 = Oo()) !== u2 && (i2 = $e()) !== u2 ? t4 = n4 = [n4, e3, o3, i2] : (Te = t4, t4 = u2), t4 !== u2)
+          for (; t4 !== u2; )
+            r5.push(t4), t4 = Te, (n4 = Oo()) !== u2 && (e3 = ke()) !== u2 && (o3 = Oo()) !== u2 && (i2 = $e()) !== u2 ? t4 = n4 = [n4, e3, o3, i2] : (Te = t4, t4 = u2);
+        else
+          r5 = u2;
+        return r5 !== u2 && (r5 = b2(r5)), r5;
+      }
+      function ke() {
+        var t4;
+        return r4.substr(Te, 2) === y2 ? (t4 = y2, Te += 2) : (t4 = u2, _e === 0 && Me(A2)), t4 === u2 && (r4.charCodeAt(Te) === 62 ? (t4 = C, Te++) : (t4 = u2, _e === 0 && Me(g2)), t4 === u2 && (r4.substr(Te, 2) === E2 ? (t4 = E2, Te += 2) : (t4 = u2, _e === 0 && Me(m2)), t4 === u2 && (r4.substr(Te, 2) === L ? (t4 = L, Te += 2) : (t4 = u2, _e === 0 && Me(T2)), t4 === u2 && (r4.charCodeAt(Te) === 60 ? (t4 = x2, Te++) : (t4 = u2, _e === 0 && Me(w2)), t4 === u2 && (r4.charCodeAt(Te) === 61 ? (t4 = v2, Te++) : (t4 = u2, _e === 0 && Me(p2)), t4 === u2 && (r4.substr(Te, 2) === N2 ? (t4 = N2, Te += 2) : (t4 = u2, _e === 0 && Me(_2)))))))), t4;
+      }
+      function We() {
+        var r5, t4, n4, e3;
+        return r5 = Te, (t4 = Xu()) !== u2 && Oo() !== u2 && (n4 = Qu()) !== u2 && Oo() !== u2 && (e3 = $e()) !== u2 ? r5 = t4 = R(t4, e3) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Xu()) !== u2 && Oo() !== u2 && (n4 = $e()) !== u2 ? r5 = t4 = I2(t4, n4) : (Te = r5, r5 = u2)), r5;
+      }
+      function Ye() {
+        var r5, t4, n4, e3, o3, i2;
+        return r5 = Te, (t4 = Qu()) !== u2 && Oo() !== u2 && (n4 = no()) !== u2 && Oo() !== u2 && (e3 = $e()) !== u2 && Oo() !== u2 && (o3 = ro()) !== u2 && Oo() !== u2 && (i2 = $e()) !== u2 ? r5 = t4 = O(n4, e3, i2) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = no()) !== u2 && Oo() !== u2 && (n4 = $e()) !== u2 && Oo() !== u2 && (e3 = ro()) !== u2 && Oo() !== u2 && (o3 = $e()) !== u2 ? r5 = t4 = F(t4, n4, o3) : (Te = r5, r5 = u2)), r5;
+      }
+      function qe() {
+        var r5, t4, n4, e3, o3;
+        return r5 = Te, t4 = Te, (n4 = Qu()) !== u2 && (e3 = Oo()) !== u2 && (o3 = $u()) !== u2 ? t4 = n4 = [n4, e3, o3] : (Te = t4, t4 = u2), t4 !== u2 && (t4 = S2(t4)), (r5 = t4) === u2 && (r5 = $u()), r5;
+      }
+      function Ke() {
+        var r5, t4, n4, e3, o3;
+        return r5 = Te, t4 = Te, (n4 = Qu()) !== u2 && (e3 = Oo()) !== u2 && (o3 = Vu()) !== u2 ? t4 = n4 = [n4, e3, o3] : (Te = t4, t4 = u2), t4 !== u2 && (t4 = S2(t4)), (r5 = t4) === u2 && (r5 = Vu()), r5;
+      }
+      function Ve() {
+        var r5, t4, n4, e3;
+        return r5 = Te, (t4 = qe()) !== u2 && Oo() !== u2 && (n4 = Iu()) !== u2 && Oo() !== u2 && Ju() !== u2 && Oo() !== u2 && (e3 = Ou()) !== u2 ? r5 = t4 = M2(t4, n4, e3) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = qe()) !== u2 && Oo() !== u2 && (n4 = Iu()) !== u2 ? r5 = t4 = D2(t4, n4) : (Te = r5, r5 = u2)), r5;
+      }
+      function Xe() {
+        var r5, t4, n4, e3;
+        return r5 = Te, (t4 = Ke()) !== u2 && Oo() !== u2 && (n4 = Ro()) !== u2 && Oo() !== u2 && (e3 = Ue()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = H(t4, e3) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Ke()) !== u2 && Oo() !== u2 && (n4 = Ro()) !== u2 && Oo() !== u2 && (e3 = Io()) !== u2 ? r5 = t4 = U(t4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Ke()) !== u2 && Oo() !== u2 && (n4 = cu()) !== u2 ? r5 = t4 = B(t4, n4) : (Te = r5, r5 = u2))), r5;
+      }
+      function $e() {
+        var r5, t4, n4, e3, o3, i2, a3, s2;
+        if (r5 = Te, (t4 = Qe()) !== u2) {
+          for (n4 = [], e3 = Te, (o3 = Oo()) !== u2 && (i2 = Je()) !== u2 && (a3 = Oo()) !== u2 && (s2 = Qe()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2); e3 !== u2; )
+            n4.push(e3), e3 = Te, (o3 = Oo()) !== u2 && (i2 = Je()) !== u2 && (a3 = Oo()) !== u2 && (s2 = Qe()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2);
+          n4 !== u2 ? r5 = t4 = c2(t4, n4) : (Te = r5, r5 = u2);
+        } else
+          Te = r5, r5 = u2;
+        return r5;
+      }
+      function Je() {
+        var t4;
+        return r4.charCodeAt(Te) === 43 ? (t4 = j, Te++) : (t4 = u2, _e === 0 && Me(P)), t4 === u2 && (r4.charCodeAt(Te) === 45 ? (t4 = z, Te++) : (t4 = u2, _e === 0 && Me(G))), t4;
+      }
+      function Qe() {
+        var r5, t4, n4, e3, o3, i2, a3, s2;
+        if (r5 = Te, (t4 = tu()) !== u2) {
+          for (n4 = [], e3 = Te, (o3 = Oo()) !== u2 && (i2 = ru()) !== u2 && (a3 = Oo()) !== u2 && (s2 = tu()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2); e3 !== u2; )
+            n4.push(e3), e3 = Te, (o3 = Oo()) !== u2 && (i2 = ru()) !== u2 && (a3 = Oo()) !== u2 && (s2 = tu()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2);
+          n4 !== u2 ? r5 = t4 = Z(t4, n4) : (Te = r5, r5 = u2);
+        } else
+          Te = r5, r5 = u2;
+        return r5;
+      }
+      function ru() {
+        var t4;
+        return r4.charCodeAt(Te) === 42 ? (t4 = k, Te++) : (t4 = u2, _e === 0 && Me(W)), t4 === u2 && (r4.charCodeAt(Te) === 47 ? (t4 = Y, Te++) : (t4 = u2, _e === 0 && Me(q))), t4;
+      }
+      function tu() {
+        var r5, t4;
+        return (r5 = yu()) === u2 && (r5 = fu()) === u2 && (r5 = lu()) === u2 && (r5 = vu()) === u2 && (r5 = du()) === u2 && (r5 = hu()) === u2 && (r5 = Fu()) === u2 && (r5 = nu()) === u2 && (r5 = cu()) === u2 && (r5 = Te, Ro() !== u2 && Oo() !== u2 && (t4 = Be()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = K(t4) : (Te = r5, r5 = u2)), r5;
+      }
+      function nu() {
+        var r5;
+        return (r5 = eu()) !== u2 && (r5 = V(r5)), r5;
+      }
+      function eu() {
+        var r5;
+        return (r5 = uu()) !== u2 && (r5 = X(r5)), r5;
+      }
+      function uu() {
+        var r5, t4, n4, e3;
+        if (r5 = Te, (t4 = iu()) !== u2) {
+          for (n4 = [], e3 = su(); e3 !== u2; )
+            n4.push(e3), e3 = su();
+          n4 !== u2 ? r5 = t4 = $(t4, n4) : (Te = r5, r5 = u2);
+        } else
+          Te = r5, r5 = u2;
+        return r5;
+      }
+      function ou() {
+        var r5, t4, n4, e3;
+        if (r5 = Te, (t4 = iu()) !== u2) {
+          for (n4 = [], e3 = au(); e3 !== u2; )
+            n4.push(e3), e3 = au();
+          n4 !== u2 ? r5 = t4 = $(t4, n4) : (Te = r5, r5 = u2);
+        } else
+          Te = r5, r5 = u2;
+        return r5;
+      }
+      function iu() {
+        var t4;
+        return J2.test(r4.charAt(Te)) ? (t4 = r4.charAt(Te), Te++) : (t4 = u2, _e === 0 && Me(Q)), t4;
+      }
+      function au() {
+        var t4;
+        return rr.test(r4.charAt(Te)) ? (t4 = r4.charAt(Te), Te++) : (t4 = u2, _e === 0 && Me(tr)), t4;
+      }
+      function su() {
+        var t4;
+        return nr.test(r4.charAt(Te)) ? (t4 = r4.charAt(Te), Te++) : (t4 = u2, _e === 0 && Me(er)), t4;
+      }
+      function cu() {
+        var t4, n4, e3;
+        return t4 = Te, r4.charCodeAt(Te) === 64 ? (n4 = ur, Te++) : (n4 = u2, _e === 0 && Me(or)), n4 !== u2 && (e3 = ou()) !== u2 ? t4 = n4 = [n4, e3] : (Te = t4, t4 = u2), t4 !== u2 && (t4 = ir(t4)), t4;
+      }
+      function fu() {
+        var r5, t4, n4;
+        return r5 = Te, io() !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (t4 = bu()) !== u2 && Oo() !== u2 && eo() !== u2 && Oo() !== u2 && (n4 = Be()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = ar(t4, n4) : (Te = r5, r5 = u2), r5;
+      }
+      function lu() {
+        var r5, t4, n4, e3, o3, i2, a3, s2;
+        return r5 = Te, oo() !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (t4 = Be()) !== u2 && Oo() !== u2 && eo() !== u2 && Oo() !== u2 && (n4 = Be()) !== u2 && Oo() !== u2 ? (e3 = Te, (o3 = uo()) !== u2 && (i2 = Oo()) !== u2 && (a3 = Be()) !== u2 && (s2 = Oo()) !== u2 ? e3 = o3 = [o3, i2, a3, s2] : (Te = e3, e3 = u2), e3 === u2 && (e3 = null), e3 !== u2 && (o3 = Io()) !== u2 ? r5 = sr(t4, n4, e3) : (Te = r5, r5 = u2)) : (Te = r5, r5 = u2), r5;
+      }
+      function vu() {
+        var r5, t4, n4, e3;
+        return r5 = Te, ao() !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 ? ((t4 = pu()) === u2 && (t4 = null), t4 !== u2 && Oo() !== u2 && (n4 = Be()) !== u2 && Oo() !== u2 && eo() !== u2 && Oo() !== u2 && (e3 = Be()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = cr(t4, n4, e3) : (Te = r5, r5 = u2)) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, ao() !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 ? ((t4 = pu()) === u2 && (t4 = null), t4 !== u2 && Oo() !== u2 && (n4 = Be()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = fr(t4, n4) : (Te = r5, r5 = u2)) : (Te = r5, r5 = u2)), r5;
+      }
+      function pu() {
+        var r5;
+        return (r5 = lo()) === u2 && (r5 = vo()) === u2 && (r5 = po()), r5;
+      }
+      function du() {
+        var r5, t4, n4;
+        return r5 = Te, so() !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (t4 = Be()) !== u2 && Oo() !== u2 && Vu() !== u2 && Oo() !== u2 && (n4 = Be()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = lr(t4, n4) : (Te = r5, r5 = u2), r5;
+      }
+      function hu() {
+        var r5, t4, n4;
+        return r5 = Te, (t4 = So()) !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 ? ((n4 = Ue()) === u2 && (n4 = null), n4 !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = vr(t4, n4) : (Te = r5, r5 = u2)) : (Te = r5, r5 = u2), r5;
+      }
+      function bu() {
+        var r5;
+        return (r5 = yo()) === u2 && (r5 = Ao()) === u2 && (r5 = Co()) === u2 && (r5 = go()) === u2 && (r5 = Eo()) === u2 && (r5 = mo()), r5;
+      }
+      function yu() {
+        var r5;
+        return (r5 = Ou()) === u2 && (r5 = Bu()) === u2 && (r5 = Ru()) === u2 && (r5 = _u()) === u2 && (r5 = Nu()) === u2 && (r5 = Au()) === u2 && (r5 = Cu()), r5;
+      }
+      function Au() {
+        var r5, t4;
+        return r5 = Te, co() !== u2 && Oo() !== u2 && (t4 = Iu()) !== u2 ? r5 = pr(t4) : (Te = r5, r5 = u2), r5;
+      }
+      function Cu() {
+        var t4, n4, e3, o3;
+        return t4 = Te, bo() !== u2 && Oo() !== u2 ? (r4.charCodeAt(Te) === 45 ? (n4 = z, Te++) : (n4 = u2, _e === 0 && Me(G)), n4 === u2 && (r4.charCodeAt(Te) === 43 ? (n4 = j, Te++) : (n4 = u2, _e === 0 && Me(P))), n4 !== u2 && Oo() !== u2 && (e3 = Iu()) !== u2 && Oo() !== u2 && (o3 = gu()) !== u2 ? t4 = dr(n4, e3, o3) : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4 === u2 && (t4 = Te, bo() !== u2 && Oo() !== u2 && (n4 = Iu()) !== u2 && Oo() !== u2 && (e3 = gu()) !== u2 ? t4 = hr(n4, e3) : (Te = t4, t4 = u2)), t4;
+      }
+      function gu() {
+        var r5, t4, n4;
+        return r5 = Te, (t4 = Eu()) !== u2 && Oo() !== u2 && ho() !== u2 && Oo() !== u2 && (n4 = mu()) !== u2 ? r5 = t4 = br(t4, n4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Lu()), r5;
+      }
+      function Eu() {
+        var r5, t4, n4;
+        return r5 = Te, (t4 = Tu()) !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (n4 = wu()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = yr(t4, n4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Tu()) !== u2 && (t4 = Ar(t4)), r5 = t4), r5;
+      }
+      function mu() {
+        var r5, t4, n4, e3;
+        return r5 = Te, (t4 = Tu()) !== u2 && (t4 = Cr(t4)), (r5 = t4) === u2 && (r5 = Te, (t4 = mo()) !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (n4 = wu()) !== u2 && Oo() !== u2 && _o() !== u2 && Oo() !== u2 && (e3 = xu()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = gr(n4, e3) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = mo()) !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (n4 = wu()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = Er(n4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = mo()) !== u2 && (t4 = mr()), r5 = t4))), r5;
+      }
+      function Lu() {
+        var r5, t4, n4, e3;
+        return r5 = Te, (t4 = Tu()) !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (n4 = xu()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = Lr(t4, n4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Tu()) !== u2 && (t4 = Ar(t4)), (r5 = t4) === u2 && (r5 = Te, (t4 = mo()) !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (n4 = wu()) !== u2 && Oo() !== u2 && _o() !== u2 && Oo() !== u2 && (e3 = xu()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = gr(n4, e3) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = mo()) !== u2 && Oo() !== u2 && Ro() !== u2 && Oo() !== u2 && (n4 = xu()) !== u2 && Oo() !== u2 && Io() !== u2 ? r5 = t4 = Tr(n4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = mo()) !== u2 && (t4 = xr()), r5 = t4)))), r5;
+      }
+      function Tu() {
+        var r5, t4;
+        return r5 = Te, (t4 = Co()) !== u2 && (t4 = wr()), (r5 = t4) === u2 && (r5 = Te, (t4 = go()) !== u2 && (t4 = Nr()), (r5 = t4) === u2 && (r5 = Te, (t4 = Eo()) !== u2 && (t4 = _r()), (r5 = t4) === u2 && (r5 = Te, (t4 = Ao()) !== u2 && (t4 = Rr()), (r5 = t4) === u2 && (r5 = Te, (t4 = yo()) !== u2 && (t4 = Ir()), r5 = t4)))), r5;
+      }
+      function xu() {
+        var r5;
+        return (r5 = Zu()) !== u2 && (r5 = Or(r5)), r5;
+      }
+      function wu() {
+        var r5;
+        return (r5 = Zu()) !== u2 && (r5 = Or(r5)), r5;
+      }
+      function Nu() {
+        var r5, t4;
+        return r5 = Te, fo() !== u2 && Oo() !== u2 && (t4 = Iu()) !== u2 ? r5 = Fr(t4) : (Te = r5, r5 = u2), r5;
+      }
+      function _u() {
+        var r5;
+        return (r5 = Yu()) !== u2 && (r5 = Sr()), r5;
+      }
+      function Ru() {
+        var r5, t4;
+        return r5 = Te, (t4 = qu()) !== u2 && (t4 = Mr()), (r5 = t4) === u2 && (r5 = Te, (t4 = Ku()) !== u2 && (t4 = Dr()), r5 = t4), r5;
+      }
+      function Iu() {
+        var r5;
+        return (r5 = Ou()) === u2 && (r5 = cu()), r5;
+      }
+      function Ou() {
+        var t4, n4, e3, o3, i2;
+        if (t4 = Te, r4.charCodeAt(Te) === 39 ? (n4 = Hr, Te++) : (n4 = u2, _e === 0 && Me(Ur)), n4 === u2 && (r4.substr(Te, 2) === Br ? (n4 = Br, Te += 2) : (n4 = u2, _e === 0 && Me(jr))), n4 !== u2) {
+          for (e3 = [], o3 = Te, r4.substr(Te, 2) === Pr ? (i2 = Pr, Te += 2) : (i2 = u2, _e === 0 && Me(zr)), i2 !== u2 && (i2 = Gr()), (o3 = i2) === u2 && (Zr.test(r4.charAt(Te)) ? (o3 = r4.charAt(Te), Te++) : (o3 = u2, _e === 0 && Me(kr))); o3 !== u2; )
+            e3.push(o3), o3 = Te, r4.substr(Te, 2) === Pr ? (i2 = Pr, Te += 2) : (i2 = u2, _e === 0 && Me(zr)), i2 !== u2 && (i2 = Gr()), (o3 = i2) === u2 && (Zr.test(r4.charAt(Te)) ? (o3 = r4.charAt(Te), Te++) : (o3 = u2, _e === 0 && Me(kr)));
+          e3 !== u2 ? (r4.charCodeAt(Te) === 39 ? (o3 = Hr, Te++) : (o3 = u2, _e === 0 && Me(Ur)), o3 !== u2 ? t4 = n4 = Wr(e3) : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2);
+        } else
+          Te = t4, t4 = u2;
+        return t4;
+      }
+      function Fu() {
+        var r5;
+        return (r5 = Su()) === u2 && (r5 = Mu()), r5;
+      }
+      function Su() {
+        var r5, t4, n4, e3, o3;
+        if (r5 = Te, Lo() !== u2)
+          if (Oo() !== u2)
+            if ((t4 = Be()) !== u2)
+              if (Oo() !== u2) {
+                for (n4 = [], e3 = Hu(); e3 !== u2; )
+                  n4.push(e3), e3 = Hu();
+                n4 !== u2 && (e3 = Oo()) !== u2 && (o3 = To()) !== u2 ? r5 = Yr(t4, n4) : (Te = r5, r5 = u2);
+              } else
+                Te = r5, r5 = u2;
+            else
+              Te = r5, r5 = u2;
+          else
+            Te = r5, r5 = u2;
+        else
+          Te = r5, r5 = u2;
+        if (r5 === u2)
+          if (r5 = Te, Lo() !== u2)
+            if (Oo() !== u2)
+              if ((t4 = Be()) !== u2)
+                if (Oo() !== u2) {
+                  for (n4 = [], e3 = Hu(); e3 !== u2; )
+                    n4.push(e3), e3 = Hu();
+                  n4 !== u2 && (e3 = Oo()) !== u2 && (o3 = Uu()) !== u2 && Oo() !== u2 && To() !== u2 ? r5 = qr(t4, n4, o3) : (Te = r5, r5 = u2);
+                } else
+                  Te = r5, r5 = u2;
+              else
+                Te = r5, r5 = u2;
+            else
+              Te = r5, r5 = u2;
+          else
+            Te = r5, r5 = u2;
+        return r5;
+      }
+      function Mu() {
+        var r5, t4, n4, e3;
+        if (r5 = Te, Lo() !== u2)
+          if (Oo() !== u2) {
+            for (t4 = [], n4 = Du(); n4 !== u2; )
+              t4.push(n4), n4 = Du();
+            t4 !== u2 && (n4 = Oo()) !== u2 && (e3 = To()) !== u2 ? r5 = Kr(t4) : (Te = r5, r5 = u2);
+          } else
+            Te = r5, r5 = u2;
+        else
+          Te = r5, r5 = u2;
+        if (r5 === u2)
+          if (r5 = Te, Lo() !== u2)
+            if (Oo() !== u2) {
+              for (t4 = [], n4 = Du(); n4 !== u2; )
+                t4.push(n4), n4 = Du();
+              t4 !== u2 && (n4 = Oo()) !== u2 && (e3 = Uu()) !== u2 && Oo() !== u2 && To() !== u2 ? r5 = Vr(t4, e3) : (Te = r5, r5 = u2);
+            } else
+              Te = r5, r5 = u2;
+          else
+            Te = r5, r5 = u2;
+        return r5;
+      }
+      function Du() {
+        var r5, t4, n4;
+        return r5 = Te, xo() !== u2 && Oo() !== u2 && (t4 = Be()) !== u2 && Oo() !== u2 && wo() !== u2 && Oo() !== u2 && (n4 = Be()) !== u2 ? r5 = Xr(t4, n4) : (Te = r5, r5 = u2), r5;
+      }
+      function Hu() {
+        var r5, t4, n4;
+        return r5 = Te, xo() !== u2 && Oo() !== u2 && (t4 = Be()) !== u2 && Oo() !== u2 && wo() !== u2 && Oo() !== u2 && (n4 = Be()) !== u2 ? r5 = Xr(t4, n4) : (Te = r5, r5 = u2), r5;
+      }
+      function Uu() {
+        var r5, t4;
+        return r5 = Te, No() !== u2 && Oo() !== u2 && (t4 = Be()) !== u2 ? r5 = $r(t4) : (Te = r5, r5 = u2), r5;
+      }
+      function Bu() {
+        var r5, t4, n4, e3;
+        return r5 = Te, (t4 = ju()) !== u2 ? (n4 = Te, _e++, e3 = iu(), _e--, e3 === u2 ? n4 = void 0 : (Te = n4, n4 = u2), n4 !== u2 ? r5 = t4 = Jr(t4) : (Te = r5, r5 = u2)) : (Te = r5, r5 = u2), r5;
+      }
+      function ju() {
+        var r5, t4, n4, e3;
+        return r5 = Te, (t4 = Pu()) !== u2 && (n4 = zu()) !== u2 && (e3 = Gu()) !== u2 ? r5 = t4 = Qr(t4, n4, e3) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Pu()) !== u2 && (n4 = zu()) !== u2 ? r5 = t4 = rt(t4, n4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Pu()) !== u2 && (n4 = Gu()) !== u2 ? r5 = t4 = tt(t4, n4) : (Te = r5, r5 = u2), r5 === u2 && (r5 = Te, (t4 = Pu()) !== u2 && (t4 = nt(t4)), r5 = t4))), r5;
+      }
+      function Pu() {
+        var t4, n4, e3;
+        return (t4 = Zu()) === u2 && (t4 = Te, r4.charCodeAt(Te) === 45 ? (n4 = z, Te++) : (n4 = u2, _e === 0 && Me(G)), n4 === u2 && (r4.charCodeAt(Te) === 43 ? (n4 = j, Te++) : (n4 = u2, _e === 0 && Me(P))), n4 !== u2 && (e3 = Zu()) !== u2 ? t4 = n4 = et(n4, e3) : (Te = t4, t4 = u2)), t4;
+      }
+      function zu() {
+        var t4, n4, e3;
+        return t4 = Te, r4.charCodeAt(Te) === 46 ? (n4 = ut, Te++) : (n4 = u2, _e === 0 && Me(ot)), n4 !== u2 ? ((e3 = Zu()) === u2 && (e3 = null), e3 !== u2 ? t4 = n4 = it(e3) : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Gu() {
+        var r5, t4, n4;
+        return r5 = Te, (t4 = Wu()) !== u2 && (n4 = Zu()) !== u2 ? r5 = t4 = at(t4, n4) : (Te = r5, r5 = u2), r5;
+      }
+      function Zu() {
+        var r5, t4;
+        if (r5 = [], (t4 = ku()) !== u2)
+          for (; t4 !== u2; )
+            r5.push(t4), t4 = ku();
+        else
+          r5 = u2;
+        return r5 !== u2 && (r5 = st(r5)), r5;
+      }
+      function ku() {
+        var t4;
+        return ct.test(r4.charAt(Te)) ? (t4 = r4.charAt(Te), Te++) : (t4 = u2, _e === 0 && Me(ft)), t4;
+      }
+      function Wu() {
+        var t4, n4, e3;
+        return t4 = Te, lt.test(r4.charAt(Te)) ? (n4 = r4.charAt(Te), Te++) : (n4 = u2, _e === 0 && Me(vt)), n4 !== u2 ? (pt.test(r4.charAt(Te)) ? (e3 = r4.charAt(Te), Te++) : (e3 = u2, _e === 0 && Me(dt)), e3 === u2 && (e3 = null), e3 !== u2 ? t4 = n4 = ht(n4, e3) : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Yu() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === bt ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(yt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = [n4, e3] : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function qu() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === At ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(Ct)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = [n4, e3] : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Ku() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 5).toLowerCase() === gt ? (n4 = r4.substr(Te, 5), Te += 5) : (n4 = u2, _e === 0 && Me(Et)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = [n4, e3] : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Vu() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 2).toLowerCase() === mt ? (n4 = r4.substr(Te, 2), Te += 2) : (n4 = u2, _e === 0 && Me(Lt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Tt() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Xu() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 2).toLowerCase() === xt ? (n4 = r4.substr(Te, 2), Te += 2) : (n4 = u2, _e === 0 && Me(wt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Nt() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function $u() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === _t ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(Rt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = It() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Ju() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 6).toLowerCase() === Ot ? (n4 = r4.substr(Te, 6), Te += 6) : (n4 = u2, _e === 0 && Me(Ft)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = St() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Qu() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 3).toLowerCase() === Mt ? (n4 = r4.substr(Te, 3), Te += 3) : (n4 = u2, _e === 0 && Me(Dt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Ht() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function ro() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 3).toLowerCase() === Ut ? (n4 = r4.substr(Te, 3), Te += 3) : (n4 = u2, _e === 0 && Me(Bt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = jt() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function to() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 2).toLowerCase() === Pt ? (n4 = r4.substr(Te, 2), Te += 2) : (n4 = u2, _e === 0 && Me(zt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Gt() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function no() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 7).toLowerCase() === Zt ? (n4 = r4.substr(Te, 7), Te += 7) : (n4 = u2, _e === 0 && Me(kt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Wt() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function eo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === Yt ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(qt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Kt() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function uo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 3).toLowerCase() === Vt ? (n4 = r4.substr(Te, 3), Te += 3) : (n4 = u2, _e === 0 && Me(Xt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = $t() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function oo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 9).toLowerCase() === Jt ? (n4 = r4.substr(Te, 9), Te += 9) : (n4 = u2, _e === 0 && Me(Qt)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = rn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function io() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 7).toLowerCase() === tn ? (n4 = r4.substr(Te, 7), Te += 7) : (n4 = u2, _e === 0 && Me(nn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = en() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function ao() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === un ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(on)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = an() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function so() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 8).toLowerCase() === sn ? (n4 = r4.substr(Te, 8), Te += 8) : (n4 = u2, _e === 0 && Me(cn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = fn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function co() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 9).toLowerCase() === ln ? (n4 = r4.substr(Te, 9), Te += 9) : (n4 = u2, _e === 0 && Me(vn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = pn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function fo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === dn ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(hn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = bn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function lo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 7).toLowerCase() === yn ? (n4 = r4.substr(Te, 7), Te += 7) : (n4 = u2, _e === 0 && Me(An)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Cn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function vo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 8).toLowerCase() === gn ? (n4 = r4.substr(Te, 8), Te += 8) : (n4 = u2, _e === 0 && Me(En)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = mn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function po() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === Ln ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(Tn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = xn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function ho() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 2).toLowerCase() === wn ? (n4 = r4.substr(Te, 2), Te += 2) : (n4 = u2, _e === 0 && Me(Nn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = _n() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function bo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 8).toLowerCase() === Rn ? (n4 = r4.substr(Te, 8), Te += 8) : (n4 = u2, _e === 0 && Me(In)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = On() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function yo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === Fn ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(Sn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Mn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Ao() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 5).toLowerCase() === Dn ? (n4 = r4.substr(Te, 5), Te += 5) : (n4 = u2, _e === 0 && Me(Hn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Un() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Co() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 3).toLowerCase() === Bn ? (n4 = r4.substr(Te, 3), Te += 3) : (n4 = u2, _e === 0 && Me(jn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Pn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function go() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === zn ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(Gn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Zn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Eo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 6).toLowerCase() === kn ? (n4 = r4.substr(Te, 6), Te += 6) : (n4 = u2, _e === 0 && Me(Wn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Yn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function mo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 6).toLowerCase() === qn ? (n4 = r4.substr(Te, 6), Te += 6) : (n4 = u2, _e === 0 && Me(Kn)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Vn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function Lo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === Xn ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me($n)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = Jn() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function To() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 3).toLowerCase() === Qn ? (n4 = r4.substr(Te, 3), Te += 3) : (n4 = u2, _e === 0 && Me(re)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = te() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function xo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === ne ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(ee)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = ue() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function wo() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === oe ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(ie)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = ae() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function No() {
+        var t4, n4, e3, o3;
+        return t4 = Te, r4.substr(Te, 4).toLowerCase() === se ? (n4 = r4.substr(Te, 4), Te += 4) : (n4 = u2, _e === 0 && Me(ce)), n4 !== u2 ? (e3 = Te, _e++, o3 = au(), _e--, o3 === u2 ? e3 = void 0 : (Te = e3, e3 = u2), e3 !== u2 ? t4 = n4 = fe() : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2), t4;
+      }
+      function _o() {
+        var t4;
+        return r4.charCodeAt(Te) === 44 ? (t4 = le, Te++) : (t4 = u2, _e === 0 && Me(ve)), t4;
+      }
+      function Ro() {
+        var t4;
+        return r4.charCodeAt(Te) === 40 ? (t4 = pe, Te++) : (t4 = u2, _e === 0 && Me(de)), t4;
+      }
+      function Io() {
+        var t4;
+        return r4.charCodeAt(Te) === 41 ? (t4 = he, Te++) : (t4 = u2, _e === 0 && Me(be)), t4;
+      }
+      function Oo() {
+        var r5, t4;
+        for (r5 = [], t4 = Fo(); t4 !== u2; )
+          r5.push(t4), t4 = Fo();
+        return r5;
+      }
+      function Fo() {
+        var t4;
+        return ye.test(r4.charAt(Te)) ? (t4 = r4.charAt(Te), Te++) : (t4 = u2, _e === 0 && Me(Ae)), t4;
+      }
+      function So() {
+        var t4, n4, e3, o3;
+        if (t4 = Te, (n4 = ou()) !== u2 && (n4 = X(n4)), (t4 = n4) === u2)
+          if (t4 = Te, r4.charCodeAt(Te) === 96 ? (n4 = Ce, Te++) : (n4 = u2, _e === 0 && Me(ge)), n4 !== u2) {
+            if (e3 = [], Ee.test(r4.charAt(Te)) ? (o3 = r4.charAt(Te), Te++) : (o3 = u2, _e === 0 && Me(me)), o3 !== u2)
+              for (; o3 !== u2; )
+                e3.push(o3), Ee.test(r4.charAt(Te)) ? (o3 = r4.charAt(Te), Te++) : (o3 = u2, _e === 0 && Me(me));
+            else
+              e3 = u2;
+            e3 !== u2 ? (r4.charCodeAt(Te) === 96 ? (o3 = Ce, Te++) : (o3 = u2, _e === 0 && Me(ge)), o3 !== u2 ? t4 = n4 = Le(e3) : (Te = t4, t4 = u2)) : (Te = t4, t4 = u2);
+          } else
+            Te = t4, t4 = u2;
+        return t4;
+      }
+      function Mo(r5, t4) {
+        return { type: "unary_expr", operator: r5, expr: t4 };
+      }
+      function Do(r5, t4, n4, e3) {
+        var u3 = { type: "binary_expr", operator: r5, left: t4, right: n4 };
+        return e3 !== void 0 && (u3.escape = e3), u3;
+      }
+      function Ho(r5, t4) {
+        for (var n4 = [r5], e3 = 0; e3 < t4.length; e3++)
+          n4.push(t4[e3][3]);
+        return n4;
+      }
+      function Uo(r5, t4, n4) {
+        return Ho(r5, t4);
+      }
+      function Bo(r5, t4) {
+        for (var n4 = r5, e3 = 0; e3 < t4.length; e3++)
+          n4 = Do(t4[e3][1], n4, t4[e3][3]);
+        return n4;
+      }
+      if ((e2 = i()) !== u2 && Te === r4.length)
+        return e2;
+      throw e2 !== u2 && Te < r4.length && Me(Oe()), De(Ne, we < r4.length ? r4.charAt(we) : null, we < r4.length ? Se(we, we + 1) : Se(we, we));
+    }
+    return r3(t3, Error), t3.buildMessage = function(r4, t4) {
+      var n3 = { literal: function(r5) {
+        return '"' + u2(r5.text) + '"';
+      }, class: function(r5) {
+        var t5, n4 = "";
+        for (t5 = 0; t5 < r5.parts.length; t5++)
+          n4 += r5.parts[t5] instanceof Array ? o2(r5.parts[t5][0]) + "-" + o2(r5.parts[t5][1]) : o2(r5.parts[t5]);
+        return "[" + (r5.inverted ? "^" : "") + n4 + "]";
+      }, any: function(r5) {
+        return "any character";
+      }, end: function(r5) {
+        return "end of input";
+      }, other: function(r5) {
+        return r5.description;
+      } };
+      function e2(r5) {
+        return r5.charCodeAt(0).toString(16).toUpperCase();
+      }
+      function u2(r5) {
+        return r5.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\0/g, "\\0").replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/[\x00-\x0F]/g, function(r6) {
+          return "\\x0" + e2(r6);
+        }).replace(/[\x10-\x1F\x7F-\x9F]/g, function(r6) {
+          return "\\x" + e2(r6);
+        });
+      }
+      function o2(r5) {
+        return r5.replace(/\\/g, "\\\\").replace(/\]/g, "\\]").replace(/\^/g, "\\^").replace(/-/g, "\\-").replace(/\0/g, "\\0").replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/[\x00-\x0F]/g, function(r6) {
+          return "\\x0" + e2(r6);
+        }).replace(/[\x10-\x1F\x7F-\x9F]/g, function(r6) {
+          return "\\x" + e2(r6);
+        });
+      }
+      function i(r5) {
+        return n3[r5.type](r5);
+      }
+      function a2(r5) {
+        var t5, n4, e3 = new Array(r5.length);
+        for (t5 = 0; t5 < r5.length; t5++)
+          e3[t5] = i(r5[t5]);
+        if (e3.sort(), e3.length > 0) {
+          for (t5 = 1, n4 = 1; t5 < e3.length; t5++)
+            e3[t5 - 1] !== e3[t5] && (e3[n4] = e3[t5], n4++);
+          e3.length = n4;
+        }
+        switch (e3.length) {
+          case 1:
+            return e3[0];
+          case 2:
+            return e3[0] + " or " + e3[1];
+          default:
+            return e3.slice(0, -1).join(", ") + ", or " + e3[e3.length - 1];
+        }
+      }
+      function s(r5) {
+        return r5 ? '"' + u2(r5) + '"' : "end of input";
+      }
+      return "Expected " + a2(r4) + " but " + s(t4) + " found.";
+    }, { SyntaxError: t3, parse: n2 };
+  }, r2.exports && (r2.exports = t2());
+});
+class e {
+  static parse(r2) {
+    return n.parse(r2);
+  }
+}
+const l = /^(\d{4})-(\d{1,2})-(\d{1,2})$/, u = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2}(\.[0-9]+)?)$/, o = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2}(\.[0-9]+)?)(\+|\-)(\d{1,2}):(\d{1,2})$/, c = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2})(\+|\-)(\d{1,2}):(\d{1,2})$/, h = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2})$/;
+function p(e2, t2) {
+  return (e2 += "").length >= t2 ? e2 : new Array(t2 - e2.length + 1).join("0") + e2;
+}
+function d(e2, t2, a2 = "0", r2 = "0", s = "0", n2 = "0", i = "", l2 = "0", u2 = "0") {
+  if (i === "+" || i === "-") {
+    const o2 = `${p(parseInt(e2, 10), 4)}-${p(parseInt(t2, 10), 2)}-${p(parseInt(a2, 10), 2)}`;
+    let c2 = "";
+    parseFloat(n2) < 10 && (c2 = "0");
+    const h2 = `${p(parseInt(r2, 10), 2)}:${p(parseInt(s, 10), 2)}:${c2 + parseFloat(n2).toString()}`, d2 = `${i}${p(parseInt(l2, 10), 2)}:${p(parseInt(u2, 10), 2)}`;
+    return new Date(o2 + "T" + h2 + d2);
+  }
+  return new Date(parseInt(e2, 10), parseInt(t2, 10) - 1, parseInt(a2, 10), parseInt(r2, 10), parseInt(s, 10), parseFloat(n2));
+}
+class v {
+  static makeBool(e2) {
+    return g(e2);
+  }
+  static featureValue(e2, t2, a2, r2) {
+    return _(e2, t2, a2, r2);
+  }
+  static equalsNull(e2) {
+    return e2 === null;
+  }
+  static applyLike(e2, t2, a2) {
+    return J(e2, t2, a2);
+  }
+  static ensureArray(e2) {
+    return T(e2);
+  }
+  static applyIn(e2, t2) {
+    return y(e2, t2);
+  }
+  static currentDate() {
+    const e2 = new Date();
+    return e2.setHours(0, 0, 0, 0), e2;
+  }
+  static makeSqlInterval(e2, t2, a2) {
+    return e$1.createFromValueAndQualifer(e2, t2, a2);
+  }
+  static convertInterval(e2) {
+    return e2 instanceof e$1 ? e2.valueInMilliseconds() : e2;
+  }
+  static currentTimestamp() {
+    return new Date();
+  }
+  static compare(e2, t2, a2) {
+    return b(e2, t2, a2);
+  }
+  static calculate(e2, t2, a2) {
+    return D(e2, t2, a2);
+  }
+  static makeComparable(e2) {
+    return A(e2);
+  }
+  static evaluateFunction(e2, t$12) {
+    return t(e2, t$12);
+  }
+  static lookup(e2, t2) {
+    const a2 = t2[e2];
+    return a2 === void 0 ? null : a2;
+  }
+  static between(e2, t2) {
+    return e2 == null || t2[0] == null || t2[1] == null ? null : e2 >= t2[0] && e2 <= t2[1];
+  }
+  static notbetween(e2, t2) {
+    return e2 == null || t2[0] == null || t2[1] == null ? null : e2 < t2[0] || e2 > t2[1];
+  }
+  static ternaryNot(e2) {
+    return S(e2);
+  }
+  static ternaryAnd(e2, t2) {
+    return w(e2, t2);
+  }
+  static ternaryOr(e2, t2) {
+    return I(e2, t2);
+  }
+}
+class f {
+  constructor(e$12, t2) {
+    this.fieldsIndex = t2, this.datefields = {}, this.parameters = {}, this.parseTree = e.parse(e$12);
+    const { isStandardized: a2, isAggregate: r2, referencedFieldNames: s } = this.extractExpressionInfo(t2);
+    this.referencedFieldNames = s, this.isStandardized = a2, this.isAggregate = r2;
+  }
+  static create(e2, t2) {
+    return new f(e2, t2);
+  }
+  get fieldNames() {
+    return this.referencedFieldNames;
+  }
+  testSet(e2, t2 = M) {
+    const a2 = {};
+    for (const r2 of this.fieldNames)
+      a2[r2] = e2.map((e3) => t2.getAttribute(e3, r2));
+    return !!this.evaluateNode(this.parseTree, { attributes: a2 }, M);
+  }
+  calculateValue(e2, t2 = M) {
+    const a2 = this.evaluateNode(this.parseTree, e2, t2);
+    return a2 instanceof e$1 ? a2.valueInMilliseconds() / 864e5 : a2;
+  }
+  calculateValueCompiled(t2, a2 = M) {
+    return this.parseTree._compiledVersion != null ? this.parseTree._compiledVersion(t2, this.parameters, a2, this.datefields) : t$2("csp-restrictions") ? this.calculateValue(t2, a2) : (this.compileMe(), this.parseTree._compiledVersion(t2, this.parameters, a2, this.datefields));
+  }
+  testFeature(e2, t2 = M) {
+    return !!this.evaluateNode(this.parseTree, e2, t2);
+  }
+  testFeatureCompiled(t2, a2 = M) {
+    return this.parseTree._compiledVersion != null ? !!this.parseTree._compiledVersion(t2, this.parameters, a2, this.datefields) : t$2("csp-restrictions") ? this.testFeature(t2, a2) : (this.compileMe(), !!this.parseTree._compiledVersion(t2, this.parameters, a2, this.datefields));
+  }
+  getFunctions() {
+    const e2 = [];
+    return this.visitAll(this.parseTree, (t2) => {
+      t2.type === "function" && e2.push(t2.name.toLowerCase());
+    }), x(e2);
+  }
+  getExpressions() {
+    const e2 = new Map();
+    return this.visitAll(this.parseTree, (t2) => {
+      if (t2.type === "function") {
+        const a2 = t2.name.toLowerCase(), r2 = t2.args.value[0];
+        if (r2.type === "column_ref") {
+          const t3 = r2.column, s = `${a2}-${t3}`;
+          e2.has(s) || e2.set(s, { aggregateType: a2, field: t3 });
+        }
+      }
+    }), [...e2.values()];
+  }
+  getVariables() {
+    const e2 = [];
+    return this.visitAll(this.parseTree, (t2) => {
+      t2.type === "param" && e2.push(t2.value.toLowerCase());
+    }), x(e2);
+  }
+  compileMe() {
+    const e2 = "return this.convertInterval(" + this.evaluateNodeToJavaScript(this.parseTree) + ")";
+    this.parseTree._compiledVersion = new Function("feature", "lookups", "attributeAdapter", "datefields", e2).bind(v);
+  }
+  extractExpressionInfo(e2) {
+    const a2 = [];
+    let r$12 = true, n2 = true;
+    return this.visitAll(this.parseTree, (i) => {
+      switch (i.type) {
+        case "column_ref": {
+          const t2 = e2.get(i.column), r2 = t2 && t2.name;
+          !t2 || t2.type !== "date" && t2.type !== "esriFieldTypeDate" || (this.datefields[t2.name] = 1), r2 !== void 0 ? (a2.push(r2), i.column = r2) : a2.push(i.column);
+          break;
+        }
+        case "function": {
+          const { name: e3, args: a3 } = i, l2 = a3.value.length;
+          r$12 && (r$12 = r(e3, l2)), n2 && (n2 = n$2(e3, l2));
+          break;
+        }
+      }
+    }), { referencedFieldNames: x(a2), isStandardized: r$12, isAggregate: n2 };
+  }
+  visitAll(e2, t2) {
+    if (e2 != null)
+      switch (t2(e2), e2.type) {
+        case "when_clause":
+          this.visitAll(e2.operand, t2), this.visitAll(e2.value, t2);
+          break;
+        case "case_expression":
+          for (const a2 of e2.clauses)
+            this.visitAll(a2, t2);
+          e2.format === "simple" && this.visitAll(e2.operand, t2), e2.else !== null && this.visitAll(e2.else, t2);
+          break;
+        case "expr_list":
+          for (const a2 of e2.value)
+            this.visitAll(a2, t2);
+          break;
+        case "unary_expr":
+          this.visitAll(e2.expr, t2);
+          break;
+        case "binary_expr":
+          this.visitAll(e2.left, t2), this.visitAll(e2.right, t2);
+          break;
+        case "function":
+          this.visitAll(e2.args, t2);
+      }
+  }
+  evaluateNodeToJavaScript(e2) {
+    switch (e2.type) {
+      case "interval":
+        return "this.makeSqlInterval(" + this.evaluateNodeToJavaScript(e2.value) + ", " + JSON.stringify(e2.qualifier) + "," + JSON.stringify(e2.op) + ")";
+      case "case_expression": {
+        let t2 = "";
+        if (e2.format === "simple") {
+          const a2 = "this.makeComparable(" + this.evaluateNodeToJavaScript(e2.operand) + ")";
+          t2 = "( ";
+          for (let r2 = 0; r2 < e2.clauses.length; r2++)
+            t2 += " (" + a2 + " === this.makeComparable(" + this.evaluateNodeToJavaScript(e2.clauses[r2].operand) + ")) ? (" + this.evaluateNodeToJavaScript(e2.clauses[r2].value) + ") : ";
+          e2.else !== null ? t2 += this.evaluateNodeToJavaScript(e2.else) : t2 += "null", t2 += " )";
+        } else {
+          t2 = "( ";
+          for (let a2 = 0; a2 < e2.clauses.length; a2++)
+            t2 += " this.makeBool(" + this.evaluateNodeToJavaScript(e2.clauses[a2].operand) + ")===true ? (" + this.evaluateNodeToJavaScript(e2.clauses[a2].value) + ") : ";
+          e2.else !== null ? t2 += this.evaluateNodeToJavaScript(e2.else) : t2 += "null", t2 += " )";
+        }
+        return t2;
+      }
+      case "param":
+        return "this.lookup(" + JSON.stringify(e2.value.toLowerCase()) + ",lookups)";
+      case "expr_list": {
+        let t2 = "[";
+        for (const a2 of e2.value)
+          t2 !== "[" && (t2 += ","), t2 += this.evaluateNodeToJavaScript(a2);
+        return t2 += "]", t2;
+      }
+      case "unary_expr":
+        return "this.ternaryNot(" + this.evaluateNodeToJavaScript(e2.expr) + ")";
+      case "binary_expr":
+        switch (e2.operator) {
+          case "AND":
+            return "this.ternaryAnd(" + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + " )";
+          case "OR":
+            return "this.ternaryOr(" + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + " )";
+          case "IS":
+            if (e2.right.type !== "null")
+              throw new Error("Unsupported RHS for IS");
+            return "this.equalsNull(" + this.evaluateNodeToJavaScript(e2.left) + ")";
+          case "ISNOT":
+            if (e2.right.type !== "null")
+              throw new Error("Unsupported RHS for IS");
+            return "(!(this.equalsNull(" + this.evaluateNodeToJavaScript(e2.left) + ")))";
+          case "IN":
+            return "this.applyIn(" + this.evaluateNodeToJavaScript(e2.left) + ",this.ensureArray(" + this.evaluateNodeToJavaScript(e2.right) + "))";
+          case "NOT IN":
+            return "this.ternaryNot(this.applyIn(" + this.evaluateNodeToJavaScript(e2.left) + ",this.ensureArray(" + this.evaluateNodeToJavaScript(e2.right) + ")))";
+          case "BETWEEN":
+            return "this.between(" + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + ")";
+          case "NOTBETWEEN":
+            return "this.notbetween(" + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + ")";
+          case "LIKE":
+            return "this.applyLike(" + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + "," + JSON.stringify(e2.escape) + ")";
+          case "NOT LIKE":
+            return "this.ternaryNot(this.applyLike(" + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + "," + JSON.stringify(e2.escape) + "))";
+          case "<>":
+          case "<":
+          case ">":
+          case ">=":
+          case "<=":
+          case "=":
+            return "this.compare(" + JSON.stringify(e2.operator) + "," + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + ")";
+          case "*":
+          case "-":
+          case "+":
+          case "/":
+            return "this.calculate(" + JSON.stringify(e2.operator) + "," + this.evaluateNodeToJavaScript(e2.left) + "," + this.evaluateNodeToJavaScript(e2.right) + ")";
+        }
+        throw new Error("Not Supported Operator " + e2.operator);
+      case "null":
+      case "bool":
+      case "string":
+      case "number":
+        return JSON.stringify(e2.value);
+      case "date":
+        return "(new Date(" + m(e2.value).getTime().toString() + "))";
+      case "timestamp":
+        return "(new Date(" + N(e2.value).getTime().toString() + "))";
+      case "current_time":
+        return e2.mode === "date" ? "this.currentDate()" : "this.currentTimestamp()";
+      case "column_ref":
+        return "this.featureValue(feature," + JSON.stringify(e2.column) + ",datefields,attributeAdapter)";
+      case "function":
+        return "this.evaluateFunction(" + JSON.stringify(e2.name) + "," + this.evaluateNodeToJavaScript(e2.args) + ")";
+    }
+    throw new Error("Unsupported sql syntax " + e2.type);
+  }
+  evaluateNode(e2, t$12, s) {
+    switch (e2.type) {
+      case "interval": {
+        const a2 = this.evaluateNode(e2.value, t$12, s);
+        return e$1.createFromValueAndQualifer(a2, e2.qualifier, e2.op);
+      }
+      case "case_expression":
+        if (e2.format === "simple") {
+          const a2 = A(this.evaluateNode(e2.operand, t$12, s));
+          for (let r2 = 0; r2 < e2.clauses.length; r2++)
+            if (a2 === A(this.evaluateNode(e2.clauses[r2].operand, t$12, s)))
+              return this.evaluateNode(e2.clauses[r2].value, t$12, s);
+          if (e2.else !== null)
+            return this.evaluateNode(e2.else, t$12, s);
+        } else {
+          for (let a2 = 0; a2 < e2.clauses.length; a2++)
+            if (g(this.evaluateNode(e2.clauses[a2].operand, t$12, s)))
+              return this.evaluateNode(e2.clauses[a2].value, t$12, s);
+          if (e2.else !== null)
+            return this.evaluateNode(e2.else, t$12, s);
+        }
+        return null;
+      case "param":
+        return this.parameters[e2.value.toLowerCase()];
+      case "expr_list": {
+        const a2 = [];
+        for (const r2 of e2.value)
+          a2.push(this.evaluateNode(r2, t$12, s));
+        return a2;
+      }
+      case "unary_expr":
+        return S(this.evaluateNode(e2.expr, t$12, s));
+      case "binary_expr":
+        switch (e2.operator) {
+          case "AND":
+            return w(this.evaluateNode(e2.left, t$12, s), this.evaluateNode(e2.right, t$12, s));
+          case "OR":
+            return I(this.evaluateNode(e2.left, t$12, s), this.evaluateNode(e2.right, t$12, s));
+          case "IS":
+            if (e2.right.type !== "null")
+              throw new Error("Unsupported RHS for IS");
+            return this.evaluateNode(e2.left, t$12, s) === null;
+          case "ISNOT":
+            if (e2.right.type !== "null")
+              throw new Error("Unsupported RHS for IS");
+            return this.evaluateNode(e2.left, t$12, s) !== null;
+          case "IN": {
+            const a2 = T(this.evaluateNode(e2.right, t$12, s));
+            return y(this.evaluateNode(e2.left, t$12, s), a2);
+          }
+          case "NOT IN": {
+            const a2 = T(this.evaluateNode(e2.right, t$12, s));
+            return S(y(this.evaluateNode(e2.left, t$12, s), a2));
+          }
+          case "BETWEEN": {
+            const a2 = this.evaluateNode(e2.left, t$12, s), r2 = this.evaluateNode(e2.right, t$12, s);
+            return a2 == null || r2[0] == null || r2[1] == null ? null : a2 >= A(r2[0]) && a2 <= A(r2[1]);
+          }
+          case "NOTBETWEEN": {
+            const a2 = this.evaluateNode(e2.left, t$12, s), r2 = this.evaluateNode(e2.right, t$12, s);
+            return a2 == null || r2[0] == null || r2[1] == null ? null : a2 < A(r2[0]) || a2 > A(r2[1]);
+          }
+          case "LIKE":
+            return J(this.evaluateNode(e2.left, t$12, s), this.evaluateNode(e2.right, t$12, s), e2.escape);
+          case "NOT LIKE":
+            return S(J(this.evaluateNode(e2.left, t$12, s), this.evaluateNode(e2.right, t$12, s), e2.escape));
+          case "<>":
+          case "<":
+          case ">":
+          case ">=":
+          case "<=":
+          case "=":
+            return b(e2.operator, this.evaluateNode(e2.left, t$12, s), this.evaluateNode(e2.right, t$12, s));
+          case "-":
+          case "+":
+          case "*":
+          case "/":
+            return D(e2.operator, this.evaluateNode(e2.left, t$12, s), this.evaluateNode(e2.right, t$12, s));
+        }
+      case "null":
+      case "bool":
+      case "string":
+      case "number":
+        return e2.value;
+      case "date":
+        return m(e2.value);
+      case "timestamp":
+        return N(e2.value);
+      case "current_time": {
+        const t2 = new Date();
+        return e2.mode === "date" && t2.setHours(0, 0, 0, 0), t2;
+      }
+      case "column_ref":
+        return _(t$12, e2.column, this.datefields, s);
+      case "function": {
+        const r2 = this.evaluateNode(e2.args, t$12, s);
+        return this.isAggregate ? a(e2.name, r2) : t(e2.name, r2);
+      }
+    }
+    throw new Error("Unsupported sql syntax " + e2.type);
+  }
+}
+function N(e2) {
+  let t2 = u.exec(e2);
+  if (t2 !== null) {
+    const [, e3, a2, r2, s, n2, i] = t2;
+    return d(e3, a2, r2, s, n2, i);
+  }
+  if (t2 = o.exec(e2), t2 !== null) {
+    const [, e3, a2, r2, s, n2, i, l2, u2, o2] = t2;
+    return d(e3, a2, r2, s, n2, i, l2, u2, o2);
+  }
+  if (t2 = c.exec(e2), t2 !== null) {
+    const [, e3, a2, r2, s, n2, i, l2, u2] = t2;
+    return d(e3, a2, r2, s, n2, "0", i, l2, u2);
+  }
+  if (t2 = h.exec(e2), t2 !== null) {
+    const [, e3, a2, r2, s, n2] = t2;
+    return d(e3, a2, r2, s, n2);
+  }
+  if (t2 = l.exec(e2), t2 !== null) {
+    const [, e3, a2, r2] = t2;
+    return d(e3, a2, r2);
+  }
+  throw new Error("SQL Invalid Timestamp");
+}
+function m(e2) {
+  const t2 = l.exec(e2);
+  if (t2 === null)
+    throw new Error("SQL Invalid Date");
+  const [, a2, r2, s] = t2;
+  return new Date(parseInt(a2, 10), parseInt(r2, 10) - 1, parseInt(s, 10));
+}
+function g(e2) {
+  return e2 === true;
+}
+function T(e2) {
+  return Array.isArray(e2) ? e2 : [e2];
+}
+function S(e2) {
+  return e2 !== null ? e2 !== true : null;
+}
+function w(e2, t2) {
+  return e2 != null && t2 != null ? e2 === true && t2 === true : e2 !== false && t2 !== false && null;
+}
+function I(e2, t2) {
+  return e2 != null && t2 != null ? e2 === true || t2 === true : e2 === true || t2 === true || null;
+}
+function y(e2, t2) {
+  if (e2 == null)
+    return null;
+  let a2 = false;
+  for (const r2 of t2)
+    if (r2 == null)
+      a2 = null;
+    else if (e2 === r2) {
+      a2 = true;
+      break;
+    }
+  return a2;
+}
+function J(e2, t2, a2) {
+  if (e2 == null)
+    return null;
+  const r2 = t2, s = a2;
+  let n2 = "";
+  const i = "-[]/{}()*+?.\\^$|";
+  let l2 = 0;
+  for (let u2 = 0; u2 < r2.length; u2++) {
+    const e3 = r2.charAt(u2);
+    switch (l2) {
+      case 0:
+        e3 === s ? l2 = 1 : i.indexOf(e3) >= 0 ? n2 += "\\" + e3 : n2 += e3 === "%" ? ".*" : e3 === "_" ? "." : e3;
+        break;
+      case 1:
+        i.indexOf(e3) >= 0 ? n2 += "\\" + e3 : n2 += e3, l2 = 0;
+    }
+  }
+  return new RegExp("^" + n2 + "$").test(e2);
+}
+function A(e2) {
+  return e2 instanceof Date ? e2.valueOf() : e2;
+}
+function b(e2, t2, a2) {
+  if (t2 == null || a2 == null)
+    return null;
+  const r2 = A(t2), s = A(a2);
+  switch (e2) {
+    case "<>":
+      return r2 !== s;
+    case "=":
+      return r2 === s;
+    case ">":
+      return r2 > s;
+    case "<":
+      return r2 < s;
+    case ">=":
+      return r2 >= s;
+    case "<=":
+      return r2 <= s;
+  }
+}
+function x(e2) {
+  const t2 = [], a2 = {};
+  for (const r2 of e2) {
+    const e3 = r2.toLowerCase();
+    a2[e3] === void 0 && (t2.push(r2), a2[e3] = 1);
+  }
+  return t2;
+}
+function D(e2, t2, a2) {
+  if (t2 instanceof e$1)
+    if (a2 instanceof Date)
+      switch (e2) {
+        case "+":
+          return new Date(t2.valueInMilliseconds() + a2.getTime());
+        case "-":
+          return t2.valueInMilliseconds() - a2.getTime();
+        case "*":
+          return t2.valueInMilliseconds() * a2.getTime();
+        case "/":
+          return t2.valueInMilliseconds() / a2.getTime();
+      }
+    else if (a2 instanceof e$1)
+      switch (e2) {
+        case "+":
+          return e$1.createFromMilliseconds(t2.valueInMilliseconds() + a2.valueInMilliseconds());
+        case "-":
+          return e$1.createFromMilliseconds(t2.valueInMilliseconds() - a2.valueInMilliseconds());
+        case "*":
+          return t2.valueInMilliseconds() * a2.valueInMilliseconds();
+        case "/":
+          return t2.valueInMilliseconds() / a2.valueInMilliseconds();
+      }
+    else
+      t2 = t2.valueInMilliseconds();
+  else if (a2 instanceof e$1)
+    if (t2 instanceof Date)
+      switch (e2) {
+        case "+":
+          return new Date(a2.valueInMilliseconds() + t2.getTime());
+        case "-":
+          return new Date(t2.getTime() - a2.valueInMilliseconds());
+        case "*":
+          return t2.getTime() * a2.valueInMilliseconds();
+        case "/":
+          return t2.getTime() / a2.valueInMilliseconds();
+      }
+    else
+      a2 = a2.valueInMilliseconds();
+  else if (t2 instanceof Date && typeof a2 == "number")
+    switch (a2 = 24 * a2 * 60 * 60 * 1e3, t2 = t2.getTime(), e2) {
+      case "+":
+        return new Date(t2 + a2);
+      case "-":
+        return new Date(t2 - a2);
+      case "*":
+        return new Date(t2 * a2);
+      case "/":
+        return new Date(t2 / a2);
+    }
+  else if (a2 instanceof Date && typeof t2 == "number")
+    switch (t2 = 24 * t2 * 60 * 60 * 1e3, a2 = a2.getTime(), e2) {
+      case "+":
+        return new Date(t2 + a2);
+      case "-":
+        return new Date(t2 - a2);
+      case "*":
+        return new Date(t2 * a2);
+      case "/":
+        return new Date(t2 / a2);
+    }
+  switch (e2) {
+    case "+":
+      return t2 + a2;
+    case "-":
+      return t2 - a2;
+    case "*":
+      return t2 * a2;
+    case "/":
+      return t2 / a2;
+  }
+}
+function E(e2) {
+  return e2 && typeof e2.attributes == "object";
+}
+function _(e2, t2, a2, r2) {
+  const s = r2.getAttribute(e2, t2);
+  return s != null && a2[t2] === 1 ? new Date(s) : s;
+}
+const M = { getAttribute: (e2, t2) => (E(e2) ? e2.attributes : e2)[t2] };
+export { f as WhereClause, M as defaultAttributeAdapter };

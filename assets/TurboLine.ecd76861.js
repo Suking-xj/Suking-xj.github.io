@@ -1,1 +1,1256 @@
-import{o as e}from"./definitions.6737c10c.js";import{g as t}from"./GeometryUtils.9c8423f5.js";import{a4 as i}from"./vendor.74d5941c.js";import{o as s}from"./_commonjsHelpers.f2a458db.js";class r{constructor(e,t){this.x=e,this.y=t}clone(){return new r(this.x,this.y)}equals(e,t){return e===this.x&&t===this.y}isEqual(e){return e.x===this.x&&e.y===this.y}setCoords(e,t){this.x=e,this.y=t}normalize(){const e=this.x,t=this.y,i=Math.sqrt(e*e+t*t);this.x/=i,this.y/=i}rightPerpendicular(){const e=this.x;this.x=this.y,this.y=-e}move(e,t){this.x+=e,this.y+=t}assign(e){this.x=e.x,this.y=e.y}assignAdd(e,t){this.x=e.x+t.x,this.y=e.y+t.y}assignSub(e,t){this.x=e.x-t.x,this.y=e.y-t.y}rotate(e,t){const i=this.x,s=this.y;this.x=i*e-s*t,this.y=i*t+s*e}scale(e){this.x*=e,this.y*=e}length(){const e=this.x,t=this.y;return Math.sqrt(e*e+t*t)}static distance(e,t){const i=t.x-e.x,s=t.y-e.y;return Math.sqrt(i*i+s*s)}static add(e,t){return new r(e.x+t.x,e.y+t.y)}static sub(e,t){return new r(e.x-t.x,e.y-t.y)}}class n{constructor(e,t,i){this.ratio=e,this.x=t,this.y=i}}class o{constructor(t,i,s,r=8,n=8){this.lines=[],this.starts=[],this.validateTessellation=!0,this.pixelRatio=r,this.pixelMargin=n,this.tileSize=e*r,this.dz=t,this.yPos=i,this.xPos=s}setPixelMargin(e){e!==this.pixelMargin&&(this.pixelMargin=e,this.setExtent(this._extent))}setExtent(e){this._extent=e,this.finalRatio=this.tileSize/e*(1<<this.dz);let t=this.pixelRatio*this.pixelMargin;t/=this.finalRatio;const i=e>>this.dz;t>i&&(t=i),this.margin=t,this.xmin=i*this.xPos-t,this.ymin=i*this.yPos-t,this.xmax=this.xmin+i+2*t,this.ymax=this.ymin+i+2*t}reset(e){this.type=e,this.lines=[],this.starts=[],this.line=null,this.start=0}moveTo(e,t){this._pushLine(),this._prevIsIn=this._isIn(e,t),this._moveTo(e,t,this._prevIsIn),this._prevPt=new r(e,t),this._firstPt=new r(e,t),this._dist=0}lineTo(e,t){const i=this._isIn(e,t),s=new r(e,t),o=r.distance(this._prevPt,s);let l,a,h,u,c,x,d,g;if(i)this._prevIsIn?this._lineTo(e,t,!0):(l=this._prevPt,a=s,h=this._intersect(a,l),this.start=this._dist+o*(1-this._r),this._lineTo(h.x,h.y,!0),this._lineTo(a.x,a.y,!0));else if(this._prevIsIn)a=this._prevPt,l=s,h=this._intersect(a,l),this._lineTo(h.x,h.y,!0),this._lineTo(l.x,l.y,!1);else{const e=this._prevPt,t=s;if(e.x<=this.xmin&&t.x<=this.xmin||e.x>=this.xmax&&t.x>=this.xmax||e.y<=this.ymin&&t.y<=this.ymin||e.y>=this.ymax&&t.y>=this.ymax)this._lineTo(t.x,t.y,!1);else{const i=[];if((e.x<this.xmin&&t.x>this.xmin||e.x>this.xmin&&t.x<this.xmin)&&(u=(this.xmin-e.x)/(t.x-e.x),g=e.y+u*(t.y-e.y),g<=this.ymin?x=!1:g>=this.ymax?x=!0:i.push(new n(u,this.xmin,g))),(e.x<this.xmax&&t.x>this.xmax||e.x>this.xmax&&t.x<this.xmax)&&(u=(this.xmax-e.x)/(t.x-e.x),g=e.y+u*(t.y-e.y),g<=this.ymin?x=!1:g>=this.ymax?x=!0:i.push(new n(u,this.xmax,g))),(e.y<this.ymin&&t.y>this.ymin||e.y>this.ymin&&t.y<this.ymin)&&(u=(this.ymin-e.y)/(t.y-e.y),d=e.x+u*(t.x-e.x),d<=this.xmin?c=!1:d>=this.xmax?c=!0:i.push(new n(u,d,this.ymin))),(e.y<this.ymax&&t.y>this.ymax||e.y>this.ymax&&t.y<this.ymax)&&(u=(this.ymax-e.y)/(t.y-e.y),d=e.x+u*(t.x-e.x),d<=this.xmin?c=!1:d>=this.xmax?c=!0:i.push(new n(u,d,this.ymax))),0===i.length)c?x?this._lineTo(this.xmax,this.ymax,!0):this._lineTo(this.xmax,this.ymin,!0):x?this._lineTo(this.xmin,this.ymax,!0):this._lineTo(this.xmin,this.ymin,!0);else if(i.length>1&&i[0].ratio>i[1].ratio)this.start=this._dist+o*i[1].ratio,this._lineTo(i[1].x,i[1].y,!0),this._lineTo(i[0].x,i[0].y,!0);else{this.start=this._dist+o*i[0].ratio;for(let e=0;e<i.length;e++)this._lineTo(i[e].x,i[e].y,!0)}this._lineTo(t.x,t.y,!1)}}this._dist+=o,this._prevIsIn=i,this._prevPt=s}close(){if(this.line.length>2){const e=this._firstPt,t=this._prevPt;e.x===t.x&&e.y===t.y||this.lineTo(e.x,e.y);const i=this.line;let s=i.length;for(;s>=4&&(i[0].x===i[1].x&&i[0].x===i[s-2].x||i[0].y===i[1].y&&i[0].y===i[s-2].y);)i.pop(),i[0].x=i[s-2].x,i[0].y=i[s-2].y,--s}}result(e=!0){return this._pushLine(),0===this.lines.length?null:(3===this.type&&e&&a.simplify(this.tileSize,this.margin*this.finalRatio,this.lines),this.lines)}resultWithStarts(){if(2!==this.type)throw new Error("Only valid for lines");this._pushLine();const e=this.lines,t=e.length;if(0===t)return null;const i=[];for(let s=0;s<t;s++)i.push({line:e[s],start:this.starts[s]||0});return i}_isIn(e,t){return e>=this.xmin&&e<=this.xmax&&t>=this.ymin&&t<=this.ymax}_intersect(e,t){let i,s,n;if(t.x>=this.xmin&&t.x<=this.xmax)s=t.y<=this.ymin?this.ymin:this.ymax,n=(s-e.y)/(t.y-e.y),i=e.x+n*(t.x-e.x);else if(t.y>=this.ymin&&t.y<=this.ymax)i=t.x<=this.xmin?this.xmin:this.xmax,n=(i-e.x)/(t.x-e.x),s=e.y+n*(t.y-e.y);else{s=t.y<=this.ymin?this.ymin:this.ymax,i=t.x<=this.xmin?this.xmin:this.xmax;const r=(i-e.x)/(t.x-e.x),o=(s-e.y)/(t.y-e.y);r<o?(n=r,s=e.y+r*(t.y-e.y)):(n=o,i=e.x+o*(t.x-e.x))}return this._r=n,new r(i,s)}_pushLine(){this.line&&(1===this.type?this.line.length>0&&(this.lines.push(this.line),this.starts.push(this.start)):2===this.type?this.line.length>1&&(this.lines.push(this.line),this.starts.push(this.start)):3===this.type&&this.line.length>3&&(this.lines.push(this.line),this.starts.push(this.start))),this.line=[],this.start=0}_moveTo(e,t,i){3!==this.type?i&&(e=Math.round((e-(this.xmin+this.margin))*this.finalRatio),t=Math.round((t-(this.ymin+this.margin))*this.finalRatio),this.line.push(new r(e,t))):(i||(e<this.xmin&&(e=this.xmin),e>this.xmax&&(e=this.xmax),t<this.ymin&&(t=this.ymin),t>this.ymax&&(t=this.ymax)),e=Math.round((e-(this.xmin+this.margin))*this.finalRatio),t=Math.round((t-(this.ymin+this.margin))*this.finalRatio),this.line.push(new r(e,t)),this._is_h=!1,this._is_v=!1)}_lineTo(e,t,i){let s,n;if(3!==this.type)if(i){if(e=Math.round((e-(this.xmin+this.margin))*this.finalRatio),t=Math.round((t-(this.ymin+this.margin))*this.finalRatio),this.line.length>0&&(s=this.line[this.line.length-1],s.equals(e,t)))return;this.line.push(new r(e,t))}else this.line&&this.line.length>0&&this._pushLine();else if(i||(e<this.xmin&&(e=this.xmin),e>this.xmax&&(e=this.xmax),t<this.ymin&&(t=this.ymin),t>this.ymax&&(t=this.ymax)),e=Math.round((e-(this.xmin+this.margin))*this.finalRatio),t=Math.round((t-(this.ymin+this.margin))*this.finalRatio),this.line&&this.line.length>0){s=this.line[this.line.length-1];const i=s.x===e,o=s.y===t;if(i&&o)return;this._is_h&&i||this._is_v&&o?(s.x=e,s.y=t,n=this.line[this.line.length-2],n.x===e&&n.y===t?(this.line.pop(),this.line.length<=1?(this._is_h=!1,this._is_v=!1):(n=this.line[this.line.length-2],this._is_h=n.x===e,this._is_v=n.y===t)):(this._is_h=n.x===e,this._is_v=n.y===t)):(this.line.push(new r(e,t)),this._is_h=i,this._is_v=o)}else this.line.push(new r(e,t))}}class l{setExtent(e){this._ratio=4096===e?1:4096/e}get validateTessellation(){return this._ratio<1}reset(e){this.lines=[],this.line=null}moveTo(e,t){this.line&&this.lines.push(this.line),this.line=[];const i=this._ratio;this.line.push(new r(e*i,t*i))}lineTo(e,t){const i=this._ratio;this.line.push(new r(e*i,t*i))}close(){const e=this.line;e&&!e[0].isEqual(e[e.length-1])&&e.push(e[0])}result(){return this.line&&this.lines.push(this.line),0===this.lines.length?null:this.lines}}class a{static simplify(e,t,i){if(!i)return;const s=-t,r=e+t,n=-t,o=e+t,l=[],h=[],u=i.length;for(let a=0;a<u;++a){const e=i[a];if(!e||e.length<2)continue;let t,u=e[0];const c=e.length;for(let i=1;i<c;++i)t=e[i],u.x===t.x&&(u.x<=s&&(u.y>t.y?(l.push(a),l.push(i),l.push(0),l.push(-1)):(h.push(a),h.push(i),h.push(0),h.push(-1))),u.x>=r&&(u.y<t.y?(l.push(a),l.push(i),l.push(1),l.push(-1)):(h.push(a),h.push(i),h.push(1),h.push(-1)))),u.y===t.y&&(u.y<=n&&(u.x<t.x?(l.push(a),l.push(i),l.push(2),l.push(-1)):(h.push(a),h.push(i),h.push(2),h.push(-1))),u.y>=o&&(u.x>t.x?(l.push(a),l.push(i),l.push(3),l.push(-1)):(h.push(a),h.push(i),h.push(3),h.push(-1)))),u=t}if(0===l.length||0===h.length)return;a.fillParent(i,h,l),a.fillParent(i,l,h);const c=[];a.calcDeltas(c,h,l),a.calcDeltas(c,l,h),a.addDeltas(c,i)}static fillParent(e,i,s){const r=s.length,n=i.length;for(let o=0;o<n;o+=4){const n=i[o],l=i[o+1],a=i[o+2],h=e[n][l-1],u=e[n][l];let c=8092,x=-1;for(let i=0;i<r;i+=4){if(s[i+2]!==a)continue;const r=s[i],n=s[i+1],o=e[r][n-1],l=e[r][n];switch(a){case 0:case 1:if(t(h.y,o.y,l.y)&&t(u.y,o.y,l.y)){const e=Math.abs(l.y-o.y);e<c&&(c=e,x=i)}break;case 2:case 3:if(t(h.x,o.x,l.x)&&t(u.x,o.x,l.x)){const e=Math.abs(l.x-o.x);e<c&&(c=e,x=i)}}}i[o+3]=x}}static calcDeltas(e,t,i){const s=t.length;for(let r=0;r<s;r+=4){const s=[],n=a.calcDelta(r,t,i,s);e.push(t[r]),e.push(t[r+1]),e.push(t[r+2]),e.push(n)}}static calcDelta(e,t,i,s){const r=t[e+3];if(-1===r)return 0;const n=s.length;return n>1&&s[n-2]===r?0:(s.push(r),a.calcDelta(r,i,t,s)+1)}static addDeltas(e,t){const i=e.length;let s=0;for(let r=0;r<i;r+=4){const t=e[r+3];t>s&&(s=t)}for(let r=0;r<i;r+=4){const i=t[e[r]],n=e[r+1],o=s-e[r+3];switch(e[r+2]){case 0:i[n-1].x-=o,i[n].x-=o,1===n&&(i[i.length-1].x-=o),n===i.length-1&&(i[0].x-=o);break;case 1:i[n-1].x+=o,i[n].x+=o,1===n&&(i[i.length-1].x+=o),n===i.length-1&&(i[0].x+=o);break;case 2:i[n-1].y-=o,i[n].y-=o,1===n&&(i[i.length-1].y-=o),n===i.length-1&&(i[0].y-=o);break;case 3:i[n-1].y+=o,i[n].y+=o,1===n&&(i[i.length-1].y+=o),n===i.length-1&&(i[0].y+=o)}}}}var h=s((function(e){var t;void 0!==(t=function(){var e={DEBUG:!1,assert:function(t,i){if(e.DEBUG&&!t)throw new Error("Assertion failed"+(i?": "+i:""))},GLU_TESS_MAX_COORD:1e150,TRUE_PROJECT:!1,GLU_TESS_DEFAULT_TOLERANCE:0,windingRule:{GLU_TESS_WINDING_ODD:100130,GLU_TESS_WINDING_NONZERO:100131,GLU_TESS_WINDING_POSITIVE:100132,GLU_TESS_WINDING_NEGATIVE:100133,GLU_TESS_WINDING_ABS_GEQ_TWO:100134},primitiveType:{GL_LINE_LOOP:2,GL_TRIANGLES:4,GL_TRIANGLE_STRIP:5,GL_TRIANGLE_FAN:6},errorType:{GLU_TESS_MISSING_BEGIN_POLYGON:100151,GLU_TESS_MISSING_END_POLYGON:100153,GLU_TESS_MISSING_BEGIN_CONTOUR:100152,GLU_TESS_MISSING_END_CONTOUR:100154,GLU_TESS_COORD_TOO_LARGE:100155,GLU_TESS_NEED_COMBINE_CALLBACK:100156},gluEnum:{GLU_TESS_BEGIN:100100,GLU_TESS_VERTEX:100101,GLU_TESS_END:100102,GLU_TESS_ERROR:100103,GLU_TESS_EDGE_FLAG:100104,GLU_TESS_COMBINE:100105,GLU_TESS_BEGIN_DATA:100106,GLU_TESS_VERTEX_DATA:100107,GLU_TESS_END_DATA:100108,GLU_TESS_ERROR_DATA:100109,GLU_TESS_EDGE_FLAG_DATA:100110,GLU_TESS_COMBINE_DATA:100111,GLU_TESS_MESH:100112,GLU_TESS_TOLERANCE:100142,GLU_TESS_WINDING_RULE:100140,GLU_TESS_BOUNDARY_ONLY:100141,GLU_INVALID_ENUM:100900,GLU_INVALID_VALUE:100901},geom:{}};return e.geom.vertEq=function(e,t){return e.s===t.s&&e.t===t.t},e.geom.vertLeq=function(e,t){return e.s<t.s||e.s===t.s&&e.t<=t.t},e.geom.edgeEval=function(t,i,s){e.assert(e.geom.vertLeq(t,i)&&e.geom.vertLeq(i,s));var r=i.s-t.s,n=s.s-i.s;return r+n>0?r<n?i.t-t.t+(t.t-s.t)*(r/(r+n)):i.t-s.t+(s.t-t.t)*(n/(r+n)):0},e.geom.edgeSign=function(t,i,s){e.assert(e.geom.vertLeq(t,i)&&e.geom.vertLeq(i,s));var r=i.s-t.s,n=s.s-i.s;return r+n>0?(i.t-s.t)*r+(i.t-t.t)*n:0},e.geom.transLeq=function(e,t){return e.t<t.t||e.t===t.t&&e.s<=t.s},e.geom.transEval=function(t,i,s){e.assert(e.geom.transLeq(t,i)&&e.geom.transLeq(i,s));var r=i.t-t.t,n=s.t-i.t;return r+n>0?r<n?i.s-t.s+(t.s-s.s)*(r/(r+n)):i.s-s.s+(s.s-t.s)*(n/(r+n)):0},e.geom.transSign=function(t,i,s){e.assert(e.geom.transLeq(t,i)&&e.geom.transLeq(i,s));var r=i.t-t.t,n=s.t-i.t;return r+n>0?(i.s-s.s)*r+(i.s-t.s)*n:0},e.geom.edgeGoesLeft=function(t){return e.geom.vertLeq(t.dst(),t.org)},e.geom.edgeGoesRight=function(t){return e.geom.vertLeq(t.org,t.dst())},e.geom.vertL1dist=function(e,t){return Math.abs(e.s-t.s)+Math.abs(e.t-t.t)},e.geom.vertCCW=function(e,t,i){return e.s*(t.t-i.t)+t.s*(i.t-e.t)+i.s*(e.t-t.t)>=0},e.geom.interpolate_=function(e,t,i,s){return(e=e<0?0:e)<=(i=i<0?0:i)?0===i?(t+s)/2:t+e/(e+i)*(s-t):s+i/(e+i)*(t-s)},e.geom.edgeIntersect=function(t,i,s,r,n){var o,l,a;e.geom.vertLeq(t,i)||(a=t,t=i,i=a),e.geom.vertLeq(s,r)||(a=s,s=r,r=a),e.geom.vertLeq(t,s)||(a=t,t=s,s=a,a=i,i=r,r=a),e.geom.vertLeq(s,i)?e.geom.vertLeq(i,r)?((o=e.geom.edgeEval(t,s,i))+(l=e.geom.edgeEval(s,i,r))<0&&(o=-o,l=-l),n.s=e.geom.interpolate_(o,s.s,l,i.s)):((o=e.geom.edgeSign(t,s,i))+(l=-e.geom.edgeSign(t,r,i))<0&&(o=-o,l=-l),n.s=e.geom.interpolate_(o,s.s,l,r.s)):n.s=(s.s+i.s)/2,e.geom.transLeq(t,i)||(a=t,t=i,i=a),e.geom.transLeq(s,r)||(a=s,s=r,r=a),e.geom.transLeq(t,s)||(a=t,t=s,s=a,a=i,i=r,r=a),e.geom.transLeq(s,i)?e.geom.transLeq(i,r)?((o=e.geom.transEval(t,s,i))+(l=e.geom.transEval(s,i,r))<0&&(o=-o,l=-l),n.t=e.geom.interpolate_(o,s.t,l,i.t)):((o=e.geom.transSign(t,s,i))+(l=-e.geom.transSign(t,r,i))<0&&(o=-o,l=-l),n.t=e.geom.interpolate_(o,s.t,l,r.t)):n.t=(s.t+i.t)/2},e.mesh={},e.mesh.makeEdge=function(t){var i=e.mesh.makeEdgePair_(t.eHead);return e.mesh.makeVertex_(i,t.vHead),e.mesh.makeVertex_(i.sym,t.vHead),e.mesh.makeFace_(i,t.fHead),i},e.mesh.meshSplice=function(t,i){var s=!1,r=!1;t!==i&&(i.org!==t.org&&(r=!0,e.mesh.killVertex_(i.org,t.org)),i.lFace!==t.lFace&&(s=!0,e.mesh.killFace_(i.lFace,t.lFace)),e.mesh.splice_(i,t),r||(e.mesh.makeVertex_(i,t.org),t.org.anEdge=t),s||(e.mesh.makeFace_(i,t.lFace),t.lFace.anEdge=t))},e.mesh.deleteEdge=function(t){var i=t.sym,s=!1;t.lFace!==t.rFace()&&(s=!0,e.mesh.killFace_(t.lFace,t.rFace())),t.oNext===t?e.mesh.killVertex_(t.org,null):(t.rFace().anEdge=t.oPrev(),t.org.anEdge=t.oNext,e.mesh.splice_(t,t.oPrev()),s||e.mesh.makeFace_(t,t.lFace)),i.oNext===i?(e.mesh.killVertex_(i.org,null),e.mesh.killFace_(i.lFace,null)):(t.lFace.anEdge=i.oPrev(),i.org.anEdge=i.oNext,e.mesh.splice_(i,i.oPrev())),e.mesh.killEdge_(t)},e.mesh.addEdgeVertex=function(t){var i=e.mesh.makeEdgePair_(t),s=i.sym;return e.mesh.splice_(i,t.lNext),i.org=t.dst(),e.mesh.makeVertex_(s,i.org),i.lFace=s.lFace=t.lFace,i},e.mesh.splitEdge=function(t){var i=e.mesh.addEdgeVertex(t).sym;return e.mesh.splice_(t.sym,t.sym.oPrev()),e.mesh.splice_(t.sym,i),t.sym.org=i.org,i.dst().anEdge=i.sym,i.sym.lFace=t.rFace(),i.winding=t.winding,i.sym.winding=t.sym.winding,i},e.mesh.connect=function(t,i){var s=!1,r=e.mesh.makeEdgePair_(t),n=r.sym;return i.lFace!==t.lFace&&(s=!0,e.mesh.killFace_(i.lFace,t.lFace)),e.mesh.splice_(r,t.lNext),e.mesh.splice_(n,i),r.org=t.dst(),n.org=i.org,r.lFace=n.lFace=t.lFace,t.lFace.anEdge=n,s||e.mesh.makeFace_(r,t.lFace),r},e.mesh.zapFace=function(t){var i,s=t.anEdge,r=s.lNext;do{if(r=(i=r).lNext,i.lFace=null,null===i.rFace()){i.oNext===i?e.mesh.killVertex_(i.org,null):(i.org.anEdge=i.oNext,e.mesh.splice_(i,i.oPrev()));var n=i.sym;n.oNext===n?e.mesh.killVertex_(n.org,null):(n.org.anEdge=n.oNext,e.mesh.splice_(n,n.oPrev())),e.mesh.killEdge_(i)}}while(i!==s);var o=t.prev,l=t.next;l.prev=o,o.next=l},e.mesh.meshUnion=function(e,t){var i=e.fHead,s=e.vHead,r=e.eHead,n=t.fHead,o=t.vHead,l=t.eHead;return n.next!==n&&(i.prev.next=n.next,n.next.prev=i.prev,n.prev.next=i,i.prev=n.prev),o.next!==o&&(s.prev.next=o.next,o.next.prev=s.prev,o.prev.next=s,s.prev=o.prev),l.next!==l&&(r.sym.next.sym.next=l.next,l.next.sym.next=r.sym.next,l.sym.next.sym.next=r,r.sym.next=l.sym.next),e},e.mesh.deleteMesh=function(e){},e.mesh.makeEdgePair_=function(t){var i=new e.GluHalfEdge,s=new e.GluHalfEdge,r=t.sym.next;return s.next=r,r.sym.next=i,i.next=t,t.sym.next=s,i.sym=s,i.oNext=i,i.lNext=s,s.sym=i,s.oNext=s,s.lNext=i,i},e.mesh.splice_=function(e,t){var i=e.oNext,s=t.oNext;i.sym.lNext=t,s.sym.lNext=e,e.oNext=s,t.oNext=i},e.mesh.makeVertex_=function(t,i){var s=i.prev,r=new e.GluVertex(i,s);s.next=r,i.prev=r,r.anEdge=t;var n=t;do{n.org=r,n=n.oNext}while(n!==t)},e.mesh.makeFace_=function(t,i){var s=i.prev,r=new e.GluFace(i,s);s.next=r,i.prev=r,r.anEdge=t,r.inside=i.inside;var n=t;do{n.lFace=r,n=n.lNext}while(n!==t)},e.mesh.killEdge_=function(e){var t=e.next,i=e.sym.next;t.sym.next=i,i.sym.next=t},e.mesh.killVertex_=function(e,t){var i=e.anEdge,s=i;do{s.org=t,s=s.oNext}while(s!==i);var r=e.prev,n=e.next;n.prev=r,r.next=n},e.mesh.killFace_=function(e,t){var i=e.anEdge,s=i;do{s.lFace=t,s=s.lNext}while(s!==i);var r=e.prev,n=e.next;n.prev=r,r.next=n},e.normal={},e.normal.S_UNIT_X_=1,e.normal.S_UNIT_Y_=0,e.normal.projectPolygon=function(t,i,s,r){var n=!1,o=[i,s,r];0===i&&0===s&&0===r&&(e.normal.computeNormal_(t,o),n=!0);var l,a=e.normal.longAxis_(o),h=t.mesh.vHead;if(e.TRUE_PROJECT){e.normal.normalize_(o);var u=[0,0,0],c=[0,0,0];u[a]=0,u[(a+1)%3]=e.normal.S_UNIT_X_,u[(a+2)%3]=e.normal.S_UNIT_Y_;var x=e.normal.dot_(u,o);for(u[0]-=x*o[0],u[1]-=x*o[1],u[2]-=x*o[2],e.normal.normalize_(u),c[0]=o[1]*u[2]-o[2]*u[1],c[1]=o[2]*u[0]-o[0]*u[2],c[2]=o[0]*u[1]-o[1]*u[0],e.normal.normalize_(c),l=h.next;l!==h;l=l.next)l.s=e.normal.dot_(l.coords,u),l.t=e.normal.dot_(l.coords,c)}else{var d=(a+1)%3,g=(a+2)%3,_=o[a]>0?1:-1;for(l=h.next;l!==h;l=l.next)l.s=l.coords[d],l.t=_*l.coords[g]}n&&e.normal.checkOrientation_(t)},e.normal.dot_=function(e,t){return e[0]*t[0]+e[1]*t[1]+e[2]*t[2]},e.normal.normalize_=function(t){var i=t[0]*t[0]+t[1]*t[1]+t[2]*t[2];e.assert(i>0),i=Math.sqrt(i),t[0]/=i,t[1]/=i,t[2]/=i},e.normal.longAxis_=function(e){var t=0;return Math.abs(e[1])>Math.abs(e[0])&&(t=1),Math.abs(e[2])>Math.abs(e[t])&&(t=2),t},e.normal.computeNormal_=function(t,i){var s,r=[-2*e.GLU_TESS_MAX_COORD,-2*e.GLU_TESS_MAX_COORD,-2*e.GLU_TESS_MAX_COORD],n=[2*e.GLU_TESS_MAX_COORD,2*e.GLU_TESS_MAX_COORD,2*e.GLU_TESS_MAX_COORD],o=[],l=[],a=t.mesh.vHead;for(s=a.next;s!==a;s=s.next)for(var h=0;h<3;++h){var u=s.coords[h];u<n[h]&&(n[h]=u,l[h]=s),u>r[h]&&(r[h]=u,o[h]=s)}var c=0;if(r[1]-n[1]>r[0]-n[0]&&(c=1),r[2]-n[2]>r[c]-n[c]&&(c=2),n[c]>=r[c])return i[0]=0,i[1]=0,void(i[2]=1);var x=0,d=l[c],g=o[c],_=[0,0,0],p=[d.coords[0]-g.coords[0],d.coords[1]-g.coords[1],d.coords[2]-g.coords[2]],m=[0,0,0];for(s=a.next;s!==a;s=s.next){m[0]=s.coords[0]-g.coords[0],m[1]=s.coords[1]-g.coords[1],m[2]=s.coords[2]-g.coords[2],_[0]=p[1]*m[2]-p[2]*m[1],_[1]=p[2]*m[0]-p[0]*m[2],_[2]=p[0]*m[1]-p[1]*m[0];var y=_[0]*_[0]+_[1]*_[1]+_[2]*_[2];y>x&&(x=y,i[0]=_[0],i[1]=_[1],i[2]=_[2])}x<=0&&(i[0]=i[1]=i[2]=0,i[e.normal.longAxis_(p)]=1)},e.normal.checkOrientation_=function(e){for(var t=0,i=e.mesh.fHead,s=i.next;s!==i;s=s.next){var r=s.anEdge;if(!(r.winding<=0))do{t+=(r.org.s-r.dst().s)*(r.org.t+r.dst().t),r=r.lNext}while(r!==s.anEdge)}if(t<0)for(var n=e.mesh.vHead,o=n.next;o!==n;o=o.next)o.t=-o.t},e.render={},e.render.renderMesh=function(t,i,s){for(var r=!1,n=-1,o=i.fHead.prev;o!==i.fHead;o=o.prev)if(o.inside){r||(t.callBeginCallback(e.primitiveType.GL_TRIANGLES),r=!0);var l=o.anEdge;e.assert(l.lNext.lNext.lNext===l,"renderMesh called with non-triangulated mesh");do{if(s){var a=l.rFace().inside?0:1;n!==a&&(n=a,t.callEdgeFlagCallback(!!n))}t.callVertexCallback(l.org.data),l=l.lNext}while(l!==o.anEdge)}r&&t.callEndCallback()},e.render.renderBoundary=function(t,i){for(var s=i.fHead.next;s!==i.fHead;s=s.next)if(s.inside){t.callBeginCallback(e.primitiveType.GL_LINE_LOOP);var r=s.anEdge;do{t.callVertexCallback(r.org.data),r=r.lNext}while(r!==s.anEdge);t.callEndCallback()}},e.sweep={},e.sweep.SENTINEL_COORD_=4*e.GLU_TESS_MAX_COORD,e.sweep.TOLERANCE_NONZERO_=!1,e.sweep.computeInterior=function(t){var i;for(t.fatalError=!1,e.sweep.removeDegenerateEdges_(t),e.sweep.initPriorityQ_(t),e.sweep.initEdgeDict_(t);null!==(i=t.pq.extractMin());){for(;;){var s=t.pq.minimum();if(null===s||!e.geom.vertEq(s,i))break;s=t.pq.extractMin(),e.sweep.spliceMergeVertices_(t,i.anEdge,s.anEdge)}e.sweep.sweepEvent_(t,i)}var r=t.dict.getMin().getKey();t.event=r.eUp.org,e.sweep.doneEdgeDict_(t),e.sweep.donePriorityQ_(t),e.sweep.removeDegenerateFaces_(t.mesh),t.mesh.checkMesh()},e.sweep.addWinding_=function(e,t){e.winding+=t.winding,e.sym.winding+=t.sym.winding},e.sweep.edgeLeq_=function(t,i,s){var r=t.event,n=i.eUp,o=s.eUp;return n.dst()===r?o.dst()===r?e.geom.vertLeq(n.org,o.org)?e.geom.edgeSign(o.dst(),n.org,o.org)<=0:e.geom.edgeSign(n.dst(),o.org,n.org)>=0:e.geom.edgeSign(o.dst(),r,o.org)<=0:o.dst()===r?e.geom.edgeSign(n.dst(),r,n.org)>=0:e.geom.edgeEval(n.dst(),r,n.org)>=e.geom.edgeEval(o.dst(),r,o.org)},e.sweep.deleteRegion_=function(t,i){i.fixUpperEdge&&e.assert(0===i.eUp.winding),i.eUp.activeRegion=null,t.dict.deleteNode(i.nodeUp),i.nodeUp=null},e.sweep.fixUpperEdge_=function(t,i){e.assert(t.fixUpperEdge),e.mesh.deleteEdge(t.eUp),t.fixUpperEdge=!1,t.eUp=i,i.activeRegion=t},e.sweep.topLeftRegion_=function(t){var i=t.eUp.org;do{t=t.regionAbove()}while(t.eUp.org===i);if(t.fixUpperEdge){var s=e.mesh.connect(t.regionBelow().eUp.sym,t.eUp.lNext);e.sweep.fixUpperEdge_(t,s),t=t.regionAbove()}return t},e.sweep.topRightRegion_=function(e){var t=e.eUp.dst();do{e=e.regionAbove()}while(e.eUp.dst()===t);return e},e.sweep.addRegionBelow_=function(t,i,s){var r=new e.ActiveRegion;return r.eUp=s,r.nodeUp=t.dict.insertBefore(i.nodeUp,r),s.activeRegion=r,r},e.sweep.isWindingInside_=function(t,i){switch(t.windingRule){case e.windingRule.GLU_TESS_WINDING_ODD:return 0!=(1&i);case e.windingRule.GLU_TESS_WINDING_NONZERO:return 0!==i;case e.windingRule.GLU_TESS_WINDING_POSITIVE:return i>0;case e.windingRule.GLU_TESS_WINDING_NEGATIVE:return i<0;case e.windingRule.GLU_TESS_WINDING_ABS_GEQ_TWO:return i>=2||i<=-2}return e.assert(!1),!1},e.sweep.computeWinding_=function(t,i){i.windingNumber=i.regionAbove().windingNumber+i.eUp.winding,i.inside=e.sweep.isWindingInside_(t,i.windingNumber)},e.sweep.finishRegion_=function(t,i){var s=i.eUp,r=s.lFace;r.inside=i.inside,r.anEdge=s,e.sweep.deleteRegion_(t,i)},e.sweep.finishLeftRegions_=function(t,i,s){for(var r=i,n=i.eUp;r!==s;){r.fixUpperEdge=!1;var o=r.regionBelow(),l=o.eUp;if(l.org!==n.org){if(!o.fixUpperEdge){e.sweep.finishRegion_(t,r);break}l=e.mesh.connect(n.lPrev(),l.sym),e.sweep.fixUpperEdge_(o,l)}n.oNext!==l&&(e.mesh.meshSplice(l.oPrev(),l),e.mesh.meshSplice(n,l)),e.sweep.finishRegion_(t,r),n=o.eUp,r=o}return n},e.sweep.addRightEdges_=function(t,i,s,r,n,o){var l=!0,a=s;do{e.assert(e.geom.vertLeq(a.org,a.dst())),e.sweep.addRegionBelow_(t,i,a.sym),a=a.oNext}while(a!==r);null===n&&(n=i.regionBelow().eUp.rPrev());for(var h,u=i,c=n;(a=(h=u.regionBelow()).eUp.sym).org===c.org;)a.oNext!==c&&(e.mesh.meshSplice(a.oPrev(),a),e.mesh.meshSplice(c.oPrev(),a)),h.windingNumber=u.windingNumber-a.winding,h.inside=e.sweep.isWindingInside_(t,h.windingNumber),u.dirty=!0,!l&&e.sweep.checkForRightSplice_(t,u)&&(e.sweep.addWinding_(a,c),e.sweep.deleteRegion_(t,u),e.mesh.deleteEdge(c)),l=!1,u=h,c=a;u.dirty=!0,e.assert(u.windingNumber-a.winding===h.windingNumber),o&&e.sweep.walkDirtyRegions_(t,u)},e.sweep.callCombine_=function(t,i,s,r,n){var o=[i.coords[0],i.coords[1],i.coords[2]];i.data=null,i.data=t.callCombineCallback(o,s,r),null===i.data&&(n?t.fatalError||(t.callErrorCallback(e.errorType.GLU_TESS_NEED_COMBINE_CALLBACK),t.fatalError=!0):i.data=s[0])},e.sweep.spliceMergeVertices_=function(t,i,s){var r=[null,null,null,null];r[0]=i.org.data,r[1]=s.org.data,e.sweep.callCombine_(t,i.org,r,[.5,.5,0,0],!1),e.mesh.meshSplice(i,s)},e.sweep.vertexWeights_=function(t,i,s,r,n){var o=e.geom.vertL1dist(i,t),l=e.geom.vertL1dist(s,t),a=n,h=n+1;r[a]=.5*l/(o+l),r[h]=.5*o/(o+l),t.coords[0]+=r[a]*i.coords[0]+r[h]*s.coords[0],t.coords[1]+=r[a]*i.coords[1]+r[h]*s.coords[1],t.coords[2]+=r[a]*i.coords[2]+r[h]*s.coords[2]},e.sweep.getIntersectData_=function(t,i,s,r,n,o){var l=[0,0,0,0],a=[s.data,r.data,n.data,o.data];i.coords[0]=i.coords[1]=i.coords[2]=0,e.sweep.vertexWeights_(i,s,r,l,0),e.sweep.vertexWeights_(i,n,o,l,2),e.sweep.callCombine_(t,i,a,l,!0)},e.sweep.checkForRightSplice_=function(t,i){var s=i.regionBelow(),r=i.eUp,n=s.eUp;if(e.geom.vertLeq(r.org,n.org)){if(e.geom.edgeSign(n.dst(),r.org,n.org)>0)return!1;e.geom.vertEq(r.org,n.org)?r.org!==n.org&&(t.pq.remove(r.org.pqHandle),e.sweep.spliceMergeVertices_(t,n.oPrev(),r)):(e.mesh.splitEdge(n.sym),e.mesh.meshSplice(r,n.oPrev()),i.dirty=s.dirty=!0)}else{if(e.geom.edgeSign(r.dst(),n.org,r.org)<0)return!1;i.regionAbove().dirty=i.dirty=!0,e.mesh.splitEdge(r.sym),e.mesh.meshSplice(n.oPrev(),r)}return!0},e.sweep.checkForLeftSplice_=function(t,i){var s,r=i.regionBelow(),n=i.eUp,o=r.eUp;if(e.assert(!e.geom.vertEq(n.dst(),o.dst())),e.geom.vertLeq(n.dst(),o.dst())){if(e.geom.edgeSign(n.dst(),o.dst(),n.org)<0)return!1;i.regionAbove().dirty=i.dirty=!0,s=e.mesh.splitEdge(n),e.mesh.meshSplice(o.sym,s),s.lFace.inside=i.inside}else{if(e.geom.edgeSign(o.dst(),n.dst(),o.org)>0)return!1;i.dirty=r.dirty=!0,s=e.mesh.splitEdge(o),e.mesh.meshSplice(n.lNext,o.sym),s.rFace().inside=i.inside}return!0},e.sweep.checkForIntersect_=function(t,i){var s=i.regionBelow(),r=i.eUp,n=s.eUp,o=r.org,l=n.org,a=r.dst(),h=n.dst(),u=new e.GluVertex;if(e.assert(!e.geom.vertEq(h,a)),e.assert(e.geom.edgeSign(a,t.event,o)<=0),e.assert(e.geom.edgeSign(h,t.event,l)>=0),e.assert(o!==t.event&&l!==t.event),e.assert(!i.fixUpperEdge&&!s.fixUpperEdge),o===l)return!1;if(Math.min(o.t,a.t)>Math.max(l.t,h.t))return!1;if(e.geom.vertLeq(o,l)){if(e.geom.edgeSign(h,o,l)>0)return!1}else if(e.geom.edgeSign(a,l,o)<0)return!1;e.geom.edgeIntersect(a,o,h,l,u),e.assert(Math.min(o.t,a.t)<=u.t),e.assert(u.t<=Math.max(l.t,h.t)),e.assert(Math.min(h.s,a.s)<=u.s),e.assert(u.s<=Math.max(l.s,o.s)),e.geom.vertLeq(u,t.event)&&(u.s=t.event.s,u.t=t.event.t);var c=e.geom.vertLeq(o,l)?o:l;if(e.geom.vertLeq(c,u)&&(u.s=c.s,u.t=c.t),e.geom.vertEq(u,o)||e.geom.vertEq(u,l))return e.sweep.checkForRightSplice_(t,i),!1;if(!e.geom.vertEq(a,t.event)&&e.geom.edgeSign(a,t.event,u)>=0||!e.geom.vertEq(h,t.event)&&e.geom.edgeSign(h,t.event,u)<=0){if(h===t.event)return e.mesh.splitEdge(r.sym),e.mesh.meshSplice(n.sym,r),r=(i=e.sweep.topLeftRegion_(i)).regionBelow().eUp,e.sweep.finishLeftRegions_(t,i.regionBelow(),s),e.sweep.addRightEdges_(t,i,r.oPrev(),r,r,!0),!0;if(a===t.event){e.mesh.splitEdge(n.sym),e.mesh.meshSplice(r.lNext,n.oPrev()),s=i;var x=(i=e.sweep.topRightRegion_(i)).regionBelow().eUp.rPrev();return s.eUp=n.oPrev(),n=e.sweep.finishLeftRegions_(t,s,null),e.sweep.addRightEdges_(t,i,n.oNext,r.rPrev(),x,!0),!0}return e.geom.edgeSign(a,t.event,u)>=0&&(i.regionAbove().dirty=i.dirty=!0,e.mesh.splitEdge(r.sym),r.org.s=t.event.s,r.org.t=t.event.t),e.geom.edgeSign(h,t.event,u)<=0&&(i.dirty=s.dirty=!0,e.mesh.splitEdge(n.sym),n.org.s=t.event.s,n.org.t=t.event.t),!1}return e.mesh.splitEdge(r.sym),e.mesh.splitEdge(n.sym),e.mesh.meshSplice(n.oPrev(),r),r.org.s=u.s,r.org.t=u.t,r.org.pqHandle=t.pq.insert(r.org),e.sweep.getIntersectData_(t,r.org,o,a,l,h),i.regionAbove().dirty=i.dirty=s.dirty=!0,!1},e.sweep.walkDirtyRegions_=function(t,i){for(var s=i.regionBelow();;){for(;s.dirty;)i=s,s=s.regionBelow();if(!i.dirty&&(s=i,null===(i=i.regionAbove())||!i.dirty))return;i.dirty=!1;var r=i.eUp,n=s.eUp;if(r.dst()!==n.dst()&&e.sweep.checkForLeftSplice_(t,i)&&(s.fixUpperEdge?(e.sweep.deleteRegion_(t,s),e.mesh.deleteEdge(n),n=(s=i.regionBelow()).eUp):i.fixUpperEdge&&(e.sweep.deleteRegion_(t,i),e.mesh.deleteEdge(r),r=(i=s.regionAbove()).eUp)),r.org!==n.org)if(r.dst()===n.dst()||i.fixUpperEdge||s.fixUpperEdge||r.dst()!==t.event&&n.dst()!==t.event)e.sweep.checkForRightSplice_(t,i);else if(e.sweep.checkForIntersect_(t,i))return;r.org===n.org&&r.dst()===n.dst()&&(e.sweep.addWinding_(n,r),e.sweep.deleteRegion_(t,i),e.mesh.deleteEdge(r),i=s.regionAbove())}},e.sweep.connectRightVertex_=function(t,i,s){var r,n=s.oNext,o=i.regionBelow(),l=i.eUp,a=o.eUp,h=!1;l.dst()!==a.dst()&&e.sweep.checkForIntersect_(t,i),e.geom.vertEq(l.org,t.event)&&(e.mesh.meshSplice(n.oPrev(),l),n=(i=e.sweep.topLeftRegion_(i)).regionBelow().eUp,e.sweep.finishLeftRegions_(t,i.regionBelow(),o),h=!0),e.geom.vertEq(a.org,t.event)&&(e.mesh.meshSplice(s,a.oPrev()),s=e.sweep.finishLeftRegions_(t,o,null),h=!0),h?e.sweep.addRightEdges_(t,i,s.oNext,n,n,!0):(r=e.geom.vertLeq(a.org,l.org)?a.oPrev():l,r=e.mesh.connect(s.lPrev(),r),e.sweep.addRightEdges_(t,i,r,r.oNext,r.oNext,!1),r.sym.activeRegion.fixUpperEdge=!0,e.sweep.walkDirtyRegions_(t,i))},e.sweep.connectLeftDegenerate_=function(t,i,s){var r=i.eUp;if(e.geom.vertEq(r.org,s))return e.assert(e.sweep.TOLERANCE_NONZERO_),void(e.sweep.TOLERANCE_NONZERO_&&e.sweep.spliceMergeVertices_(t,r,s.anEdge));if(!e.geom.vertEq(r.dst(),s))return e.mesh.splitEdge(r.sym),i.fixUpperEdge&&(e.mesh.deleteEdge(r.oNext),i.fixUpperEdge=!1),e.mesh.meshSplice(s.anEdge,r),void e.sweep.sweepEvent_(t,s);if(e.assert(e.sweep.TOLERANCE_NONZERO_),e.sweep.TOLERANCE_NONZERO_){var n=(i=e.sweep.topRightRegion_(i)).regionBelow(),o=n.eUp.sym,l=o.oNext,a=l;n.fixUpperEdge&&(e.assert(l!==o),e.sweep.deleteRegion_(t,n),e.mesh.deleteEdge(o),o=l.oPrev()),e.mesh.meshSplice(s.anEdge,o),e.geom.edgeGoesLeft(l)||(l=null),e.sweep.addRightEdges_(t,i,o.oNext,a,l,!0)}},e.sweep.connectLeftVertex_=function(t,i){var s=new e.ActiveRegion;s.eUp=i.anEdge.sym;var r=t.dict.search(s).getKey(),n=r.regionBelow(),o=r.eUp,l=n.eUp;if(0!==e.geom.edgeSign(o.dst(),i,o.org)){var a,h=e.geom.vertLeq(l.dst(),o.dst())?r:n;r.inside||h.fixUpperEdge?(a=h===r?e.mesh.connect(i.anEdge.sym,o.lNext):e.mesh.connect(l.dNext(),i.anEdge).sym,h.fixUpperEdge?e.sweep.fixUpperEdge_(h,a):e.sweep.computeWinding_(t,e.sweep.addRegionBelow_(t,r,a)),e.sweep.sweepEvent_(t,i)):e.sweep.addRightEdges_(t,r,i.anEdge,i.anEdge,null,!0)}else e.sweep.connectLeftDegenerate_(t,r,i)},e.sweep.sweepEvent_=function(t,i){t.event=i;for(var s=i.anEdge;null===s.activeRegion;)if((s=s.oNext)===i.anEdge)return void e.sweep.connectLeftVertex_(t,i);var r=e.sweep.topLeftRegion_(s.activeRegion),n=r.regionBelow(),o=n.eUp,l=e.sweep.finishLeftRegions_(t,n,null);l.oNext===o?e.sweep.connectRightVertex_(t,r,l):e.sweep.addRightEdges_(t,r,l.oNext,o,o,!0)},e.sweep.addSentinel_=function(t,i){var s=new e.ActiveRegion,r=e.mesh.makeEdge(t.mesh);r.org.s=e.sweep.SENTINEL_COORD_,r.org.t=i,r.dst().s=-e.sweep.SENTINEL_COORD_,r.dst().t=i,t.event=r.dst(),s.eUp=r,s.windingNumber=0,s.inside=!1,s.fixUpperEdge=!1,s.sentinel=!0,s.dirty=!1,s.nodeUp=t.dict.insert(s)},e.sweep.initEdgeDict_=function(t){t.dict=new e.Dict(t,e.sweep.edgeLeq_),e.sweep.addSentinel_(t,-e.sweep.SENTINEL_COORD_),e.sweep.addSentinel_(t,e.sweep.SENTINEL_COORD_)},e.sweep.doneEdgeDict_=function(t){for(var i,s=0;null!==(i=t.dict.getMin().getKey());)i.sentinel||(e.assert(i.fixUpperEdge),e.assert(1==++s)),e.assert(0===i.windingNumber),e.sweep.deleteRegion_(t,i);t.dict=null},e.sweep.removeDegenerateEdges_=function(t){for(var i,s=t.mesh.eHead,r=s.next;r!==s;r=i){i=r.next;var n=r.lNext;e.geom.vertEq(r.org,r.dst())&&r.lNext.lNext!==r&&(e.sweep.spliceMergeVertices_(t,n,r),e.mesh.deleteEdge(r),n=(r=n).lNext),n.lNext===r&&(n!==r&&(n!==i&&n!==i.sym||(i=i.next),e.mesh.deleteEdge(n)),r!==i&&r!==i.sym||(i=i.next),e.mesh.deleteEdge(r))}},e.sweep.initPriorityQ_=function(t){var i=new e.PriorityQ;t.pq=i;var s,r=t.mesh.vHead;for(s=r.next;s!==r;s=s.next)s.pqHandle=i.insert(s);i.init()},e.sweep.donePriorityQ_=function(e){e.pq.deleteQ(),e.pq=null},e.sweep.removeDegenerateFaces_=function(t){for(var i,s=t.fHead.next;s!==t.fHead;s=i){i=s.next;var r=s.anEdge;e.assert(r.lNext!==r),r.lNext.lNext===r&&(e.sweep.addWinding_(r.oNext,r),e.mesh.deleteEdge(r))}},e.tessmono={},e.tessmono.tessellateMonoRegion_=function(t){var i=t.anEdge;for(e.assert(i.lNext!==i&&i.lNext.lNext!==i);e.geom.vertLeq(i.dst(),i.org);i=i.lPrev());for(;e.geom.vertLeq(i.org,i.dst());i=i.lNext);for(var s,r=i.lPrev();i.lNext!==r;)if(e.geom.vertLeq(i.dst(),r.org)){for(;r.lNext!==i&&(e.geom.edgeGoesLeft(r.lNext)||e.geom.edgeSign(r.org,r.dst(),r.lNext.dst())<=0);)r=(s=e.mesh.connect(r.lNext,r)).sym;r=r.lPrev()}else{for(;r.lNext!==i&&(e.geom.edgeGoesRight(i.lPrev())||e.geom.edgeSign(i.dst(),i.org,i.lPrev().org)>=0);)s=e.mesh.connect(i,i.lPrev()),i=s.sym;i=i.lNext}for(e.assert(r.lNext!==i);r.lNext.lNext!==i;)r=(s=e.mesh.connect(r.lNext,r)).sym},e.tessmono.tessellateInterior=function(t){for(var i,s=t.fHead.next;s!==t.fHead;s=i)i=s.next,s.inside&&e.tessmono.tessellateMonoRegion_(s)},e.tessmono.discardExterior=function(t){for(var i,s=t.fHead.next;s!==t.fHead;s=i)i=s.next,s.inside||e.mesh.zapFace(s)},e.tessmono.setWindingNumber=function(t,i,s){for(var r,n=t.eHead.next;n!==t.eHead;n=r)r=n.next,n.rFace().inside!==n.lFace.inside?n.winding=n.lFace.inside?i:-i:s?e.mesh.deleteEdge(n):n.winding=0},e.Dict=function(t,i){this.head_=new e.DictNode,this.frame_=t,this.leq_=i},e.Dict.prototype.deleteDict_=function(){},e.Dict.prototype.insertBefore=function(t,i){do{t=t.prev}while(null!==t.key&&!this.leq_(this.frame_,t.key,i));var s=new e.DictNode(i,t.next,t);return t.next.prev=s,t.next=s,s},e.Dict.prototype.insert=function(e){return this.insertBefore(this.head_,e)},e.Dict.prototype.deleteNode=function(e){e.next.prev=e.prev,e.prev.next=e.next},e.Dict.prototype.search=function(e){var t=this.head_;do{t=t.next}while(null!==t.key&&!this.leq_(this.frame_,e,t.key));return t},e.Dict.prototype.getMin=function(){return this.head_.next},e.Dict.prototype.getMax=function(){return this.head_.prev},e.DictNode=function(e,t,i){this.key=e||null,this.next=t||this,this.prev=i||this},e.DictNode.prototype.getKey=function(){return this.key},e.DictNode.prototype.getSuccessor=function(){return this.next},e.DictNode.prototype.getPredecessor=function(){return this.prev},e.GluTesselator=function(){this.state_=e.GluTesselator.tessState_.T_DORMANT,this.lastEdge_=null,this.mesh=null,this.errorCallback_=null,this.normal_=[0,0,0],this.windingRule=e.windingRule.GLU_TESS_WINDING_ODD,this.fatalError=!1,this.dict=null,this.pq=null,this.event=null,this.combineCallback_=null,this.boundaryOnly_=!1,this.beginCallback_=null,this.edgeFlagCallback_=null,this.vertexCallback_=null,this.endCallback_=null,this.meshCallback_=null,this.polygonData_=null},e.GluTesselator.tessState_={T_DORMANT:0,T_IN_POLYGON:1,T_IN_CONTOUR:2},e.GluTesselator.prototype.gluDeleteTess=function(){this.requireState_(e.GluTesselator.tessState_.T_DORMANT)},e.GluTesselator.prototype.gluTessProperty=function(t,i){switch(t){case e.gluEnum.GLU_TESS_TOLERANCE:return;case e.gluEnum.GLU_TESS_WINDING_RULE:var s=i;switch(s){case e.windingRule.GLU_TESS_WINDING_ODD:case e.windingRule.GLU_TESS_WINDING_NONZERO:case e.windingRule.GLU_TESS_WINDING_POSITIVE:case e.windingRule.GLU_TESS_WINDING_NEGATIVE:case e.windingRule.GLU_TESS_WINDING_ABS_GEQ_TWO:return void(this.windingRule=s)}break;case e.gluEnum.GLU_TESS_BOUNDARY_ONLY:return void(this.boundaryOnly_=!!i);default:return void this.callErrorCallback(e.gluEnum.GLU_INVALID_ENUM)}this.callErrorCallback(e.gluEnum.GLU_INVALID_VALUE)},e.GluTesselator.prototype.gluGetTessProperty=function(t){switch(t){case e.gluEnum.GLU_TESS_TOLERANCE:return 0;case e.gluEnum.GLU_TESS_WINDING_RULE:var i=this.windingRule;return e.assert(i===e.windingRule.GLU_TESS_WINDING_ODD||i===e.windingRule.GLU_TESS_WINDING_NONZERO||i===e.windingRule.GLU_TESS_WINDING_POSITIVE||i===e.windingRule.GLU_TESS_WINDING_NEGATIVE||i===e.windingRule.GLU_TESS_WINDING_ABS_GEQ_TWO),i;case e.gluEnum.GLU_TESS_BOUNDARY_ONLY:return e.assert(!0===this.boundaryOnly_||!1===this.boundaryOnly_),this.boundaryOnly_;default:this.callErrorCallback(e.gluEnum.GLU_INVALID_ENUM)}return!1},e.GluTesselator.prototype.gluTessNormal=function(e,t,i){this.normal_[0]=e,this.normal_[1]=t,this.normal_[2]=i},e.GluTesselator.prototype.gluTessCallback=function(t,i){var s=i||null;switch(t){case e.gluEnum.GLU_TESS_BEGIN:case e.gluEnum.GLU_TESS_BEGIN_DATA:return void(this.beginCallback_=s);case e.gluEnum.GLU_TESS_EDGE_FLAG:case e.gluEnum.GLU_TESS_EDGE_FLAG_DATA:return void(this.edgeFlagCallback_=s);case e.gluEnum.GLU_TESS_VERTEX:case e.gluEnum.GLU_TESS_VERTEX_DATA:return void(this.vertexCallback_=s);case e.gluEnum.GLU_TESS_END:case e.gluEnum.GLU_TESS_END_DATA:return void(this.endCallback_=s);case e.gluEnum.GLU_TESS_ERROR:case e.gluEnum.GLU_TESS_ERROR_DATA:return void(this.errorCallback_=s);case e.gluEnum.GLU_TESS_COMBINE:case e.gluEnum.GLU_TESS_COMBINE_DATA:return void(this.combineCallback_=s);case e.gluEnum.GLU_TESS_MESH:return void(this.meshCallback_=s);default:return void this.callErrorCallback(e.gluEnum.GLU_INVALID_ENUM)}},e.GluTesselator.prototype.gluTessVertex=function(t,i){var s=!1,r=[0,0,0];this.requireState_(e.GluTesselator.tessState_.T_IN_CONTOUR);for(var n=0;n<3;++n){var o=t[n];o<-e.GLU_TESS_MAX_COORD&&(o=-e.GLU_TESS_MAX_COORD,s=!0),o>e.GLU_TESS_MAX_COORD&&(o=e.GLU_TESS_MAX_COORD,s=!0),r[n]=o}s&&this.callErrorCallback(e.errorType.GLU_TESS_COORD_TOO_LARGE),this.addVertex_(r,i)},e.GluTesselator.prototype.gluTessBeginPolygon=function(t){this.requireState_(e.GluTesselator.tessState_.T_DORMANT),this.state_=e.GluTesselator.tessState_.T_IN_POLYGON,this.mesh=new e.GluMesh,this.polygonData_=t},e.GluTesselator.prototype.gluTessBeginContour=function(){this.requireState_(e.GluTesselator.tessState_.T_IN_POLYGON),this.state_=e.GluTesselator.tessState_.T_IN_CONTOUR,this.lastEdge_=null},e.GluTesselator.prototype.gluTessEndContour=function(){this.requireState_(e.GluTesselator.tessState_.T_IN_CONTOUR),this.state_=e.GluTesselator.tessState_.T_IN_POLYGON},e.GluTesselator.prototype.gluTessEndPolygon=function(){if(this.requireState_(e.GluTesselator.tessState_.T_IN_POLYGON),this.state_=e.GluTesselator.tessState_.T_DORMANT,e.normal.projectPolygon(this,this.normal_[0],this.normal_[1],this.normal_[2]),e.sweep.computeInterior(this),!this.fatalError){var t=this.mesh;if(this.boundaryOnly_?e.tessmono.setWindingNumber(t,1,!0):e.tessmono.tessellateInterior(t),this.mesh.checkMesh(),this.beginCallback_||this.endCallback_||this.vertexCallback_||this.edgeFlagCallback_)if(this.boundaryOnly_)e.render.renderBoundary(this,this.mesh);else{var i=!!this.edgeFlagCallback_;e.render.renderMesh(this,this.mesh,i)}if(this.meshCallback_)return e.tessmono.discardExterior(this.mesh),this.meshCallback_(this.mesh),this.mesh=null,void(this.polygonData_=null)}e.mesh.deleteMesh(this.mesh),this.polygonData_=null,this.mesh=null},e.GluTesselator.prototype.requireState_=function(e){this.state_!==e&&this.gotoState_(e)},e.GluTesselator.prototype.gotoState_=function(t){for(;this.state_!==t;)if(this.state_<t)switch(this.state_){case e.GluTesselator.tessState_.T_DORMANT:this.callErrorCallback(e.errorType.GLU_TESS_MISSING_BEGIN_POLYGON),this.gluTessBeginPolygon(null);break;case e.GluTesselator.tessState_.T_IN_POLYGON:this.callErrorCallback(e.errorType.GLU_TESS_MISSING_BEGIN_CONTOUR),this.gluTessBeginContour()}else switch(this.state_){case e.GluTesselator.tessState_.T_IN_CONTOUR:this.callErrorCallback(e.errorType.GLU_TESS_MISSING_END_CONTOUR),this.gluTessEndContour();break;case e.GluTesselator.tessState_.T_IN_POLYGON:this.callErrorCallback(e.errorType.GLU_TESS_MISSING_END_POLYGON),this.gluTessEndPolygon()}},e.GluTesselator.prototype.addVertex_=function(t,i){var s=this.lastEdge_;null===s?(s=e.mesh.makeEdge(this.mesh),e.mesh.meshSplice(s,s.sym)):(e.mesh.splitEdge(s),s=s.lNext),s.org.data=i,s.org.coords[0]=t[0],s.org.coords[1]=t[1],s.org.coords[2]=t[2],s.winding=1,s.sym.winding=-1,this.lastEdge_=s},e.GluTesselator.prototype.callBeginCallback=function(e){this.beginCallback_&&this.beginCallback_(e,this.polygonData_)},e.GluTesselator.prototype.callVertexCallback=function(e){this.vertexCallback_&&this.vertexCallback_(e,this.polygonData_)},e.GluTesselator.prototype.callEdgeFlagCallback=function(e){this.edgeFlagCallback_&&this.edgeFlagCallback_(e,this.polygonData_)},e.GluTesselator.prototype.callEndCallback=function(){this.endCallback_&&this.endCallback_(this.polygonData_)},e.GluTesselator.prototype.callCombineCallback=function(e,t,i){return this.combineCallback_&&this.combineCallback_(e,t,i,this.polygonData_)||null},e.GluTesselator.prototype.callErrorCallback=function(e){this.errorCallback_&&this.errorCallback_(e,this.polygonData_)},e.GluFace=function(e,t){this.next=e||this,this.prev=t||this,this.anEdge=null,this.inside=!1},e.GluHalfEdge=function(e){this.next=e||this,this.sym=null,this.oNext=null,this.lNext=null,this.org=null,this.lFace=null,this.activeRegion=null,this.winding=0},e.GluHalfEdge.prototype.rFace=function(){return this.sym.lFace},e.GluHalfEdge.prototype.dst=function(){return this.sym.org},e.GluHalfEdge.prototype.oPrev=function(){return this.sym.lNext},e.GluHalfEdge.prototype.lPrev=function(){return this.oNext.sym},e.GluHalfEdge.prototype.dPrev=function(){return this.lNext.sym},e.GluHalfEdge.prototype.rPrev=function(){return this.sym.oNext},e.GluHalfEdge.prototype.dNext=function(){return this.rPrev().sym},e.GluHalfEdge.prototype.rNext=function(){return this.oPrev().sym},e.GluMesh=function(){this.vHead=new e.GluVertex,this.fHead=new e.GluFace,this.eHead=new e.GluHalfEdge,this.eHeadSym=new e.GluHalfEdge,this.eHead.sym=this.eHeadSym,this.eHeadSym.sym=this.eHead},e.GluMesh.prototype.checkMesh=function(){if(e.DEBUG){var t,i,s,r=this.fHead,n=this.vHead,o=this.eHead,l=r;for(l=r;(i=l.next)!==r;l=i){e.assert(i.prev===l),t=i.anEdge;do{e.assert(t.sym!==t),e.assert(t.sym.sym===t),e.assert(t.lNext.oNext.sym===t),e.assert(t.oNext.sym.lNext===t),e.assert(t.lFace===i),t=t.lNext}while(t!==i.anEdge)}e.assert(i.prev===l&&null===i.anEdge);var a=n;for(a=n;(s=a.next)!==n;a=s){e.assert(s.prev===a),t=s.anEdge;do{e.assert(t.sym!==t),e.assert(t.sym.sym===t),e.assert(t.lNext.oNext.sym===t),e.assert(t.oNext.sym.lNext===t),e.assert(t.org===s),t=t.oNext}while(t!==s.anEdge)}e.assert(s.prev===a&&null===s.anEdge&&null===s.data);var h=o;for(h=o;(t=h.next)!==o;h=t)e.assert(t.sym.next===h.sym),e.assert(t.sym!==t),e.assert(t.sym.sym===t),e.assert(null!==t.org),e.assert(null!==t.dst()),e.assert(t.lNext.oNext.sym===t),e.assert(t.oNext.sym.lNext===t);e.assert(t.sym.next===h.sym&&t.sym===this.eHeadSym&&t.sym.sym===t&&null===t.org&&null===t.dst()&&null===t.lFace&&null===t.rFace())}},e.GluVertex=function(e,t){this.next=e||this,this.prev=t||this,this.anEdge=null,this.data=null,this.coords=[0,0,0],this.s=0,this.t=0,this.pqHandle=0},e.PriorityQ=function(){this.verts_=[],this.order_=null,this.size_=0,this.initialized_=!1,this.heap_=new e.PriorityQHeap},e.PriorityQ.prototype.deleteQ=function(){this.heap_=null,this.order_=null,this.verts_=null},e.PriorityQ.prototype.init=function(){this.order_=[];for(var t=0;t<this.size_;t++)this.order_[t]=t;var i,s=(i=this.verts_,function(t,s){return e.geom.vertLeq(i[t],i[s])?1:-1});if(this.order_.sort(s),this.initialized_=!0,this.heap_.init(),e.DEBUG){var r=0+this.size_-1;for(t=0;t<r;++t)e.assert(e.geom.vertLeq(this.verts_[this.order_[t+1]],this.verts_[this.order_[t]]))}},e.PriorityQ.prototype.insert=function(e){if(this.initialized_)return this.heap_.insert(e);var t=this.size_++;return this.verts_[t]=e,-(t+1)},e.PriorityQ.prototype.extractMin=function(){if(0===this.size_)return this.heap_.extractMin();var t=this.verts_[this.order_[this.size_-1]];if(!this.heap_.isEmpty()){var i=this.heap_.minimum();if(e.geom.vertLeq(i,t))return this.heap_.extractMin()}do{--this.size_}while(this.size_>0&&null===this.verts_[this.order_[this.size_-1]]);return t},e.PriorityQ.prototype.minimum=function(){if(0===this.size_)return this.heap_.minimum();var t=this.verts_[this.order_[this.size_-1]];if(!this.heap_.isEmpty()){var i=this.heap_.minimum();if(e.geom.vertLeq(i,t))return i}return t},e.PriorityQ.prototype.remove=function(t){if(t>=0)this.heap_.remove(t);else for(t=-(t+1),e.assert(t<this.verts_.length&&null!==this.verts_[t]),this.verts_[t]=null;this.size_>0&&null===this.verts_[this.order_[this.size_-1]];)--this.size_},e.PriorityQHeap=function(){this.heap_=e.PriorityQHeap.reallocNumeric_([0],e.PriorityQHeap.INIT_SIZE_+1),this.verts_=[null,null],this.handles_=[0,0],this.size_=0,this.max_=e.PriorityQHeap.INIT_SIZE_,this.freeList_=0,this.initialized_=!1,this.heap_[1]=1},e.PriorityQHeap.INIT_SIZE_=32,e.PriorityQHeap.reallocNumeric_=function(e,t){for(var i=new Array(t),s=0;s<e.length;s++)i[s]=e[s];for(;s<t;s++)i[s]=0;return i},e.PriorityQHeap.prototype.init=function(){for(var e=this.size_;e>=1;--e)this.floatDown_(e);this.initialized_=!0},e.PriorityQHeap.prototype.insert=function(t){var i,s=++this.size_;return 2*s>this.max_&&(this.max_*=2,this.handles_=e.PriorityQHeap.reallocNumeric_(this.handles_,this.max_+1)),0===this.freeList_?i=s:(i=this.freeList_,this.freeList_=this.handles_[this.freeList_]),this.verts_[i]=t,this.handles_[i]=s,this.heap_[s]=i,this.initialized_&&this.floatUp_(s),i},e.PriorityQHeap.prototype.isEmpty=function(){return 0===this.size_},e.PriorityQHeap.prototype.minimum=function(){return this.verts_[this.heap_[1]]},e.PriorityQHeap.prototype.extractMin=function(){var e=this.heap_,t=this.verts_,i=this.handles_,s=e[1],r=t[s];return this.size_>0&&(e[1]=e[this.size_],i[e[1]]=1,t[s]=null,i[s]=this.freeList_,this.freeList_=s,--this.size_>0&&this.floatDown_(1)),r},e.PriorityQHeap.prototype.remove=function(t){var i=this.heap_,s=this.verts_,r=this.handles_;e.assert(t>=1&&t<=this.max_&&null!==s[t]);var n=r[t];if(i[n]=i[this.size_],r[i[n]]=n,n<=--this.size_)if(n<=1)this.floatDown_(n);else{var o=s[i[n]],l=s[i[n>>1]];e.geom.vertLeq(l,o)?this.floatDown_(n):this.floatUp_(n)}s[t]=null,r[t]=this.freeList_,this.freeList_=t},e.PriorityQHeap.prototype.floatDown_=function(t){for(var i=this.heap_,s=this.verts_,r=this.handles_,n=t,o=i[n];;){var l=n<<1;l<this.size_&&e.geom.vertLeq(s[i[l+1]],s[i[l]])&&(l+=1),e.assert(l<=this.max_);var a=i[l];if(l>this.size_||e.geom.vertLeq(s[o],s[a]))return i[n]=o,void(r[o]=n);i[n]=a,r[a]=n,n=l}},e.PriorityQHeap.prototype.floatUp_=function(t){for(var i=this.heap_,s=this.verts_,r=this.handles_,n=t,o=i[n];;){var l=n>>1,a=i[l];if(0===l||e.geom.vertLeq(s[a],s[o]))return i[n]=o,void(r[o]=n);i[n]=a,r[a]=n,n=l}},e.ActiveRegion=function(){this.eUp=null,this.nodeUp=null,this.windingNumber=0,this.inside=!1,this.sentinel=!1,this.dirty=!1,this.fixUpperEdge=!1},e.ActiveRegion.prototype.regionBelow=function(){return this.nodeUp.getPredecessor().getKey()},e.ActiveRegion.prototype.regionAbove=function(){return this.nodeUp.getSuccessor().getKey()},e}())&&(e.exports=t)}));const u=i.getLogger("esri.views.2d.engine.webgl.mesh.templates.Tesselator");class c{constructor(){this._currentVertexIndex=0,this._indexCounter=0,this._triangleIndices=[-1,-1,-1],this.glu=new h.GluTesselator,this.glu.gluTessCallback(h.gluEnum.GLU_TESS_BEGIN,this._begincallback.bind(this)),this.glu.gluTessCallback(h.gluEnum.GLU_TESS_VERTEX_DATA,this._vertexCallback.bind(this)),this.glu.gluTessCallback(h.gluEnum.GLU_TESS_END,this._endcallback.bind(this)),this.glu.gluTessCallback(h.gluEnum.GLU_TESS_COMBINE,this._combinecallback.bind(this)),this.glu.gluTessCallback(h.gluEnum.GLU_TESS_ERROR,this._errorcallback.bind(this)),this.glu.gluTessCallback(h.gluEnum.GLU_TESS_EDGE_FLAG,this._edgeCallback.bind(this)),this.glu.gluTessProperty(h.gluEnum.GLU_TESS_WINDING_RULE,h.windingRule.GLU_TESS_WINDING_ODD)}beginPolygon(e,t){this._triangleIndices[0]=-1,this._triangleIndices[1]=-1,this._triangleIndices[2]=-1,this._currentVertexIndex=0,this._indexCounter=0,this.glu.gluTessBeginPolygon(e),this._indices=t}endPolygon(){this.glu.gluTessEndPolygon()}beginContour(){this.glu.gluTessBeginContour()}endContour(){this.glu.gluTessEndContour()}addVertex(e,t){this.glu.gluTessVertex(e,t)}_vertexCallback(e,t){if(t[t.length]=e[0],t[t.length]=e[1],this._triangleIndices[this._currentVertexIndex]=-1,this._currentVertexIndex>=2){for(let e=0;e<3;e++)-1===this._triangleIndices[e]&&(this._triangleIndices[e]=this._indexCounter++),this._indices[this._indices.length]=this._triangleIndices[e];this._currentVertexIndex=0}else this._currentVertexIndex++}_begincallback(){this._triangleIndices[0]=-1,this._triangleIndices[1]=-1,this._triangleIndices[2]=-1,this._currentVertexIndex=0}_endcallback(){this._currentVertexIndex=0}_errorcallback(e){u.error(`Encountered error during tesselation: ${e}`)}_combinecallback(e){return[e[0],e[1],e[2]]}_edgeCallback(){}}function x(e,t,i){return e[0]=t[0]-i[0],e[1]=t[1]-i[1],e}function d(e,t){return Math.sqrt(e*e+t*t)}function g(e){const t=d(e[0],e[1]);e[0]/=t,e[1]/=t}function _(e,t){return d(e[0]-t[0],e[1]-t[1])}function p(e){return"function"==typeof e}function m(e){return 1/Math.max(e,1)}function y(e,t,i){N.trackDistance=null!=t.trackDistance&&t.trackDistance,N.wrapDistance=null!=t.wrapDistance?t.wrapDistance:65535,N.thin=null!=t.thin&&t.thin,N.initialDistance=null!=t.initialDistance?t.initialDistance:0,N.enableOuterBisectorSplit=null!=t.enableOuterBisectorSplit&&t.enableOuterBisectorSplit,N.outerBisectorAutoSplitThreshold=null!=t.outerBisectorAutoSplitThreshold?t.outerBisectorAutoSplitThreshold:0,N.enableInnerBisectorSplit=null!=t.enableOuterBisectorSplit&&t.enableOuterBisectorSplit,N.innerBisectorAutoSplitThreshold=null!=t.innerBisectorAutoSplitThreshold?t.innerBisectorAutoSplitThreshold:0,v=e,S=i,w=0,b=0,T=0,L=!1,G=null,I=null,U.currentVertex.x=null,U.currentVertex.y=null,U.distance=N.initialDistance;const s=v[0],r=v[v.length-1];U.canSplit=!1,U.closed=s.x===r.x&&s.y===r.y,v.length<2||2===v.length&&U.closed||(N.thin?N.trackDistance?function(){for(O(),V(),C(1);b-T>N.wrapDistance||w<v.length;)O(),V(),C(2),S.bridge(U),U.leftExit0=U.rightExit0,U.leftExit2=U.rightExit2}():function(){for(;w<v.length;){if(w>0&&(U.inbound.x=U.outbound.x,U.inbound.y=U.outbound.y),w<v.length-1){U.outbound.x=v[w+1].x-v[w].x,U.outbound.y=v[w+1].y-v[w].y;const e=Math.sqrt(U.outbound.x*U.outbound.x+U.outbound.y*U.outbound.y);U.distance+=e,U.outbound.x/=e,U.outbound.y/=e}else U.outbound.x=U.inbound.x,U.outbound.y=U.inbound.y;0===w&&(U.inbound.x=U.outbound.x,U.inbound.y=U.outbound.y),U.currentVertex.x=v[w].x,U.currentVertex.y=v[w].y,U.prevNormal.x=-U.inbound.y,U.prevNormal.y=U.inbound.x,U.nextNormal.x=-U.outbound.y,U.nextNormal.y=U.outbound.x,0===w?(S.vertex(U),U.leftEntry0=U.entry0,U.leftEntry2=U.entry2,U.leftExit0=U.exit0,U.leftExit2=U.exit2):(S.vertex(U),U.rightEntry0=U.entry0,U.rightEntry2=U.entry2,U.rightExit0=U.exit0,U.rightExit2=U.exit2,S.bridge(U),U.leftExit0=U.rightExit0,U.leftExit2=U.rightExit2),++w}}():N.enableOuterBisectorSplit||N.outerBisectorAutoSplitThreshold>0||N.enableInnerBisectorSplit||N.innerBisectorAutoSplitThreshold>0?(U.canSplit=!0,function(){for(O(),R(),U.splitInner=U.gapInner=U.splitOuter=U.gapOuter=!1,D(1),U.closure0=U.leftEntry0,U.closure1=U.leftEntry1,U.closure2=U.leftEntry2;b-T>N.wrapDistance||w<v.length-1||w<v.length&&(!U.closed||N.trackDistance);)O(),R(),U.splitInner=U.gapInner=U.splitOuter=U.gapOuter=!1,D(2),S.bridge(U),U.leftExit0=U.rightExit0,U.leftExit1=U.rightExit1,U.leftExit2=U.rightExit2;U.closed&&!N.trackDistance&&(U.rightEntry0=U.closure0,U.rightEntry1=U.closure1,U.rightEntry2=U.closure2,S.bridge(U),U.leftExit0=U.rightExit0,U.leftExit1=U.rightExit1,U.leftExit2=U.rightExit2)}()):function(){for(O(),R(),D(1),U.closure0=U.leftEntry0,U.closure1=U.leftEntry1,U.closure2=U.leftEntry2;b-T>N.wrapDistance||w<v.length-1||w<v.length&&(!U.closed||N.trackDistance);)O(),R(),D(2),S.bridge(U),U.leftExit0=U.rightExit0,U.leftExit1=U.rightExit1,U.leftExit2=U.rightExit2;U.closed&&!N.trackDistance&&(U.rightEntry0=U.closure0,U.rightEntry1=U.closure1,U.rightEntry2=U.closure2,S.bridge(U),U.leftExit0=U.rightExit0,U.leftExit1=U.rightExit1,U.leftExit2=U.rightExit2)}())}function E(){v=null,S=null}function f(){if(U.cosine<N.innerBisectorAutoSplitThreshold){U.splitInner=!0,U.gapInner=!0;const e=Math.max(N.innerBisectorAutoSplitThreshold,U.cosine),t=Math.sqrt(1-e*e)/e;U.leftInner.x=U.nextNormal.x+U.sign*t*U.outbound.x,U.leftInner.y=U.nextNormal.y+U.sign*t*U.outbound.y,U.rightInner.x=U.prevNormal.x-U.sign*t*U.inbound.x,U.rightInner.y=U.prevNormal.y-U.sign*t*U.inbound.y}else N.enableInnerBisectorSplit&&(U.splitInner=!0,U.gapInner=!1,U.leftInner.x=U.rightInner.x=U.bisector.x/U.cosine,U.leftInner.y=U.rightInner.y=U.bisector.y/U.cosine);if(U.cosine<N.outerBisectorAutoSplitThreshold){U.splitOuter=!0,U.gapOuter=!0;const e=Math.max(N.outerBisectorAutoSplitThreshold,U.cosine),t=Math.sqrt(1-e*e)/e;U.leftOuter.x=U.prevNormal.x-U.sign*t*U.inbound.x,U.leftOuter.y=U.prevNormal.y-U.sign*t*U.inbound.y,U.rightOuter.x=U.nextNormal.x+U.sign*t*U.outbound.x,U.rightOuter.y=U.nextNormal.y+U.sign*t*U.outbound.y}else N.enableOuterBisectorSplit&&(U.splitOuter=!0,U.gapOuter=!1,U.leftOuter.x=U.rightOuter.x=U.bisector.x/U.cosine,U.leftOuter.y=U.rightOuter.y=U.bisector.y/U.cosine)}let v;const N={};let S,w,b,T,L,G,I;const U=new class{constructor(){this.closed=void 0,this.isFirstVertex=void 0,this.isLastVertex=void 0,this.isCap=void 0,this.currentVertex={x:void 0,y:void 0},this.inbound={x:void 0,y:void 0},this.outbound={x:void 0,y:void 0},this.prevNormal={x:void 0,y:void 0},this.nextNormal={x:void 0,y:void 0},this.bisector={x:void 0,y:void 0},this.leftInner={x:void 0,y:void 0},this.rightInner={x:void 0,y:void 0},this.leftOuter={x:void 0,y:void 0},this.rightOuter={x:void 0,y:void 0}}};function O(){if(L)return U.distance=0,U.isCap=U.isFirstVertex=U.isLastVertex=!1,void(L=!1);if(0===b)if(U.isFirstVertex=0===w,I=v[w],0===w){if(b=0,U.closed){U.inbound.x=I.x-v[v.length-2].x,U.inbound.y=I.y-v[v.length-2].y;const e=Math.sqrt(U.inbound.x*U.inbound.x+U.inbound.y*U.inbound.y);U.inbound.x/=e,U.inbound.y/=e}}else U.inbound.x=I.x-G.x,U.inbound.y=I.y-G.y,b=Math.sqrt(U.inbound.x*U.inbound.x+U.inbound.y*U.inbound.y),U.inbound.x/=b,U.inbound.y/=b;if(U.distance+b-T<=N.wrapDistance){if(w<v.length-1){U.outbound.x=v[w+1].x-I.x,U.outbound.y=v[w+1].y-I.y;const e=Math.sqrt(U.outbound.x*U.outbound.x+U.outbound.y*U.outbound.y);U.outbound.x/=e,U.outbound.y/=e}else if(U.closed){U.outbound.x=v[1].x-I.x,U.outbound.y=v[1].y-I.y;const e=Math.sqrt(U.outbound.x*U.outbound.x+U.outbound.y*U.outbound.y);U.outbound.x/=e,U.outbound.y/=e}else U.outbound.x=U.inbound.x,U.outbound.y=U.inbound.y;return 0!==w||U.closed||(U.inbound.x=U.outbound.x,U.inbound.y=U.outbound.y),++w,U.isLastVertex=w===v.length,U.isCap=!U.closed&&(U.isFirstVertex||U.isLastVertex),U.distance+=b-T,b=0,T=0,L=U.distance+b-T===N.wrapDistance,U.currentVertex.x=I.x,U.currentVertex.y=I.y,G=I,void(I=null)}U.outbound.x=U.inbound.x,U.outbound.y=U.inbound.y,T+=N.wrapDistance-U.distance,U.distance=N.wrapDistance,L=!0;const e=T/b;U.currentVertex.x=(1-e)*G.x+e*I.x,U.currentVertex.y=(1-e)*G.y+e*I.y}function V(){U.prevNormal.x=-U.inbound.y,U.prevNormal.y=U.inbound.x,U.nextNormal.x=-U.outbound.y,U.nextNormal.y=U.outbound.x}function R(){V(),U.bisector.x=U.prevNormal.x+U.nextNormal.x,U.bisector.y=U.prevNormal.y+U.nextNormal.y;const e=Math.sqrt(U.bisector.x*U.bisector.x+U.bisector.y*U.bisector.y);if(e<.001)return U.bisector.x=void 0,U.bisector.y=void 0,U.cosine=0,void(U.sign=void 0);U.bisector.x/=e,U.bisector.y/=e,U.cosine=U.bisector.x*U.nextNormal.x+U.bisector.y*U.nextNormal.y,U.sign=U.prevNormal.x*U.nextNormal.y-U.prevNormal.y*U.nextNormal.x>=0?1:-1}function D(e){S.vertex(U),1===e?(U.leftEntry0=U.entry0,U.leftEntry1=U.entry1,U.leftEntry2=U.entry2,U.leftExit0=U.exit0,U.leftExit1=U.exit1,U.leftExit2=U.exit2):2===e&&(U.rightEntry0=U.entry0,U.rightEntry1=U.entry1,U.rightEntry2=U.entry2,U.rightExit0=U.exit0,U.rightExit1=U.exit1,U.rightExit2=U.exit2)}function C(e){S.vertex(U),1===e?(U.leftEntry0=U.entry0,U.leftEntry2=U.entry2,U.leftExit0=U.exit0,U.leftExit2=U.exit2):2===e&&(U.rightEntry0=U.entry0,U.rightEntry2=U.entry2,U.rightExit0=U.exit0,U.rightExit2=U.exit2)}class k{constructor(e,t){this.writeVertex=e,this.writeTriangle=t,this.capType=0,this.joinType=2,this.miterLimitCosine=m(2),this.roundLimitCosine=Math.cos(23*Math.PI/180),this.almostParallelCosine=.97,this.radsPerSlice=.8,this.textured=!1,this.joinOnUTurn=!1}vertex(e){const t=2===this.joinType?this.miterLimitCosine:this.roundLimitCosine,i=e.isCap&&0!==this.capType;let s=!1;e.cosine>this.almostParallelCosine?(e.exit0=e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.bisector.x/e.cosine,e.bisector.y/e.cosine,0,-1,e.distance),e.exit2=e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.bisector.x/e.cosine,-e.bisector.y/e.cosine,0,1,e.distance)):e.cosine<1-this.almostParallelCosine?(s=!e.isCap&&this.joinOnUTurn,e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.prevNormal.x,e.prevNormal.y,0,-1,e.distance),e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.prevNormal.x,-e.prevNormal.y,0,1,e.distance),e.exit0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.nextNormal.x,e.nextNormal.y,0,-1,e.distance),e.exit2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.nextNormal.x,-e.nextNormal.y,0,1,e.distance)):e.canSplit?(f(),e.sign>0?(e.splitInner?(e.exit0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.outbound.x,e.outbound.y,e.leftInner.x,e.leftInner.y,0,-1,e.distance),e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.inbound.x,e.inbound.y,e.rightInner.x,e.rightInner.y,0,-1,e.distance)):e.exit0=e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.inbound.x,e.inbound.y,e.bisector.x/e.cosine,e.bisector.y/e.cosine,0,-1,e.distance),e.cosine<t?(s=!e.isCap,e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.prevNormal.x,-e.prevNormal.y,0,1,e.distance),e.exit2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.nextNormal.x,-e.nextNormal.y,0,1,e.distance)):e.splitOuter?(s=s||e.gapOuter,e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.inbound.x,e.inbound.y,-e.leftOuter.x,-e.leftOuter.y,0,1,e.distance),e.exit2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.outbound.x,e.outbound.y,-e.rightOuter.x,-e.rightOuter.y,0,1,e.distance)):e.entry2=e.exit2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.bisector.x/e.cosine,-e.bisector.y/e.cosine,0,1,e.distance)):(e.splitInner?(e.exit2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.outbound.x,e.outbound.y,-e.leftInner.x,-e.leftInner.y,0,1,e.distance),e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.inbound.x,e.inbound.y,-e.rightInner.x,-e.rightInner.y,0,1,e.distance)):e.exit2=e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.bisector.x/e.cosine,-e.bisector.y/e.cosine,0,1,e.distance),e.cosine<t?(s=!e.isCap,e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.prevNormal.x,e.prevNormal.y,0,-1,e.distance),e.exit0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.nextNormal.x,e.nextNormal.y,0,-1,e.distance)):e.splitOuter?(s=s||e.gapOuter,e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.inbound.x,e.inbound.y,e.leftOuter.x,e.leftOuter.y,0,-1,e.distance),e.exit0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.outbound.x,e.outbound.y,e.rightOuter.x,e.rightOuter.y,0,-1,e.distance)):e.exit0=e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.bisector.x/e.cosine,e.bisector.y/e.cosine,0,-1,e.distance))):e.sign>0?(e.exit0=e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,e.inbound.x,e.inbound.y,e.bisector.x/e.cosine,e.bisector.y/e.cosine,0,-1,e.distance),e.cosine<t?(s=!e.isCap,e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.prevNormal.x,-e.prevNormal.y,0,1,e.distance),e.exit2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.nextNormal.x,-e.nextNormal.y,0,1,e.distance)):e.entry2=e.exit2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.bisector.x/e.cosine,-e.bisector.y/e.cosine,0,1,e.distance)):(e.exit2=e.entry2=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.bisector.x/e.cosine,-e.bisector.y/e.cosine,0,1,e.distance),e.cosine<t?(s=!e.isCap,e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.prevNormal.x,e.prevNormal.y,0,-1,e.distance),e.exit0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.nextNormal.x,e.nextNormal.y,0,-1,e.distance)):e.exit0=e.entry0=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.bisector.x/e.cosine,e.bisector.y/e.cosine,0,-1,e.distance));const r=e.canSplit&&(e.splitInner||e.splitOuter);let n;if(n=e.entry1=e.exit1=r||s||i?this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,0,0,0,0,e.distance):null,s&&1!==this.joinType)this.writeTriangle(n,e.sign>0?e.exit2:e.entry0,e.sign>0?e.entry2:e.exit0);else if(i&&1===this.capType||s&&1===this.joinType){let t,i,s,r,o,l;if(e.isCap){const n=Math.PI;o=Math.ceil(n/this.radsPerSlice),l=n/o,e.isFirstVertex?(t=e.prevNormal.x,i=e.prevNormal.y,s=e.entry0,r=e.entry2):e.isLastVertex&&(t=-e.nextNormal.x,i=-e.nextNormal.y,s=e.exit2,r=e.exit0)}else{const n=2*Math.acos(e.cosine);o=Math.ceil(n/this.radsPerSlice),l=n/o,t=e.sign>0?-e.prevNormal.x:e.nextNormal.x,i=e.sign>0?-e.prevNormal.y:e.nextNormal.y,s=e.sign>0?e.entry2:e.exit0,r=e.sign>0?e.exit2:e.entry0}const a=Math.cos(l),h=Math.sin(l),u=h*t+a*i;let c,x;t=a*t-h*i,i=u;for(let d=0;d<o;++d){if(c=x,d<o-1)if(e.isCap){const s=e.isFirstVertex?-1:1;x=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,t,i,s,0,e.distance)}else x=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,t,i,0,e.sign,e.distance);this.writeTriangle(0===d?s:c,n,d===o-1?r:x);const l=h*t+a*i;t=a*t-h*i,i=l}}else if(i&&2===this.capType){const t=e.isFirstVertex?1:-1;let i,s;this.textured?(i=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.prevNormal.x-t*e.inbound.x,e.prevNormal.y-t*e.inbound.y,-t,-1,e.distance),s=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.prevNormal.x-t*e.inbound.x,-e.prevNormal.y-t*e.inbound.y,-t,1,e.distance)):(i=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,e.prevNormal.x-t*e.inbound.x,e.prevNormal.y-t*e.inbound.y,0,-1,e.distance),s=this.writeVertex(e.currentVertex.x,e.currentVertex.y,0,0,-e.prevNormal.x-t*e.inbound.x,-e.prevNormal.y-t*e.inbound.y,0,1,e.distance)),t>0?(this.writeTriangle(n,e.entry2,s),this.writeTriangle(n,s,i),this.writeTriangle(n,i,e.entry0)):(this.writeTriangle(n,s,e.exit2),this.writeTriangle(n,i,s),this.writeTriangle(n,e.exit0,i))}}bridge(e){this.writeTriangle(e.leftExit0,e.rightEntry0,null!=e.leftExit1?e.leftExit1:e.leftExit2),this.writeTriangle(e.rightEntry0,null!=e.rightEntry1?e.rightEntry1:e.rightEntry2,null!=e.leftExit1?e.leftExit1:e.leftExit2),null!=e.leftExit1&&null!=e.rightEntry1?(this.writeTriangle(e.leftExit1,e.rightEntry1,e.leftExit2),this.writeTriangle(e.rightEntry1,e.rightEntry2,e.leftExit2)):null!=e.leftExit1?this.writeTriangle(e.leftExit1,e.rightEntry2,e.leftExit2):null!=e.rightEntry1&&this.writeTriangle(e.rightEntry1,e.rightEntry2,e.leftExit2)}}export{y as a,E as b,x as c,g as d,f as e,l as f,c as i,o as n,_ as o,p as r,r as t,m as u,k as w};
+import { o as o$2 } from "./definitions.6737c10c.js";
+import { g as g$1 } from "./GeometryUtils.9c8423f5.js";
+import { a4 as n$3 } from "./vendor.74d5941c.js";
+import { o as o$3 } from "./_commonjsHelpers.f2a458db.js";
+class t$1 {
+  constructor(t2, s2) {
+    this.x = t2, this.y = s2;
+  }
+  clone() {
+    return new t$1(this.x, this.y);
+  }
+  equals(t2, s2) {
+    return t2 === this.x && s2 === this.y;
+  }
+  isEqual(t2) {
+    return t2.x === this.x && t2.y === this.y;
+  }
+  setCoords(t2, s2) {
+    this.x = t2, this.y = s2;
+  }
+  normalize() {
+    const t2 = this.x, s2 = this.y, i2 = Math.sqrt(t2 * t2 + s2 * s2);
+    this.x /= i2, this.y /= i2;
+  }
+  rightPerpendicular() {
+    const t2 = this.x;
+    this.x = this.y, this.y = -t2;
+  }
+  move(t2, s2) {
+    this.x += t2, this.y += s2;
+  }
+  assign(t2) {
+    this.x = t2.x, this.y = t2.y;
+  }
+  assignAdd(t2, s2) {
+    this.x = t2.x + s2.x, this.y = t2.y + s2.y;
+  }
+  assignSub(t2, s2) {
+    this.x = t2.x - s2.x, this.y = t2.y - s2.y;
+  }
+  rotate(t2, s2) {
+    const i2 = this.x, h2 = this.y;
+    this.x = i2 * t2 - h2 * s2, this.y = i2 * s2 + h2 * t2;
+  }
+  scale(t2) {
+    this.x *= t2, this.y *= t2;
+  }
+  length() {
+    const t2 = this.x, s2 = this.y;
+    return Math.sqrt(t2 * t2 + s2 * s2);
+  }
+  static distance(t2, s2) {
+    const i2 = s2.x - t2.x, h2 = s2.y - t2.y;
+    return Math.sqrt(i2 * i2 + h2 * h2);
+  }
+  static add(s2, i2) {
+    return new t$1(s2.x + i2.x, s2.y + i2.y);
+  }
+  static sub(s2, i2) {
+    return new t$1(s2.x - i2.x, s2.y - i2.y);
+  }
+}
+class h$1 {
+  constructor(i2, t2, s2) {
+    this.ratio = i2, this.x = t2, this.y = s2;
+  }
+}
+class n$2 {
+  constructor(t2, s2, h2, n2 = 8, e2 = 8) {
+    this.lines = [], this.starts = [], this.validateTessellation = true, this.pixelRatio = n2, this.pixelMargin = e2, this.tileSize = o$2 * n2, this.dz = t2, this.yPos = s2, this.xPos = h2;
+  }
+  setPixelMargin(i2) {
+    i2 !== this.pixelMargin && (this.pixelMargin = i2, this.setExtent(this._extent));
+  }
+  setExtent(i2) {
+    this._extent = i2, this.finalRatio = this.tileSize / i2 * (1 << this.dz);
+    let t2 = this.pixelRatio * this.pixelMargin;
+    t2 /= this.finalRatio;
+    const s2 = i2 >> this.dz;
+    t2 > s2 && (t2 = s2), this.margin = t2, this.xmin = s2 * this.xPos - t2, this.ymin = s2 * this.yPos - t2, this.xmax = this.xmin + s2 + 2 * t2, this.ymax = this.ymin + s2 + 2 * t2;
+  }
+  reset(i2) {
+    this.type = i2, this.lines = [], this.starts = [], this.line = null, this.start = 0;
+  }
+  moveTo(i2, t2) {
+    this._pushLine(), this._prevIsIn = this._isIn(i2, t2), this._moveTo(i2, t2, this._prevIsIn), this._prevPt = new t$1(i2, t2), this._firstPt = new t$1(i2, t2), this._dist = 0;
+  }
+  lineTo(i2, t2) {
+    const n2 = this._isIn(i2, t2), e2 = new t$1(i2, t2), l2 = t$1.distance(this._prevPt, e2);
+    let x2, a2, y2, r2, o2, m2, p2, u2;
+    if (n2)
+      this._prevIsIn ? this._lineTo(i2, t2, true) : (x2 = this._prevPt, a2 = e2, y2 = this._intersect(a2, x2), this.start = this._dist + l2 * (1 - this._r), this._lineTo(y2.x, y2.y, true), this._lineTo(a2.x, a2.y, true));
+    else if (this._prevIsIn)
+      a2 = this._prevPt, x2 = e2, y2 = this._intersect(a2, x2), this._lineTo(y2.x, y2.y, true), this._lineTo(x2.x, x2.y, false);
+    else {
+      const i3 = this._prevPt, t3 = e2;
+      if (i3.x <= this.xmin && t3.x <= this.xmin || i3.x >= this.xmax && t3.x >= this.xmax || i3.y <= this.ymin && t3.y <= this.ymin || i3.y >= this.ymax && t3.y >= this.ymax)
+        this._lineTo(t3.x, t3.y, false);
+      else {
+        const s2 = [];
+        if ((i3.x < this.xmin && t3.x > this.xmin || i3.x > this.xmin && t3.x < this.xmin) && (r2 = (this.xmin - i3.x) / (t3.x - i3.x), u2 = i3.y + r2 * (t3.y - i3.y), u2 <= this.ymin ? m2 = false : u2 >= this.ymax ? m2 = true : s2.push(new h$1(r2, this.xmin, u2))), (i3.x < this.xmax && t3.x > this.xmax || i3.x > this.xmax && t3.x < this.xmax) && (r2 = (this.xmax - i3.x) / (t3.x - i3.x), u2 = i3.y + r2 * (t3.y - i3.y), u2 <= this.ymin ? m2 = false : u2 >= this.ymax ? m2 = true : s2.push(new h$1(r2, this.xmax, u2))), (i3.y < this.ymin && t3.y > this.ymin || i3.y > this.ymin && t3.y < this.ymin) && (r2 = (this.ymin - i3.y) / (t3.y - i3.y), p2 = i3.x + r2 * (t3.x - i3.x), p2 <= this.xmin ? o2 = false : p2 >= this.xmax ? o2 = true : s2.push(new h$1(r2, p2, this.ymin))), (i3.y < this.ymax && t3.y > this.ymax || i3.y > this.ymax && t3.y < this.ymax) && (r2 = (this.ymax - i3.y) / (t3.y - i3.y), p2 = i3.x + r2 * (t3.x - i3.x), p2 <= this.xmin ? o2 = false : p2 >= this.xmax ? o2 = true : s2.push(new h$1(r2, p2, this.ymax))), s2.length === 0)
+          o2 ? m2 ? this._lineTo(this.xmax, this.ymax, true) : this._lineTo(this.xmax, this.ymin, true) : m2 ? this._lineTo(this.xmin, this.ymax, true) : this._lineTo(this.xmin, this.ymin, true);
+        else if (s2.length > 1 && s2[0].ratio > s2[1].ratio)
+          this.start = this._dist + l2 * s2[1].ratio, this._lineTo(s2[1].x, s2[1].y, true), this._lineTo(s2[0].x, s2[0].y, true);
+        else {
+          this.start = this._dist + l2 * s2[0].ratio;
+          for (let i4 = 0; i4 < s2.length; i4++)
+            this._lineTo(s2[i4].x, s2[i4].y, true);
+        }
+        this._lineTo(t3.x, t3.y, false);
+      }
+    }
+    this._dist += l2, this._prevIsIn = n2, this._prevPt = e2;
+  }
+  close() {
+    if (this.line.length > 2) {
+      const i2 = this._firstPt, t2 = this._prevPt;
+      i2.x === t2.x && i2.y === t2.y || this.lineTo(i2.x, i2.y);
+      const s2 = this.line;
+      let h2 = s2.length;
+      for (; h2 >= 4 && (s2[0].x === s2[1].x && s2[0].x === s2[h2 - 2].x || s2[0].y === s2[1].y && s2[0].y === s2[h2 - 2].y); )
+        s2.pop(), s2[0].x = s2[h2 - 2].x, s2[0].y = s2[h2 - 2].y, --h2;
+    }
+  }
+  result(i2 = true) {
+    return this._pushLine(), this.lines.length === 0 ? null : (this.type === 3 && i2 && l$1.simplify(this.tileSize, this.margin * this.finalRatio, this.lines), this.lines);
+  }
+  resultWithStarts() {
+    if (this.type !== 2)
+      throw new Error("Only valid for lines");
+    this._pushLine();
+    const i2 = this.lines, t2 = i2.length;
+    if (t2 === 0)
+      return null;
+    const s2 = [];
+    for (let h2 = 0; h2 < t2; h2++)
+      s2.push({ line: i2[h2], start: this.starts[h2] || 0 });
+    return s2;
+  }
+  _isIn(i2, t2) {
+    return i2 >= this.xmin && i2 <= this.xmax && t2 >= this.ymin && t2 <= this.ymax;
+  }
+  _intersect(i2, t2) {
+    let h2, n2, e2;
+    if (t2.x >= this.xmin && t2.x <= this.xmax)
+      n2 = t2.y <= this.ymin ? this.ymin : this.ymax, e2 = (n2 - i2.y) / (t2.y - i2.y), h2 = i2.x + e2 * (t2.x - i2.x);
+    else if (t2.y >= this.ymin && t2.y <= this.ymax)
+      h2 = t2.x <= this.xmin ? this.xmin : this.xmax, e2 = (h2 - i2.x) / (t2.x - i2.x), n2 = i2.y + e2 * (t2.y - i2.y);
+    else {
+      n2 = t2.y <= this.ymin ? this.ymin : this.ymax, h2 = t2.x <= this.xmin ? this.xmin : this.xmax;
+      const s2 = (h2 - i2.x) / (t2.x - i2.x), l2 = (n2 - i2.y) / (t2.y - i2.y);
+      s2 < l2 ? (e2 = s2, n2 = i2.y + s2 * (t2.y - i2.y)) : (e2 = l2, h2 = i2.x + l2 * (t2.x - i2.x));
+    }
+    return this._r = e2, new t$1(h2, n2);
+  }
+  _pushLine() {
+    this.line && (this.type === 1 ? this.line.length > 0 && (this.lines.push(this.line), this.starts.push(this.start)) : this.type === 2 ? this.line.length > 1 && (this.lines.push(this.line), this.starts.push(this.start)) : this.type === 3 && this.line.length > 3 && (this.lines.push(this.line), this.starts.push(this.start))), this.line = [], this.start = 0;
+  }
+  _moveTo(i2, t2, h2) {
+    this.type !== 3 ? h2 && (i2 = Math.round((i2 - (this.xmin + this.margin)) * this.finalRatio), t2 = Math.round((t2 - (this.ymin + this.margin)) * this.finalRatio), this.line.push(new t$1(i2, t2))) : (h2 || (i2 < this.xmin && (i2 = this.xmin), i2 > this.xmax && (i2 = this.xmax), t2 < this.ymin && (t2 = this.ymin), t2 > this.ymax && (t2 = this.ymax)), i2 = Math.round((i2 - (this.xmin + this.margin)) * this.finalRatio), t2 = Math.round((t2 - (this.ymin + this.margin)) * this.finalRatio), this.line.push(new t$1(i2, t2)), this._is_h = false, this._is_v = false);
+  }
+  _lineTo(i2, t2, h2) {
+    let n2, e2;
+    if (this.type !== 3)
+      if (h2) {
+        if (i2 = Math.round((i2 - (this.xmin + this.margin)) * this.finalRatio), t2 = Math.round((t2 - (this.ymin + this.margin)) * this.finalRatio), this.line.length > 0 && (n2 = this.line[this.line.length - 1], n2.equals(i2, t2)))
+          return;
+        this.line.push(new t$1(i2, t2));
+      } else
+        this.line && this.line.length > 0 && this._pushLine();
+    else if (h2 || (i2 < this.xmin && (i2 = this.xmin), i2 > this.xmax && (i2 = this.xmax), t2 < this.ymin && (t2 = this.ymin), t2 > this.ymax && (t2 = this.ymax)), i2 = Math.round((i2 - (this.xmin + this.margin)) * this.finalRatio), t2 = Math.round((t2 - (this.ymin + this.margin)) * this.finalRatio), this.line && this.line.length > 0) {
+      n2 = this.line[this.line.length - 1];
+      const h3 = n2.x === i2, l2 = n2.y === t2;
+      if (h3 && l2)
+        return;
+      this._is_h && h3 || this._is_v && l2 ? (n2.x = i2, n2.y = t2, e2 = this.line[this.line.length - 2], e2.x === i2 && e2.y === t2 ? (this.line.pop(), this.line.length <= 1 ? (this._is_h = false, this._is_v = false) : (e2 = this.line[this.line.length - 2], this._is_h = e2.x === i2, this._is_v = e2.y === t2)) : (this._is_h = e2.x === i2, this._is_v = e2.y === t2)) : (this.line.push(new t$1(i2, t2)), this._is_h = h3, this._is_v = l2);
+    } else
+      this.line.push(new t$1(i2, t2));
+  }
+}
+class e$1 {
+  setExtent(i2) {
+    this._ratio = i2 === 4096 ? 1 : 4096 / i2;
+  }
+  get validateTessellation() {
+    return this._ratio < 1;
+  }
+  reset(i2) {
+    this.lines = [], this.line = null;
+  }
+  moveTo(i2, t2) {
+    this.line && this.lines.push(this.line), this.line = [];
+    const h2 = this._ratio;
+    this.line.push(new t$1(i2 * h2, t2 * h2));
+  }
+  lineTo(i2, t2) {
+    const h2 = this._ratio;
+    this.line.push(new t$1(i2 * h2, t2 * h2));
+  }
+  close() {
+    const i2 = this.line;
+    i2 && !i2[0].isEqual(i2[i2.length - 1]) && i2.push(i2[0]);
+  }
+  result() {
+    return this.line && this.lines.push(this.line), this.lines.length === 0 ? null : this.lines;
+  }
+}
+class l$1 {
+  static simplify(i2, t2, s2) {
+    if (!s2)
+      return;
+    const h2 = -t2, n2 = i2 + t2, e2 = -t2, x2 = i2 + t2, a2 = [], y2 = [], r2 = s2.length;
+    for (let l2 = 0; l2 < r2; ++l2) {
+      const i3 = s2[l2];
+      if (!i3 || i3.length < 2)
+        continue;
+      let t3, r3 = i3[0];
+      const o3 = i3.length;
+      for (let s3 = 1; s3 < o3; ++s3)
+        t3 = i3[s3], r3.x === t3.x && (r3.x <= h2 && (r3.y > t3.y ? (a2.push(l2), a2.push(s3), a2.push(0), a2.push(-1)) : (y2.push(l2), y2.push(s3), y2.push(0), y2.push(-1))), r3.x >= n2 && (r3.y < t3.y ? (a2.push(l2), a2.push(s3), a2.push(1), a2.push(-1)) : (y2.push(l2), y2.push(s3), y2.push(1), y2.push(-1)))), r3.y === t3.y && (r3.y <= e2 && (r3.x < t3.x ? (a2.push(l2), a2.push(s3), a2.push(2), a2.push(-1)) : (y2.push(l2), y2.push(s3), y2.push(2), y2.push(-1))), r3.y >= x2 && (r3.x > t3.x ? (a2.push(l2), a2.push(s3), a2.push(3), a2.push(-1)) : (y2.push(l2), y2.push(s3), y2.push(3), y2.push(-1)))), r3 = t3;
+    }
+    if (a2.length === 0 || y2.length === 0)
+      return;
+    l$1.fillParent(s2, y2, a2), l$1.fillParent(s2, a2, y2);
+    const o2 = [];
+    l$1.calcDeltas(o2, y2, a2), l$1.calcDeltas(o2, a2, y2), l$1.addDeltas(o2, s2);
+  }
+  static fillParent(i2, s2, h2) {
+    const n2 = h2.length, e2 = s2.length;
+    for (let l2 = 0; l2 < e2; l2 += 4) {
+      const e3 = s2[l2], x2 = s2[l2 + 1], a2 = s2[l2 + 2], y2 = i2[e3][x2 - 1], r2 = i2[e3][x2];
+      let o2 = 8092, m2 = -1;
+      for (let s3 = 0; s3 < n2; s3 += 4) {
+        if (h2[s3 + 2] !== a2)
+          continue;
+        const n3 = h2[s3], e4 = h2[s3 + 1], l3 = i2[n3][e4 - 1], x3 = i2[n3][e4];
+        switch (a2) {
+          case 0:
+          case 1:
+            if (g$1(y2.y, l3.y, x3.y) && g$1(r2.y, l3.y, x3.y)) {
+              const i3 = Math.abs(x3.y - l3.y);
+              i3 < o2 && (o2 = i3, m2 = s3);
+            }
+            break;
+          case 2:
+          case 3:
+            if (g$1(y2.x, l3.x, x3.x) && g$1(r2.x, l3.x, x3.x)) {
+              const i3 = Math.abs(x3.x - l3.x);
+              i3 < o2 && (o2 = i3, m2 = s3);
+            }
+        }
+      }
+      s2[l2 + 3] = m2;
+    }
+  }
+  static calcDeltas(i2, t2, s2) {
+    const h2 = t2.length;
+    for (let n2 = 0; n2 < h2; n2 += 4) {
+      const h3 = [], e2 = l$1.calcDelta(n2, t2, s2, h3);
+      i2.push(t2[n2]), i2.push(t2[n2 + 1]), i2.push(t2[n2 + 2]), i2.push(e2);
+    }
+  }
+  static calcDelta(i2, t2, s2, h2) {
+    const n2 = t2[i2 + 3];
+    if (n2 === -1)
+      return 0;
+    const e2 = h2.length;
+    return e2 > 1 && h2[e2 - 2] === n2 ? 0 : (h2.push(n2), l$1.calcDelta(n2, s2, t2, h2) + 1);
+  }
+  static addDeltas(i2, t2) {
+    const s2 = i2.length;
+    let h2 = 0;
+    for (let n2 = 0; n2 < s2; n2 += 4) {
+      const t3 = i2[n2 + 3];
+      t3 > h2 && (h2 = t3);
+    }
+    for (let n2 = 0; n2 < s2; n2 += 4) {
+      const s3 = t2[i2[n2]], e2 = i2[n2 + 1], l2 = h2 - i2[n2 + 3];
+      switch (i2[n2 + 2]) {
+        case 0:
+          s3[e2 - 1].x -= l2, s3[e2].x -= l2, e2 === 1 && (s3[s3.length - 1].x -= l2), e2 === s3.length - 1 && (s3[0].x -= l2);
+          break;
+        case 1:
+          s3[e2 - 1].x += l2, s3[e2].x += l2, e2 === 1 && (s3[s3.length - 1].x += l2), e2 === s3.length - 1 && (s3[0].x += l2);
+          break;
+        case 2:
+          s3[e2 - 1].y -= l2, s3[e2].y -= l2, e2 === 1 && (s3[s3.length - 1].y -= l2), e2 === s3.length - 1 && (s3[0].y -= l2);
+          break;
+        case 3:
+          s3[e2 - 1].y += l2, s3[e2].y += l2, e2 === 1 && (s3[s3.length - 1].y += l2), e2 === s3.length - 1 && (s3[0].y += l2);
+      }
+    }
+  }
+}
+var s$1 = o$3(function(e2) {
+  var t2, s2;
+  t2 = function() {
+    var e3 = { DEBUG: false, assert: function(t3, s3) {
+      if (e3.DEBUG && !t3)
+        throw new Error("Assertion failed" + (s3 ? ": " + s3 : ""));
+    }, GLU_TESS_MAX_COORD: 1e150, TRUE_PROJECT: false, GLU_TESS_DEFAULT_TOLERANCE: 0, windingRule: { GLU_TESS_WINDING_ODD: 100130, GLU_TESS_WINDING_NONZERO: 100131, GLU_TESS_WINDING_POSITIVE: 100132, GLU_TESS_WINDING_NEGATIVE: 100133, GLU_TESS_WINDING_ABS_GEQ_TWO: 100134 }, primitiveType: { GL_LINE_LOOP: 2, GL_TRIANGLES: 4, GL_TRIANGLE_STRIP: 5, GL_TRIANGLE_FAN: 6 }, errorType: { GLU_TESS_MISSING_BEGIN_POLYGON: 100151, GLU_TESS_MISSING_END_POLYGON: 100153, GLU_TESS_MISSING_BEGIN_CONTOUR: 100152, GLU_TESS_MISSING_END_CONTOUR: 100154, GLU_TESS_COORD_TOO_LARGE: 100155, GLU_TESS_NEED_COMBINE_CALLBACK: 100156 }, gluEnum: { GLU_TESS_BEGIN: 100100, GLU_TESS_VERTEX: 100101, GLU_TESS_END: 100102, GLU_TESS_ERROR: 100103, GLU_TESS_EDGE_FLAG: 100104, GLU_TESS_COMBINE: 100105, GLU_TESS_BEGIN_DATA: 100106, GLU_TESS_VERTEX_DATA: 100107, GLU_TESS_END_DATA: 100108, GLU_TESS_ERROR_DATA: 100109, GLU_TESS_EDGE_FLAG_DATA: 100110, GLU_TESS_COMBINE_DATA: 100111, GLU_TESS_MESH: 100112, GLU_TESS_TOLERANCE: 100142, GLU_TESS_WINDING_RULE: 100140, GLU_TESS_BOUNDARY_ONLY: 100141, GLU_INVALID_ENUM: 100900, GLU_INVALID_VALUE: 100901 }, geom: {} };
+    return e3.geom.vertEq = function(e4, t3) {
+      return e4.s === t3.s && e4.t === t3.t;
+    }, e3.geom.vertLeq = function(e4, t3) {
+      return e4.s < t3.s || e4.s === t3.s && e4.t <= t3.t;
+    }, e3.geom.edgeEval = function(t3, s3, r2) {
+      e3.assert(e3.geom.vertLeq(t3, s3) && e3.geom.vertLeq(s3, r2));
+      var i2 = s3.s - t3.s, n2 = r2.s - s3.s;
+      return i2 + n2 > 0 ? i2 < n2 ? s3.t - t3.t + (t3.t - r2.t) * (i2 / (i2 + n2)) : s3.t - r2.t + (r2.t - t3.t) * (n2 / (i2 + n2)) : 0;
+    }, e3.geom.edgeSign = function(t3, s3, r2) {
+      e3.assert(e3.geom.vertLeq(t3, s3) && e3.geom.vertLeq(s3, r2));
+      var i2 = s3.s - t3.s, n2 = r2.s - s3.s;
+      return i2 + n2 > 0 ? (s3.t - r2.t) * i2 + (s3.t - t3.t) * n2 : 0;
+    }, e3.geom.transLeq = function(e4, t3) {
+      return e4.t < t3.t || e4.t === t3.t && e4.s <= t3.s;
+    }, e3.geom.transEval = function(t3, s3, r2) {
+      e3.assert(e3.geom.transLeq(t3, s3) && e3.geom.transLeq(s3, r2));
+      var i2 = s3.t - t3.t, n2 = r2.t - s3.t;
+      return i2 + n2 > 0 ? i2 < n2 ? s3.s - t3.s + (t3.s - r2.s) * (i2 / (i2 + n2)) : s3.s - r2.s + (r2.s - t3.s) * (n2 / (i2 + n2)) : 0;
+    }, e3.geom.transSign = function(t3, s3, r2) {
+      e3.assert(e3.geom.transLeq(t3, s3) && e3.geom.transLeq(s3, r2));
+      var i2 = s3.t - t3.t, n2 = r2.t - s3.t;
+      return i2 + n2 > 0 ? (s3.s - r2.s) * i2 + (s3.s - t3.s) * n2 : 0;
+    }, e3.geom.edgeGoesLeft = function(t3) {
+      return e3.geom.vertLeq(t3.dst(), t3.org);
+    }, e3.geom.edgeGoesRight = function(t3) {
+      return e3.geom.vertLeq(t3.org, t3.dst());
+    }, e3.geom.vertL1dist = function(e4, t3) {
+      return Math.abs(e4.s - t3.s) + Math.abs(e4.t - t3.t);
+    }, e3.geom.vertCCW = function(e4, t3, s3) {
+      return e4.s * (t3.t - s3.t) + t3.s * (s3.t - e4.t) + s3.s * (e4.t - t3.t) >= 0;
+    }, e3.geom.interpolate_ = function(e4, t3, s3, r2) {
+      return (e4 = e4 < 0 ? 0 : e4) <= (s3 = s3 < 0 ? 0 : s3) ? s3 === 0 ? (t3 + r2) / 2 : t3 + e4 / (e4 + s3) * (r2 - t3) : r2 + s3 / (e4 + s3) * (t3 - r2);
+    }, e3.geom.edgeIntersect = function(t3, s3, r2, i2, n2) {
+      var o2, l2, a2;
+      e3.geom.vertLeq(t3, s3) || (a2 = t3, t3 = s3, s3 = a2), e3.geom.vertLeq(r2, i2) || (a2 = r2, r2 = i2, i2 = a2), e3.geom.vertLeq(t3, r2) || (a2 = t3, t3 = r2, r2 = a2, a2 = s3, s3 = i2, i2 = a2), e3.geom.vertLeq(r2, s3) ? e3.geom.vertLeq(s3, i2) ? ((o2 = e3.geom.edgeEval(t3, r2, s3)) + (l2 = e3.geom.edgeEval(r2, s3, i2)) < 0 && (o2 = -o2, l2 = -l2), n2.s = e3.geom.interpolate_(o2, r2.s, l2, s3.s)) : ((o2 = e3.geom.edgeSign(t3, r2, s3)) + (l2 = -e3.geom.edgeSign(t3, i2, s3)) < 0 && (o2 = -o2, l2 = -l2), n2.s = e3.geom.interpolate_(o2, r2.s, l2, i2.s)) : n2.s = (r2.s + s3.s) / 2, e3.geom.transLeq(t3, s3) || (a2 = t3, t3 = s3, s3 = a2), e3.geom.transLeq(r2, i2) || (a2 = r2, r2 = i2, i2 = a2), e3.geom.transLeq(t3, r2) || (a2 = t3, t3 = r2, r2 = a2, a2 = s3, s3 = i2, i2 = a2), e3.geom.transLeq(r2, s3) ? e3.geom.transLeq(s3, i2) ? ((o2 = e3.geom.transEval(t3, r2, s3)) + (l2 = e3.geom.transEval(r2, s3, i2)) < 0 && (o2 = -o2, l2 = -l2), n2.t = e3.geom.interpolate_(o2, r2.t, l2, s3.t)) : ((o2 = e3.geom.transSign(t3, r2, s3)) + (l2 = -e3.geom.transSign(t3, i2, s3)) < 0 && (o2 = -o2, l2 = -l2), n2.t = e3.geom.interpolate_(o2, r2.t, l2, i2.t)) : n2.t = (r2.t + s3.t) / 2;
+    }, e3.mesh = {}, e3.mesh.makeEdge = function(t3) {
+      var s3 = e3.mesh.makeEdgePair_(t3.eHead);
+      return e3.mesh.makeVertex_(s3, t3.vHead), e3.mesh.makeVertex_(s3.sym, t3.vHead), e3.mesh.makeFace_(s3, t3.fHead), s3;
+    }, e3.mesh.meshSplice = function(t3, s3) {
+      var r2 = false, i2 = false;
+      t3 !== s3 && (s3.org !== t3.org && (i2 = true, e3.mesh.killVertex_(s3.org, t3.org)), s3.lFace !== t3.lFace && (r2 = true, e3.mesh.killFace_(s3.lFace, t3.lFace)), e3.mesh.splice_(s3, t3), i2 || (e3.mesh.makeVertex_(s3, t3.org), t3.org.anEdge = t3), r2 || (e3.mesh.makeFace_(s3, t3.lFace), t3.lFace.anEdge = t3));
+    }, e3.mesh.deleteEdge = function(t3) {
+      var s3 = t3.sym, r2 = false;
+      t3.lFace !== t3.rFace() && (r2 = true, e3.mesh.killFace_(t3.lFace, t3.rFace())), t3.oNext === t3 ? e3.mesh.killVertex_(t3.org, null) : (t3.rFace().anEdge = t3.oPrev(), t3.org.anEdge = t3.oNext, e3.mesh.splice_(t3, t3.oPrev()), r2 || e3.mesh.makeFace_(t3, t3.lFace)), s3.oNext === s3 ? (e3.mesh.killVertex_(s3.org, null), e3.mesh.killFace_(s3.lFace, null)) : (t3.lFace.anEdge = s3.oPrev(), s3.org.anEdge = s3.oNext, e3.mesh.splice_(s3, s3.oPrev())), e3.mesh.killEdge_(t3);
+    }, e3.mesh.addEdgeVertex = function(t3) {
+      var s3 = e3.mesh.makeEdgePair_(t3), r2 = s3.sym;
+      return e3.mesh.splice_(s3, t3.lNext), s3.org = t3.dst(), e3.mesh.makeVertex_(r2, s3.org), s3.lFace = r2.lFace = t3.lFace, s3;
+    }, e3.mesh.splitEdge = function(t3) {
+      var s3 = e3.mesh.addEdgeVertex(t3).sym;
+      return e3.mesh.splice_(t3.sym, t3.sym.oPrev()), e3.mesh.splice_(t3.sym, s3), t3.sym.org = s3.org, s3.dst().anEdge = s3.sym, s3.sym.lFace = t3.rFace(), s3.winding = t3.winding, s3.sym.winding = t3.sym.winding, s3;
+    }, e3.mesh.connect = function(t3, s3) {
+      var r2 = false, i2 = e3.mesh.makeEdgePair_(t3), n2 = i2.sym;
+      return s3.lFace !== t3.lFace && (r2 = true, e3.mesh.killFace_(s3.lFace, t3.lFace)), e3.mesh.splice_(i2, t3.lNext), e3.mesh.splice_(n2, s3), i2.org = t3.dst(), n2.org = s3.org, i2.lFace = n2.lFace = t3.lFace, t3.lFace.anEdge = n2, r2 || e3.mesh.makeFace_(i2, t3.lFace), i2;
+    }, e3.mesh.zapFace = function(t3) {
+      var s3, r2 = t3.anEdge, i2 = r2.lNext;
+      do {
+        if (i2 = (s3 = i2).lNext, s3.lFace = null, s3.rFace() === null) {
+          s3.oNext === s3 ? e3.mesh.killVertex_(s3.org, null) : (s3.org.anEdge = s3.oNext, e3.mesh.splice_(s3, s3.oPrev()));
+          var n2 = s3.sym;
+          n2.oNext === n2 ? e3.mesh.killVertex_(n2.org, null) : (n2.org.anEdge = n2.oNext, e3.mesh.splice_(n2, n2.oPrev())), e3.mesh.killEdge_(s3);
+        }
+      } while (s3 !== r2);
+      var o2 = t3.prev, l2 = t3.next;
+      l2.prev = o2, o2.next = l2;
+    }, e3.mesh.meshUnion = function(e4, t3) {
+      var s3 = e4.fHead, r2 = e4.vHead, i2 = e4.eHead, n2 = t3.fHead, o2 = t3.vHead, l2 = t3.eHead;
+      return n2.next !== n2 && (s3.prev.next = n2.next, n2.next.prev = s3.prev, n2.prev.next = s3, s3.prev = n2.prev), o2.next !== o2 && (r2.prev.next = o2.next, o2.next.prev = r2.prev, o2.prev.next = r2, r2.prev = o2.prev), l2.next !== l2 && (i2.sym.next.sym.next = l2.next, l2.next.sym.next = i2.sym.next, l2.sym.next.sym.next = i2, i2.sym.next = l2.sym.next), e4;
+    }, e3.mesh.deleteMesh = function(e4) {
+    }, e3.mesh.makeEdgePair_ = function(t3) {
+      var s3 = new e3.GluHalfEdge(), r2 = new e3.GluHalfEdge(), i2 = t3.sym.next;
+      return r2.next = i2, i2.sym.next = s3, s3.next = t3, t3.sym.next = r2, s3.sym = r2, s3.oNext = s3, s3.lNext = r2, r2.sym = s3, r2.oNext = r2, r2.lNext = s3, s3;
+    }, e3.mesh.splice_ = function(e4, t3) {
+      var s3 = e4.oNext, r2 = t3.oNext;
+      s3.sym.lNext = t3, r2.sym.lNext = e4, e4.oNext = r2, t3.oNext = s3;
+    }, e3.mesh.makeVertex_ = function(t3, s3) {
+      var r2 = s3.prev, i2 = new e3.GluVertex(s3, r2);
+      r2.next = i2, s3.prev = i2, i2.anEdge = t3;
+      var n2 = t3;
+      do {
+        n2.org = i2, n2 = n2.oNext;
+      } while (n2 !== t3);
+    }, e3.mesh.makeFace_ = function(t3, s3) {
+      var r2 = s3.prev, i2 = new e3.GluFace(s3, r2);
+      r2.next = i2, s3.prev = i2, i2.anEdge = t3, i2.inside = s3.inside;
+      var n2 = t3;
+      do {
+        n2.lFace = i2, n2 = n2.lNext;
+      } while (n2 !== t3);
+    }, e3.mesh.killEdge_ = function(e4) {
+      var t3 = e4.next, s3 = e4.sym.next;
+      t3.sym.next = s3, s3.sym.next = t3;
+    }, e3.mesh.killVertex_ = function(e4, t3) {
+      var s3 = e4.anEdge, r2 = s3;
+      do {
+        r2.org = t3, r2 = r2.oNext;
+      } while (r2 !== s3);
+      var i2 = e4.prev, n2 = e4.next;
+      n2.prev = i2, i2.next = n2;
+    }, e3.mesh.killFace_ = function(e4, t3) {
+      var s3 = e4.anEdge, r2 = s3;
+      do {
+        r2.lFace = t3, r2 = r2.lNext;
+      } while (r2 !== s3);
+      var i2 = e4.prev, n2 = e4.next;
+      n2.prev = i2, i2.next = n2;
+    }, e3.normal = {}, e3.normal.S_UNIT_X_ = 1, e3.normal.S_UNIT_Y_ = 0, e3.normal.projectPolygon = function(t3, s3, r2, i2) {
+      var n2 = false, o2 = [s3, r2, i2];
+      s3 === 0 && r2 === 0 && i2 === 0 && (e3.normal.computeNormal_(t3, o2), n2 = true);
+      var l2, a2 = e3.normal.longAxis_(o2), _ = t3.mesh.vHead;
+      if (e3.TRUE_PROJECT) {
+        e3.normal.normalize_(o2);
+        var g2 = [0, 0, 0], d2 = [0, 0, 0];
+        g2[a2] = 0, g2[(a2 + 1) % 3] = e3.normal.S_UNIT_X_, g2[(a2 + 2) % 3] = e3.normal.S_UNIT_Y_;
+        var h2 = e3.normal.dot_(g2, o2);
+        for (g2[0] -= h2 * o2[0], g2[1] -= h2 * o2[1], g2[2] -= h2 * o2[2], e3.normal.normalize_(g2), d2[0] = o2[1] * g2[2] - o2[2] * g2[1], d2[1] = o2[2] * g2[0] - o2[0] * g2[2], d2[2] = o2[0] * g2[1] - o2[1] * g2[0], e3.normal.normalize_(d2), l2 = _.next; l2 !== _; l2 = l2.next)
+          l2.s = e3.normal.dot_(l2.coords, g2), l2.t = e3.normal.dot_(l2.coords, d2);
+      } else {
+        var c2 = (a2 + 1) % 3, u2 = (a2 + 2) % 3, m2 = o2[a2] > 0 ? 1 : -1;
+        for (l2 = _.next; l2 !== _; l2 = l2.next)
+          l2.s = l2.coords[c2], l2.t = m2 * l2.coords[u2];
+      }
+      n2 && e3.normal.checkOrientation_(t3);
+    }, e3.normal.dot_ = function(e4, t3) {
+      return e4[0] * t3[0] + e4[1] * t3[1] + e4[2] * t3[2];
+    }, e3.normal.normalize_ = function(t3) {
+      var s3 = t3[0] * t3[0] + t3[1] * t3[1] + t3[2] * t3[2];
+      e3.assert(s3 > 0), s3 = Math.sqrt(s3), t3[0] /= s3, t3[1] /= s3, t3[2] /= s3;
+    }, e3.normal.longAxis_ = function(e4) {
+      var t3 = 0;
+      return Math.abs(e4[1]) > Math.abs(e4[0]) && (t3 = 1), Math.abs(e4[2]) > Math.abs(e4[t3]) && (t3 = 2), t3;
+    }, e3.normal.computeNormal_ = function(t3, s3) {
+      var r2, i2 = [-2 * e3.GLU_TESS_MAX_COORD, -2 * e3.GLU_TESS_MAX_COORD, -2 * e3.GLU_TESS_MAX_COORD], n2 = [2 * e3.GLU_TESS_MAX_COORD, 2 * e3.GLU_TESS_MAX_COORD, 2 * e3.GLU_TESS_MAX_COORD], o2 = [], l2 = [], a2 = t3.mesh.vHead;
+      for (r2 = a2.next; r2 !== a2; r2 = r2.next)
+        for (var _ = 0; _ < 3; ++_) {
+          var g2 = r2.coords[_];
+          g2 < n2[_] && (n2[_] = g2, l2[_] = r2), g2 > i2[_] && (i2[_] = g2, o2[_] = r2);
+        }
+      var d2 = 0;
+      if (i2[1] - n2[1] > i2[0] - n2[0] && (d2 = 1), i2[2] - n2[2] > i2[d2] - n2[d2] && (d2 = 2), n2[d2] >= i2[d2])
+        return s3[0] = 0, s3[1] = 0, void (s3[2] = 1);
+      var h2 = 0, c2 = l2[d2], u2 = o2[d2], m2 = [0, 0, 0], p2 = [c2.coords[0] - u2.coords[0], c2.coords[1] - u2.coords[1], c2.coords[2] - u2.coords[2]], E2 = [0, 0, 0];
+      for (r2 = a2.next; r2 !== a2; r2 = r2.next) {
+        E2[0] = r2.coords[0] - u2.coords[0], E2[1] = r2.coords[1] - u2.coords[1], E2[2] = r2.coords[2] - u2.coords[2], m2[0] = p2[1] * E2[2] - p2[2] * E2[1], m2[1] = p2[2] * E2[0] - p2[0] * E2[2], m2[2] = p2[0] * E2[1] - p2[1] * E2[0];
+        var v2 = m2[0] * m2[0] + m2[1] * m2[1] + m2[2] * m2[2];
+        v2 > h2 && (h2 = v2, s3[0] = m2[0], s3[1] = m2[1], s3[2] = m2[2]);
+      }
+      h2 <= 0 && (s3[0] = s3[1] = s3[2] = 0, s3[e3.normal.longAxis_(p2)] = 1);
+    }, e3.normal.checkOrientation_ = function(e4) {
+      for (var t3 = 0, s3 = e4.mesh.fHead, r2 = s3.next; r2 !== s3; r2 = r2.next) {
+        var i2 = r2.anEdge;
+        if (!(i2.winding <= 0))
+          do {
+            t3 += (i2.org.s - i2.dst().s) * (i2.org.t + i2.dst().t), i2 = i2.lNext;
+          } while (i2 !== r2.anEdge);
+      }
+      if (t3 < 0)
+        for (var n2 = e4.mesh.vHead, o2 = n2.next; o2 !== n2; o2 = o2.next)
+          o2.t = -o2.t;
+    }, e3.render = {}, e3.render.renderMesh = function(t3, s3, r2) {
+      for (var i2 = false, n2 = -1, o2 = s3.fHead.prev; o2 !== s3.fHead; o2 = o2.prev)
+        if (o2.inside) {
+          i2 || (t3.callBeginCallback(e3.primitiveType.GL_TRIANGLES), i2 = true);
+          var l2 = o2.anEdge;
+          e3.assert(l2.lNext.lNext.lNext === l2, "renderMesh called with non-triangulated mesh");
+          do {
+            if (r2) {
+              var a2 = l2.rFace().inside ? 0 : 1;
+              n2 !== a2 && (n2 = a2, t3.callEdgeFlagCallback(!!n2));
+            }
+            t3.callVertexCallback(l2.org.data), l2 = l2.lNext;
+          } while (l2 !== o2.anEdge);
+        }
+      i2 && t3.callEndCallback();
+    }, e3.render.renderBoundary = function(t3, s3) {
+      for (var r2 = s3.fHead.next; r2 !== s3.fHead; r2 = r2.next)
+        if (r2.inside) {
+          t3.callBeginCallback(e3.primitiveType.GL_LINE_LOOP);
+          var i2 = r2.anEdge;
+          do {
+            t3.callVertexCallback(i2.org.data), i2 = i2.lNext;
+          } while (i2 !== r2.anEdge);
+          t3.callEndCallback();
+        }
+    }, e3.sweep = {}, e3.sweep.SENTINEL_COORD_ = 4 * e3.GLU_TESS_MAX_COORD, e3.sweep.TOLERANCE_NONZERO_ = false, e3.sweep.computeInterior = function(t3) {
+      var s3;
+      for (t3.fatalError = false, e3.sweep.removeDegenerateEdges_(t3), e3.sweep.initPriorityQ_(t3), e3.sweep.initEdgeDict_(t3); (s3 = t3.pq.extractMin()) !== null; ) {
+        for (; ; ) {
+          var r2 = t3.pq.minimum();
+          if (r2 === null || !e3.geom.vertEq(r2, s3))
+            break;
+          r2 = t3.pq.extractMin(), e3.sweep.spliceMergeVertices_(t3, s3.anEdge, r2.anEdge);
+        }
+        e3.sweep.sweepEvent_(t3, s3);
+      }
+      var i2 = t3.dict.getMin().getKey();
+      t3.event = i2.eUp.org, e3.sweep.doneEdgeDict_(t3), e3.sweep.donePriorityQ_(t3), e3.sweep.removeDegenerateFaces_(t3.mesh), t3.mesh.checkMesh();
+    }, e3.sweep.addWinding_ = function(e4, t3) {
+      e4.winding += t3.winding, e4.sym.winding += t3.sym.winding;
+    }, e3.sweep.edgeLeq_ = function(t3, s3, r2) {
+      var i2 = t3.event, n2 = s3.eUp, o2 = r2.eUp;
+      return n2.dst() === i2 ? o2.dst() === i2 ? e3.geom.vertLeq(n2.org, o2.org) ? e3.geom.edgeSign(o2.dst(), n2.org, o2.org) <= 0 : e3.geom.edgeSign(n2.dst(), o2.org, n2.org) >= 0 : e3.geom.edgeSign(o2.dst(), i2, o2.org) <= 0 : o2.dst() === i2 ? e3.geom.edgeSign(n2.dst(), i2, n2.org) >= 0 : e3.geom.edgeEval(n2.dst(), i2, n2.org) >= e3.geom.edgeEval(o2.dst(), i2, o2.org);
+    }, e3.sweep.deleteRegion_ = function(t3, s3) {
+      s3.fixUpperEdge && e3.assert(s3.eUp.winding === 0), s3.eUp.activeRegion = null, t3.dict.deleteNode(s3.nodeUp), s3.nodeUp = null;
+    }, e3.sweep.fixUpperEdge_ = function(t3, s3) {
+      e3.assert(t3.fixUpperEdge), e3.mesh.deleteEdge(t3.eUp), t3.fixUpperEdge = false, t3.eUp = s3, s3.activeRegion = t3;
+    }, e3.sweep.topLeftRegion_ = function(t3) {
+      var s3 = t3.eUp.org;
+      do {
+        t3 = t3.regionAbove();
+      } while (t3.eUp.org === s3);
+      if (t3.fixUpperEdge) {
+        var r2 = e3.mesh.connect(t3.regionBelow().eUp.sym, t3.eUp.lNext);
+        e3.sweep.fixUpperEdge_(t3, r2), t3 = t3.regionAbove();
+      }
+      return t3;
+    }, e3.sweep.topRightRegion_ = function(e4) {
+      var t3 = e4.eUp.dst();
+      do {
+        e4 = e4.regionAbove();
+      } while (e4.eUp.dst() === t3);
+      return e4;
+    }, e3.sweep.addRegionBelow_ = function(t3, s3, r2) {
+      var i2 = new e3.ActiveRegion();
+      return i2.eUp = r2, i2.nodeUp = t3.dict.insertBefore(s3.nodeUp, i2), r2.activeRegion = i2, i2;
+    }, e3.sweep.isWindingInside_ = function(t3, s3) {
+      switch (t3.windingRule) {
+        case e3.windingRule.GLU_TESS_WINDING_ODD:
+          return (1 & s3) != 0;
+        case e3.windingRule.GLU_TESS_WINDING_NONZERO:
+          return s3 !== 0;
+        case e3.windingRule.GLU_TESS_WINDING_POSITIVE:
+          return s3 > 0;
+        case e3.windingRule.GLU_TESS_WINDING_NEGATIVE:
+          return s3 < 0;
+        case e3.windingRule.GLU_TESS_WINDING_ABS_GEQ_TWO:
+          return s3 >= 2 || s3 <= -2;
+      }
+      return e3.assert(false), false;
+    }, e3.sweep.computeWinding_ = function(t3, s3) {
+      s3.windingNumber = s3.regionAbove().windingNumber + s3.eUp.winding, s3.inside = e3.sweep.isWindingInside_(t3, s3.windingNumber);
+    }, e3.sweep.finishRegion_ = function(t3, s3) {
+      var r2 = s3.eUp, i2 = r2.lFace;
+      i2.inside = s3.inside, i2.anEdge = r2, e3.sweep.deleteRegion_(t3, s3);
+    }, e3.sweep.finishLeftRegions_ = function(t3, s3, r2) {
+      for (var i2 = s3, n2 = s3.eUp; i2 !== r2; ) {
+        i2.fixUpperEdge = false;
+        var o2 = i2.regionBelow(), l2 = o2.eUp;
+        if (l2.org !== n2.org) {
+          if (!o2.fixUpperEdge) {
+            e3.sweep.finishRegion_(t3, i2);
+            break;
+          }
+          l2 = e3.mesh.connect(n2.lPrev(), l2.sym), e3.sweep.fixUpperEdge_(o2, l2);
+        }
+        n2.oNext !== l2 && (e3.mesh.meshSplice(l2.oPrev(), l2), e3.mesh.meshSplice(n2, l2)), e3.sweep.finishRegion_(t3, i2), n2 = o2.eUp, i2 = o2;
+      }
+      return n2;
+    }, e3.sweep.addRightEdges_ = function(t3, s3, r2, i2, n2, o2) {
+      var l2 = true, a2 = r2;
+      do {
+        e3.assert(e3.geom.vertLeq(a2.org, a2.dst())), e3.sweep.addRegionBelow_(t3, s3, a2.sym), a2 = a2.oNext;
+      } while (a2 !== i2);
+      n2 === null && (n2 = s3.regionBelow().eUp.rPrev());
+      for (var _, g2 = s3, d2 = n2; (a2 = (_ = g2.regionBelow()).eUp.sym).org === d2.org; )
+        a2.oNext !== d2 && (e3.mesh.meshSplice(a2.oPrev(), a2), e3.mesh.meshSplice(d2.oPrev(), a2)), _.windingNumber = g2.windingNumber - a2.winding, _.inside = e3.sweep.isWindingInside_(t3, _.windingNumber), g2.dirty = true, !l2 && e3.sweep.checkForRightSplice_(t3, g2) && (e3.sweep.addWinding_(a2, d2), e3.sweep.deleteRegion_(t3, g2), e3.mesh.deleteEdge(d2)), l2 = false, g2 = _, d2 = a2;
+      g2.dirty = true, e3.assert(g2.windingNumber - a2.winding === _.windingNumber), o2 && e3.sweep.walkDirtyRegions_(t3, g2);
+    }, e3.sweep.callCombine_ = function(t3, s3, r2, i2, n2) {
+      var o2 = [s3.coords[0], s3.coords[1], s3.coords[2]];
+      s3.data = null, s3.data = t3.callCombineCallback(o2, r2, i2), s3.data === null && (n2 ? t3.fatalError || (t3.callErrorCallback(e3.errorType.GLU_TESS_NEED_COMBINE_CALLBACK), t3.fatalError = true) : s3.data = r2[0]);
+    }, e3.sweep.spliceMergeVertices_ = function(t3, s3, r2) {
+      var i2 = [null, null, null, null], n2 = [0.5, 0.5, 0, 0];
+      i2[0] = s3.org.data, i2[1] = r2.org.data, e3.sweep.callCombine_(t3, s3.org, i2, n2, false), e3.mesh.meshSplice(s3, r2);
+    }, e3.sweep.vertexWeights_ = function(t3, s3, r2, i2, n2) {
+      var o2 = e3.geom.vertL1dist(s3, t3), l2 = e3.geom.vertL1dist(r2, t3), a2 = n2, _ = n2 + 1;
+      i2[a2] = 0.5 * l2 / (o2 + l2), i2[_] = 0.5 * o2 / (o2 + l2), t3.coords[0] += i2[a2] * s3.coords[0] + i2[_] * r2.coords[0], t3.coords[1] += i2[a2] * s3.coords[1] + i2[_] * r2.coords[1], t3.coords[2] += i2[a2] * s3.coords[2] + i2[_] * r2.coords[2];
+    }, e3.sweep.getIntersectData_ = function(t3, s3, r2, i2, n2, o2) {
+      var l2 = [0, 0, 0, 0], a2 = [r2.data, i2.data, n2.data, o2.data];
+      s3.coords[0] = s3.coords[1] = s3.coords[2] = 0, e3.sweep.vertexWeights_(s3, r2, i2, l2, 0), e3.sweep.vertexWeights_(s3, n2, o2, l2, 2), e3.sweep.callCombine_(t3, s3, a2, l2, true);
+    }, e3.sweep.checkForRightSplice_ = function(t3, s3) {
+      var r2 = s3.regionBelow(), i2 = s3.eUp, n2 = r2.eUp;
+      if (e3.geom.vertLeq(i2.org, n2.org)) {
+        if (e3.geom.edgeSign(n2.dst(), i2.org, n2.org) > 0)
+          return false;
+        e3.geom.vertEq(i2.org, n2.org) ? i2.org !== n2.org && (t3.pq.remove(i2.org.pqHandle), e3.sweep.spliceMergeVertices_(t3, n2.oPrev(), i2)) : (e3.mesh.splitEdge(n2.sym), e3.mesh.meshSplice(i2, n2.oPrev()), s3.dirty = r2.dirty = true);
+      } else {
+        if (e3.geom.edgeSign(i2.dst(), n2.org, i2.org) < 0)
+          return false;
+        s3.regionAbove().dirty = s3.dirty = true, e3.mesh.splitEdge(i2.sym), e3.mesh.meshSplice(n2.oPrev(), i2);
+      }
+      return true;
+    }, e3.sweep.checkForLeftSplice_ = function(t3, s3) {
+      var r2, i2 = s3.regionBelow(), n2 = s3.eUp, o2 = i2.eUp;
+      if (e3.assert(!e3.geom.vertEq(n2.dst(), o2.dst())), e3.geom.vertLeq(n2.dst(), o2.dst())) {
+        if (e3.geom.edgeSign(n2.dst(), o2.dst(), n2.org) < 0)
+          return false;
+        s3.regionAbove().dirty = s3.dirty = true, r2 = e3.mesh.splitEdge(n2), e3.mesh.meshSplice(o2.sym, r2), r2.lFace.inside = s3.inside;
+      } else {
+        if (e3.geom.edgeSign(o2.dst(), n2.dst(), o2.org) > 0)
+          return false;
+        s3.dirty = i2.dirty = true, r2 = e3.mesh.splitEdge(o2), e3.mesh.meshSplice(n2.lNext, o2.sym), r2.rFace().inside = s3.inside;
+      }
+      return true;
+    }, e3.sweep.checkForIntersect_ = function(t3, s3) {
+      var r2 = s3.regionBelow(), i2 = s3.eUp, n2 = r2.eUp, o2 = i2.org, l2 = n2.org, a2 = i2.dst(), _ = n2.dst(), g2 = new e3.GluVertex();
+      if (e3.assert(!e3.geom.vertEq(_, a2)), e3.assert(e3.geom.edgeSign(a2, t3.event, o2) <= 0), e3.assert(e3.geom.edgeSign(_, t3.event, l2) >= 0), e3.assert(o2 !== t3.event && l2 !== t3.event), e3.assert(!s3.fixUpperEdge && !r2.fixUpperEdge), o2 === l2)
+        return false;
+      if (Math.min(o2.t, a2.t) > Math.max(l2.t, _.t))
+        return false;
+      if (e3.geom.vertLeq(o2, l2)) {
+        if (e3.geom.edgeSign(_, o2, l2) > 0)
+          return false;
+      } else if (e3.geom.edgeSign(a2, l2, o2) < 0)
+        return false;
+      e3.geom.edgeIntersect(a2, o2, _, l2, g2), e3.assert(Math.min(o2.t, a2.t) <= g2.t), e3.assert(g2.t <= Math.max(l2.t, _.t)), e3.assert(Math.min(_.s, a2.s) <= g2.s), e3.assert(g2.s <= Math.max(l2.s, o2.s)), e3.geom.vertLeq(g2, t3.event) && (g2.s = t3.event.s, g2.t = t3.event.t);
+      var d2 = e3.geom.vertLeq(o2, l2) ? o2 : l2;
+      if (e3.geom.vertLeq(d2, g2) && (g2.s = d2.s, g2.t = d2.t), e3.geom.vertEq(g2, o2) || e3.geom.vertEq(g2, l2))
+        return e3.sweep.checkForRightSplice_(t3, s3), false;
+      if (!e3.geom.vertEq(a2, t3.event) && e3.geom.edgeSign(a2, t3.event, g2) >= 0 || !e3.geom.vertEq(_, t3.event) && e3.geom.edgeSign(_, t3.event, g2) <= 0) {
+        if (_ === t3.event)
+          return e3.mesh.splitEdge(i2.sym), e3.mesh.meshSplice(n2.sym, i2), i2 = (s3 = e3.sweep.topLeftRegion_(s3)).regionBelow().eUp, e3.sweep.finishLeftRegions_(t3, s3.regionBelow(), r2), e3.sweep.addRightEdges_(t3, s3, i2.oPrev(), i2, i2, true), true;
+        if (a2 === t3.event) {
+          e3.mesh.splitEdge(n2.sym), e3.mesh.meshSplice(i2.lNext, n2.oPrev()), r2 = s3;
+          var h2 = (s3 = e3.sweep.topRightRegion_(s3)).regionBelow().eUp.rPrev();
+          return r2.eUp = n2.oPrev(), n2 = e3.sweep.finishLeftRegions_(t3, r2, null), e3.sweep.addRightEdges_(t3, s3, n2.oNext, i2.rPrev(), h2, true), true;
+        }
+        return e3.geom.edgeSign(a2, t3.event, g2) >= 0 && (s3.regionAbove().dirty = s3.dirty = true, e3.mesh.splitEdge(i2.sym), i2.org.s = t3.event.s, i2.org.t = t3.event.t), e3.geom.edgeSign(_, t3.event, g2) <= 0 && (s3.dirty = r2.dirty = true, e3.mesh.splitEdge(n2.sym), n2.org.s = t3.event.s, n2.org.t = t3.event.t), false;
+      }
+      return e3.mesh.splitEdge(i2.sym), e3.mesh.splitEdge(n2.sym), e3.mesh.meshSplice(n2.oPrev(), i2), i2.org.s = g2.s, i2.org.t = g2.t, i2.org.pqHandle = t3.pq.insert(i2.org), e3.sweep.getIntersectData_(t3, i2.org, o2, a2, l2, _), s3.regionAbove().dirty = s3.dirty = r2.dirty = true, false;
+    }, e3.sweep.walkDirtyRegions_ = function(t3, s3) {
+      for (var r2 = s3.regionBelow(); ; ) {
+        for (; r2.dirty; )
+          s3 = r2, r2 = r2.regionBelow();
+        if (!s3.dirty && (r2 = s3, (s3 = s3.regionAbove()) === null || !s3.dirty))
+          return;
+        s3.dirty = false;
+        var i2 = s3.eUp, n2 = r2.eUp;
+        if (i2.dst() !== n2.dst() && e3.sweep.checkForLeftSplice_(t3, s3) && (r2.fixUpperEdge ? (e3.sweep.deleteRegion_(t3, r2), e3.mesh.deleteEdge(n2), n2 = (r2 = s3.regionBelow()).eUp) : s3.fixUpperEdge && (e3.sweep.deleteRegion_(t3, s3), e3.mesh.deleteEdge(i2), i2 = (s3 = r2.regionAbove()).eUp)), i2.org !== n2.org) {
+          if (i2.dst() === n2.dst() || s3.fixUpperEdge || r2.fixUpperEdge || i2.dst() !== t3.event && n2.dst() !== t3.event)
+            e3.sweep.checkForRightSplice_(t3, s3);
+          else if (e3.sweep.checkForIntersect_(t3, s3))
+            return;
+        }
+        i2.org === n2.org && i2.dst() === n2.dst() && (e3.sweep.addWinding_(n2, i2), e3.sweep.deleteRegion_(t3, s3), e3.mesh.deleteEdge(i2), s3 = r2.regionAbove());
+      }
+    }, e3.sweep.connectRightVertex_ = function(t3, s3, r2) {
+      var i2, n2 = r2.oNext, o2 = s3.regionBelow(), l2 = s3.eUp, a2 = o2.eUp, _ = false;
+      l2.dst() !== a2.dst() && e3.sweep.checkForIntersect_(t3, s3), e3.geom.vertEq(l2.org, t3.event) && (e3.mesh.meshSplice(n2.oPrev(), l2), n2 = (s3 = e3.sweep.topLeftRegion_(s3)).regionBelow().eUp, e3.sweep.finishLeftRegions_(t3, s3.regionBelow(), o2), _ = true), e3.geom.vertEq(a2.org, t3.event) && (e3.mesh.meshSplice(r2, a2.oPrev()), r2 = e3.sweep.finishLeftRegions_(t3, o2, null), _ = true), _ ? e3.sweep.addRightEdges_(t3, s3, r2.oNext, n2, n2, true) : (i2 = e3.geom.vertLeq(a2.org, l2.org) ? a2.oPrev() : l2, i2 = e3.mesh.connect(r2.lPrev(), i2), e3.sweep.addRightEdges_(t3, s3, i2, i2.oNext, i2.oNext, false), i2.sym.activeRegion.fixUpperEdge = true, e3.sweep.walkDirtyRegions_(t3, s3));
+    }, e3.sweep.connectLeftDegenerate_ = function(t3, s3, r2) {
+      var i2 = s3.eUp;
+      if (e3.geom.vertEq(i2.org, r2))
+        return e3.assert(e3.sweep.TOLERANCE_NONZERO_), void (e3.sweep.TOLERANCE_NONZERO_ && e3.sweep.spliceMergeVertices_(t3, i2, r2.anEdge));
+      if (!e3.geom.vertEq(i2.dst(), r2))
+        return e3.mesh.splitEdge(i2.sym), s3.fixUpperEdge && (e3.mesh.deleteEdge(i2.oNext), s3.fixUpperEdge = false), e3.mesh.meshSplice(r2.anEdge, i2), void e3.sweep.sweepEvent_(t3, r2);
+      if (e3.assert(e3.sweep.TOLERANCE_NONZERO_), e3.sweep.TOLERANCE_NONZERO_) {
+        var n2 = (s3 = e3.sweep.topRightRegion_(s3)).regionBelow(), o2 = n2.eUp.sym, l2 = o2.oNext, a2 = l2;
+        n2.fixUpperEdge && (e3.assert(l2 !== o2), e3.sweep.deleteRegion_(t3, n2), e3.mesh.deleteEdge(o2), o2 = l2.oPrev()), e3.mesh.meshSplice(r2.anEdge, o2), e3.geom.edgeGoesLeft(l2) || (l2 = null), e3.sweep.addRightEdges_(t3, s3, o2.oNext, a2, l2, true);
+      }
+    }, e3.sweep.connectLeftVertex_ = function(t3, s3) {
+      var r2 = new e3.ActiveRegion();
+      r2.eUp = s3.anEdge.sym;
+      var i2 = t3.dict.search(r2).getKey(), n2 = i2.regionBelow(), o2 = i2.eUp, l2 = n2.eUp;
+      if (e3.geom.edgeSign(o2.dst(), s3, o2.org) !== 0) {
+        var a2, _ = e3.geom.vertLeq(l2.dst(), o2.dst()) ? i2 : n2;
+        i2.inside || _.fixUpperEdge ? (a2 = _ === i2 ? e3.mesh.connect(s3.anEdge.sym, o2.lNext) : e3.mesh.connect(l2.dNext(), s3.anEdge).sym, _.fixUpperEdge ? e3.sweep.fixUpperEdge_(_, a2) : e3.sweep.computeWinding_(t3, e3.sweep.addRegionBelow_(t3, i2, a2)), e3.sweep.sweepEvent_(t3, s3)) : e3.sweep.addRightEdges_(t3, i2, s3.anEdge, s3.anEdge, null, true);
+      } else
+        e3.sweep.connectLeftDegenerate_(t3, i2, s3);
+    }, e3.sweep.sweepEvent_ = function(t3, s3) {
+      t3.event = s3;
+      for (var r2 = s3.anEdge; r2.activeRegion === null; )
+        if ((r2 = r2.oNext) === s3.anEdge)
+          return void e3.sweep.connectLeftVertex_(t3, s3);
+      var i2 = e3.sweep.topLeftRegion_(r2.activeRegion), n2 = i2.regionBelow(), o2 = n2.eUp, l2 = e3.sweep.finishLeftRegions_(t3, n2, null);
+      l2.oNext === o2 ? e3.sweep.connectRightVertex_(t3, i2, l2) : e3.sweep.addRightEdges_(t3, i2, l2.oNext, o2, o2, true);
+    }, e3.sweep.addSentinel_ = function(t3, s3) {
+      var r2 = new e3.ActiveRegion(), i2 = e3.mesh.makeEdge(t3.mesh);
+      i2.org.s = e3.sweep.SENTINEL_COORD_, i2.org.t = s3, i2.dst().s = -e3.sweep.SENTINEL_COORD_, i2.dst().t = s3, t3.event = i2.dst(), r2.eUp = i2, r2.windingNumber = 0, r2.inside = false, r2.fixUpperEdge = false, r2.sentinel = true, r2.dirty = false, r2.nodeUp = t3.dict.insert(r2);
+    }, e3.sweep.initEdgeDict_ = function(t3) {
+      t3.dict = new e3.Dict(t3, e3.sweep.edgeLeq_), e3.sweep.addSentinel_(t3, -e3.sweep.SENTINEL_COORD_), e3.sweep.addSentinel_(t3, e3.sweep.SENTINEL_COORD_);
+    }, e3.sweep.doneEdgeDict_ = function(t3) {
+      for (var s3, r2 = 0; (s3 = t3.dict.getMin().getKey()) !== null; )
+        s3.sentinel || (e3.assert(s3.fixUpperEdge), e3.assert(++r2 == 1)), e3.assert(s3.windingNumber === 0), e3.sweep.deleteRegion_(t3, s3);
+      t3.dict = null;
+    }, e3.sweep.removeDegenerateEdges_ = function(t3) {
+      for (var s3, r2 = t3.mesh.eHead, i2 = r2.next; i2 !== r2; i2 = s3) {
+        s3 = i2.next;
+        var n2 = i2.lNext;
+        e3.geom.vertEq(i2.org, i2.dst()) && i2.lNext.lNext !== i2 && (e3.sweep.spliceMergeVertices_(t3, n2, i2), e3.mesh.deleteEdge(i2), n2 = (i2 = n2).lNext), n2.lNext === i2 && (n2 !== i2 && (n2 !== s3 && n2 !== s3.sym || (s3 = s3.next), e3.mesh.deleteEdge(n2)), i2 !== s3 && i2 !== s3.sym || (s3 = s3.next), e3.mesh.deleteEdge(i2));
+      }
+    }, e3.sweep.initPriorityQ_ = function(t3) {
+      var s3 = new e3.PriorityQ();
+      t3.pq = s3;
+      var r2, i2 = t3.mesh.vHead;
+      for (r2 = i2.next; r2 !== i2; r2 = r2.next)
+        r2.pqHandle = s3.insert(r2);
+      s3.init();
+    }, e3.sweep.donePriorityQ_ = function(e4) {
+      e4.pq.deleteQ(), e4.pq = null;
+    }, e3.sweep.removeDegenerateFaces_ = function(t3) {
+      for (var s3, r2 = t3.fHead.next; r2 !== t3.fHead; r2 = s3) {
+        s3 = r2.next;
+        var i2 = r2.anEdge;
+        e3.assert(i2.lNext !== i2), i2.lNext.lNext === i2 && (e3.sweep.addWinding_(i2.oNext, i2), e3.mesh.deleteEdge(i2));
+      }
+    }, e3.tessmono = {}, e3.tessmono.tessellateMonoRegion_ = function(t3) {
+      var s3 = t3.anEdge;
+      for (e3.assert(s3.lNext !== s3 && s3.lNext.lNext !== s3); e3.geom.vertLeq(s3.dst(), s3.org); s3 = s3.lPrev())
+        ;
+      for (; e3.geom.vertLeq(s3.org, s3.dst()); s3 = s3.lNext)
+        ;
+      for (var r2, i2 = s3.lPrev(); s3.lNext !== i2; )
+        if (e3.geom.vertLeq(s3.dst(), i2.org)) {
+          for (; i2.lNext !== s3 && (e3.geom.edgeGoesLeft(i2.lNext) || e3.geom.edgeSign(i2.org, i2.dst(), i2.lNext.dst()) <= 0); )
+            i2 = (r2 = e3.mesh.connect(i2.lNext, i2)).sym;
+          i2 = i2.lPrev();
+        } else {
+          for (; i2.lNext !== s3 && (e3.geom.edgeGoesRight(s3.lPrev()) || e3.geom.edgeSign(s3.dst(), s3.org, s3.lPrev().org) >= 0); )
+            r2 = e3.mesh.connect(s3, s3.lPrev()), s3 = r2.sym;
+          s3 = s3.lNext;
+        }
+      for (e3.assert(i2.lNext !== s3); i2.lNext.lNext !== s3; )
+        i2 = (r2 = e3.mesh.connect(i2.lNext, i2)).sym;
+    }, e3.tessmono.tessellateInterior = function(t3) {
+      for (var s3, r2 = t3.fHead.next; r2 !== t3.fHead; r2 = s3)
+        s3 = r2.next, r2.inside && e3.tessmono.tessellateMonoRegion_(r2);
+    }, e3.tessmono.discardExterior = function(t3) {
+      for (var s3, r2 = t3.fHead.next; r2 !== t3.fHead; r2 = s3)
+        s3 = r2.next, r2.inside || e3.mesh.zapFace(r2);
+    }, e3.tessmono.setWindingNumber = function(t3, s3, r2) {
+      for (var i2, n2 = t3.eHead.next; n2 !== t3.eHead; n2 = i2)
+        i2 = n2.next, n2.rFace().inside !== n2.lFace.inside ? n2.winding = n2.lFace.inside ? s3 : -s3 : r2 ? e3.mesh.deleteEdge(n2) : n2.winding = 0;
+    }, e3.Dict = function(t3, s3) {
+      this.head_ = new e3.DictNode(), this.frame_ = t3, this.leq_ = s3;
+    }, e3.Dict.prototype.deleteDict_ = function() {
+    }, e3.Dict.prototype.insertBefore = function(t3, s3) {
+      do {
+        t3 = t3.prev;
+      } while (t3.key !== null && !this.leq_(this.frame_, t3.key, s3));
+      var r2 = new e3.DictNode(s3, t3.next, t3);
+      return t3.next.prev = r2, t3.next = r2, r2;
+    }, e3.Dict.prototype.insert = function(e4) {
+      return this.insertBefore(this.head_, e4);
+    }, e3.Dict.prototype.deleteNode = function(e4) {
+      e4.next.prev = e4.prev, e4.prev.next = e4.next;
+    }, e3.Dict.prototype.search = function(e4) {
+      var t3 = this.head_;
+      do {
+        t3 = t3.next;
+      } while (t3.key !== null && !this.leq_(this.frame_, e4, t3.key));
+      return t3;
+    }, e3.Dict.prototype.getMin = function() {
+      return this.head_.next;
+    }, e3.Dict.prototype.getMax = function() {
+      return this.head_.prev;
+    }, e3.DictNode = function(e4, t3, s3) {
+      this.key = e4 || null, this.next = t3 || this, this.prev = s3 || this;
+    }, e3.DictNode.prototype.getKey = function() {
+      return this.key;
+    }, e3.DictNode.prototype.getSuccessor = function() {
+      return this.next;
+    }, e3.DictNode.prototype.getPredecessor = function() {
+      return this.prev;
+    }, e3.GluTesselator = function() {
+      this.state_ = e3.GluTesselator.tessState_.T_DORMANT, this.lastEdge_ = null, this.mesh = null, this.errorCallback_ = null, this.normal_ = [0, 0, 0], this.windingRule = e3.windingRule.GLU_TESS_WINDING_ODD, this.fatalError = false, this.dict = null, this.pq = null, this.event = null, this.combineCallback_ = null, this.boundaryOnly_ = false, this.beginCallback_ = null, this.edgeFlagCallback_ = null, this.vertexCallback_ = null, this.endCallback_ = null, this.meshCallback_ = null, this.polygonData_ = null;
+    }, e3.GluTesselator.tessState_ = { T_DORMANT: 0, T_IN_POLYGON: 1, T_IN_CONTOUR: 2 }, e3.GluTesselator.prototype.gluDeleteTess = function() {
+      this.requireState_(e3.GluTesselator.tessState_.T_DORMANT);
+    }, e3.GluTesselator.prototype.gluTessProperty = function(t3, s3) {
+      switch (t3) {
+        case e3.gluEnum.GLU_TESS_TOLERANCE:
+          return;
+        case e3.gluEnum.GLU_TESS_WINDING_RULE:
+          var r2 = s3;
+          switch (r2) {
+            case e3.windingRule.GLU_TESS_WINDING_ODD:
+            case e3.windingRule.GLU_TESS_WINDING_NONZERO:
+            case e3.windingRule.GLU_TESS_WINDING_POSITIVE:
+            case e3.windingRule.GLU_TESS_WINDING_NEGATIVE:
+            case e3.windingRule.GLU_TESS_WINDING_ABS_GEQ_TWO:
+              return void (this.windingRule = r2);
+          }
+          break;
+        case e3.gluEnum.GLU_TESS_BOUNDARY_ONLY:
+          return void (this.boundaryOnly_ = !!s3);
+        default:
+          return void this.callErrorCallback(e3.gluEnum.GLU_INVALID_ENUM);
+      }
+      this.callErrorCallback(e3.gluEnum.GLU_INVALID_VALUE);
+    }, e3.GluTesselator.prototype.gluGetTessProperty = function(t3) {
+      switch (t3) {
+        case e3.gluEnum.GLU_TESS_TOLERANCE:
+          return 0;
+        case e3.gluEnum.GLU_TESS_WINDING_RULE:
+          var s3 = this.windingRule;
+          return e3.assert(s3 === e3.windingRule.GLU_TESS_WINDING_ODD || s3 === e3.windingRule.GLU_TESS_WINDING_NONZERO || s3 === e3.windingRule.GLU_TESS_WINDING_POSITIVE || s3 === e3.windingRule.GLU_TESS_WINDING_NEGATIVE || s3 === e3.windingRule.GLU_TESS_WINDING_ABS_GEQ_TWO), s3;
+        case e3.gluEnum.GLU_TESS_BOUNDARY_ONLY:
+          return e3.assert(this.boundaryOnly_ === true || this.boundaryOnly_ === false), this.boundaryOnly_;
+        default:
+          this.callErrorCallback(e3.gluEnum.GLU_INVALID_ENUM);
+      }
+      return false;
+    }, e3.GluTesselator.prototype.gluTessNormal = function(e4, t3, s3) {
+      this.normal_[0] = e4, this.normal_[1] = t3, this.normal_[2] = s3;
+    }, e3.GluTesselator.prototype.gluTessCallback = function(t3, s3) {
+      var r2 = s3 || null;
+      switch (t3) {
+        case e3.gluEnum.GLU_TESS_BEGIN:
+        case e3.gluEnum.GLU_TESS_BEGIN_DATA:
+          return void (this.beginCallback_ = r2);
+        case e3.gluEnum.GLU_TESS_EDGE_FLAG:
+        case e3.gluEnum.GLU_TESS_EDGE_FLAG_DATA:
+          return void (this.edgeFlagCallback_ = r2);
+        case e3.gluEnum.GLU_TESS_VERTEX:
+        case e3.gluEnum.GLU_TESS_VERTEX_DATA:
+          return void (this.vertexCallback_ = r2);
+        case e3.gluEnum.GLU_TESS_END:
+        case e3.gluEnum.GLU_TESS_END_DATA:
+          return void (this.endCallback_ = r2);
+        case e3.gluEnum.GLU_TESS_ERROR:
+        case e3.gluEnum.GLU_TESS_ERROR_DATA:
+          return void (this.errorCallback_ = r2);
+        case e3.gluEnum.GLU_TESS_COMBINE:
+        case e3.gluEnum.GLU_TESS_COMBINE_DATA:
+          return void (this.combineCallback_ = r2);
+        case e3.gluEnum.GLU_TESS_MESH:
+          return void (this.meshCallback_ = r2);
+        default:
+          return void this.callErrorCallback(e3.gluEnum.GLU_INVALID_ENUM);
+      }
+    }, e3.GluTesselator.prototype.gluTessVertex = function(t3, s3) {
+      var r2 = false, i2 = [0, 0, 0];
+      this.requireState_(e3.GluTesselator.tessState_.T_IN_CONTOUR);
+      for (var n2 = 0; n2 < 3; ++n2) {
+        var o2 = t3[n2];
+        o2 < -e3.GLU_TESS_MAX_COORD && (o2 = -e3.GLU_TESS_MAX_COORD, r2 = true), o2 > e3.GLU_TESS_MAX_COORD && (o2 = e3.GLU_TESS_MAX_COORD, r2 = true), i2[n2] = o2;
+      }
+      r2 && this.callErrorCallback(e3.errorType.GLU_TESS_COORD_TOO_LARGE), this.addVertex_(i2, s3);
+    }, e3.GluTesselator.prototype.gluTessBeginPolygon = function(t3) {
+      this.requireState_(e3.GluTesselator.tessState_.T_DORMANT), this.state_ = e3.GluTesselator.tessState_.T_IN_POLYGON, this.mesh = new e3.GluMesh(), this.polygonData_ = t3;
+    }, e3.GluTesselator.prototype.gluTessBeginContour = function() {
+      this.requireState_(e3.GluTesselator.tessState_.T_IN_POLYGON), this.state_ = e3.GluTesselator.tessState_.T_IN_CONTOUR, this.lastEdge_ = null;
+    }, e3.GluTesselator.prototype.gluTessEndContour = function() {
+      this.requireState_(e3.GluTesselator.tessState_.T_IN_CONTOUR), this.state_ = e3.GluTesselator.tessState_.T_IN_POLYGON;
+    }, e3.GluTesselator.prototype.gluTessEndPolygon = function() {
+      if (this.requireState_(e3.GluTesselator.tessState_.T_IN_POLYGON), this.state_ = e3.GluTesselator.tessState_.T_DORMANT, e3.normal.projectPolygon(this, this.normal_[0], this.normal_[1], this.normal_[2]), e3.sweep.computeInterior(this), !this.fatalError) {
+        var t3 = this.mesh;
+        if (this.boundaryOnly_ ? e3.tessmono.setWindingNumber(t3, 1, true) : e3.tessmono.tessellateInterior(t3), this.mesh.checkMesh(), this.beginCallback_ || this.endCallback_ || this.vertexCallback_ || this.edgeFlagCallback_)
+          if (this.boundaryOnly_)
+            e3.render.renderBoundary(this, this.mesh);
+          else {
+            var s3 = !!this.edgeFlagCallback_;
+            e3.render.renderMesh(this, this.mesh, s3);
+          }
+        if (this.meshCallback_)
+          return e3.tessmono.discardExterior(this.mesh), this.meshCallback_(this.mesh), this.mesh = null, void (this.polygonData_ = null);
+      }
+      e3.mesh.deleteMesh(this.mesh), this.polygonData_ = null, this.mesh = null;
+    }, e3.GluTesselator.prototype.requireState_ = function(e4) {
+      this.state_ !== e4 && this.gotoState_(e4);
+    }, e3.GluTesselator.prototype.gotoState_ = function(t3) {
+      for (; this.state_ !== t3; )
+        if (this.state_ < t3)
+          switch (this.state_) {
+            case e3.GluTesselator.tessState_.T_DORMANT:
+              this.callErrorCallback(e3.errorType.GLU_TESS_MISSING_BEGIN_POLYGON), this.gluTessBeginPolygon(null);
+              break;
+            case e3.GluTesselator.tessState_.T_IN_POLYGON:
+              this.callErrorCallback(e3.errorType.GLU_TESS_MISSING_BEGIN_CONTOUR), this.gluTessBeginContour();
+          }
+        else
+          switch (this.state_) {
+            case e3.GluTesselator.tessState_.T_IN_CONTOUR:
+              this.callErrorCallback(e3.errorType.GLU_TESS_MISSING_END_CONTOUR), this.gluTessEndContour();
+              break;
+            case e3.GluTesselator.tessState_.T_IN_POLYGON:
+              this.callErrorCallback(e3.errorType.GLU_TESS_MISSING_END_POLYGON), this.gluTessEndPolygon();
+          }
+    }, e3.GluTesselator.prototype.addVertex_ = function(t3, s3) {
+      var r2 = this.lastEdge_;
+      r2 === null ? (r2 = e3.mesh.makeEdge(this.mesh), e3.mesh.meshSplice(r2, r2.sym)) : (e3.mesh.splitEdge(r2), r2 = r2.lNext), r2.org.data = s3, r2.org.coords[0] = t3[0], r2.org.coords[1] = t3[1], r2.org.coords[2] = t3[2], r2.winding = 1, r2.sym.winding = -1, this.lastEdge_ = r2;
+    }, e3.GluTesselator.prototype.callBeginCallback = function(e4) {
+      this.beginCallback_ && this.beginCallback_(e4, this.polygonData_);
+    }, e3.GluTesselator.prototype.callVertexCallback = function(e4) {
+      this.vertexCallback_ && this.vertexCallback_(e4, this.polygonData_);
+    }, e3.GluTesselator.prototype.callEdgeFlagCallback = function(e4) {
+      this.edgeFlagCallback_ && this.edgeFlagCallback_(e4, this.polygonData_);
+    }, e3.GluTesselator.prototype.callEndCallback = function() {
+      this.endCallback_ && this.endCallback_(this.polygonData_);
+    }, e3.GluTesselator.prototype.callCombineCallback = function(e4, t3, s3) {
+      return this.combineCallback_ && this.combineCallback_(e4, t3, s3, this.polygonData_) || null;
+    }, e3.GluTesselator.prototype.callErrorCallback = function(e4) {
+      this.errorCallback_ && this.errorCallback_(e4, this.polygonData_);
+    }, e3.GluFace = function(e4, t3) {
+      this.next = e4 || this, this.prev = t3 || this, this.anEdge = null, this.inside = false;
+    }, e3.GluHalfEdge = function(e4) {
+      this.next = e4 || this, this.sym = null, this.oNext = null, this.lNext = null, this.org = null, this.lFace = null, this.activeRegion = null, this.winding = 0;
+    }, e3.GluHalfEdge.prototype.rFace = function() {
+      return this.sym.lFace;
+    }, e3.GluHalfEdge.prototype.dst = function() {
+      return this.sym.org;
+    }, e3.GluHalfEdge.prototype.oPrev = function() {
+      return this.sym.lNext;
+    }, e3.GluHalfEdge.prototype.lPrev = function() {
+      return this.oNext.sym;
+    }, e3.GluHalfEdge.prototype.dPrev = function() {
+      return this.lNext.sym;
+    }, e3.GluHalfEdge.prototype.rPrev = function() {
+      return this.sym.oNext;
+    }, e3.GluHalfEdge.prototype.dNext = function() {
+      return this.rPrev().sym;
+    }, e3.GluHalfEdge.prototype.rNext = function() {
+      return this.oPrev().sym;
+    }, e3.GluMesh = function() {
+      this.vHead = new e3.GluVertex(), this.fHead = new e3.GluFace(), this.eHead = new e3.GluHalfEdge(), this.eHeadSym = new e3.GluHalfEdge(), this.eHead.sym = this.eHeadSym, this.eHeadSym.sym = this.eHead;
+    }, e3.GluMesh.prototype.checkMesh = function() {
+      if (e3.DEBUG) {
+        var t3, s3, r2, i2 = this.fHead, n2 = this.vHead, o2 = this.eHead, l2 = i2;
+        for (l2 = i2; (s3 = l2.next) !== i2; l2 = s3) {
+          e3.assert(s3.prev === l2), t3 = s3.anEdge;
+          do {
+            e3.assert(t3.sym !== t3), e3.assert(t3.sym.sym === t3), e3.assert(t3.lNext.oNext.sym === t3), e3.assert(t3.oNext.sym.lNext === t3), e3.assert(t3.lFace === s3), t3 = t3.lNext;
+          } while (t3 !== s3.anEdge);
+        }
+        e3.assert(s3.prev === l2 && s3.anEdge === null);
+        var a2 = n2;
+        for (a2 = n2; (r2 = a2.next) !== n2; a2 = r2) {
+          e3.assert(r2.prev === a2), t3 = r2.anEdge;
+          do {
+            e3.assert(t3.sym !== t3), e3.assert(t3.sym.sym === t3), e3.assert(t3.lNext.oNext.sym === t3), e3.assert(t3.oNext.sym.lNext === t3), e3.assert(t3.org === r2), t3 = t3.oNext;
+          } while (t3 !== r2.anEdge);
+        }
+        e3.assert(r2.prev === a2 && r2.anEdge === null && r2.data === null);
+        var _ = o2;
+        for (_ = o2; (t3 = _.next) !== o2; _ = t3)
+          e3.assert(t3.sym.next === _.sym), e3.assert(t3.sym !== t3), e3.assert(t3.sym.sym === t3), e3.assert(t3.org !== null), e3.assert(t3.dst() !== null), e3.assert(t3.lNext.oNext.sym === t3), e3.assert(t3.oNext.sym.lNext === t3);
+        e3.assert(t3.sym.next === _.sym && t3.sym === this.eHeadSym && t3.sym.sym === t3 && t3.org === null && t3.dst() === null && t3.lFace === null && t3.rFace() === null);
+      }
+    }, e3.GluVertex = function(e4, t3) {
+      this.next = e4 || this, this.prev = t3 || this, this.anEdge = null, this.data = null, this.coords = [0, 0, 0], this.s = 0, this.t = 0, this.pqHandle = 0;
+    }, e3.PriorityQ = function() {
+      this.verts_ = [], this.order_ = null, this.size_ = 0, this.initialized_ = false, this.heap_ = new e3.PriorityQHeap();
+    }, e3.PriorityQ.prototype.deleteQ = function() {
+      this.heap_ = null, this.order_ = null, this.verts_ = null;
+    }, e3.PriorityQ.prototype.init = function() {
+      this.order_ = [];
+      for (var t3 = 0; t3 < this.size_; t3++)
+        this.order_[t3] = t3;
+      var s3, r2 = (s3 = this.verts_, function(t4, r3) {
+        return e3.geom.vertLeq(s3[t4], s3[r3]) ? 1 : -1;
+      });
+      if (this.order_.sort(r2), this.initialized_ = true, this.heap_.init(), e3.DEBUG) {
+        var i2 = 0, n2 = i2 + this.size_ - 1;
+        for (t3 = i2; t3 < n2; ++t3)
+          e3.assert(e3.geom.vertLeq(this.verts_[this.order_[t3 + 1]], this.verts_[this.order_[t3]]));
+      }
+    }, e3.PriorityQ.prototype.insert = function(e4) {
+      if (this.initialized_)
+        return this.heap_.insert(e4);
+      var t3 = this.size_++;
+      return this.verts_[t3] = e4, -(t3 + 1);
+    }, e3.PriorityQ.prototype.extractMin = function() {
+      if (this.size_ === 0)
+        return this.heap_.extractMin();
+      var t3 = this.verts_[this.order_[this.size_ - 1]];
+      if (!this.heap_.isEmpty()) {
+        var s3 = this.heap_.minimum();
+        if (e3.geom.vertLeq(s3, t3))
+          return this.heap_.extractMin();
+      }
+      do {
+        --this.size_;
+      } while (this.size_ > 0 && this.verts_[this.order_[this.size_ - 1]] === null);
+      return t3;
+    }, e3.PriorityQ.prototype.minimum = function() {
+      if (this.size_ === 0)
+        return this.heap_.minimum();
+      var t3 = this.verts_[this.order_[this.size_ - 1]];
+      if (!this.heap_.isEmpty()) {
+        var s3 = this.heap_.minimum();
+        if (e3.geom.vertLeq(s3, t3))
+          return s3;
+      }
+      return t3;
+    }, e3.PriorityQ.prototype.remove = function(t3) {
+      if (t3 >= 0)
+        this.heap_.remove(t3);
+      else
+        for (t3 = -(t3 + 1), e3.assert(t3 < this.verts_.length && this.verts_[t3] !== null), this.verts_[t3] = null; this.size_ > 0 && this.verts_[this.order_[this.size_ - 1]] === null; )
+          --this.size_;
+    }, e3.PriorityQHeap = function() {
+      this.heap_ = e3.PriorityQHeap.reallocNumeric_([0], e3.PriorityQHeap.INIT_SIZE_ + 1), this.verts_ = [null, null], this.handles_ = [0, 0], this.size_ = 0, this.max_ = e3.PriorityQHeap.INIT_SIZE_, this.freeList_ = 0, this.initialized_ = false, this.heap_[1] = 1;
+    }, e3.PriorityQHeap.INIT_SIZE_ = 32, e3.PriorityQHeap.reallocNumeric_ = function(e4, t3) {
+      for (var s3 = new Array(t3), r2 = 0; r2 < e4.length; r2++)
+        s3[r2] = e4[r2];
+      for (; r2 < t3; r2++)
+        s3[r2] = 0;
+      return s3;
+    }, e3.PriorityQHeap.prototype.init = function() {
+      for (var e4 = this.size_; e4 >= 1; --e4)
+        this.floatDown_(e4);
+      this.initialized_ = true;
+    }, e3.PriorityQHeap.prototype.insert = function(t3) {
+      var s3, r2 = ++this.size_;
+      return 2 * r2 > this.max_ && (this.max_ *= 2, this.handles_ = e3.PriorityQHeap.reallocNumeric_(this.handles_, this.max_ + 1)), this.freeList_ === 0 ? s3 = r2 : (s3 = this.freeList_, this.freeList_ = this.handles_[this.freeList_]), this.verts_[s3] = t3, this.handles_[s3] = r2, this.heap_[r2] = s3, this.initialized_ && this.floatUp_(r2), s3;
+    }, e3.PriorityQHeap.prototype.isEmpty = function() {
+      return this.size_ === 0;
+    }, e3.PriorityQHeap.prototype.minimum = function() {
+      return this.verts_[this.heap_[1]];
+    }, e3.PriorityQHeap.prototype.extractMin = function() {
+      var e4 = this.heap_, t3 = this.verts_, s3 = this.handles_, r2 = e4[1], i2 = t3[r2];
+      return this.size_ > 0 && (e4[1] = e4[this.size_], s3[e4[1]] = 1, t3[r2] = null, s3[r2] = this.freeList_, this.freeList_ = r2, --this.size_ > 0 && this.floatDown_(1)), i2;
+    }, e3.PriorityQHeap.prototype.remove = function(t3) {
+      var s3 = this.heap_, r2 = this.verts_, i2 = this.handles_;
+      e3.assert(t3 >= 1 && t3 <= this.max_ && r2[t3] !== null);
+      var n2 = i2[t3];
+      if (s3[n2] = s3[this.size_], i2[s3[n2]] = n2, n2 <= --this.size_)
+        if (n2 <= 1)
+          this.floatDown_(n2);
+        else {
+          var o2 = r2[s3[n2]], l2 = r2[s3[n2 >> 1]];
+          e3.geom.vertLeq(l2, o2) ? this.floatDown_(n2) : this.floatUp_(n2);
+        }
+      r2[t3] = null, i2[t3] = this.freeList_, this.freeList_ = t3;
+    }, e3.PriorityQHeap.prototype.floatDown_ = function(t3) {
+      for (var s3 = this.heap_, r2 = this.verts_, i2 = this.handles_, n2 = t3, o2 = s3[n2]; ; ) {
+        var l2 = n2 << 1;
+        l2 < this.size_ && e3.geom.vertLeq(r2[s3[l2 + 1]], r2[s3[l2]]) && (l2 += 1), e3.assert(l2 <= this.max_);
+        var a2 = s3[l2];
+        if (l2 > this.size_ || e3.geom.vertLeq(r2[o2], r2[a2]))
+          return s3[n2] = o2, void (i2[o2] = n2);
+        s3[n2] = a2, i2[a2] = n2, n2 = l2;
+      }
+    }, e3.PriorityQHeap.prototype.floatUp_ = function(t3) {
+      for (var s3 = this.heap_, r2 = this.verts_, i2 = this.handles_, n2 = t3, o2 = s3[n2]; ; ) {
+        var l2 = n2 >> 1, a2 = s3[l2];
+        if (l2 === 0 || e3.geom.vertLeq(r2[a2], r2[o2]))
+          return s3[n2] = o2, void (i2[o2] = n2);
+        s3[n2] = a2, i2[a2] = n2, n2 = l2;
+      }
+    }, e3.ActiveRegion = function() {
+      this.eUp = null, this.nodeUp = null, this.windingNumber = 0, this.inside = false, this.sentinel = false, this.dirty = false, this.fixUpperEdge = false;
+    }, e3.ActiveRegion.prototype.regionBelow = function() {
+      return this.nodeUp.getPredecessor().getKey();
+    }, e3.ActiveRegion.prototype.regionAbove = function() {
+      return this.nodeUp.getSuccessor().getKey();
+    }, e3;
+  }, (s2 = t2()) !== void 0 && (e2.exports = s2);
+});
+const r$2 = n$3.getLogger("esri.views.2d.engine.webgl.mesh.templates.Tesselator");
+class i$2 {
+  constructor() {
+    this._currentVertexIndex = 0, this._indexCounter = 0, this._triangleIndices = [-1, -1, -1], this.glu = new s$1.GluTesselator(), this.glu.gluTessCallback(s$1.gluEnum.GLU_TESS_BEGIN, this._begincallback.bind(this)), this.glu.gluTessCallback(s$1.gluEnum.GLU_TESS_VERTEX_DATA, this._vertexCallback.bind(this)), this.glu.gluTessCallback(s$1.gluEnum.GLU_TESS_END, this._endcallback.bind(this)), this.glu.gluTessCallback(s$1.gluEnum.GLU_TESS_COMBINE, this._combinecallback.bind(this)), this.glu.gluTessCallback(s$1.gluEnum.GLU_TESS_ERROR, this._errorcallback.bind(this)), this.glu.gluTessCallback(s$1.gluEnum.GLU_TESS_EDGE_FLAG, this._edgeCallback.bind(this)), this.glu.gluTessProperty(s$1.gluEnum.GLU_TESS_WINDING_RULE, s$1.windingRule.GLU_TESS_WINDING_ODD);
+  }
+  beginPolygon(e2, t2) {
+    this._triangleIndices[0] = -1, this._triangleIndices[1] = -1, this._triangleIndices[2] = -1, this._currentVertexIndex = 0, this._indexCounter = 0, this.glu.gluTessBeginPolygon(e2), this._indices = t2;
+  }
+  endPolygon() {
+    this.glu.gluTessEndPolygon();
+  }
+  beginContour() {
+    this.glu.gluTessBeginContour();
+  }
+  endContour() {
+    this.glu.gluTessEndContour();
+  }
+  addVertex(e2, t2) {
+    this.glu.gluTessVertex(e2, t2);
+  }
+  _vertexCallback(e2, t2) {
+    if (t2[t2.length] = e2[0], t2[t2.length] = e2[1], this._triangleIndices[this._currentVertexIndex] = -1, this._currentVertexIndex >= 2) {
+      for (let e3 = 0; e3 < 3; e3++)
+        this._triangleIndices[e3] === -1 && (this._triangleIndices[e3] = this._indexCounter++), this._indices[this._indices.length] = this._triangleIndices[e3];
+      this._currentVertexIndex = 0;
+    } else
+      this._currentVertexIndex++;
+  }
+  _begincallback() {
+    this._triangleIndices[0] = -1, this._triangleIndices[1] = -1, this._triangleIndices[2] = -1, this._currentVertexIndex = 0;
+  }
+  _endcallback() {
+    this._currentVertexIndex = 0;
+  }
+  _errorcallback(e2) {
+    r$2.error(`Encountered error during tesselation: ${e2}`);
+  }
+  _combinecallback(e2) {
+    return [e2[0], e2[1], e2[2]];
+  }
+  _edgeCallback() {
+  }
+}
+function n$1(n2, t2, i2) {
+  return n2[0] = t2[0] - i2[0], n2[1] = t2[1] - i2[1], n2;
+}
+function t(n2, t2) {
+  return Math.sqrt(n2 * n2 + t2 * t2);
+}
+function i$1(n2) {
+  const i2 = t(n2[0], n2[1]);
+  n2[0] /= i2, n2[1] /= i2;
+}
+function o$1(n2, i2) {
+  return t(n2[0] - i2[0], n2[1] - i2[1]);
+}
+function r$1(n2) {
+  return typeof n2 == "function";
+}
+function u$1(n2) {
+  return 1 / Math.max(n2, 1);
+}
+class e {
+  constructor() {
+    this.closed = void 0, this.isFirstVertex = void 0, this.isLastVertex = void 0, this.isCap = void 0, this.currentVertex = { x: void 0, y: void 0 }, this.inbound = { x: void 0, y: void 0 }, this.outbound = { x: void 0, y: void 0 }, this.prevNormal = { x: void 0, y: void 0 }, this.nextNormal = { x: void 0, y: void 0 }, this.bisector = { x: void 0, y: void 0 }, this.leftInner = { x: void 0, y: void 0 }, this.rightInner = { x: void 0, y: void 0 }, this.leftOuter = { x: void 0, y: void 0 }, this.rightOuter = { x: void 0, y: void 0 };
+  }
+}
+function r(t2, e2, r2) {
+  o.trackDistance = e2.trackDistance != null && e2.trackDistance, o.wrapDistance = e2.wrapDistance != null ? e2.wrapDistance : 65535, o.thin = e2.thin != null && e2.thin, o.initialDistance = e2.initialDistance != null ? e2.initialDistance : 0, o.enableOuterBisectorSplit = e2.enableOuterBisectorSplit != null && e2.enableOuterBisectorSplit, o.outerBisectorAutoSplitThreshold = e2.outerBisectorAutoSplitThreshold != null ? e2.outerBisectorAutoSplitThreshold : 0, o.enableInnerBisectorSplit = e2.enableOuterBisectorSplit != null && e2.enableOuterBisectorSplit, o.innerBisectorAutoSplitThreshold = e2.innerBisectorAutoSplitThreshold != null ? e2.innerBisectorAutoSplitThreshold : 0, x = t2, s = r2, u = 0, l = 0, c = 0, y = false, a = null, h = null, d.currentVertex.x = null, d.currentVertex.y = null, d.distance = o.initialDistance;
+  const i2 = x[0], n2 = x[x.length - 1];
+  d.canSplit = false, d.closed = i2.x === n2.x && i2.y === n2.y, x.length < 2 || x.length === 2 && d.closed || (o.thin ? o.trackDistance ? g() : p() : o.enableOuterBisectorSplit || o.outerBisectorAutoSplitThreshold > 0 || o.enableInnerBisectorSplit || o.innerBisectorAutoSplitThreshold > 0 ? (d.canSplit = true, V()) : b());
+}
+function i() {
+  x = null, s = null;
+}
+function n() {
+  if (d.cosine < o.innerBisectorAutoSplitThreshold) {
+    d.splitInner = true, d.gapInner = true;
+    const t2 = Math.max(o.innerBisectorAutoSplitThreshold, d.cosine), e2 = Math.sqrt(1 - t2 * t2) / t2;
+    d.leftInner.x = d.nextNormal.x + d.sign * e2 * d.outbound.x, d.leftInner.y = d.nextNormal.y + d.sign * e2 * d.outbound.y, d.rightInner.x = d.prevNormal.x - d.sign * e2 * d.inbound.x, d.rightInner.y = d.prevNormal.y - d.sign * e2 * d.inbound.y;
+  } else
+    o.enableInnerBisectorSplit && (d.splitInner = true, d.gapInner = false, d.leftInner.x = d.rightInner.x = d.bisector.x / d.cosine, d.leftInner.y = d.rightInner.y = d.bisector.y / d.cosine);
+  if (d.cosine < o.outerBisectorAutoSplitThreshold) {
+    d.splitOuter = true, d.gapOuter = true;
+    const t2 = Math.max(o.outerBisectorAutoSplitThreshold, d.cosine), e2 = Math.sqrt(1 - t2 * t2) / t2;
+    d.leftOuter.x = d.prevNormal.x - d.sign * e2 * d.inbound.x, d.leftOuter.y = d.prevNormal.y - d.sign * e2 * d.inbound.y, d.rightOuter.x = d.nextNormal.x + d.sign * e2 * d.outbound.x, d.rightOuter.y = d.nextNormal.y + d.sign * e2 * d.outbound.y;
+  } else
+    o.enableOuterBisectorSplit && (d.splitOuter = true, d.gapOuter = false, d.leftOuter.x = d.rightOuter.x = d.bisector.x / d.cosine, d.leftOuter.y = d.rightOuter.y = d.bisector.y / d.cosine);
+}
+let x;
+const o = {};
+let s, u, l, c, y, a, h;
+const d = new e();
+function b() {
+  for (f(), m(), v(1), d.closure0 = d.leftEntry0, d.closure1 = d.leftEntry1, d.closure2 = d.leftEntry2; l - c > o.wrapDistance || u < x.length - 1 || u < x.length && (!d.closed || o.trackDistance); )
+    f(), m(), v(2), s.bridge(d), d.leftExit0 = d.rightExit0, d.leftExit1 = d.rightExit1, d.leftExit2 = d.rightExit2;
+  d.closed && !o.trackDistance && (d.rightEntry0 = d.closure0, d.rightEntry1 = d.closure1, d.rightEntry2 = d.closure2, s.bridge(d), d.leftExit0 = d.rightExit0, d.leftExit1 = d.rightExit1, d.leftExit2 = d.rightExit2);
+}
+function V() {
+  for (f(), m(), d.splitInner = d.gapInner = d.splitOuter = d.gapOuter = false, v(1), d.closure0 = d.leftEntry0, d.closure1 = d.leftEntry1, d.closure2 = d.leftEntry2; l - c > o.wrapDistance || u < x.length - 1 || u < x.length && (!d.closed || o.trackDistance); )
+    f(), m(), d.splitInner = d.gapInner = d.splitOuter = d.gapOuter = false, v(2), s.bridge(d), d.leftExit0 = d.rightExit0, d.leftExit1 = d.rightExit1, d.leftExit2 = d.rightExit2;
+  d.closed && !o.trackDistance && (d.rightEntry0 = d.closure0, d.rightEntry1 = d.closure1, d.rightEntry2 = d.closure2, s.bridge(d), d.leftExit0 = d.rightExit0, d.leftExit1 = d.rightExit1, d.leftExit2 = d.rightExit2);
+}
+function g() {
+  for (f(), E(), N(1); l - c > o.wrapDistance || u < x.length; )
+    f(), E(), N(2), s.bridge(d), d.leftExit0 = d.rightExit0, d.leftExit2 = d.rightExit2;
+}
+function p() {
+  for (; u < x.length; ) {
+    if (u > 0 && (d.inbound.x = d.outbound.x, d.inbound.y = d.outbound.y), u < x.length - 1) {
+      d.outbound.x = x[u + 1].x - x[u].x, d.outbound.y = x[u + 1].y - x[u].y;
+      const t2 = Math.sqrt(d.outbound.x * d.outbound.x + d.outbound.y * d.outbound.y);
+      d.distance += t2, d.outbound.x /= t2, d.outbound.y /= t2;
+    } else
+      d.outbound.x = d.inbound.x, d.outbound.y = d.inbound.y;
+    u === 0 && (d.inbound.x = d.outbound.x, d.inbound.y = d.outbound.y), d.currentVertex.x = x[u].x, d.currentVertex.y = x[u].y, d.prevNormal.x = -d.inbound.y, d.prevNormal.y = d.inbound.x, d.nextNormal.x = -d.outbound.y, d.nextNormal.y = d.outbound.x, u === 0 ? (s.vertex(d), d.leftEntry0 = d.entry0, d.leftEntry2 = d.entry2, d.leftExit0 = d.exit0, d.leftExit2 = d.exit2) : (s.vertex(d), d.rightEntry0 = d.entry0, d.rightEntry2 = d.entry2, d.rightExit0 = d.exit0, d.rightExit2 = d.exit2, s.bridge(d), d.leftExit0 = d.rightExit0, d.leftExit2 = d.rightExit2), ++u;
+  }
+}
+function f() {
+  if (y)
+    return d.distance = 0, d.isCap = d.isFirstVertex = d.isLastVertex = false, void (y = false);
+  if (l === 0)
+    if (d.isFirstVertex = u === 0, h = x[u], u === 0) {
+      if (l = 0, d.closed) {
+        d.inbound.x = h.x - x[x.length - 2].x, d.inbound.y = h.y - x[x.length - 2].y;
+        const t3 = Math.sqrt(d.inbound.x * d.inbound.x + d.inbound.y * d.inbound.y);
+        d.inbound.x /= t3, d.inbound.y /= t3;
+      }
+    } else
+      d.inbound.x = h.x - a.x, d.inbound.y = h.y - a.y, l = Math.sqrt(d.inbound.x * d.inbound.x + d.inbound.y * d.inbound.y), d.inbound.x /= l, d.inbound.y /= l;
+  if (d.distance + l - c <= o.wrapDistance) {
+    if (u < x.length - 1) {
+      d.outbound.x = x[u + 1].x - h.x, d.outbound.y = x[u + 1].y - h.y;
+      const t3 = Math.sqrt(d.outbound.x * d.outbound.x + d.outbound.y * d.outbound.y);
+      d.outbound.x /= t3, d.outbound.y /= t3;
+    } else if (d.closed) {
+      d.outbound.x = x[1].x - h.x, d.outbound.y = x[1].y - h.y;
+      const t3 = Math.sqrt(d.outbound.x * d.outbound.x + d.outbound.y * d.outbound.y);
+      d.outbound.x /= t3, d.outbound.y /= t3;
+    } else
+      d.outbound.x = d.inbound.x, d.outbound.y = d.inbound.y;
+    return u !== 0 || d.closed || (d.inbound.x = d.outbound.x, d.inbound.y = d.outbound.y), ++u, d.isLastVertex = u === x.length, d.isCap = !d.closed && (d.isFirstVertex || d.isLastVertex), d.distance += l - c, l = 0, c = 0, y = d.distance + l - c === o.wrapDistance, d.currentVertex.x = h.x, d.currentVertex.y = h.y, a = h, void (h = null);
+  }
+  d.outbound.x = d.inbound.x, d.outbound.y = d.inbound.y, c += o.wrapDistance - d.distance, d.distance = o.wrapDistance, y = true;
+  const t2 = c / l;
+  d.currentVertex.x = (1 - t2) * a.x + t2 * h.x, d.currentVertex.y = (1 - t2) * a.y + t2 * h.y;
+}
+function E() {
+  d.prevNormal.x = -d.inbound.y, d.prevNormal.y = d.inbound.x, d.nextNormal.x = -d.outbound.y, d.nextNormal.y = d.outbound.x;
+}
+function m() {
+  E(), d.bisector.x = d.prevNormal.x + d.nextNormal.x, d.bisector.y = d.prevNormal.y + d.nextNormal.y;
+  const t2 = Math.sqrt(d.bisector.x * d.bisector.x + d.bisector.y * d.bisector.y);
+  if (t2 < 1e-3)
+    return d.bisector.x = void 0, d.bisector.y = void 0, d.cosine = 0, void (d.sign = void 0);
+  d.bisector.x /= t2, d.bisector.y /= t2, d.cosine = d.bisector.x * d.nextNormal.x + d.bisector.y * d.nextNormal.y, d.sign = d.prevNormal.x * d.nextNormal.y - d.prevNormal.y * d.nextNormal.x >= 0 ? 1 : -1;
+}
+function v(t2) {
+  s.vertex(d), t2 === 1 ? (d.leftEntry0 = d.entry0, d.leftEntry1 = d.entry1, d.leftEntry2 = d.entry2, d.leftExit0 = d.exit0, d.leftExit1 = d.exit1, d.leftExit2 = d.exit2) : t2 === 2 && (d.rightEntry0 = d.entry0, d.rightEntry1 = d.entry1, d.rightEntry2 = d.entry2, d.rightExit0 = d.exit0, d.rightExit1 = d.exit1, d.rightExit2 = d.exit2);
+}
+function N(t2) {
+  s.vertex(d), t2 === 1 ? (d.leftEntry0 = d.entry0, d.leftEntry2 = d.entry2, d.leftExit0 = d.exit0, d.leftExit2 = d.exit2) : t2 === 2 && (d.rightEntry0 = d.entry0, d.rightEntry2 = d.entry2, d.rightExit0 = d.exit0, d.rightExit2 = d.exit2);
+}
+class w {
+  constructor(e2, r2) {
+    this.writeVertex = e2, this.writeTriangle = r2, this.capType = 0, this.joinType = 2, this.miterLimitCosine = u$1(2), this.roundLimitCosine = Math.cos(23 * Math.PI / 180), this.almostParallelCosine = 0.97, this.radsPerSlice = 0.8, this.textured = false, this.joinOnUTurn = false;
+  }
+  vertex(t2) {
+    const e2 = this.joinType === 2 ? this.miterLimitCosine : this.roundLimitCosine, r2 = t2.isCap && this.capType !== 0;
+    let i2 = false;
+    t2.cosine > this.almostParallelCosine ? (t2.exit0 = t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.bisector.x / t2.cosine, t2.bisector.y / t2.cosine, 0, -1, t2.distance), t2.exit2 = t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.bisector.x / t2.cosine, -t2.bisector.y / t2.cosine, 0, 1, t2.distance)) : t2.cosine < 1 - this.almostParallelCosine ? (i2 = !t2.isCap && this.joinOnUTurn, t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.prevNormal.x, t2.prevNormal.y, 0, -1, t2.distance), t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.prevNormal.x, -t2.prevNormal.y, 0, 1, t2.distance), t2.exit0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.nextNormal.x, t2.nextNormal.y, 0, -1, t2.distance), t2.exit2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.nextNormal.x, -t2.nextNormal.y, 0, 1, t2.distance)) : t2.canSplit ? (n(), t2.sign > 0 ? (t2.splitInner ? (t2.exit0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.outbound.x, t2.outbound.y, t2.leftInner.x, t2.leftInner.y, 0, -1, t2.distance), t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.inbound.x, t2.inbound.y, t2.rightInner.x, t2.rightInner.y, 0, -1, t2.distance)) : t2.exit0 = t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.inbound.x, t2.inbound.y, t2.bisector.x / t2.cosine, t2.bisector.y / t2.cosine, 0, -1, t2.distance), t2.cosine < e2 ? (i2 = !t2.isCap, t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.prevNormal.x, -t2.prevNormal.y, 0, 1, t2.distance), t2.exit2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.nextNormal.x, -t2.nextNormal.y, 0, 1, t2.distance)) : t2.splitOuter ? (i2 = i2 || t2.gapOuter, t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.inbound.x, t2.inbound.y, -t2.leftOuter.x, -t2.leftOuter.y, 0, 1, t2.distance), t2.exit2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.outbound.x, t2.outbound.y, -t2.rightOuter.x, -t2.rightOuter.y, 0, 1, t2.distance)) : t2.entry2 = t2.exit2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.bisector.x / t2.cosine, -t2.bisector.y / t2.cosine, 0, 1, t2.distance)) : (t2.splitInner ? (t2.exit2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.outbound.x, t2.outbound.y, -t2.leftInner.x, -t2.leftInner.y, 0, 1, t2.distance), t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.inbound.x, t2.inbound.y, -t2.rightInner.x, -t2.rightInner.y, 0, 1, t2.distance)) : t2.exit2 = t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.bisector.x / t2.cosine, -t2.bisector.y / t2.cosine, 0, 1, t2.distance), t2.cosine < e2 ? (i2 = !t2.isCap, t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.prevNormal.x, t2.prevNormal.y, 0, -1, t2.distance), t2.exit0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.nextNormal.x, t2.nextNormal.y, 0, -1, t2.distance)) : t2.splitOuter ? (i2 = i2 || t2.gapOuter, t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.inbound.x, t2.inbound.y, t2.leftOuter.x, t2.leftOuter.y, 0, -1, t2.distance), t2.exit0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.outbound.x, t2.outbound.y, t2.rightOuter.x, t2.rightOuter.y, 0, -1, t2.distance)) : t2.exit0 = t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.bisector.x / t2.cosine, t2.bisector.y / t2.cosine, 0, -1, t2.distance))) : t2.sign > 0 ? (t2.exit0 = t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, t2.inbound.x, t2.inbound.y, t2.bisector.x / t2.cosine, t2.bisector.y / t2.cosine, 0, -1, t2.distance), t2.cosine < e2 ? (i2 = !t2.isCap, t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.prevNormal.x, -t2.prevNormal.y, 0, 1, t2.distance), t2.exit2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.nextNormal.x, -t2.nextNormal.y, 0, 1, t2.distance)) : t2.entry2 = t2.exit2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.bisector.x / t2.cosine, -t2.bisector.y / t2.cosine, 0, 1, t2.distance)) : (t2.exit2 = t2.entry2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.bisector.x / t2.cosine, -t2.bisector.y / t2.cosine, 0, 1, t2.distance), t2.cosine < e2 ? (i2 = !t2.isCap, t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.prevNormal.x, t2.prevNormal.y, 0, -1, t2.distance), t2.exit0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.nextNormal.x, t2.nextNormal.y, 0, -1, t2.distance)) : t2.exit0 = t2.entry0 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.bisector.x / t2.cosine, t2.bisector.y / t2.cosine, 0, -1, t2.distance));
+    const x2 = t2.canSplit && (t2.splitInner || t2.splitOuter);
+    let o2;
+    if (o2 = t2.entry1 = t2.exit1 = x2 || i2 || r2 ? this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, 0, 0, 0, 0, t2.distance) : null, i2 && this.joinType !== 1)
+      this.writeTriangle(o2, t2.sign > 0 ? t2.exit2 : t2.entry0, t2.sign > 0 ? t2.entry2 : t2.exit0);
+    else if (r2 && this.capType === 1 || i2 && this.joinType === 1) {
+      let e3, r3, i3, n2, x3, s2;
+      if (t2.isCap) {
+        const o3 = Math.PI;
+        x3 = Math.ceil(o3 / this.radsPerSlice), s2 = o3 / x3, t2.isFirstVertex ? (e3 = t2.prevNormal.x, r3 = t2.prevNormal.y, i3 = t2.entry0, n2 = t2.entry2) : t2.isLastVertex && (e3 = -t2.nextNormal.x, r3 = -t2.nextNormal.y, i3 = t2.exit2, n2 = t2.exit0);
+      } else {
+        const o3 = 2 * Math.acos(t2.cosine);
+        x3 = Math.ceil(o3 / this.radsPerSlice), s2 = o3 / x3, e3 = t2.sign > 0 ? -t2.prevNormal.x : t2.nextNormal.x, r3 = t2.sign > 0 ? -t2.prevNormal.y : t2.nextNormal.y, i3 = t2.sign > 0 ? t2.entry2 : t2.exit0, n2 = t2.sign > 0 ? t2.exit2 : t2.entry0;
+      }
+      const u2 = Math.cos(s2), l2 = Math.sin(s2), c2 = l2 * e3 + u2 * r3;
+      let y2, a2;
+      e3 = u2 * e3 - l2 * r3, r3 = c2;
+      for (let h2 = 0; h2 < x3; ++h2) {
+        if (y2 = a2, h2 < x3 - 1)
+          if (t2.isCap) {
+            const i4 = t2.isFirstVertex ? -1 : 1;
+            a2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, e3, r3, i4, 0, t2.distance);
+          } else
+            a2 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, e3, r3, 0, t2.sign, t2.distance);
+        this.writeTriangle(h2 === 0 ? i3 : y2, o2, h2 === x3 - 1 ? n2 : a2);
+        const s3 = l2 * e3 + u2 * r3;
+        e3 = u2 * e3 - l2 * r3, r3 = s3;
+      }
+    } else if (r2 && this.capType === 2) {
+      const e3 = t2.isFirstVertex ? 1 : -1;
+      let r3, i3;
+      this.textured ? (r3 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.prevNormal.x - e3 * t2.inbound.x, t2.prevNormal.y - e3 * t2.inbound.y, -e3, -1, t2.distance), i3 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.prevNormal.x - e3 * t2.inbound.x, -t2.prevNormal.y - e3 * t2.inbound.y, -e3, 1, t2.distance)) : (r3 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, t2.prevNormal.x - e3 * t2.inbound.x, t2.prevNormal.y - e3 * t2.inbound.y, 0, -1, t2.distance), i3 = this.writeVertex(t2.currentVertex.x, t2.currentVertex.y, 0, 0, -t2.prevNormal.x - e3 * t2.inbound.x, -t2.prevNormal.y - e3 * t2.inbound.y, 0, 1, t2.distance)), e3 > 0 ? (this.writeTriangle(o2, t2.entry2, i3), this.writeTriangle(o2, i3, r3), this.writeTriangle(o2, r3, t2.entry0)) : (this.writeTriangle(o2, i3, t2.exit2), this.writeTriangle(o2, r3, i3), this.writeTriangle(o2, t2.exit0, r3));
+    }
+  }
+  bridge(t2) {
+    this.writeTriangle(t2.leftExit0, t2.rightEntry0, t2.leftExit1 != null ? t2.leftExit1 : t2.leftExit2), this.writeTriangle(t2.rightEntry0, t2.rightEntry1 != null ? t2.rightEntry1 : t2.rightEntry2, t2.leftExit1 != null ? t2.leftExit1 : t2.leftExit2), t2.leftExit1 != null && t2.rightEntry1 != null ? (this.writeTriangle(t2.leftExit1, t2.rightEntry1, t2.leftExit2), this.writeTriangle(t2.rightEntry1, t2.rightEntry2, t2.leftExit2)) : t2.leftExit1 != null ? this.writeTriangle(t2.leftExit1, t2.rightEntry2, t2.leftExit2) : t2.rightEntry1 != null && this.writeTriangle(t2.rightEntry1, t2.rightEntry2, t2.leftExit2);
+  }
+}
+export { r as a, i as b, n$1 as c, i$1 as d, n as e, e$1 as f, i$2 as i, n$2 as n, o$1 as o, r$1 as r, t$1 as t, u$1 as u, w };

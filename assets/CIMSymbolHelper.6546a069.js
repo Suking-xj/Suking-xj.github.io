@@ -1,1 +1,2626 @@
-var t=Object.defineProperty,e=Object.getOwnPropertySymbols,s=Object.prototype.hasOwnProperty,i=Object.prototype.propertyIsEnumerable,n=(e,s,i)=>s in e?t(e,s,{enumerable:!0,configurable:!0,writable:!0,value:i}):e[s]=i;import{bT as r,bc as a,bd as o,ba as h,bb as l,b9 as c,b6 as u,be as _,a4 as f,cR as p,cV as m}from"./vendor.74d5941c.js";class g{constructor(){this.setIdentity()}getAngle(){return(null==this.rz||0===this.rz&&1!==this.rz_c&&0!==this.rz_s)&&(this.rz=Math.atan2(this.rz_s,this.rz_c)),this.rz}setIdentity(){this.tx=0,this.ty=0,this.tz=0,this.s=1,this.rx=0,this.ry=0,this.rz=0,this.rz_c=1,this.rz_s=0}setTranslate(t,e){this.tx=t,this.ty=e}setTranslateZ(t){this.tz=t}setRotateCS(t,e){this.rz=void 0,this.rz_c=t,this.rz_s=e}setRotate(t){this.rz=t,this.rz_c=void 0,this.rz_s=void 0}setRotateY(t){this.ry=t}setScale(t){this.s=t}setMeasure(t){this.m=t}}class d{constructor(t){this._geometry=t}next(){const t=this._geometry;return this._geometry=null,t}}function x(t){const e=r(t);return(s=e)&&(a(s)?C(s.rings):o(s)?C(s.paths):h(s)&&M(s.points)),e;var s}function y(t){if(t)for(let e=t.length-1;e>0;--e)t[e][0]-=t[e-1][0],t[e][1]-=t[e-1][1]}function P(t){if(t)for(const e of t)y(e)}function M(t){if(t){const e=t.length;for(let s=1;s<e;++s)t[s][0]+=t[s-1][0],t[s][1]+=t[s-1][1]}}function C(t){if(t)for(const e of t)M(e)}function S(t){t&&(a(t)?P(t.rings):o(t)?P(t.paths):h(t)&&y(t.points))}function b(t){if(t)for(const e of t)w(e)}function w(t){t&&t.reverse()}function v(t,e,s){return[t[0]+(e[0]-t[0])*s,t[1]+(e[1]-t[1])*s]}function k(t){return t[4]}function I(t,e){t[4]=e}class L{constructor(t,e,s,i){this.acceptPolygon=e,this.acceptPolyline=s,this.geomUnitsPerPoint=i,this.pathCount=-1,this.pathIndex=-1,this.iteratePath=!1,t&&(a(t)?e&&(this.multiPath=t.rings,this.isClosed=!0):o(t)?s&&(this.multiPath=t.paths,this.isClosed=!1):l(t)&&e&&(this.multiPath=T(t).rings,this.isClosed=!0),this.multiPath&&(this.pathCount=this.multiPath.length)),this.internalPlacement=new g}next(){if(!this.multiPath)return null;for(;this.iteratePath||this.pathIndex<this.pathCount-1;){this.iteratePath||this.pathIndex++;const t=this.processPath(this.multiPath[this.pathIndex]);if(t)return t}return this.pathCount=-1,this.pathIndex=-1,this.multiPath=null,null}}class A{constructor(t,e,s,i){this.inputGeometries=t,this.acceptPolygon=e,this.acceptPolyline=s,this.geomUnitsPerPoint=i,this.pathCount=-1,this.pathIndex=-1,this.iteratePath=!1}next(){for(;;){if(!this.multiPath){let t=this.inputGeometries.next();for(;t;){if(a(t)?this.acceptPolygon&&(this.multiPath=t.rings,this.isClosed=!0):o(t)?this.acceptPolyline&&(this.multiPath=t.paths,this.isClosed=!1):l(t)&&this.acceptPolygon&&(this.multiPath=T(t).rings,this.isClosed=!0),this.multiPath){this.pathCount=this.multiPath.length,this.pathIndex=-1;break}t=this.inputGeometries.next()}if(!this.multiPath)return null}for(;this.iteratePath||this.pathIndex<this.pathCount-1;){this.iteratePath||this.pathIndex++;const t=this.processPath(this.multiPath[this.pathIndex]);if(t)return t}this.pathCount=-1,this.pathIndex=-1,this.multiPath=null}}}function T(t){return{rings:[[[t.xmin,t.ymin],[t.xmin,t.ymax],[t.xmax,t.ymax],[t.xmax,t.ymin],[t.xmin,t.ymin]]]}}class E{static local(){return null===E.instance&&(E.instance=new E),E.instance}execute(t,e,s){return new G(t,e,s)}}E.instance=null;class G{constructor(t,e,s){this._inputGeometries=t,this._angleTolerance=void 0!==e.angleTolerance?e.angleTolerance:120,this._maxCosAngle=Math.cos((1-Math.abs(this._angleTolerance)/180)*Math.PI)}next(){let t=this._inputGeometries.next();for(;t;){if(a(t)){this._isClosed=!0;const e=r(t);return this._processMultipath(e.rings),e}if(o(t)){this._isClosed=!1;const e=r(t);return this._processMultipath(e.paths),e}if(l(t)){if(this._maxCosAngle)return t;this._isClosed=!0;const e=[[t.xmin,t.ymin],[t.xmin,t.ymax],[t.xmax,t.ymax],[t.xmax,t.ymin],[t.xmin,t.ymin]];return this._processPath(e),{rings:[e]}}t=this._inputGeometries.next()}return null}_processMultipath(t){if(t)for(const e of t)this._processPath(e)}_processPath(t){if(t){let e,s,i,n,r,a,o=t.length,h=t[0];this._isClosed&&++o;for(let l=1;l<o;++l){let c;c=this._isClosed&&l===o-1?t[0]:t[l];const u=c[0]-h[0],_=c[1]-h[1],f=Math.sqrt(u*u+_*_);l>1&&f>0&&i>0&&(e*u+s*_)/f/i<=this._maxCosAngle&&I(h,1),1===l&&(n=u,r=_,a=f),f>0&&(h=c,e=u,s=_,i=f)}this._isClosed&&i>0&&a>0&&(e*n+s*r)/a/i<=this._maxCosAngle&&I(t[0],1)}}}class z{constructor(){this._path=[]}path(){return this._path}addPath(t,e){e||t.reverse(),Array.prototype.push.apply(this._path,t),e||t.reverse()}static mergePath(t,e){e&&Array.prototype.push.apply(t,e)}startPath(t){this._path.push(t)}lineTo(t){this._path.push(t)}close(){const t=this._path;t.length>1&&(t[0][0]===t[t.length-1][0]&&t[0][1]===t[t.length-1][1]||t.push([t[0][0],t[0][1]]))}}class F{constructor(t=0,e=!1){}normalize(t){const e=Math.sqrt(t[0]*t[0]+t[1]*t[1]);t[0]/=e,t[1]/=e}calculateLength(t,e){const s=e[0]-t[0],i=e[1]-t[1];return Math.sqrt(s*s+i*i)}calculateSegLength(t,e){return this.calculateLength(t[e],t[e+1])}calculatePathLength(t){let e=0;const s=t?t.length:0;for(let i=0;i<s-1;++i)e+=this.calculateSegLength(t,i);return e}calculatePathArea(t){let e=0;const s=t?t.length:0;for(let i=0;i<s-1;++i)e+=(t[i+1][0]-t[i][0])*(t[i+1][1]+t[i][1]);return e/2}getCoord2D(t,e,s){return[t[0]+(e[0]-t[0])*s,t[1]+(e[1]-t[1])*s]}getSegCoord2D(t,e,s){return this.getCoord2D(t[e],t[e+1],s)}getAngle(t,e,s){const i=e[0]-t[0],n=e[1]-t[1];return Math.atan2(n,i)}getSegAngle(t,e,s){return this.getAngle(t[e],t[e+1],s)}getAngleCS(t,e,s){const i=e[0]-t[0],n=e[1]-t[1],r=Math.sqrt(i*i+n*n);return r>0?[i/r,n/r]:[1,0]}getSegAngleCS(t,e,s){return this.getAngleCS(t[e],t[e+1],s)}cut(t,e,s,i){return[s<=0?t[e]:this.getSegCoord2D(t,e,s),i>=1?t[e+1]:this.getSegCoord2D(t,e,i)]}addSegment(t,e,s){s&&t.push(e[0]),t.push(e[1])}getSubCurve(t,e,s){const i=[];return this.appendSubCurve(i,t,e,s)?i:null}appendSubCurve(t,e,s,i){const n=e?e.length-1:0;let r=0,a=!0,o=0;for(;o<n;){const n=this.calculateSegLength(e,o);if(0!==n){if(a){if(r+n>s){const h=(s-r)/n;let l=1,c=!1;r+n>=i&&(l=(i-r)/n,c=!0);const u=this.cut(e,o,h,l);if(u&&this.addSegment(t,u,a),c)break;a=!1}}else{if(r+n>i){const s=this.cut(e,o,0,(i-r)/n);s&&this.addSegment(t,s,a);break}this.addSegment(t,[e[o],e[o+1]],a)}r+=n,++o}else++o}return!0}getCIMPointAlong(t,e){const s=t?t.length-1:0;let i=0,n=-1;for(;n<s;){++n;const s=this.calculateSegLength(t,n);if(0!==s){if(i+s>e){const r=(e-i)/s;return this.getCoord2D(t[n],t[n+1],r)}i+=s}}return null}isEmpty(t,e){if(!t||t.length<=1)return!0;const s=t?t.length-1:0;let i=-1;for(;i<s;){if(++i,t[i+1][0]!==t[i][0]||t[i+1][1]!==t[i][1])return!1;if(e&&t[i+1][2]!==t[i][2])return!1}return!0}offset(t,e,s,i,n){if(!t||t.length<2)return null;let r=t.length;const a=t[0][0]===t[r-1][0]&&t[0][1]===t[r-1][1];if(a){if(t.length<3)return null;--r}const o=[];let h=a?t[r-1]:null,l=t[0];for(let c=0;c<r;c++){const n=c===r-1?a?t[0]:null:t[c+1];if(h)if(n){const t=[n[0]-l[0],n[1]-l[1]];this.normalize(t);const r=[l[0]-h[0],l[1]-h[1]];this.normalize(r);const a=r[0]*t[1]-r[1]*t[0],c=r[0]*t[0]+r[1]*t[1];if(a>=0==e<=0){const s=[t[0]-r[0],t[1]-r[1]];this.normalize(s);const i=Math.sqrt((1+c)/2),n=-Math.abs(e)/i;o.push([l[0]-s[0]*n,l[1]-s[1]*n])}else switch(s){case"Mitered":{const s=Math.sqrt((1+c)/2);if(s>0&&1/s<i){const i=[t[0]-r[0],t[1]-r[1]];this.normalize(i);const n=Math.abs(e)/s;o.push([l[0]-i[0]*n,l[1]-i[1]*n]);break}}case"Bevelled":o.push([l[0]+r[1]*e,l[1]-r[0]*e]),o.push([l[0]+t[1]*e,l[1]-t[0]*e]);break;case"Rounded":{o.push([l[0]+r[1]*e,l[1]-r[0]*e]);const s=5,i=1/s;let n=i;for(let a=1;a<s;a++,n+=i){const s=[r[1]*(1-n)+t[1]*n,-r[0]*(1-n)-t[0]*n];this.normalize(s),o.push([l[0]+s[0]*e,l[1]+s[1]*e])}o.push([l[0]+t[1]*e,l[1]-t[0]*e]);break}case"Square":default:if(a<0)o.push([l[0]+(r[1]+r[0])*e,l[1]+(r[1]-r[0])*e]),o.push([l[0]+(t[1]-t[0])*e,l[1]-(t[0]+t[1])*e]);else{const s=Math.sqrt((1+Math.abs(c))/2),i=[t[0]-r[0],t[1]-r[1]];this.normalize(i);const n=e/s;o.push([l[0]-i[0]*n,l[1]-i[1]*n])}}}else{const t=[l[0]-h[0],l[1]-h[1]];this.normalize(t),o.push([l[0]+t[1]*e,l[1]-t[0]*e])}else{const t=[n[0]-l[0],n[1]-l[1]];this.normalize(t),o.push([l[0]+t[1]*e,l[1]-t[0]*e])}h=l,l=n}return a&&o.push([o[0][0],o[0][1]]),o}}const O=1.7320508075688772;class V{static local(){return null===V.instance&&(V.instance=new V),V.instance}execute(t,e,s){return new H(t,e,s)}}V.instance=null;class H extends A{constructor(t,e,s){super(t,!1,!0),this._curveHelper=new F,this._width=(void 0!==e.width?e.width:5)*s,this._arrowType=void 0!==e.geometricEffectArrowType?e.geometricEffectArrowType:"OpenEnded",this._offsetFlattenError=.03*s}processPath(t){switch(this._arrowType){case"OpenEnded":default:return this._constructSimpleArrow(t,!0);case"Block":return this._constructSimpleArrow(t,!1);case"Crossed":return this._constructCrossedArrow(t)}}_constructSimpleArrow(t,e){const s=this._curveHelper.calculatePathLength(t);let i=this._width;s<2*i&&(i=s/2);const n=this._curveHelper.getSubCurve(t,0,s-i);if(!n)return null;const r=i/2;if(this._curveHelper.isEmpty(n,!1))return null;const a=this._constructOffset(n,-r);if(!a)return null;const o=this._constructOffset(n,r);if(!o)return null;const h=this._constructArrowBasePoint(a,-r/2);if(!h)return null;const l=this._constructArrowBasePoint(o,r/2);if(!l)return null;const c=t[t.length-1];e||(this._makeControlPoint(o,!0),this._makeControlPoint(a,!0));const u=new z;return u.addPath(o,!0),u.lineTo(l),this._makeControlPoint(u.path()),u.lineTo(c),this._makeControlPoint(u.path()),u.lineTo(h),this._makeControlPoint(u.path()),u.addPath(a,!1),e?{paths:[u.path()]}:(u.close(),{rings:[u.path()]})}_constructCrossedArrow(t){const e=this._curveHelper.calculatePathLength(t);let s=this._width;e<s*(1+O+1)&&(s=e/(1+O+1));const i=this._curveHelper.getSubCurve(t,0,e-s*(1+O));if(!i)return null;const n=s/2;if(this._curveHelper.isEmpty(i,!1))return null;const r=this._constructOffset(i,n);if(!r)return null;const a=this._constructOffset(i,-n);if(!a)return null;const o=this._curveHelper.getSubCurve(t,0,e-s);if(!o)return null;if(this._curveHelper.isEmpty(o,!1))return null;const h=this._constructOffset(o,n);if(!h)return null;const l=this._constructOffset(o,-n);if(!l)return null;const c=h[h.length-1],u=this._constructArrowBasePoint(h,n/2);if(!u)return null;const _=l[l.length-1],f=this._constructArrowBasePoint(l,-n/2);if(!f)return null;const p=t[t.length-1];this._makeControlPoint(r,!1),this._makeControlPoint(a,!1);const m=new z;return m.addPath(r,!0),this._makeControlPoint(m.path()),m.lineTo(_),m.lineTo(f),this._makeControlPoint(m.path()),m.lineTo(p),this._makeControlPoint(m.path()),m.lineTo(u),this._makeControlPoint(m.path()),m.lineTo(c),this._makeControlPoint(m.path()),m.addPath(a,!1),{paths:[m.path()]}}_constructOffset(t,e){return this._curveHelper.offset(t,e,"Rounded",4,this._offsetFlattenError)}_constructArrowBasePoint(t,e){if(!t||t.length<2)return null;const s=t[t.length-2],i=t[t.length-1],n=[i[0]-s[0],i[1]-s[1]];return this._curveHelper.normalize(n),[i[0]+n[1]*e,i[1]-n[0]*e]}_makeControlPoint(t,e=!1){I(e?t[0]:t[t.length-1],1)}}class X{static local(){return null===X.instance&&(X.instance=new X),X.instance}execute(t,e,s){return new Y(t,e,s)}}X.instance=null;class Y{constructor(t,e,s){this._inputGeometries=t,this._curveHelper=new F,this._size=(void 0!==e.size?e.size:1)*s,this._offsetFlattenError=.03*s}next(){let t=this._inputGeometries.next();for(;t;){if(l(t))if(this._size>0){const e=[[t.xmin,t.ymin],[t.xmin,t.ymax],[t.xmax,t.ymax],[t.xmax,t.ymin],[t.xmin,t.ymin]],s=this._curveHelper.offset(e,this._size,"Rounded",4,this._offsetFlattenError);if(s)return{rings:[s]}}else{if(!(this._size<0))return t;if(Math.min(t.xmax-t.xmin,t.ymax-t.ymin)+2*this._size>0)return{xmin:t.xmin-this._size,xmax:t.xmax+this._size,ymin:t.ymin-this._size,ymax:t.ymax+this._size}}if(a(t)){if(0===this._size)return t;const e=[];for(const s of t.rings){const t=this._curveHelper.offset(s,this._size,"Rounded",4,this._offsetFlattenError);t&&e.push(t)}if(e.length)return{rings:e}}if(o(t)&&this._size>0){const e=[];for(const s of t.paths)if(s&&s.length>1){const t=this._curveHelper.offset(s,this._size,"Rounded",4,this._offsetFlattenError),i=this._curveHelper.offset(s,-this._size,"Rounded",4,this._offsetFlattenError);if(t&&i){for(let e=i.length-1;e>=0;e--)t.push(i[e]);t.push([t[0][0],t[0][1]]),e.push(t)}}if(e.length)return{rings:e}}c(t)&&this._size,t=this._inputGeometries.next()}return null}}class R{static local(){return null===R.instance&&(R.instance=new R),R.instance}execute(t,e,s){return new D(t,e,s)}}R.instance=null;class D extends A{constructor(t,e,s){super(t,!0,!0),this._curveHelper=new F,this._beginCut=(void 0!==e.beginCut?e.beginCut:1)*s,this._endCut=(void 0!==e.endCut?e.endCut:1)*s,this._middleCut=(void 0!==e.middleCut?e.middleCut:0)*s,this._invert=void 0!==e.invert&&e.invert,this._beginCut<0&&(this._beginCut=0),this._endCut<0&&(this._endCut=0),this._middleCut<0&&(this._middleCut=0)}processPath(t){const e=this._beginCut,s=this._endCut,i=this._middleCut,n=this._curveHelper.calculatePathLength(t),r=[];if(this._invert)if(0===e&&0===s&&0===i);else if(e+s+i>=n)r.push(t);else{let a=this._curveHelper.getSubCurve(t,0,e);a&&r.push(a),a=this._curveHelper.getSubCurve(t,.5*(n-i),.5*(n+i)),a&&r.push(a),a=this._curveHelper.getSubCurve(t,n-s,s),a&&r.push(a)}else if(0===e&&0===s&&0===i)r.push(t);else if(e+s+i>=n);else if(0===i){const i=this._curveHelper.getSubCurve(t,e,n-s);i&&r.push(i)}else{let a=this._curveHelper.getSubCurve(t,e,.5*(n-i));a&&r.push(a),a=this._curveHelper.getSubCurve(t,.5*(n+i),n-s),a&&r.push(a)}return 0===r.length?null:{paths:r}}}class N{constructor(){this._values=[],this.extPtGap=0,this.ctrlPtGap=0,this._length=0,this._currentValue=0}isEmpty(){return 0===this._values.length}size(){return this._values.length}init(t,e,s=!0){if(this._setEmpty(),!t||0===t.length)return!1;for(let i=0;i<t.length;i++){let e=Math.abs(t[i]);s&&e<1e-7&&(e=1e-7),this._values.push(e),this._length+=e}return e&&1&t.length&&(this._length*=2),0!==this._length&&(this.ctrlPtGap=this.extPtGap=0,this._currentValue=-1,!0)}scale(t){const e=this._values?this._values.length:0;for(let s=0;s<e;++s)this._values[s]*=t;this._length*=t,this.extPtGap*=t,this.ctrlPtGap*=t}addValue(t){this._length+=t,this._values.push(t)}firstValue(){return this._values[0]}lastValue(){return this._values[this._values.length-1]}nextValue(){return this._currentValue++,this._currentValue===this._values.length&&(this._currentValue=0),this._values[this._currentValue]}reset(){this._currentValue=-1}length(){return this._length}_setEmpty(){this.extPtGap=this.ctrlPtGap=this._length=0,this._currentValue=-1,this._values.length=0}}class W{constructor(){this.reset()}reset(){this.segment=-1,this.segmentLength=0,this.abscissa=0,this.isPathEnd=!1,this.isPartEnd=!1}isValid(){return-1!==this.segment}copyTo(t){t.segment=this.segment,t.segmentLength=this.segmentLength,t.abscissa=this.abscissa,t.isPathEnd=this.isPathEnd,t.isPartEnd=this.isPartEnd}}class q extends F{constructor(t=0,e=!1){super(t,e),this._tolerance=.03,this._currentPosition=new W}updateTolerance(t){this._tolerance=.03*t}init(t,e,s=!0){return s?(this._patternLength=e.length(),this._partExtPtGap=e.extPtGap,this._partCtrlPtGap=e.ctrlPtGap):(this._patternLength=0,this._partExtPtGap=0,this._partCtrlPtGap=0),this._currentPosition.reset(),this._partSegCount=0,this._path=t,this._seg=-1,this.setPosAtNextPart()}curPositionIsValid(){return this._currentPosition.isValid()}nextPosition(t,e=0){const s=new W;return!!this._nextPosition(t,s,null,e)&&(s.copyTo(this._currentPosition),!0)}curPointAndAngle(t){t.pt=this._getPoint(this._currentPosition);const[e,s]=this._getAngle(this._currentPosition);t.ca=e,t.sa=s}nextPointAndAngle(t,e,s=0){const i=new W;if(!this._nextPosition(t,i,null,s))return!1;i.copyTo(this._currentPosition),e.pt=this._getPoint(i);const[n,r]=this._getAngle(i);return e.ca=n,e.sa=r,!0}nextCurve(t){if(0===t)return null;const e=[],s=new W;return this._nextPosition(t,s,e,1)?(s.copyTo(this._currentPosition),e):null}isPathEnd(){return this._currentPosition.isPathEnd}getPathEnd(){if(-1===this._currentPosition.segment)throw new Error("missing segment");return this._path[this._currentPosition.segment+1]}_nextPosition(t,e,s,i){if(this._currentPosition.isPathEnd)return!1;let n=this._currentPosition.abscissa;for(this._currentPosition.segmentLength>0&&(n/=this._currentPosition.segmentLength),this._currentPosition.copyTo(e);e.abscissa+t*this._partLengthRatio>e.segmentLength+this._tolerance;){if(s){if(0===s.length)if(0===n){const t=this._path[e.segment];s.push([t[0],t[1]])}else s.push(this.getSegCoord2D(this._path,e.segment,n));const t=this._path[e.segment+1];s.push([t[0],t[1]])}if(n=0,t-=(e.segmentLength-e.abscissa)/this._partLengthRatio,this._partSegCount)e.segment=this.nextSegment(),e.segmentLength=this.calculateSegLength(this._path,e.segment),e.abscissa=0,this._partSegCount--;else{if(!this.setPosAtNextPart())return 0!==i&&(e.segmentLength=this.calculateSegLength(this._path,e.segment),e.isPartEnd=!0,1===i?(e.abscissa=e.segmentLength,e.isPathEnd=!0):e.abscissa=e.segmentLength+t,!0);this._currentPosition.copyTo(e)}}if(e.abscissa+=t*this._partLengthRatio,s){if(0===s.length)if(0===n){const t=this._path[e.segment];s.push([t[0],t[1]])}else s.push(this.getSegCoord2D(this._path,e.segment,n));const t=e.abscissa/e.segmentLength;if(1===t){const t=this._path[e.segment+1];s.push([t[0],t[1]])}else s.push(this.getSegCoord2D(this._path,e.segment,t))}return this._partSegCount||Math.abs(e.abscissa-e.segmentLength)<this._tolerance&&(e.isPathEnd=this._partIsLast,e.isPartEnd=!0),!0}_getPoint(t){if(-1===t.segment)throw new Error("missing segment");const e=t.segmentLength<=0?0:t.abscissa/t.segmentLength;return this.getSegCoord2D(this._path,t.segment,e)}_getAngle(t){if(-1===t.segment)throw new Error("missing segment");const e=t.segmentLength<=0?0:t.abscissa/t.segmentLength;return this.getSegAngleCS(this._path,t.segment,e)}setPosAtNextPart(){for(;this._partSegCount;)this.hasNextSegment()&&this.nextSegment(),this._partSegCount--;if(!this.hasNextSegment())return!1;for(this._partLength=0,this._partIsLast=!0,this._partSegCount=0;this.hasNextSegment();)if(this._partLength+=this.calculateSegLength(this._path,this.nextSegment()),this._partSegCount++,1===k(this._path[this.getEndPointIndex()])){this._partIsLast=!this.hasNextSegment();break}let t=this._partSegCount;for(;t;)this.previousSegment(),--t;this._currentPosition.segment=this.nextSegment(),this._currentPosition.segmentLength=this.calculateSegLength(this._path,this._currentPosition.segment),this._currentPosition.abscissa=0,this._currentPosition.isPathEnd=this._currentPosition.isPartEnd=!1,--this._partSegCount;const e=this.getStartPointIndex();this._ctrlPtBegin=1===k(this._path[e]);let s=e+this._partSegCount+1;if(s>=this._path.length&&(s=0),this._ctrlPtEnd=1===k(this._path[s]),this._patternLength>0){const t=this._ctrlPtBegin?this._partCtrlPtGap:this._partExtPtGap,e=this._ctrlPtEnd?this._partCtrlPtGap:this._partExtPtGap;let s=Math.round((this._partLength-(t+e))/this._patternLength);s<=0&&(s=t+e>0?0:1),this._partLengthRatio=this._partLength/(t+e+s*this._patternLength),this._partLengthRatio<.01&&(this._partLengthRatio=1)}else this._partLengthRatio=1;return!0}hasNextSegment(){return this._seg<this._path.length-2}previousSegment(){return--this._seg}nextSegment(){return++this._seg}getStartPointIndex(){return this._seg}getEndPointIndex(){return this._seg+1}}class B{static local(){return null===B.instance&&(B.instance=new B),B.instance}execute(t,e,s){return new U(t,e,s)}}B.instance=null;class U extends A{constructor(t,e,s){super(t,!0,!0),this._walker=new q,this._walker.updateTolerance(s),this._endings=e.lineDashEnding,this._customDashPos=void 0!==e.offsetAlongLine?e.offsetAlongLine*s:0,this._offsetAtEnd=void 0!==e.customEndingOffset?e.customEndingOffset*s:0,this._pattern=new N,this._pattern.init(e.dashTemplate,!0),this._pattern.scale(s)}processPath(t){if(0===this._pattern.length())return this.iteratePath=!1,{paths:[t]};if(!this.iteratePath){let e=!0;switch(this._endings){case"HalfPattern":case"HalfGap":default:this._pattern.extPtGap=0;break;case"FullPattern":this.isClosed||(this._pattern.extPtGap=.5*this._pattern.firstValue());break;case"FullGap":this.isClosed||(this._pattern.extPtGap=.5*this._pattern.lastValue());break;case"NoConstraint":this.isClosed||(e=!1);break;case"Custom":this.isClosed||(this._pattern.extPtGap=.5*this._offsetAtEnd)}const s=this._walker.calculatePathLength(t);if(this._pattern.isEmpty()||s<.1*this._pattern.length())return{paths:[t]};if(!this._walker.init(t,this._pattern,e))return{paths:[t]}}let e;if(this.iteratePath)e=this._pattern.nextValue();else{let t;switch(this._endings){case"HalfPattern":default:t=.5*this._pattern.firstValue();break;case"HalfGap":t=.5*-this._pattern.lastValue();break;case"FullGap":t=-this._pattern.lastValue();break;case"FullPattern":t=0;break;case"NoConstraint":case"Custom":t=-this._customDashPos}let s=t/this._pattern.length();s-=Math.floor(s),t=s*this._pattern.length(),this._pattern.reset(),e=this._pattern.nextValue();let i=!1;for(;t>=e;)t-=e,e=this._pattern.nextValue(),i=!i;e-=t,i?(this._walker.nextPosition(e),e=this._pattern.nextValue()):this.isClosed&&(this._firstCurve=this._walker.nextCurve(e),e=this._pattern.nextValue(),this._walker.nextPosition(e),e=this._pattern.nextValue())}let s=this._walker.nextCurve(e);return s?this._walker.isPathEnd()?(this.iteratePath=!1,this._firstCurve&&(this._firstCurve.splice(0,1),z.mergePath(s,this._firstCurve),this._firstCurve=null)):(e=this._pattern.nextValue(),!this._walker.nextPosition(e)||this._walker.isPathEnd()?(this.iteratePath=!1,this._firstCurve&&(s=this._firstCurve,this._firstCurve=null)):this.iteratePath=!0):(this.iteratePath=!1,s=this._firstCurve,this._firstCurve=null),{paths:[s]}}}class j{static local(){return null===j.instance&&(j.instance=new j),j.instance}execute(t,e,s){return new J(t,e,s)}}j.instance=null;class J{constructor(t,e,s){switch(this._inputGeometries=t,this._curveHelper=new F,this._width=(void 0!==e.width?e.width:2)*s,e.method){case"Mitered":default:this._method="Mitered";break;case"Bevelled":this._method="Bevelled";break;case"Rounded":case"TrueBuffer":this._method="Rounded";break;case"Square":this._method="Square"}this._option=e.option,this._offsetFlattenError=.03*s}next(){let t=this._inputGeometries.next();for(;t;){if(l(t)&&this._width>0){if(Math.min(t.xmax-t.xmin,t.ymax-t.ymin)-2*this._width<0)return t;const e=[];return e.push([[t.xmin,t.ymin],[t.xmin,t.ymax],[t.xmax,t.ymax],[t.xmax,t.ymin],[t.xmin,t.ymin]]),e.push([[t.xmin+this._width,t.ymin+this._width],[t.xmax-this._width,t.ymin+this._width],[t.xmax-this._width,t.ymax-this._width],[t.xmin+this._width,t.ymax-this._width],[t.xmin+this._width,t.ymin+this._width]]),{rings:e}}if(a(t)&&this._width>0){const e=[];for(const s of t.rings){const t=this._curveHelper.calculatePathLength(s),i=this._curveHelper.offset(s,this._width,this._method,4,this._offsetFlattenError);i&&(t<0&&i.reverse(),e.push(i))}if(e.length)return{rings:e}}t=this._inputGeometries.next()}return null}}class ${static local(){return null===$.instance&&($.instance=new $),$.instance}execute(t,e,s){return new K(t,e,s)}}$.instance=null;class K extends A{constructor(t,e,s){super(t,!1,!0),this._curveHelper=new F,this._length=(void 0!==e.length?e.length:20)*s,this._angle=void 0!==e.angle?e.angle:225,this._position=void 0!==e.position?e.position:50,this._length<0&&(this._length=-this._length),this._position<20&&(this._position=20),this._position>80&&(this._position=80),this._mirror=!1}processPath(t){if(this._curveHelper.isEmpty(t,!1))return null;const e=t[0],s=t[t.length-1],i=[s[0]-e[0],s[1]-e[1]];this._curveHelper.normalize(i);const n=[e[0]+(s[0]-e[0])*this._position/100,e[1]+(s[1]-e[1])*this._position/100],r=Math.cos((90-this._angle)/180*Math.PI);let a=Math.sin((90-this._angle)/180*Math.PI);return this._mirror&&(a=-a),this._mirror=!this._mirror,{paths:[[e,[n[0]-this._length/2*r,n[1]-this._length/2*a],[n[0]+this._length/2*r,n[1]+this._length/2*a],s]]}}}class Z{static local(){return null===Z.instance&&(Z.instance=new Z),Z.instance}execute(t,e,s){return new Q(t,e,s)}}Z.instance=null;class Q{constructor(t,e,s){this._inputGeometries=t,this._offsetX=void 0!==e.offsetX?e.offsetX*s:0,this._offsetY=void 0!==e.offsetY?-e.offsetY*s:0}next(){let t=this._inputGeometries.next();for(;t;){if(l(t))return{xmin:t.xmin+this._offsetX,xmax:t.xmax+this._offsetX,ymin:t.ymin+this._offsetY,ymax:t.ymax+this._offsetY};if(a(t)){const e=r(t);return this._moveMultipath(e.rings,this._offsetX,this._offsetY),e}if(o(t)){const e=r(t);return this._moveMultipath(e.paths,this._offsetX,this._offsetY),e}if(h(t)){const e=r(t);return this._movePath(e.points,this._offsetX,this._offsetY),e}if(c(t))return{x:t.x+this._offsetX,y:t.y+this._offsetY};t=this._inputGeometries.next()}return null}_moveMultipath(t,e,s){if(t)for(const i of t)this._movePath(i,e,s)}_movePath(t,e,s){if(t)for(const i of t)i[0]+=e,i[1]+=s}}class tt{static local(){return null===tt.instance&&(tt.instance=new tt),tt.instance}execute(t,e,s){return new et(t,e,s)}}tt.instance=null;class et{constructor(t,e,s){this._inputGeometries=t,this._curveHelper=new F,this._offset=(void 0!==e.offset?e.offset:1)*s,this._method=e.method,this._option=e.option,this._offsetFlattenError=.03*s}next(){let t=this._inputGeometries.next();for(;t;){if(0===this._offset)return t;if(l(t)){if("Rounded"===this._method&&this._offset>0){const e=[[t.xmin,t.ymin],[t.xmin,t.ymax],[t.xmax,t.ymax],[t.xmax,t.ymin],[t.xmin,t.ymin]],s=this._curveHelper.offset(e,this._offset,this._method,4,this._offsetFlattenError);return s?{rings:[s]}:null}if(Math.min(t.xmax-t.xmin,t.ymax-t.ymin)+2*this._offset>0)return{xmin:t.xmin-this._offset,xmax:t.xmax+this._offset,ymin:t.ymin-this._offset,ymax:t.ymax+this._offset}}if(a(t)){const e=[];for(const s of t.rings){const t=this._curveHelper.offset(s,this._offset,this._method,4,this._offsetFlattenError);t&&e.push(t)}if(e.length)return{rings:e}}if(o(t)){const e=[];for(const s of t.paths){const t=this._curveHelper.offset(s,this._offset,this._method,4,this._offsetFlattenError);t&&e.push(t)}if(e.length)return{paths:e}}t=this._inputGeometries.next()}return null}}class st{static local(){return null===st.instance&&(st.instance=new st),st.instance}execute(t,e,s){return new it(t,e,s)}}st.instance=null;class it{constructor(t,e,s){this._inputGeometries=t,this._reverse=void 0===e.reverse||e.reverse}next(){let t=this._inputGeometries.next();for(;t;){if(!this._reverse)return t;if(o(t)){const e=r(t);return b(e.paths),e}t=this._inputGeometries.next()}return null}}class nt{static local(){return null===nt.instance&&(nt.instance=new nt),nt.instance}execute(t,e,s){return new rt(t,e,s)}}nt.instance=null;class rt{constructor(t,e,s){this._inputGeometries=t,this._rotateAngle=void 0!==e.angle?-e.angle*Math.PI/180:0}next(){let t=this._inputGeometries.next();for(;t;){if(0===this._rotateAngle)return t;const e=u();_(e,t);const s=(e[2]+e[0])/2,i=(e[3]+e[1])/2;if(l(t)){const e={rings:[[[t.xmin,t.ymin],[t.xmin,t.ymax],[t.xmax,t.ymax],[t.xmax,t.ymin],[t.xmin,t.ymin]]]};return this._rotateMultipath(e.rings,s,i),e}if(a(t)){const e=r(t);return this._rotateMultipath(e.rings,s,i),e}if(o(t)){const e=r(t);return this._rotateMultipath(e.paths,s,i),e}if(h(t)){const e=r(t);return this._rotatePath(e.points,s,i),e}if(c(t))return t;t=this._inputGeometries.next()}return null}_rotateMultipath(t,e,s){if(t)for(const i of t)this._rotatePath(i,e,s)}_rotatePath(t,e,s){if(t){const i=Math.cos(this._rotateAngle),n=Math.sin(this._rotateAngle);for(const r of t){const t=r[0]-e,a=r[1]-s;r[0]=e+t*i-a*n,r[1]=s+t*n+a*i}}}}class at{static local(){return null===at.instance&&(at.instance=new at),at.instance}execute(t,e,s){return new ot(t,e,s)}}at.instance=null;class ot{constructor(t,e,s){this._inputGeometries=t,this._xFactor=void 0!==e.xScaleFactor?e.xScaleFactor:1.15,this._yFactor=void 0!==e.yScaleFactor?e.yScaleFactor:1.15}next(){let t=this._inputGeometries.next();for(;t;){if(1===this._xFactor&&1===this._yFactor)return t;const e=u();_(e,t);const s=(e[2]+e[0])/2,i=(e[3]+e[1])/2;if(l(t)){const e={rings:[[[t.xmin,t.ymin],[t.xmin,t.ymax],[t.xmax,t.ymax],[t.xmax,t.ymin],[t.xmin,t.ymin]]]};return this._scaleMultipath(e.rings,s,i),e}if(a(t)){const e=r(t);return this._scaleMultipath(e.rings,s,i),e}if(o(t)){const e=r(t);return this._scaleMultipath(e.paths,s,i),e}if(h(t)){const e=r(t);return this._scalePath(e.points,s,i),e}if(c(t))return t;t=this._inputGeometries.next()}return null}_scaleMultipath(t,e,s){if(t)for(const i of t)this._scalePath(i,e,s)}_scalePath(t,e,s){if(t)for(const i of t){const t=(i[0]-e)*this._xFactor,n=(i[1]-s)*this._yFactor;i[0]=e+t,i[1]=s+n}}}class ht{static local(){return null===ht.instance&&(ht.instance=new ht),ht.instance}execute(t,e,s){return new lt(t,e,s)}}ht.instance=null;class lt{constructor(t,e,s){this._inputGeometries=t,this._height=(void 0!==e.amplitude?e.amplitude:2)*s,this._period=(void 0!==e.period?e.period:3)*s,this._style=e.waveform,this._height<=0&&(this._height=Math.abs(this._height)),this._period<=0&&(this._period=Math.abs(this._period)),this._pattern=new N,this._pattern.addValue(this._period),this._pattern.addValue(this._period),this._walker=new q,this._walker.updateTolerance(s)}next(){let t=this._inputGeometries.next();for(;t;){if(0===this._height||0===this._period)return t;if(o(t)){const e=this._processGeom(t.paths);if(e.length)return{paths:e}}if(a(t)){const e=this._processGeom(t.rings);if(e.length)return{rings:e}}t=this._inputGeometries.next()}return null}_processGeom(t){const e=[];for(const s of t)if(this._walker.init(s,this._pattern))switch(this._style){case"Sinus":default:e.push(this._constructCurve(s,!1));break;case"Square":e.push(this._constructSquare(s));break;case"Triangle":e.push(this._constructTriangle(s));break;case"Random":e.push(this._constructCurve(s,!0))}else e.push(s);return e}_constructCurve(t,e){const s=new z,i=this._walker.calculatePathLength(t);let n=Math.round(i/this._period);0===n&&(n=1);const r=16*n+1,a=i/n,o=this._period/16,h=1/r,l=2*Math.PI*i/a,c=2*Math.PI*Math.random(),u=2*Math.PI*Math.random(),_=2*Math.PI*Math.random(),f=.75-Math.random()/2,p=.75-Math.random()/2,m={};this._walker.curPointAndAngle(m),s.startPath(m.pt);let g=0;for(;;){if(!this._walker.nextPointAndAngle(o,m)){s.lineTo(t[t.length-1]);break}{const t=g;let i;if(g+=h,e){const e=this._height/2*(1+.3*Math.sin(f*l*t+c));i=e*Math.sin(l*t+u),i+=e*Math.sin(p*l*t+_),i/=2}else i=.5*this._height*Math.sin(.5*l*t);s.lineTo([m.pt[0]-i*m.sa,m.pt[1]+i*m.ca])}}return s.path()}_constructSquare(t){const e=new z,s=this._walker.calculatePathLength(t);Math.round(s/this._period);let i=!0;for(;;){let t=!1;if(this._walker.curPositionIsValid()){const s={};this._walker.curPointAndAngle(s);const n={};if(this._walker.nextPointAndAngle(this._period,n)){const r={};this._walker.nextPointAndAngle(this._period,r)&&(i?(e.startPath(s.pt),i=!1):e.lineTo(s.pt),e.lineTo([s.pt[0]-this._height/2*s.sa,s.pt[1]+this._height/2*s.ca]),e.lineTo([n.pt[0]-this._height/2*n.sa,n.pt[1]+this._height/2*n.ca]),e.lineTo([n.pt[0]+this._height/2*n.sa,n.pt[1]-this._height/2*n.ca]),e.lineTo([r.pt[0]+this._height/2*r.sa,r.pt[1]-this._height/2*r.ca]),t=!0)}}if(!t){e.lineTo(this._walker.getPathEnd());break}}return e.path()}_constructTriangle(t){const e=new z,s=this._walker.calculatePathLength(t);Math.round(s/this._period);let i=!0;for(;;){let t=!1;if(this._walker.curPositionIsValid()){const s={};this._walker.curPointAndAngle(s);const n={};if(this._walker.nextPointAndAngle(this._period/2,n)){const r={};this._walker.nextPointAndAngle(this._period,r)&&(this._walker.nextPosition(this._period/2)&&(i?(e.startPath(s.pt),i=!1):e.lineTo(s.pt),e.lineTo([n.pt[0]-this._height/2*n.sa,n.pt[1]+this._height/2*n.ca]),e.lineTo([r.pt[0]+this._height/2*r.sa,r.pt[1]-this._height/2*r.ca])),t=!0)}}if(!t){e.lineTo(this._walker.getPathEnd());break}}return e.path()}}var ct,ut;(ut=ct||(ct={})).NoConstraint="NoConstraint",ut.WithMarkers="WithMarkers",ut.WithFullGap="WithFullGap",ut.WithHalfGap="WithHalfGap",ut.Custom="Custom";class _t{static local(){return null===_t.instance&&(_t.instance=new _t),_t.instance}execute(t,e,s){return new ft(t,e,s)}}_t.instance=null;class ft extends L{constructor(t,e,s){super(t,!0,!0),this._grometryWalker=new q,this._grometryWalker.updateTolerance(s),this._angleToLine=void 0===e.angleToLine||e.angleToLine,this._offset=void 0!==e.offset?e.offset*s:0,this._originalEndings=e.endings,this._offsetAtEnd=void 0!==e.customEndingOffset?e.customEndingOffset*s:0,this._position=void 0!==e.offsetAlongLine?e.offsetAlongLine*s:0,this._pattern=new N,this._pattern.init(e.placementTemplate,!1),this._pattern.scale(s),this._endings=this._originalEndings}processPath(t){if(this._pattern.isEmpty())return null;let e;if(this.iteratePath)e=this._pattern.nextValue();else{this._originalEndings===ct.WithFullGap&&this.isClosed?this._endings=ct.WithMarkers:this._endings=this._originalEndings,this._pattern.extPtGap=0;let s,i=!0;switch(this._endings){case ct.NoConstraint:s=-this._position,s=this._adjustPosition(s),i=!1;break;case ct.WithHalfGap:default:s=-this._pattern.lastValue()/2;break;case ct.WithFullGap:s=-this._pattern.lastValue(),this._pattern.extPtGap=this._pattern.lastValue();break;case ct.WithMarkers:s=0;break;case ct.Custom:s=-this._position,s=this._adjustPosition(s),this._pattern.extPtGap=.5*this._offsetAtEnd}if(!this._grometryWalker.init(t,this._pattern,i))return null;this._pattern.reset();let n=0;for(;s>n;)s-=n,n=this._pattern.nextValue();n-=s,e=n,this.iteratePath=!0}const s={};return this._grometryWalker.nextPointAndAngle(e,s)?this._endings===ct.WithFullGap&&this._grometryWalker.isPathEnd()?(this.iteratePath=!1,null):this._endings===ct.WithMarkers&&this._grometryWalker.isPathEnd()&&(this.iteratePath=!1,this.isClosed)?null:(this.internalPlacement.setTranslate(s.pt[0]+this._offset*s.sa,s.pt[1]-this._offset*s.ca),this._angleToLine&&this.internalPlacement.setRotateCS(s.ca,s.sa),this.internalPlacement):(this.iteratePath=!1,null)}_adjustPosition(t){let e=t/this._pattern.length();return e-=Math.floor(e),e*this._pattern.length()}}class pt{static local(){return null===pt.instance&&(pt.instance=new pt),pt.instance}execute(t,e,s){return new mt(t,e,s)}}pt.instance=null;class mt extends L{constructor(t,e,s){super(t,!1,!0),this._curveHelper=new F,this._angleToLine=void 0===e.angleToLine||e.angleToLine,this._offset=void 0!==e.offset?e.offset*s:0,this._type=e.extremityPlacement,this._position=void 0!==e.offsetAlongLine?e.offsetAlongLine*s:0,this._beginProcessed=!1}processPath(t){let e;switch(this._type){case"Both":default:this._beginProcessed?(e=this._atExtremities(t,this._position,!1),this._beginProcessed=!1,this.iteratePath=!1):(e=this._atExtremities(t,this._position,!0),this._beginProcessed=!0,this.iteratePath=!0);break;case"JustBegin":e=this._atExtremities(t,this._position,!0);break;case"JustEnd":e=this._atExtremities(t,this._position,!1);break;case"None":}return e}_atExtremities(t,e,s){const i=t.length;if(i<2)return null;const n=s?1:i-2,r=s?i:-1,a=s?1:-1;let o,h=0,l=s?t[0]:t[i-1];for(let c=n;c!==r;c+=a){o=l,l=t[c];const s=this._curveHelper.calculateLength(o,l);if(h+s>e){const t=(e-h)/s,[i,n]=this._curveHelper.getAngleCS(o,l,t),r=v(o,l,t);return this.internalPlacement.setTranslate(r[0]-this._offset*n,r[1]+this._offset*i),this._angleToLine&&this.internalPlacement.setRotateCS(-i,-n),this.internalPlacement}h+=s}return null}}class gt{static local(){return null===gt.instance&&(gt.instance=new gt),gt.instance}execute(t,e,s){return new dt(t,e,s)}}gt.instance=null;class dt extends L{constructor(t,e,s){super(t,!0,!0),this._walker=new q,this._walker.updateTolerance(s),this._angleToLine=void 0===e.angleToLine||e.angleToLine,this._offset=void 0!==e.offset?e.offset*s:0,this._beginGap=void 0!==e.beginPosition?e.beginPosition*s:0,this._endGap=void 0!==e.endPosition?e.endPosition*s:0,this._flipFirst=void 0===e.flipFirst||e.flipFirst,this._pattern=new N,this._pattern.init(e.positionArray,!1,!1),this._subPathLen=0,this._posCount=this._pattern.size(),this._isFirst=!0,this._prevPos=0}processPath(t){if(this._pattern.isEmpty())return null;let e;if(this.iteratePath){const t=this._pattern.nextValue()*this._subPathLen,s=this._beginGap+t;e=s-this._prevPos,this._prevPos=s}else{if(this._posCount=this._pattern.size(),this._isFirst=!0,this._prevPos=0,this._subPathLen=this._walker.calculatePathLength(t)-this._beginGap-this._endGap,this._subPathLen<0)return this.iteratePath=!1,null;if(!this._walker.init(t,this._pattern,!1))return null;this._pattern.reset();const s=this._pattern.nextValue()*this._subPathLen,i=this._beginGap+s;e=i-this._prevPos,this._prevPos=i,this.iteratePath=!0}const s={};if(!this._walker.nextPointAndAngle(e,s,1))return this.iteratePath=!1,null;this.internalPlacement.setTranslate(s.pt[0]+this._offset*s.sa,s.pt[1]-this._offset*s.ca);const i=this._isFirst&&this._flipFirst;let n,r;return this._angleToLine?(n=s.ca,r=s.sa):(n=1,r=0),i&&(n=-n,r=-r),this.internalPlacement.setRotateCS(n,r),this._isFirst=!1,this._posCount--,0===this._posCount&&(this.iteratePath=!1),this.internalPlacement}}class xt{static local(){return null===xt.instance&&(xt.instance=new xt),xt.instance}execute(t,e,s){return new yt(t,e,s)}}xt.instance=null;class yt{constructor(t,e,s){if(this._xMin=0,this._xMax=0,this._yMin=0,this._yMax=0,this._currentX=0,this._currentY=0,this._stepX=(void 0!==e.stepX?Math.abs(e.stepX):16)*s,this._stepY=(void 0!==e.stepY?Math.abs(e.stepY):16)*s,0!==this._stepX&&0!==this._stepY&&t&&function(t){return void 0!==t.rings}(t)&&t.rings){if(this._gridType=void 0!==e.gridType?e.gridType:"Fixed","Random"===this._gridType)this._randomness=void 0!==e.randomness?e.randomness/100:1,this._gridAngle=0,this._shiftOddRows=!1,this._cosAngle=1,this._sinAngle=0,this._offsetX=0,this._offsetY=0;else{if(this._randomness=0,this._gridAngle=void 0!==e.gridAngle?e.gridAngle:0,this._shiftOddRows=void 0!==e.shiftOddRows&&e.shiftOddRows,this._offsetX=void 0!==e.offsetX?e.offsetX*s:0,this._offsetY=void 0!==e.offsetY?e.offsetY*s:0,this._cosAngle=Math.cos(this._gridAngle/180*Math.PI),this._sinAngle=-Math.sin(this._gridAngle/180*Math.PI),this._stepX)if(this._offsetX<0)for(;this._offsetX<-.5*this._stepX;)this._offsetX+=this._stepX;else for(;this._offsetX>=.5*this._stepX;)this._offsetX-=this._stepX;if(this._stepY)if(this._offsetY<0)for(;this._offsetY<-.5*this._stepY;)this._offsetY+=this._stepY;else for(;this._offsetY>=.5*this._stepY;)this._offsetY-=this._stepY}this._graphicOriginX=0,this._graphicOriginY=0,this._internalPlacement=new g,this._calculateMinMax(t),this._geometry=t}}next(){return this._geometry?this._nextInside():null}_calculateMinMax(t){let e,s,i,n,r,a,o,h;this._xMin=0,this._xMax=0,this._yMin=0,this._yMax=0,r=a=Number.MAX_VALUE,o=h=-Number.MAX_VALUE;for(const l of t.rings){const t=l?l.length:0;for(let c=0;c<t;++c)e=l[c][0]-this._graphicOriginX-this._offsetX,s=l[c][1]-this._graphicOriginY-this._offsetY,i=this._cosAngle*e-this._sinAngle*s,n=this._sinAngle*e+this._cosAngle*s,r=Math.min(r,i),o=Math.max(o,i),a=Math.min(a,n),h=Math.max(h,n)}r+=this._graphicOriginX,o+=this._graphicOriginX,a+=this._graphicOriginY,h+=this._graphicOriginY,this._xMin=Math.round(r/this._stepX),this._xMax=Math.round(o/this._stepX),this._yMin=Math.round(a/this._stepY),this._yMax=Math.round(h/this._stepY),this._currentX=this._xMax+1,this._currentY=this._yMin-1}_nextInside(){for(;;){if(this._currentX>this._xMax){if(this._currentY++,this._currentY>this._yMax)return null;this._currentX=this._xMin,this._shiftOddRows&&this._currentY%2&&this._currentX--}let t=this._currentX*this._stepX+this._offsetX;this._shiftOddRows&&this._currentY%2&&(t+=.5*this._stepX);const e=this._currentY*this._stepY+this._offsetY;let s,i;return this._currentX++,"Random"===this._gridType?(s=this._graphicOriginX+t+this._stepX*this._randomness*(.5-Math.random())*2/3,i=this._graphicOriginY+e+this._stepY*this._randomness*(.5-Math.random())*2/3):(s=this._graphicOriginX+this._cosAngle*t+this._sinAngle*e,i=this._graphicOriginY-this._sinAngle*t+this._cosAngle*e),this._internalPlacement.setTranslate(s,i),this._internalPlacement}}}class Pt{static local(){return null===Pt.instance&&(Pt.instance=new Pt),Pt.instance}execute(t,e,s){return new Mt(t,e,s)}}Pt.instance=null;class Mt extends L{constructor(t,e,s){super(t,!0,!0),this._curveHelper=new F,this._angleToLine=void 0===e.angleToLine||e.angleToLine,this._offset=void 0!==e.offset?e.offset*s:0,this._relativeTo=e.relativeTo,this._position=void 0!==e.startPointOffset?e.startPointOffset*s:0,this._epsilon=.001*s}processPath(t){const e=this._position;if("SegmentMidpoint"===this._relativeTo){for(this.iteratePath||(this._segmentCount=t.length,this._curSegment=1,this.iteratePath=!0);this._curSegment<this._segmentCount;){const e=this._curSegment;this._curSegment++;const s=t[e-1],i=t[e],n=this._curveHelper.calculateLength(s,i);if(n<this._epsilon)continue;const r=.5+this._position/n,[a,o]=this._curveHelper.getAngleCS(s,i,r),h=v(s,i,r);return this.internalPlacement.setTranslate(h[0]-this._offset*o,h[1]+this._offset*a),this._angleToLine&&this.internalPlacement.setRotateCS(a,o),this.internalPlacement}return this.iteratePath=!1,null}"LineEnd"===this._relativeTo&&w(t);const s=this.onLine(t,e);return"LineEnd"===this._relativeTo&&w(t),s}onLine(t,e){let s,i=!1;switch(this._relativeTo){case"LineMiddle":default:s=this._curveHelper.calculatePathLength(t)/2+e;break;case"LineBeginning":s=e;break;case"LineEnd":s=e,i=!0}const n=t.length;let r,a=0,o=t[0];for(let h=1;h<n;++h){r=o,o=t[h];const e=this._curveHelper.calculateLength(r,o);if(a+e>s){const t=(s-a)/e,[n,h]=this._curveHelper.getAngleCS(r,o,t),l=v(r,o,t),c=i?this._offset:-this._offset;return this.internalPlacement.setTranslate(l[0]-c*h,l[1]+c*n),this._angleToLine&&(i?this.internalPlacement.setRotateCS(-n,-h):this.internalPlacement.setRotateCS(n,h)),this.internalPlacement}a+=e}return null}}class Ct{static local(){return null===Ct.instance&&(Ct.instance=new Ct),Ct.instance}execute(t,e,s){return new St(t,e,s)}}Ct.instance=null;class St extends L{constructor(t,e,s){super(t,!0,!0),this._curveHelper=new F,this._angleToLine=void 0===e.angleToLine||e.angleToLine,this._offset=void 0!==e.offset?e.offset*s:0,this._endPoints=void 0===e.placeOnEndPoints||e.placeOnEndPoints,this._controlPoints=void 0===e.placeOnControlPoints||e.placeOnControlPoints,this._regularVertices=void 0===e.placeOnRegularVertices||e.placeOnRegularVertices,this._tags=[],this._tagIterator=0}processPath(t){if(this.iteratePath||(this._preparePath(t),this.iteratePath=!0),this._tagIterator>=this._tags.length)return this._tags.length=0,this._tagIterator=0,this.iteratePath=!1,null;const e=this._tags[this._tagIterator];this._angleToLine&&this.internalPlacement.setRotate(e[2]);let s=e[0],i=e[1];if(0!==this._offset){const t=Math.cos(e[2]),n=Math.sin(e[2]);s-=this._offset*n,i+=this._offset*t}return this.internalPlacement.setTranslate(s,i),this._tagIterator++,this.internalPlacement}_preparePath(t){this._tags.length=0,this._tagIterator=0;const e=function(t){return!(!t||0===t.length)&&t[0][0]===t[t.length-1][0]&&t[0][1]===t[t.length-1][1]}(t),s=t.length-1;let i,n,r=0,a=0,o=0,h=0,l=0;for(;r<s;){r++,i=t[r-1],n=t[r];const c=k(i),u=k(n);(this._angleToLine||0!==this._offset)&&(h=this._curveHelper.getAngle(i,n,0)),1===r?e?(a=h,o=c):this._endPoints&&this._tags.push([i[0],i[1],h]):1===c?this._controlPoints&&this._tags.push([i[0],i[1],bt(l,h)]):this._regularVertices&&this._tags.push([i[0],i[1],bt(l,h)]),(this._angleToLine||0!==this._offset)&&(l=this._curveHelper.getAngle(i,n,1)),r===s&&(e?1===u||1===o?this._controlPoints&&this._tags.push([n[0],n[1],bt(l,a)]):this._regularVertices&&this._tags.push([n[0],n[1],bt(l,a)]):this._endPoints&&this._tags.push([n[0],n[1],l]))}this._tagIterator=0}}function bt(t,e){const s=Math.PI;for(;Math.abs(e-t)>s+2e-15;)e-t>s?e-=2*s:e+=2*s;return(t+e)/2}class wt{static local(){return null===wt.instance&&(wt.instance=new wt),wt.instance}execute(t,e,s){return new vt(t,e,s)}}wt.instance=null;class vt{constructor(t,e,s){this._geometry=t,this._offsetX=void 0!==e.offsetX?e.offsetX*s:0,this._offsetY=void 0!==e.offsetY?e.offsetY*s:0,this._method=void 0!==e.method?e.method:"OnPolygon",this._internalPlacement=new g}next(){const t=this._geometry;return this._geometry=null,t&&function(t){return void 0!==t.rings}(t)?this._polygonCenter(t):null}_polygonCenter(t){let e=!1;switch(this._method){case"OnPolygon":default:case"CenterOfMass":case"BoundingBoxCenter":{const s=u();_(s,t),this._internalPlacement.setTranslate((s[2]+s[0])/2+this._offsetX,(s[3]+s[1])/2-this._offsetY),e=!0;break}}return e?this._internalPlacement:null}}function kt(t){if(!t)return null;switch(t.type){case"CIMGeometricEffectAddControlPoints":return E.local();case"CIMGeometricEffectArrow":return V.local();case"CIMGeometricEffectBuffer":return X.local();case"CIMGeometricEffectCut":return R.local();case"CIMGeometricEffectDashes":return B.local();case"CIMGeometricEffectDonut":return j.local();case"CIMGeometricEffectJog":return $.local();case"CIMGeometricEffectMove":return Z.local();case"CIMGeometricEffectOffset":return tt.local();case"CIMGeometricEffectReverse":return st.local();case"CIMGeometricEffectRotate":return nt.local();case"CIMGeometricEffectScale":return at.local();case"CIMGeometricEffectWave":return ht.local()}return null}function It(t){if(!t)return null;switch(t.type){case"CIMMarkerPlacementAlongLineSameSize":return _t.local();case"CIMMarkerPlacementAtExtremities":return pt.local();case"CIMMarkerPlacementAtRatioPositions":return gt.local();case"CIMMarkerPlacementInsidePolygon":return xt.local();case"CIMMarkerPlacementOnLine":return Pt.local();case"CIMMarkerPlacementOnVertices":return Ct.local();case"CIMMarkerPlacementPolygonCenter":return wt.local()}return null}class Lt{constructor(t=0,e=0,s=0,i=0){this.x=t,this.y=e,this.width=s,this.height=i}get isEmpty(){return this.width<=0||this.height<=0}union(t){this.x=Math.min(this.x,t.x),this.y=Math.min(this.y,t.y),this.width=Math.max(this.width,t.width),this.height=Math.max(this.height,t.height)}}const At=Math.PI/180,Tt=f.getLogger("esri.symbols.cim.CIMSymbolDrawHelper");class Et{constructor(t){this._t=t}static createIdentity(){return new Et([1,0,0,0,1,0])}clone(){const t=this._t;return new Et(t.slice())}transform(t){const e=this._t;return[e[0]*t[0]+e[1]*t[1]+e[2],e[3]*t[0]+e[4]*t[1]+e[5]]}static createScale(t,e){return new Et([t,0,0,0,e,0])}scale(t,e){const s=this._t;return s[0]*=t,s[1]*=t,s[2]*=t,s[3]*=e,s[4]*=e,s[5]*=e,this}scaleRatio(){return Math.sqrt(this._t[0]*this._t[0]+this._t[1]*this._t[1])}static createTranslate(t,e){return new Et([0,0,t,0,0,e])}translate(t,e){const s=this._t;return s[2]+=t,s[5]+=e,this}static createRotate(t){const e=Math.cos(t),s=Math.sin(t);return new Et([e,-s,0,s,e,0])}rotate(t){return this.multiply(Et.createRotate(t))}multiply(t){const e=this._t,s=t._t,i=e[0]*s[0]+e[3]*s[1],n=e[1]*s[0]+e[4]*s[1],r=e[2]*s[0]+e[5]*s[1]+s[2],a=e[0]*s[3]+e[3]*s[4],o=e[1]*s[3]+e[4]*s[4],h=e[2]*s[3]+e[5]*s[4]+s[5];return e[0]=i,e[1]=n,e[2]=r,e[3]=a,e[4]=o,e[5]=h,this}}class Gt{constructor(t){this._transfos=[],this._sizeTransfos=[],this._transfos.push(t||Et.createIdentity()),this._sizeTransfos.push(t?t.scaleRatio():1)}transformPt(t){return this._transfos[this._transfos.length-1].transform(t)}transformSize(t){return t*this._sizeTransfos[this._sizeTransfos.length-1]}back(){return this._transfos[this._transfos.length-1]}push(t,e){const s=e?t.scaleRatio():1;t.multiply(this.back()),this._transfos.push(t),this._sizeTransfos.push(this._sizeTransfos[this._sizeTransfos.length-1]*s)}pop(){this._transfos.splice(-1,1),this._sizeTransfos.splice(-1,1)}drawSymbol(t,e){if(t)switch(t.type){case"CIMPointSymbol":case"CIMLineSymbol":case"CIMPolygonSymbol":this.drawMultiLayerSymbol(t,e)}}drawMultiLayerSymbol(t,e){if(!t)return;const s=t.symbolLayers;if(!s)return;const i=t.effects;if(i){const t=this.executeEffects(i,e);if(t){let e=t.next();for(;e;)this.drawSymbolLayers(s,e),e=t.next()}}else this.drawSymbolLayers(s,e)}executeEffects(t,e){let s=new d(e);for(const i of t){const t=kt(i);t&&(s=t.execute(s,i,1))}return s}drawSymbolLayers(t,e){let s=t.length;for(;s--;){const i=t[s];if(!i||!1===i.enable)continue;const n=i.effects;if(n){const t=this.executeEffects(n,e);if(t){let e=t.next();for(;e;)this.drawSymbolLayer(i,e),e=t.next()}}else this.drawSymbolLayer(i,e)}}drawSymbolLayer(t,e){switch(t.type){case"CIMSolidFill":this.drawSolidFill(e,t.color);break;case"CIMHatchFill":this.drawHatchFill(t,e);break;case"CIMSolidStroke":this.drawSolidStroke(e,t.color,t.width,t.capStyle,t.joinStyle,t.miterLimit);break;case"CIMCharacterMarker":case"CIMPictureMarker":case"CIMVectorMarker":this.drawMarkerLayer(t,e)}}drawHatchFill(t,e){const s=this._buildHatchPolyline(t,e,1);s&&(this.pushClipPath(e),this.drawMultiLayerSymbol(t.lineSymbol,s),this.popClipPath())}drawMarkerLayer(t,e){const s=t.markerPlacement;if(s){const i=It(s);if(i){const n="CIMMarkerPlacementInsidePolygon"===s.type;n&&this.pushClipPath(e);const r=1,a=i.execute(e,s,r);if(a){let e=a.next();for(;e;)this.drawMarker(t,e),e=a.next()}n&&this.popClipPath()}}else{const s=new g;s.tx=e.x,s.ty=e.y,this.drawMarker(t,s)}}drawMarker(t,e){switch(t.type){case"CIMCharacterMarker":case"CIMPictureMarker":this.drawPictureMarker(t,e);break;case"CIMVectorMarker":this.drawVectorMarker(t,e)}}drawPictureMarker(t,e){if(!t)return;const s=t.size||10,i=Et.createIdentity(),n=t.anchorPoint;if(n){let e=n.x,r=n.y;"Absolute"!==t.anchorPointUnits&&(e*=s,r*=s),i.translate(-e,-r)}t.rotation&&i.rotate(t.rotation*At),i.translate(t.offsetX||0,t.offsetY||0),i.translate(e.tx,e.ty),this.push(i,!1),this.drawImage(t.url,s,t.scaleX),this.pop()}drawVectorMarker(t,e){if(!t)return;const s=t.markerGraphics;if(!s)return;const i=t.size,n=t.frame,r=n?n.ymax-n.ymin:0,a=i&&r?i/r:1,o=Et.createIdentity();n&&o.translate(.5*-(n.xmax+n.xmin),.5*-(n.ymax+n.ymin));const h=t.anchorPoint;if(h){let e=h.x,s=h.y;"Absolute"!==t.anchorPointUnits&&n&&(e*=n.xmax-n.xmin,s*=n.ymax-n.ymin),o.translate(-e,-s)}1!==a&&o.scale(a,a),t.rotation&&o.rotate(t.rotation*At),o.translate(t.offsetX||0,t.offsetY||0),o.translate(e.tx,e.ty),this.push(o,t.scaleSymbolsProportionally);for(const l of s)l&&l.symbol&&l.geometry||Tt.error("Invalid marker graphic",l),this.drawSymbol(l.symbol,l.geometry);this.pop()}_buildHatchPolyline(t,e,s){let i=(void 0!==t.separation?t.separation:4)*s,n=void 0!==t.rotation?t.rotation:0;if(0===i)return null;i<0&&(i=-i);let r=0;const a=.5*i;for(;r>a;)r-=i;for(;r<-a;)r+=i;const o=u();_(o,e),o[0]-=a,o[1]-=a,o[2]+=a,o[3]+=a;const h=[[o[0],o[1]],[o[0],o[3]],[o[2],o[3]],[o[2],o[1]]];for(;n>180;)n-=180;for(;n<0;)n+=180;const l=Math.cos(n*At),c=Math.sin(n*At),f=-i*c,p=i*l;let m,g,d,x;r=(void 0!==t.offsetX?t.offsetX*s:0)*c-(void 0!==t.offsetY?t.offsetY*s:0)*l,m=d=Number.MAX_VALUE,g=x=-Number.MAX_VALUE;for(const u of h){const t=u[0],e=u[1],s=l*t+c*e,i=-c*t+l*e;m=Math.min(m,s),d=Math.min(d,i),g=Math.max(g,s),x=Math.max(x,i)}d=Math.floor(d/i)*i;let y=l*m-c*d-f*r/i,P=c*m+l*d-p*r/i,M=l*g-c*d-f*r/i,C=c*g+l*d-p*r/i;const S=1+Math.round((x-d)/i),b=[];for(let u=0;u<S;u++)y+=f,P+=p,M+=f,C+=p,b.push([[y,P],[M,C]]);return{paths:b}}}class zt extends Gt{constructor(){super(),this.reset()}reset(){this._xmin=this._ymin=1/0,this._xmax=this._ymax=-1/0,this._clipCount=0}envelope(){return new Lt(this._xmin,this._ymin,this._xmax-this._xmin,this._ymax-this._ymin)}drawSolidFill(t){!t||this._clipCount>0||(a(t)?this._processPath(t.rings,0):o(t)&&this._processPath(t.paths,0))}drawSolidStroke(t,e,s){if(!t||this._clipCount>0)return;const i=.5*this.transformSize(s);a(t)?this._processPath(t.rings,i):o(t)&&this._processPath(t.paths,i)}pushClipPath(t){this.drawSolidFill(t),++this._clipCount}popClipPath(){--this._clipCount}drawImage(t,e,s){const i=e/2;this._merge(this.transformPt([0,0]),i)}_processPath(t,e){if(t)for(const s of t){const t=s?s.length:0;if(t>1){this._merge(this.transformPt(s[0]),e);for(let i=1;i<t;++i)this._merge(this.transformPt(s[i]),e)}}}_merge(t,e){t[0]-e<this._xmin&&(this._xmin=t[0]-e),t[0]+e>this._xmax&&(this._xmax=t[0]+e),t[1]-e<this._ymin&&(this._ymin=t[1]-e),t[1]+e>this._ymax&&(this._ymax=t[1]+e)}}class Ft extends Gt{constructor(t,e){super(e),this._ctx=t}drawSolidFill(t,e){if(!t)return;if(a(t))this._buildPath(t.rings,!0);else{if(!o(t))return;this._buildPath(t.paths,!0)}const s=this._ctx;s.fillStyle="string"==typeof e?e:"rgba("+Math.round(e[0])+","+Math.round(e[1])+","+Math.round(e[2])+","+e[3]/255+")",s.fill("evenodd")}drawSolidStroke(t,e,s,i,n,r){if(!t||!e||0===s)return;if(a(t))this._buildPath(t.rings,!0);else{if(!o(t))return;this._buildPath(t.paths,!1)}const h=this._ctx;h.strokeStyle="string"==typeof e?e:"rgba("+Math.round(e[0])+","+Math.round(e[1])+","+Math.round(e[2])+","+e[3]/255+")",h.lineWidth=this.transformSize(s)+.5,this._setCapStyle(i),this._setJoinStyle(n),h.miterLimit=r,h.stroke()}pushClipPath(t){this._ctx.save(),a(t)?this._buildPath(t.rings,!0):o(t)&&this._buildPath(t.paths,!0),this._ctx.clip("evenodd")}popClipPath(){this._ctx.restore()}drawImage(t,e,s){}_buildPath(t,e){const s=this._ctx;if(s.beginPath(),t)for(const i of t){const t=i?i.length:0;if(t>1){let n=this.transformPt(i[0]);s.moveTo(n[0],n[1]);for(let e=1;e<t;++e)n=this.transformPt(i[e]),s.lineTo(n[0],n[1]);e&&s.closePath()}}}_setCapStyle(t){switch(t){case"Butt":this._ctx.lineCap="butt";break;case"Round":this._ctx.lineCap="round";break;case"Square":this._ctx.lineCap="square"}}_setJoinStyle(t){switch(t){case"Bevel":this._ctx.lineJoin="bevel";break;case"Round":this._ctx.lineJoin="round";break;case"Miter":this._ctx.lineJoin="miter"}}}const Ot=[1,256,65536,16777216],Vt=[1/256,1/65536,1/16777216,1/4294967296],Ht=function(t,e=0){let s=0;for(let i=0;i<4;i++)s+=t[e+i]*Vt[i];return s}(new Uint8ClampedArray([255,255,255,255]));function Xt(t,e,s=0){const i=function(t,e,s){return t<e?e:t>s?s:t}(t,0,Ht);for(let n=0;n<4;n++)e[s+n]=Math.floor(256*Yt(i*Ot[n]))}function Yt(t){return t-Math.floor(t)}const Rt=Math.PI,Dt=Rt/2,Nt=f.getLogger("esri.symbols.cim.CIMSymbolHelper");function Wt(t,e){switch(e.type){case"CIMSymbolReference":{const s={type:"point",x:0,y:0};t.drawSymbol(e.symbol,s);break}case"CIMPointSymbol":{const s={type:"point",x:0,y:0};t.drawSymbol(e,s);break}case"CIMTextSymbol":break;case"CIMVectorMarker":{const s=new g;t.drawMarker(e,s);break}}return t.envelope()}class qt{static getEnvelope(t){const e=new zt;if(Array.isArray(t)){let s;for(const i of t)s?s.union(Wt(e,i)):s=Wt(e,i);return s}return Wt(e,t)}static getTextureAnchor(t){const e=this.getEnvelope(t);if(!e||e.width<=0||e.height<=0)return[0,0,0];const s=96/72,i=(e.x+.5*e.width)*s,n=-(e.y+.5*e.height)*s,r=e.width*s+2,a=e.height*s+2;return[i/r,n/a,a]}static rasterize(t,e,s,i=!0){const n=s||this.getEnvelope(e);if(!n||n.width<=0||n.height<=0)return[null,0,0,0,0];const r=96/72,a=(n.x+.5*n.width)*r,o=(n.y+.5*n.height)*r;t.width=n.width*r,t.height=n.height*r,s||(t.width+=2,t.height+=2);const h=t.getContext("2d"),l=Et.createScale(r,-r);l.translate(.5*t.width-a,.5*t.height+o);const c=new Ft(h,l);switch(e.type){case"CIMPointSymbol":{const t={type:"point",x:0,y:0};c.drawSymbol(e,t);break}case"CIMVectorMarker":{const t=new g;c.drawMarker(e,t);break}}const u=h.getImageData(0,0,t.width,t.height),_=new Uint8Array(u.data);if(i){let t;for(let e=0;e<_.length;e+=4)t=_[e+3]/255,_[e]=_[e]*t,_[e+1]=_[e+1]*t,_[e+2]=_[e+2]*t}return[_,t.width,t.height,-a/t.width,-o/t.height]}static fromSimpleMarker(t){const e=50;let s,i;const n=t.style;if("circle"===n||"esriSMSCircle"===n){const t=.25;let n=Math.acos(1-t/e),r=Math.ceil(Rt/n/4);0===r&&(r=1),n=Dt/r,r*=4;const a=[];a.push([e,0]);for(let s=1;s<r;s++)a.push([e*Math.cos(s*n),-50*Math.sin(s*n)]);a.push([e,0]),s={rings:[a]},i={xmin:-50,ymin:-50,xmax:e,ymax:e}}else if("cross"===n||"esriSMSCross"===n){const t=0;s={rings:[[[t,e],[t,t],[e,t],[e,-t],[t,-t],[t,-50],[-t,-50],[-t,-t],[-50,-t],[-50,t],[-t,t],[-t,e],[t,e]]]},i={xmin:-50,ymin:-50,xmax:e,ymax:e}}else if("diamond"===n||"esriSMSDiamond"===n)s={rings:[[[-50,0],[0,e],[e,0],[0,-50],[-50,0]]]},i={xmin:-50,ymin:-50,xmax:e,ymax:e};else if("square"===n||"esriSMSSquare"===n)s={rings:[[[-50,-50],[-50,e],[e,e],[e,-50],[-50,-50]]]},i={xmin:-50,ymin:-50,xmax:e,ymax:e};else if("x"===n||"esriSMSX"===n){const t=0;s={rings:[[[0,t],[e-t,e],[e,e-t],[t,0],[e,t-e],[e-t,-50],[0,-t],[t-e,-50],[-50,t-e],[-t,0],[-50,e-t],[t-e,e],[0,t]]]},i={xmin:-50,ymin:-50,xmax:e,ymax:e}}else if("triangle"===n||"esriSMSTriangle"===n){const t=57.735026918962575,e=-t,n=2/3*100,r=n-100;s={rings:[[[e,r],[0,n],[t,r],[e,r]]]},i={xmin:e,ymin:r,xmax:t,ymax:n}}else"arrow"!==n&&"esriSMSArrow"!==n||(s={rings:[[[-50,50],[50,0],[-50,-50],[-33,-20],[-33,20],[-50,50]]]},i={xmin:-50,ymin:-50,xmax:e,ymax:e});let r;if(s&&i){const e=[{type:"CIMSolidFill",enable:!0,color:t.color}];t.outline&&e.push({type:"CIMSolidStroke",enable:!0,width:t.outline.width,color:t.outline.color});const n={type:"CIMPolygonSymbol",symbolLayers:e};r={type:"CIMPointSymbol",symbolLayers:[{type:"CIMVectorMarker",enable:!0,rotation:t.angle,size:t.size,offsetX:t.xoffset,offsetY:t.yoffset,frame:i,markerGraphics:[{type:"CIMMarkerGraphic",geometry:s,symbol:n}]}]}}return r}static fromCIMHatchFill(t){const e=void 0!==t.separation?t.separation:4,s=e/2;let i=this._getLineSymbolPeriod(t.lineSymbol)||4;for(;i<4;)i*=2;const n=i/2;return{type:"CIMVectorMarker",frame:{xmin:-n,xmax:n,ymin:-s,ymax:s},markerGraphics:[{type:"CIMMarkerGraphic",geometry:{paths:[[[-n,0],[n,0]]]},symbol:t.lineSymbol}],size:e}}static _getLineSymbolPeriod(t){if(t){const e=this._getEffectsRepeat(t.effects);if(e)return e;if(t.symbolLayers)for(const s of t.symbolLayers){const t=this._getEffectsRepeat(s.effects);if(t)return t;if(s){const t=this._getPlacementRepeat(s.markerPlacement);if(t)return t}}}return 0}static _getEffectsRepeat(t){if(t)for(const e of t)if(e)switch(e.type){case"CIMGeometricEffectDashes":{const t=e.dashTemplate;if(t&&t.length){let e=0;for(const s of t)e+=s;return 1&t.length&&(e*=2),e}break}case"CIMGeometricEffectWave":return e.period;default:Nt.error(`unsupported geometric effect type ${e.type}`)}return 0}static _getPlacementRepeat(t){if(t)switch(t.type){case"CIMMarkerPlacementAlongLineSameSize":case"CIMMarkerPlacementAlongLineRandomSize":case"CIMMarkerPlacementAlongLineVariableSize":{const e=t.placementTemplate;if(e&&e.length){let t=0;for(const s of e)t+=s;return 1&e.length&&(t*=2),t}break}}return 0}static fromCIMInsidePolygon(t){const r=t.markerPlacement,a=((t,r)=>{for(var a in r||(r={}))s.call(r,a)&&n(t,a,r[a]);if(e)for(var a of e(r))i.call(r,a)&&n(t,a,r[a]);return t})({type:t.type},t);let o,h,l,c;return a.markerPlacement=null,a.anchorPoint=null,!0===r.shiftOddRows?(h=r.stepX/2,l=r.stepY,c=2*r.stepY,o=[{x:-h,y:0},{x:h,y:0},{x:0,y:l},{x:0,y:-l}].map((t=>({type:"CIMMarkerGraphic",geometry:t,symbol:{type:"CIMPointSymbol",symbolLayers:[a]}})))):(h=r.stepX/2,l=r.stepY/2,c=r.stepY,o=[{type:"CIMMarkerGraphic",geometry:{x:0,y:0},symbol:{type:"CIMPointSymbol",symbolLayers:[a]}}]),{type:"CIMVectorMarker",frame:{xmin:-h,xmax:h,ymin:-l,ymax:l},markerGraphics:o,size:c}}static getFillColor(t){if(!t)return null;switch(t.type){case"CIMPolygonSymbol":if(t.symbolLayers)for(const e of t.symbolLayers){const t=qt.getFillColor(e);if(null!=t)return t}break;case"CIMTextSymbol":return qt.getFillColor(t.symbol);case"CIMSolidFill":return t.color}}static getStrokeColor(t){if(t)switch(t.type){case"CIMPolygonSymbol":case"CIMLineSymbol":if(t.symbolLayers)for(const e of t.symbolLayers){const t=qt.getStrokeColor(e);if(void 0!==t)return t}break;case"CIMTextSymbol":return qt.getStrokeColor(t.symbol);case"CIMSolidStroke":return t.color}}static getStrokeWidth(t){if(t)switch(t.type){case"CIMPolygonSymbol":case"CIMLineSymbol":if(t.symbolLayers)for(const e of t.symbolLayers){const t=qt.getStrokeWidth(e);if(void 0!==t)return t}break;case"CIMTextSymbol":return qt.getStrokeWidth(t.symbol);case"CIMSolidStroke":case"CIMGradientStroke":case"CIMPictureStroke":return t.width}}static getSize(t){if(t)switch(t.type){case"CIMPointSymbol":case"CIMLineSymbol":case"CIMPolygonSymbol":{let e=0;if(t.symbolLayers)for(const s of t.symbolLayers){const t=qt.getSize(s);t>e&&(e=t)}return e}case"CIMSolidStroke":case"CIMPictureStroke":case"CIMGradientStroke":return t.width;case"CIMCharacterMarker":case"CIMPictureMarker":case"CIMVectorMarker":return t.size}}static getMarkerScaleRatio(t){if(t)switch(t.type){case"CIMVectorMarker":if(!1!==t.scaleSymbolsProportionally&&t.frame){const e=t.frame.ymax-t.frame.ymin;return t.size/e}}return 1}}class Bt{static rasterizeSimpleFill(t,e,s){"solid"!==e&&"none"!==e&&"esriSFSSolid"!==e&&"esriSFSNull"!==e||console.error("Unexpected: style does not require rasterization");const i=m(Math.ceil(s)),n=this._isHorizontalOrVertical(e)?8*i:16*i,r=2*i;t.width=n,t.height=n;const a=t.getContext("2d");a.strokeStyle="#FFFFFF",a.lineWidth=i,a.beginPath(),"vertical"!==e&&"cross"!==e&&"esriSFSCross"!==e&&"esriSFSVertical"!==e||(a.moveTo(n/2,-r),a.lineTo(n/2,n+r)),"horizontal"!==e&&"cross"!==e&&"esriSFSCross"!==e&&"esriSFSHorizontal"!==e||(a.moveTo(-r,n/2),a.lineTo(n+r,n/2)),"forward-diagonal"!==e&&"diagonal-cross"!==e&&"esriSFSDiagonalCross"!==e&&"esriSFSForwardDiagonal"!==e||(a.moveTo(-r,-r),a.lineTo(n+r,n+r),a.moveTo(n-r,-r),a.lineTo(n+r,r),a.moveTo(-r,n-r),a.lineTo(r,n+r)),"backward-diagonal"!==e&&"diagonal-cross"!==e&&"esriSFSBackwardDiagonal"!==e&&"esriSFSDiagonalCross"!==e||(a.moveTo(n+r,-r),a.lineTo(-r,n+r),a.moveTo(r,-r),a.lineTo(-r,r),a.moveTo(n+r,n-r),a.lineTo(n-r,n+r)),a.stroke();const o=a.getImageData(0,0,t.width,t.height),h=new Uint8Array(o.data);let l;for(let c=0;c<h.length;c+=4)l=h[c+3]/255,h[c]=h[c]*l,h[c+1]=h[c+1]*l,h[c+2]=h[c+2]*l;return[h,t.width,t.height]}static rasterizeSimpleLine(t,e){let s;switch(e){case"butt":s="Butt";break;case"square":s="Square";break;default:s="Round"}const i="Butt"===s;let n;switch(t){case"dash":case"esriSLSDash":n=i?[4,3]:[3,4];break;case"dash-dot":case"esriSLSDashDot":n=i?[4,3,1,3]:[3,4,0,4];break;case"dot":case"esriSLSDot":n=i?[1,3]:[0,4];break;case"long-dash":case"esriSLSLongDash":n=i?[8,3]:[7,4];break;case"long-dash-dot":case"esriSLSLongDashDot":n=i?[8,3,1,3]:[7,4,0,4];break;case"long-dash-dot-dot":case"esriSLSDashDotDot":n=i?[8,3,1,3,1,3]:[7,4,0,4,0,4];break;case"short-dash":case"esriSLSShortDash":n=i?[4,1]:[3,2];break;case"short-dash-dot":case"esriSLSShortDashDot":n=i?[4,1,1,1]:[3,2,0,2];break;case"short-dash-dot-dot":case"esriSLSShortDashDotDot":n=i?[4,1,1,1,1,1]:[3,2,0,2,0,2];break;case"short-dot":case"esriSLSShortDot":n=i?[1,1]:[0,2];break;case"solid":case"esriSLSSolid":case"none":Nt.error("Unexpected: style does not require rasterization"),n=[0,0];break;default:Nt.error(`Tried to rasterize SLS, but found an unexpected style: ${t}!`),n=[0,0]}return this.rasterizeDash(n,s)}static rasterizeDash(t,e){const s="Butt"===e,i="Square"===e,n=!s&&!i,r=15;let a=0;for(const d of t)a+=d;const o=a*r,h=31*o,l=new Float32Array(h),c=n?225:r;for(let d=0;d<h;++d)l[d]=c;const u=7.5;let _=0,f=0,p=!0;for(const d of t){_=f,f+=d*r;let t=_;for(;t<f;){let e=0;for(;e<31;){const r=e*o+t,a=n?(e-15)*(e-15):Math.abs(e-15);l[r]=p?s?Math.max(Math.max(_+u-t,a),Math.max(t-f+u,a)):a:n?Math.min((t-_)*(t-_)+a,(t-f)*(t-f)+a):i?Math.min(Math.max(t-_,a),Math.max(f-t,a)):Math.min(Math.max(t-_+u,a),Math.max(f+u-t,a)),e++}t++}p=!p}const m=l.length,g=new Uint8Array(4*m);for(let d=0;d<m;++d){Xt((n?Math.sqrt(l[d]):l[d])/r,g,4*d)}return[g,o,31]}static _isHorizontalOrVertical(t){return"vertical"===t||"horizontal"===t||"cross"===t||"esriSFSCross"===t||"esriSFSVertical"===t||"esriSFSHorizontal"===t}}class Ut{static findApplicableOverrides(t,e,s){if(e){if(t.primitiveName){let i=!1;for(const e of s)if(e.primitiveName===t.primitiveName){i=!0;break}if(!i)for(const n of e)n.primitiveName===t.primitiveName&&s.push(n)}switch(t.type){case"CIMPointSymbol":case"CIMLineSymbol":case"CIMPolygonSymbol":if(t.effects)for(const i of t.effects)Ut.findApplicableOverrides(i,e,s);if(t.symbolLayers)for(const i of t.symbolLayers)Ut.findApplicableOverrides(i,e,s);break;case"CIMTextSymbol":break;case"CIMSolidStroke":case"CIMPictureStroke":case"CIMGradientStroke":case"CIMSolidFill":case"CIMPictureFill":case"CIMHatchFill":case"CIMGradientFill":case"CIMVectorMarker":case"CIMCharacterMarker":case"CIMPictureMarker":if(t.effects)for(const i of t.effects)Ut.findApplicableOverrides(i,e,s);if(t.markerPlacement&&Ut.findApplicableOverrides(t.markerPlacement,e,s),"CIMVectorMarker"===t.type){if(t.markerGraphics)for(const i of t.markerGraphics)Ut.findApplicableOverrides(i,e,s),Ut.findApplicableOverrides(i.symbol,e,s)}else"CIMCharacterMarker"===t.type?Ut.findApplicableOverrides(t.symbol,e,s):"CIMHatchFill"===t.type&&Ut.findApplicableOverrides(t.lineSymbol,e,s)}}}static applyOverrides(t,e,s,i){if(!e)return;if(t.primitiveName)for(const r of e)if(r.primitiveName===t.primitiveName){const e=(n=r.propertyName)?n.charAt(0).toLowerCase()+n.substr(1):n;if(i&&i.push({cim:t,nocapPropertyName:e,value:t[e]}),r.expression&&(r.value=Ut.toValue(r.propertyName,r.expression)),s){let e=!1;for(const i of s)i.primitiveName===t.primitiveName&&(e=!0);e||s.push(r)}t[e]=r.value}var n;switch(t.type){case"CIMPointSymbol":case"CIMLineSymbol":case"CIMPolygonSymbol":if(t.effects)for(const n of t.effects)Ut.applyOverrides(n,e,s,i);if(t.symbolLayers)for(const n of t.symbolLayers)Ut.applyOverrides(n,e,s,i);break;case"CIMTextSymbol":break;case"CIMSolidStroke":case"CIMSolidFill":case"CIMVectorMarker":if(t.effects)for(const n of t.effects)Ut.applyOverrides(n,e,s,i);if("CIMVectorMarker"===t.type&&t.markerGraphics)for(const n of t.markerGraphics)Ut.applyOverrides(n,e,s,i),Ut.applyOverrides(n.symbol,e,s,i)}}static restoreOverrides(t){for(const e of t)e.cim[e.nocapPropertyName]=e.value}static buildOverrideKey(t){let e="";for(const s of t)void 0!==s.value&&(e+=`${s.primitiveName}${s.propertyName}${JSON.stringify(s.value)}`);return e}static toValue(t,e){if("DashTemplate"===t)return e.split(" ").map((t=>Number(t)));if("Color"===t){const t=new p(e).toRgba();return t[3]*=255,t}return e}}export{It as A,kt as G,Ut as S,Xt as a,Bt as b,qt as h,x as o,S as p,d as r,Lt as t};
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
+import { bT as y$2, bc as y$3, bd as f$5, ba as s$8, bb as u$6, b9 as l$5, b6 as i$5, be as c$5, a4 as n$b, cR as o$6, cV as a$3 } from "./vendor.74d5941c.js";
+class t$4 {
+  constructor() {
+    this.setIdentity();
+  }
+  getAngle() {
+    return (this.rz == null || this.rz === 0 && this.rz_c !== 1 && this.rz_s !== 0) && (this.rz = Math.atan2(this.rz_s, this.rz_c)), this.rz;
+  }
+  setIdentity() {
+    this.tx = 0, this.ty = 0, this.tz = 0, this.s = 1, this.rx = 0, this.ry = 0, this.rz = 0, this.rz_c = 1, this.rz_s = 0;
+  }
+  setTranslate(t2, s2) {
+    this.tx = t2, this.ty = s2;
+  }
+  setTranslateZ(t2) {
+    this.tz = t2;
+  }
+  setRotateCS(t2, s2) {
+    this.rz = void 0, this.rz_c = t2, this.rz_s = s2;
+  }
+  setRotate(t2) {
+    this.rz = t2, this.rz_c = void 0, this.rz_s = void 0;
+  }
+  setRotateY(t2) {
+    this.ry = t2;
+  }
+  setScale(t2) {
+    this.s = t2;
+  }
+  setMeasure(t2) {
+    this.m = t2;
+  }
+}
+class r$b {
+  constructor(t2) {
+    this._geometry = t2;
+  }
+  next() {
+    const t2 = this._geometry;
+    return this._geometry = null, t2;
+  }
+}
+function o$5(i2) {
+  const h2 = y$2(i2);
+  return c$4(h2), h2;
+}
+function a$2(t2) {
+  if (t2) {
+    for (let i2 = t2.length - 1; i2 > 0; --i2)
+      t2[i2][0] -= t2[i2 - 1][0], t2[i2][1] -= t2[i2 - 1][1];
+  }
+}
+function r$a(t2) {
+  if (t2)
+    for (const i2 of t2)
+      a$2(i2);
+}
+function l$4(t2) {
+  if (t2) {
+    const i2 = t2.length;
+    for (let h2 = 1; h2 < i2; ++h2)
+      t2[h2][0] += t2[h2 - 1][0], t2[h2][1] += t2[h2 - 1][1];
+  }
+}
+function u$5(t2) {
+  if (t2)
+    for (const i2 of t2)
+      l$4(i2);
+}
+function c$4(t2) {
+  t2 && (y$3(t2) ? u$5(t2.rings) : f$5(t2) ? u$5(t2.paths) : s$8(t2) && l$4(t2.points));
+}
+function p$2(t2) {
+  t2 && (y$3(t2) ? r$a(t2.rings) : f$5(t2) ? r$a(t2.paths) : s$8(t2) && a$2(t2.points));
+}
+function m$2(t2) {
+  if (t2)
+    for (const i2 of t2)
+      f$4(i2);
+}
+function f$4(t2) {
+  t2 && t2.reverse();
+}
+function P(t2, i2, h2) {
+  return [t2[0] + (i2[0] - t2[0]) * h2, t2[1] + (i2[1] - t2[1]) * h2];
+}
+function x(t2) {
+  return !(!t2 || t2.length === 0) && (t2[0][0] === t2[t2.length - 1][0] && t2[0][1] === t2[t2.length - 1][1]);
+}
+function g(t2) {
+  return t2[4];
+}
+function d(t2, i2) {
+  t2[4] = i2;
+}
+class C {
+  constructor(t2, n2, o2, a2) {
+    this.acceptPolygon = n2, this.acceptPolyline = o2, this.geomUnitsPerPoint = a2, this.pathCount = -1, this.pathIndex = -1, this.iteratePath = false, t2 && (y$3(t2) ? n2 && (this.multiPath = t2.rings, this.isClosed = true) : f$5(t2) ? o2 && (this.multiPath = t2.paths, this.isClosed = false) : u$6(t2) && n2 && (this.multiPath = I(t2).rings, this.isClosed = true), this.multiPath && (this.pathCount = this.multiPath.length)), this.internalPlacement = new t$4();
+  }
+  next() {
+    if (!this.multiPath)
+      return null;
+    for (; this.iteratePath || this.pathIndex < this.pathCount - 1; ) {
+      this.iteratePath || this.pathIndex++;
+      const t2 = this.processPath(this.multiPath[this.pathIndex]);
+      if (t2)
+        return t2;
+    }
+    return this.pathCount = -1, this.pathIndex = -1, this.multiPath = null, null;
+  }
+}
+class y$1 {
+  constructor(t2, i2, h2, n2) {
+    this.inputGeometries = t2, this.acceptPolygon = i2, this.acceptPolyline = h2, this.geomUnitsPerPoint = n2, this.pathCount = -1, this.pathIndex = -1, this.iteratePath = false;
+  }
+  next() {
+    for (; ; ) {
+      if (!this.multiPath) {
+        let t2 = this.inputGeometries.next();
+        for (; t2; ) {
+          if (y$3(t2) ? this.acceptPolygon && (this.multiPath = t2.rings, this.isClosed = true) : f$5(t2) ? this.acceptPolyline && (this.multiPath = t2.paths, this.isClosed = false) : u$6(t2) && this.acceptPolygon && (this.multiPath = I(t2).rings, this.isClosed = true), this.multiPath) {
+            this.pathCount = this.multiPath.length, this.pathIndex = -1;
+            break;
+          }
+          t2 = this.inputGeometries.next();
+        }
+        if (!this.multiPath)
+          return null;
+      }
+      for (; this.iteratePath || this.pathIndex < this.pathCount - 1; ) {
+        this.iteratePath || this.pathIndex++;
+        const t2 = this.processPath(this.multiPath[this.pathIndex]);
+        if (t2)
+          return t2;
+      }
+      this.pathCount = -1, this.pathIndex = -1, this.multiPath = null;
+    }
+  }
+}
+function I(t2) {
+  return { rings: [[[t2.xmin, t2.ymin], [t2.xmin, t2.ymax], [t2.xmax, t2.ymax], [t2.xmax, t2.ymin], [t2.xmin, t2.ymin]]] };
+}
+class o$4 {
+  static local() {
+    return o$4.instance === null && (o$4.instance = new o$4()), o$4.instance;
+  }
+  execute(s2, t2, e2) {
+    return new r$9(s2, t2, e2);
+  }
+}
+o$4.instance = null;
+class r$9 {
+  constructor(s2, t2, e2) {
+    this._inputGeometries = s2, this._angleTolerance = t2.angleTolerance !== void 0 ? t2.angleTolerance : 120, this._maxCosAngle = Math.cos((1 - Math.abs(this._angleTolerance) / 180) * Math.PI);
+  }
+  next() {
+    let n2 = this._inputGeometries.next();
+    for (; n2; ) {
+      if (y$3(n2)) {
+        this._isClosed = true;
+        const t2 = y$2(n2);
+        return this._processMultipath(t2.rings), t2;
+      }
+      if (f$5(n2)) {
+        this._isClosed = false;
+        const t2 = y$2(n2);
+        return this._processMultipath(t2.paths), t2;
+      }
+      if (u$6(n2)) {
+        if (this._maxCosAngle)
+          return n2;
+        this._isClosed = true;
+        const s2 = [[n2.xmin, n2.ymin], [n2.xmin, n2.ymax], [n2.xmax, n2.ymax], [n2.xmax, n2.ymin], [n2.xmin, n2.ymin]];
+        return this._processPath(s2), { rings: [s2] };
+      }
+      n2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+  _processMultipath(s2) {
+    if (s2)
+      for (const t2 of s2)
+        this._processPath(t2);
+  }
+  _processPath(s2) {
+    if (s2) {
+      let t2, e2, i2, o2, r2, l2, a2 = s2.length, h2 = s2[0];
+      this._isClosed && ++a2;
+      for (let c2 = 1; c2 < a2; ++c2) {
+        let m2;
+        m2 = this._isClosed && c2 === a2 - 1 ? s2[0] : s2[c2];
+        const _2 = m2[0] - h2[0], u2 = m2[1] - h2[1], p2 = Math.sqrt(_2 * _2 + u2 * u2);
+        if (c2 > 1 && p2 > 0 && i2 > 0) {
+          (t2 * _2 + e2 * u2) / p2 / i2 <= this._maxCosAngle && d(h2, 1);
+        }
+        c2 === 1 && (o2 = _2, r2 = u2, l2 = p2), p2 > 0 && (h2 = m2, t2 = _2, e2 = u2, i2 = p2);
+      }
+      if (this._isClosed && i2 > 0 && l2 > 0) {
+        (t2 * o2 + e2 * r2) / l2 / i2 <= this._maxCosAngle && d(s2[0], 1);
+      }
+    }
+  }
+}
+const t$3 = 0.03;
+class e$3 {
+  constructor() {
+    this._path = [];
+  }
+  path() {
+    return this._path;
+  }
+  addPath(t2, e2) {
+    e2 || t2.reverse(), Array.prototype.push.apply(this._path, t2), e2 || t2.reverse();
+  }
+  static mergePath(t2, e2) {
+    e2 && Array.prototype.push.apply(t2, e2);
+  }
+  startPath(t2) {
+    this._path.push(t2);
+  }
+  lineTo(t2) {
+    this._path.push(t2);
+  }
+  close() {
+    const t2 = this._path;
+    t2.length > 1 && (t2[0][0] === t2[t2.length - 1][0] && t2[0][1] === t2[t2.length - 1][1] || t2.push([t2[0][0], t2[0][1]]));
+  }
+}
+class s$7 {
+  constructor(t2 = 0, e2 = false) {
+  }
+  normalize(t2) {
+    const e2 = Math.sqrt(t2[0] * t2[0] + t2[1] * t2[1]);
+    t2[0] /= e2, t2[1] /= e2;
+  }
+  calculateLength(t2, e2) {
+    const s2 = e2[0] - t2[0], n2 = e2[1] - t2[1];
+    return Math.sqrt(s2 * s2 + n2 * n2);
+  }
+  calculateSegLength(t2, e2) {
+    return this.calculateLength(t2[e2], t2[e2 + 1]);
+  }
+  calculatePathLength(t2) {
+    let e2 = 0;
+    const s2 = t2 ? t2.length : 0;
+    for (let n2 = 0; n2 < s2 - 1; ++n2)
+      e2 += this.calculateSegLength(t2, n2);
+    return e2;
+  }
+  calculatePathArea(t2) {
+    let e2 = 0;
+    const s2 = t2 ? t2.length : 0;
+    for (let n2 = 0; n2 < s2 - 1; ++n2)
+      e2 += (t2[n2 + 1][0] - t2[n2][0]) * (t2[n2 + 1][1] + t2[n2][1]);
+    return e2 / 2;
+  }
+  getCoord2D(t2, e2, s2) {
+    return [t2[0] + (e2[0] - t2[0]) * s2, t2[1] + (e2[1] - t2[1]) * s2];
+  }
+  getSegCoord2D(t2, e2, s2) {
+    return this.getCoord2D(t2[e2], t2[e2 + 1], s2);
+  }
+  getAngle(t2, e2, s2) {
+    const n2 = e2[0] - t2[0], r2 = e2[1] - t2[1];
+    return Math.atan2(r2, n2);
+  }
+  getSegAngle(t2, e2, s2) {
+    return this.getAngle(t2[e2], t2[e2 + 1], s2);
+  }
+  getAngleCS(t2, e2, s2) {
+    const n2 = e2[0] - t2[0], r2 = e2[1] - t2[1], h2 = Math.sqrt(n2 * n2 + r2 * r2);
+    return h2 > 0 ? [n2 / h2, r2 / h2] : [1, 0];
+  }
+  getSegAngleCS(t2, e2, s2) {
+    return this.getAngleCS(t2[e2], t2[e2 + 1], s2);
+  }
+  cut(t2, e2, s2, n2) {
+    return [s2 <= 0 ? t2[e2] : this.getSegCoord2D(t2, e2, s2), n2 >= 1 ? t2[e2 + 1] : this.getSegCoord2D(t2, e2, n2)];
+  }
+  addSegment(t2, e2, s2) {
+    s2 && t2.push(e2[0]), t2.push(e2[1]);
+  }
+  getSubCurve(t2, e2, s2) {
+    const n2 = [];
+    return this.appendSubCurve(n2, t2, e2, s2) ? n2 : null;
+  }
+  appendSubCurve(t2, e2, s2, n2) {
+    const r2 = e2 ? e2.length - 1 : 0;
+    let h2 = 0, l2 = true, a2 = 0;
+    for (; a2 < r2; ) {
+      const r3 = this.calculateSegLength(e2, a2);
+      if (r3 !== 0) {
+        if (l2) {
+          if (h2 + r3 > s2) {
+            const o2 = (s2 - h2) / r3;
+            let u2 = 1, c2 = false;
+            h2 + r3 >= n2 && (u2 = (n2 - h2) / r3, c2 = true);
+            const i2 = this.cut(e2, a2, o2, u2);
+            if (i2 && this.addSegment(t2, i2, l2), c2)
+              break;
+            l2 = false;
+          }
+        } else {
+          if (h2 + r3 > n2) {
+            const s3 = this.cut(e2, a2, 0, (n2 - h2) / r3);
+            s3 && this.addSegment(t2, s3, l2);
+            break;
+          }
+          this.addSegment(t2, [e2[a2], e2[a2 + 1]], l2);
+        }
+        h2 += r3, ++a2;
+      } else
+        ++a2;
+    }
+    return true;
+  }
+  getCIMPointAlong(t2, e2) {
+    const s2 = t2 ? t2.length - 1 : 0;
+    let n2 = 0, r2 = -1;
+    for (; r2 < s2; ) {
+      ++r2;
+      const s3 = this.calculateSegLength(t2, r2);
+      if (s3 !== 0) {
+        if (n2 + s3 > e2) {
+          const h2 = (e2 - n2) / s3;
+          return this.getCoord2D(t2[r2], t2[r2 + 1], h2);
+        }
+        n2 += s3;
+      }
+    }
+    return null;
+  }
+  isEmpty(t2, e2) {
+    if (!t2 || t2.length <= 1)
+      return true;
+    const s2 = t2 ? t2.length - 1 : 0;
+    let n2 = -1;
+    for (; n2 < s2; ) {
+      if (++n2, t2[n2 + 1][0] !== t2[n2][0] || t2[n2 + 1][1] !== t2[n2][1])
+        return false;
+      if (e2 && t2[n2 + 1][2] !== t2[n2][2])
+        return false;
+    }
+    return true;
+  }
+  offset(t2, e2, s2, n2, r2) {
+    if (!t2 || t2.length < 2)
+      return null;
+    let h2 = t2.length;
+    const l2 = t2[0][0] === t2[h2 - 1][0] && t2[0][1] === t2[h2 - 1][1];
+    if (l2) {
+      if (t2.length < 3)
+        return null;
+      --h2;
+    }
+    const a2 = [];
+    let o2 = l2 ? t2[h2 - 1] : null, u2 = t2[0];
+    for (let c2 = 0; c2 < h2; c2++) {
+      const r3 = c2 === h2 - 1 ? l2 ? t2[0] : null : t2[c2 + 1];
+      if (o2)
+        if (r3) {
+          const t3 = [r3[0] - u2[0], r3[1] - u2[1]];
+          this.normalize(t3);
+          const h3 = [u2[0] - o2[0], u2[1] - o2[1]];
+          this.normalize(h3);
+          const l3 = h3[0] * t3[1] - h3[1] * t3[0], c3 = h3[0] * t3[0] + h3[1] * t3[1];
+          if (l3 >= 0 == e2 <= 0) {
+            const s3 = [t3[0] - h3[0], t3[1] - h3[1]];
+            this.normalize(s3);
+            const n3 = Math.sqrt((1 + c3) / 2), r4 = -Math.abs(e2) / n3;
+            a2.push([u2[0] - s3[0] * r4, u2[1] - s3[1] * r4]);
+          } else
+            switch (s2) {
+              case "Mitered": {
+                const s3 = Math.sqrt((1 + c3) / 2);
+                if (s3 > 0 && 1 / s3 < n2) {
+                  const n3 = [t3[0] - h3[0], t3[1] - h3[1]];
+                  this.normalize(n3);
+                  const r4 = Math.abs(e2) / s3;
+                  a2.push([u2[0] - n3[0] * r4, u2[1] - n3[1] * r4]);
+                  break;
+                }
+              }
+              case "Bevelled":
+                a2.push([u2[0] + h3[1] * e2, u2[1] - h3[0] * e2]), a2.push([u2[0] + t3[1] * e2, u2[1] - t3[0] * e2]);
+                break;
+              case "Rounded": {
+                a2.push([u2[0] + h3[1] * e2, u2[1] - h3[0] * e2]);
+                const s3 = 5, n3 = 1 / s3;
+                let r4 = n3;
+                for (let l4 = 1; l4 < s3; l4++, r4 += n3) {
+                  const s4 = [h3[1] * (1 - r4) + t3[1] * r4, -h3[0] * (1 - r4) - t3[0] * r4];
+                  this.normalize(s4), a2.push([u2[0] + s4[0] * e2, u2[1] + s4[1] * e2]);
+                }
+                a2.push([u2[0] + t3[1] * e2, u2[1] - t3[0] * e2]);
+                break;
+              }
+              case "Square":
+              default:
+                if (l3 < 0)
+                  a2.push([u2[0] + (h3[1] + h3[0]) * e2, u2[1] + (h3[1] - h3[0]) * e2]), a2.push([u2[0] + (t3[1] - t3[0]) * e2, u2[1] - (t3[0] + t3[1]) * e2]);
+                else {
+                  const s3 = Math.sqrt((1 + Math.abs(c3)) / 2), n3 = [t3[0] - h3[0], t3[1] - h3[1]];
+                  this.normalize(n3);
+                  const r4 = e2 / s3;
+                  a2.push([u2[0] - n3[0] * r4, u2[1] - n3[1] * r4]);
+                }
+            }
+        } else {
+          const t3 = [u2[0] - o2[0], u2[1] - o2[1]];
+          this.normalize(t3), a2.push([u2[0] + t3[1] * e2, u2[1] - t3[0] * e2]);
+        }
+      else {
+        const t3 = [r3[0] - u2[0], r3[1] - u2[1]];
+        this.normalize(t3), a2.push([u2[0] + t3[1] * e2, u2[1] - t3[0] * e2]);
+      }
+      o2 = u2, u2 = r3;
+    }
+    return l2 && a2.push([a2[0][0], a2[0][1]]), a2;
+  }
+}
+const s$6 = 1.7320508075688772, i$4 = 5, l$3 = "OpenEnded";
+class c$3 {
+  static local() {
+    return c$3.instance === null && (c$3.instance = new c$3()), c$3.instance;
+  }
+  execute(t2, e2, r2) {
+    return new u$4(t2, e2, r2);
+  }
+}
+c$3.instance = null;
+class u$4 extends y$1 {
+  constructor(t2, e2, o2) {
+    super(t2, false, true), this._curveHelper = new s$7(), this._width = (e2.width !== void 0 ? e2.width : i$4) * o2, this._arrowType = e2.geometricEffectArrowType !== void 0 ? e2.geometricEffectArrowType : l$3, this._offsetFlattenError = t$3 * o2;
+  }
+  processPath(t2) {
+    switch (this._arrowType) {
+      case "OpenEnded":
+      default:
+        return this._constructSimpleArrow(t2, true);
+      case "Block":
+        return this._constructSimpleArrow(t2, false);
+      case "Crossed":
+        return this._constructCrossedArrow(t2);
+    }
+  }
+  _constructSimpleArrow(t2, e2) {
+    const r2 = this._curveHelper.calculatePathLength(t2);
+    let n2 = this._width;
+    r2 < 2 * n2 && (n2 = r2 / 2);
+    const s2 = this._curveHelper.getSubCurve(t2, 0, r2 - n2);
+    if (!s2)
+      return null;
+    const i2 = n2 / 2;
+    if (this._curveHelper.isEmpty(s2, false))
+      return null;
+    const l2 = this._constructOffset(s2, -i2);
+    if (!l2)
+      return null;
+    const c2 = this._constructOffset(s2, i2);
+    if (!c2)
+      return null;
+    const u2 = this._constructArrowBasePoint(l2, -i2 / 2);
+    if (!u2)
+      return null;
+    const h2 = this._constructArrowBasePoint(c2, i2 / 2);
+    if (!h2)
+      return null;
+    const a2 = t2[t2.length - 1];
+    e2 || (this._makeControlPoint(c2, true), this._makeControlPoint(l2, true));
+    const _2 = new e$3();
+    return _2.addPath(c2, true), _2.lineTo(h2), this._makeControlPoint(_2.path()), _2.lineTo(a2), this._makeControlPoint(_2.path()), _2.lineTo(u2), this._makeControlPoint(_2.path()), _2.addPath(l2, false), e2 ? { paths: [_2.path()] } : (_2.close(), { rings: [_2.path()] });
+  }
+  _constructCrossedArrow(t2) {
+    const e2 = this._curveHelper.calculatePathLength(t2);
+    let r2 = this._width;
+    e2 < r2 * (1 + s$6 + 1) && (r2 = e2 / (1 + s$6 + 1));
+    const n2 = this._curveHelper.getSubCurve(t2, 0, e2 - r2 * (1 + s$6));
+    if (!n2)
+      return null;
+    const i2 = r2 / 2;
+    if (this._curveHelper.isEmpty(n2, false))
+      return null;
+    const l2 = this._constructOffset(n2, i2);
+    if (!l2)
+      return null;
+    const c2 = this._constructOffset(n2, -i2);
+    if (!c2)
+      return null;
+    const u2 = this._curveHelper.getSubCurve(t2, 0, e2 - r2);
+    if (!u2)
+      return null;
+    if (this._curveHelper.isEmpty(u2, false))
+      return null;
+    const h2 = this._constructOffset(u2, i2);
+    if (!h2)
+      return null;
+    const a2 = this._constructOffset(u2, -i2);
+    if (!a2)
+      return null;
+    const _2 = h2[h2.length - 1], f2 = this._constructArrowBasePoint(h2, i2 / 2);
+    if (!f2)
+      return null;
+    const p2 = a2[a2.length - 1], d2 = this._constructArrowBasePoint(a2, -i2 / 2);
+    if (!d2)
+      return null;
+    const m2 = t2[t2.length - 1];
+    this._makeControlPoint(l2, false), this._makeControlPoint(c2, false);
+    const w = new e$3();
+    return w.addPath(l2, true), this._makeControlPoint(w.path()), w.lineTo(p2), w.lineTo(d2), this._makeControlPoint(w.path()), w.lineTo(m2), this._makeControlPoint(w.path()), w.lineTo(f2), this._makeControlPoint(w.path()), w.lineTo(_2), this._makeControlPoint(w.path()), w.addPath(c2, false), { paths: [w.path()] };
+  }
+  _constructOffset(t2, e2) {
+    return this._curveHelper.offset(t2, e2, "Rounded", 4, this._offsetFlattenError);
+  }
+  _constructArrowBasePoint(t2, e2) {
+    if (!t2 || t2.length < 2)
+      return null;
+    const r2 = t2[t2.length - 2], n2 = t2[t2.length - 1], o2 = [n2[0] - r2[0], n2[1] - r2[1]];
+    return this._curveHelper.normalize(o2), [n2[0] + o2[1] * e2, n2[1] - o2[0] * e2];
+  }
+  _makeControlPoint(t2, r2 = false) {
+    d(r2 ? t2[0] : t2[t2.length - 1], 1);
+  }
+}
+class o$3 {
+  static local() {
+    return o$3.instance === null && (o$3.instance = new o$3()), o$3.instance;
+  }
+  execute(e2, t2, i2) {
+    return new f$3(e2, t2, i2);
+  }
+}
+o$3.instance = null;
+class f$3 {
+  constructor(e2, t2, i2) {
+    this._inputGeometries = e2, this._curveHelper = new s$7(), this._size = (t2.size !== void 0 ? t2.size : 1) * i2, this._offsetFlattenError = t$3 * i2;
+  }
+  next() {
+    let n2 = this._inputGeometries.next();
+    for (; n2; ) {
+      if (u$6(n2))
+        if (this._size > 0) {
+          const e2 = [[n2.xmin, n2.ymin], [n2.xmin, n2.ymax], [n2.xmax, n2.ymax], [n2.xmax, n2.ymin], [n2.xmin, n2.ymin]], t2 = this._curveHelper.offset(e2, this._size, "Rounded", 4, this._offsetFlattenError);
+          if (t2)
+            return { rings: [t2] };
+        } else {
+          if (!(this._size < 0))
+            return n2;
+          if (Math.min(n2.xmax - n2.xmin, n2.ymax - n2.ymin) + 2 * this._size > 0)
+            return { xmin: n2.xmin - this._size, xmax: n2.xmax + this._size, ymin: n2.ymin - this._size, ymax: n2.ymax + this._size };
+        }
+      if (y$3(n2)) {
+        if (this._size === 0)
+          return n2;
+        const e2 = [];
+        for (const t2 of n2.rings) {
+          const i2 = this._curveHelper.offset(t2, this._size, "Rounded", 4, this._offsetFlattenError);
+          i2 && e2.push(i2);
+        }
+        if (e2.length)
+          return { rings: e2 };
+      }
+      if (f$5(n2) && this._size > 0) {
+        const e2 = [];
+        for (const t2 of n2.paths)
+          if (t2 && t2.length > 1) {
+            const i2 = this._curveHelper.offset(t2, this._size, "Rounded", 4, this._offsetFlattenError), s2 = this._curveHelper.offset(t2, -this._size, "Rounded", 4, this._offsetFlattenError);
+            if (i2 && s2) {
+              for (let e3 = s2.length - 1; e3 >= 0; e3--)
+                i2.push(s2[e3]);
+              i2.push([i2[0][0], i2[0][1]]), e2.push(i2);
+            }
+          }
+        if (e2.length)
+          return { rings: e2 };
+      }
+      l$5(n2) && this._size, n2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+}
+class u$3 {
+  static local() {
+    return u$3.instance === null && (u$3.instance = new u$3()), u$3.instance;
+  }
+  execute(e2, t2, u2) {
+    return new s$5(e2, t2, u2);
+  }
+}
+u$3.instance = null;
+class s$5 extends y$1 {
+  constructor(e2, u2, s2) {
+    super(e2, true, true), this._curveHelper = new s$7(), this._beginCut = (u2.beginCut !== void 0 ? u2.beginCut : 1) * s2, this._endCut = (u2.endCut !== void 0 ? u2.endCut : 1) * s2, this._middleCut = (u2.middleCut !== void 0 ? u2.middleCut : 0) * s2, this._invert = u2.invert !== void 0 && u2.invert, this._beginCut < 0 && (this._beginCut = 0), this._endCut < 0 && (this._endCut = 0), this._middleCut < 0 && (this._middleCut = 0);
+  }
+  processPath(e2) {
+    const t2 = this._beginCut, u2 = this._endCut, s2 = this._middleCut, i2 = this._curveHelper.calculatePathLength(e2), r2 = [];
+    if (this._invert)
+      if (t2 === 0 && u2 === 0 && s2 === 0)
+        ;
+      else if (t2 + u2 + s2 >= i2)
+        r2.push(e2);
+      else {
+        let n2 = this._curveHelper.getSubCurve(e2, 0, t2);
+        n2 && r2.push(n2), n2 = this._curveHelper.getSubCurve(e2, 0.5 * (i2 - s2), 0.5 * (i2 + s2)), n2 && r2.push(n2), n2 = this._curveHelper.getSubCurve(e2, i2 - u2, u2), n2 && r2.push(n2);
+      }
+    else if (t2 === 0 && u2 === 0 && s2 === 0)
+      r2.push(e2);
+    else if (t2 + u2 + s2 >= i2)
+      ;
+    else if (s2 === 0) {
+      const s3 = this._curveHelper.getSubCurve(e2, t2, i2 - u2);
+      s3 && r2.push(s3);
+    } else {
+      let n2 = this._curveHelper.getSubCurve(e2, t2, 0.5 * (i2 - s2));
+      n2 && r2.push(n2), n2 = this._curveHelper.getSubCurve(e2, 0.5 * (i2 + s2), i2 - u2), n2 && r2.push(n2);
+    }
+    return r2.length === 0 ? null : { paths: r2 };
+  }
+}
+const i$3 = 1e-7;
+class n$a {
+  constructor() {
+    this._values = [], this.extPtGap = 0, this.ctrlPtGap = 0, this._length = 0, this._currentValue = 0;
+  }
+  isEmpty() {
+    return this._values.length === 0;
+  }
+  size() {
+    return this._values.length;
+  }
+  init(t2, s2, e2 = true) {
+    if (this._setEmpty(), !t2 || t2.length === 0)
+      return false;
+    for (let n2 = 0; n2 < t2.length; n2++) {
+      let s3 = Math.abs(t2[n2]);
+      e2 && s3 < i$3 && (s3 = i$3), this._values.push(s3), this._length += s3;
+    }
+    return s2 && 1 & t2.length && (this._length *= 2), this._length !== 0 && (this.ctrlPtGap = this.extPtGap = 0, this._currentValue = -1, true);
+  }
+  scale(t2) {
+    const s2 = this._values ? this._values.length : 0;
+    for (let e2 = 0; e2 < s2; ++e2)
+      this._values[e2] *= t2;
+    this._length *= t2, this.extPtGap *= t2, this.ctrlPtGap *= t2;
+  }
+  addValue(t2) {
+    this._length += t2, this._values.push(t2);
+  }
+  firstValue() {
+    return this._values[0];
+  }
+  lastValue() {
+    return this._values[this._values.length - 1];
+  }
+  nextValue() {
+    return this._currentValue++, this._currentValue === this._values.length && (this._currentValue = 0), this._values[this._currentValue];
+  }
+  reset() {
+    this._currentValue = -1;
+  }
+  length() {
+    return this._length;
+  }
+  _setEmpty() {
+    this.extPtGap = this.ctrlPtGap = this._length = 0, this._currentValue = -1, this._values.length = 0;
+  }
+}
+class h$4 {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.segment = -1, this.segmentLength = 0, this.abscissa = 0, this.isPathEnd = false, this.isPartEnd = false;
+  }
+  isValid() {
+    return this.segment !== -1;
+  }
+  copyTo(t2) {
+    t2.segment = this.segment, t2.segmentLength = this.segmentLength, t2.abscissa = this.abscissa, t2.isPathEnd = this.isPathEnd, t2.isPartEnd = this.isPartEnd;
+  }
+}
+class r$8 extends s$7 {
+  constructor(t2 = 0, s2 = false) {
+    super(t2, s2), this._tolerance = t$3, this._currentPosition = new h$4();
+  }
+  updateTolerance(t2) {
+    this._tolerance = t$3 * t2;
+  }
+  init(t2, s2, e2 = true) {
+    return e2 ? (this._patternLength = s2.length(), this._partExtPtGap = s2.extPtGap, this._partCtrlPtGap = s2.ctrlPtGap) : (this._patternLength = 0, this._partExtPtGap = 0, this._partCtrlPtGap = 0), this._currentPosition.reset(), this._partSegCount = 0, this._path = t2, this._seg = -1, this.setPosAtNextPart();
+  }
+  curPositionIsValid() {
+    return this._currentPosition.isValid();
+  }
+  nextPosition(t2, s2 = 0) {
+    const e2 = new h$4();
+    return !!this._nextPosition(t2, e2, null, s2) && (e2.copyTo(this._currentPosition), true);
+  }
+  curPointAndAngle(t2) {
+    t2.pt = this._getPoint(this._currentPosition);
+    const [s2, e2] = this._getAngle(this._currentPosition);
+    t2.ca = s2, t2.sa = e2;
+  }
+  nextPointAndAngle(t2, s2, e2 = 0) {
+    const i2 = new h$4();
+    if (!this._nextPosition(t2, i2, null, e2))
+      return false;
+    i2.copyTo(this._currentPosition), s2.pt = this._getPoint(i2);
+    const [n2, r2] = this._getAngle(i2);
+    return s2.ca = n2, s2.sa = r2, true;
+  }
+  nextCurve(t2) {
+    if (t2 === 0)
+      return null;
+    const s2 = [], e2 = new h$4();
+    return this._nextPosition(t2, e2, s2, 1) ? (e2.copyTo(this._currentPosition), s2) : null;
+  }
+  isPathEnd() {
+    return this._currentPosition.isPathEnd;
+  }
+  getPathEnd() {
+    if (this._currentPosition.segment === -1)
+      throw new Error("missing segment");
+    return this._path[this._currentPosition.segment + 1];
+  }
+  _nextPosition(t2, s2, e2, i2) {
+    if (this._currentPosition.isPathEnd)
+      return false;
+    let n2 = this._currentPosition.abscissa;
+    for (this._currentPosition.segmentLength > 0 && (n2 /= this._currentPosition.segmentLength), this._currentPosition.copyTo(s2); s2.abscissa + t2 * this._partLengthRatio > s2.segmentLength + this._tolerance; ) {
+      if (e2) {
+        if (e2.length === 0)
+          if (n2 === 0) {
+            const t4 = this._path[s2.segment];
+            e2.push([t4[0], t4[1]]);
+          } else
+            e2.push(this.getSegCoord2D(this._path, s2.segment, n2));
+        const t3 = this._path[s2.segment + 1];
+        e2.push([t3[0], t3[1]]);
+      }
+      if (n2 = 0, t2 -= (s2.segmentLength - s2.abscissa) / this._partLengthRatio, this._partSegCount)
+        s2.segment = this.nextSegment(), s2.segmentLength = this.calculateSegLength(this._path, s2.segment), s2.abscissa = 0, this._partSegCount--;
+      else {
+        if (!this.setPosAtNextPart())
+          return i2 !== 0 && (s2.segmentLength = this.calculateSegLength(this._path, s2.segment), s2.isPartEnd = true, i2 === 1 ? (s2.abscissa = s2.segmentLength, s2.isPathEnd = true) : s2.abscissa = s2.segmentLength + t2, true);
+        this._currentPosition.copyTo(s2);
+      }
+    }
+    if (s2.abscissa += t2 * this._partLengthRatio, e2) {
+      if (e2.length === 0)
+        if (n2 === 0) {
+          const t4 = this._path[s2.segment];
+          e2.push([t4[0], t4[1]]);
+        } else
+          e2.push(this.getSegCoord2D(this._path, s2.segment, n2));
+      const t3 = s2.abscissa / s2.segmentLength;
+      if (t3 === 1) {
+        const t4 = this._path[s2.segment + 1];
+        e2.push([t4[0], t4[1]]);
+      } else
+        e2.push(this.getSegCoord2D(this._path, s2.segment, t3));
+    }
+    return this._partSegCount || Math.abs(s2.abscissa - s2.segmentLength) < this._tolerance && (s2.isPathEnd = this._partIsLast, s2.isPartEnd = true), true;
+  }
+  _getPoint(t2) {
+    if (t2.segment === -1)
+      throw new Error("missing segment");
+    const s2 = t2.segmentLength <= 0 ? 0 : t2.abscissa / t2.segmentLength;
+    return this.getSegCoord2D(this._path, t2.segment, s2);
+  }
+  _getAngle(t2) {
+    if (t2.segment === -1)
+      throw new Error("missing segment");
+    const s2 = t2.segmentLength <= 0 ? 0 : t2.abscissa / t2.segmentLength;
+    return this.getSegAngleCS(this._path, t2.segment, s2);
+  }
+  setPosAtNextPart() {
+    for (; this._partSegCount; )
+      this.hasNextSegment() && this.nextSegment(), this._partSegCount--;
+    if (!this.hasNextSegment())
+      return false;
+    for (this._partLength = 0, this._partIsLast = true, this._partSegCount = 0; this.hasNextSegment(); )
+      if (this._partLength += this.calculateSegLength(this._path, this.nextSegment()), this._partSegCount++, g(this._path[this.getEndPointIndex()]) === 1) {
+        this._partIsLast = !this.hasNextSegment();
+        break;
+      }
+    let s2 = this._partSegCount;
+    for (; s2; )
+      this.previousSegment(), --s2;
+    this._currentPosition.segment = this.nextSegment(), this._currentPosition.segmentLength = this.calculateSegLength(this._path, this._currentPosition.segment), this._currentPosition.abscissa = 0, this._currentPosition.isPathEnd = this._currentPosition.isPartEnd = false, --this._partSegCount;
+    const e2 = this.getStartPointIndex();
+    this._ctrlPtBegin = g(this._path[e2]) === 1;
+    let i2 = e2 + this._partSegCount + 1;
+    if (i2 >= this._path.length && (i2 = 0), this._ctrlPtEnd = g(this._path[i2]) === 1, this._patternLength > 0) {
+      const t2 = this._ctrlPtBegin ? this._partCtrlPtGap : this._partExtPtGap, s3 = this._ctrlPtEnd ? this._partCtrlPtGap : this._partExtPtGap;
+      let e3 = Math.round((this._partLength - (t2 + s3)) / this._patternLength);
+      e3 <= 0 && (e3 = t2 + s3 > 0 ? 0 : 1), this._partLengthRatio = this._partLength / (t2 + s3 + e3 * this._patternLength), this._partLengthRatio < 0.01 && (this._partLengthRatio = 1);
+    } else
+      this._partLengthRatio = 1;
+    return true;
+  }
+  hasNextSegment() {
+    return this._seg < this._path.length - 2;
+  }
+  previousSegment() {
+    return --this._seg;
+  }
+  nextSegment() {
+    return ++this._seg;
+  }
+  getStartPointIndex() {
+    return this._seg;
+  }
+  getEndPointIndex() {
+    return this._seg + 1;
+  }
+}
+class i$2 {
+  static local() {
+    return i$2.instance === null && (i$2.instance = new i$2()), i$2.instance;
+  }
+  execute(t2, e2, s2) {
+    return new r$7(t2, e2, s2);
+  }
+}
+i$2.instance = null;
+class r$7 extends y$1 {
+  constructor(t2, e2, i2) {
+    super(t2, true, true), this._walker = new r$8(), this._walker.updateTolerance(i2), this._endings = e2.lineDashEnding, this._customDashPos = e2.offsetAlongLine !== void 0 ? e2.offsetAlongLine * i2 : 0, this._offsetAtEnd = e2.customEndingOffset !== void 0 ? e2.customEndingOffset * i2 : 0, this._pattern = new n$a(), this._pattern.init(e2.dashTemplate, true), this._pattern.scale(i2);
+  }
+  processPath(t2) {
+    if (this._pattern.length() === 0)
+      return this.iteratePath = false, { paths: [t2] };
+    if (!this.iteratePath) {
+      let e2 = true;
+      switch (this._endings) {
+        case "HalfPattern":
+        case "HalfGap":
+        default:
+          this._pattern.extPtGap = 0;
+          break;
+        case "FullPattern":
+          this.isClosed || (this._pattern.extPtGap = 0.5 * this._pattern.firstValue());
+          break;
+        case "FullGap":
+          this.isClosed || (this._pattern.extPtGap = 0.5 * this._pattern.lastValue());
+          break;
+        case "NoConstraint":
+          this.isClosed || (e2 = false);
+          break;
+        case "Custom":
+          this.isClosed || (this._pattern.extPtGap = 0.5 * this._offsetAtEnd);
+      }
+      const s3 = this._walker.calculatePathLength(t2);
+      if (this._pattern.isEmpty() || s3 < 0.1 * this._pattern.length())
+        return { paths: [t2] };
+      if (!this._walker.init(t2, this._pattern, e2))
+        return { paths: [t2] };
+    }
+    let s2;
+    if (this.iteratePath)
+      s2 = this._pattern.nextValue();
+    else {
+      let t3;
+      switch (this._endings) {
+        case "HalfPattern":
+        default:
+          t3 = 0.5 * this._pattern.firstValue();
+          break;
+        case "HalfGap":
+          t3 = 0.5 * -this._pattern.lastValue();
+          break;
+        case "FullGap":
+          t3 = -this._pattern.lastValue();
+          break;
+        case "FullPattern":
+          t3 = 0;
+          break;
+        case "NoConstraint":
+        case "Custom":
+          t3 = -this._customDashPos;
+      }
+      let e2 = t3 / this._pattern.length();
+      e2 -= Math.floor(e2), t3 = e2 * this._pattern.length(), this._pattern.reset(), s2 = this._pattern.nextValue();
+      let a3 = false;
+      for (; t3 >= s2; )
+        t3 -= s2, s2 = this._pattern.nextValue(), a3 = !a3;
+      s2 -= t3, a3 ? (this._walker.nextPosition(s2), s2 = this._pattern.nextValue()) : this.isClosed && (this._firstCurve = this._walker.nextCurve(s2), s2 = this._pattern.nextValue(), this._walker.nextPosition(s2), s2 = this._pattern.nextValue());
+    }
+    let a2 = this._walker.nextCurve(s2);
+    return a2 ? this._walker.isPathEnd() ? (this.iteratePath = false, this._firstCurve && (this._firstCurve.splice(0, 1), e$3.mergePath(a2, this._firstCurve), this._firstCurve = null)) : (s2 = this._pattern.nextValue(), !this._walker.nextPosition(s2) || this._walker.isPathEnd() ? (this.iteratePath = false, this._firstCurve && (a2 = this._firstCurve, this._firstCurve = null)) : this.iteratePath = true) : (this.iteratePath = false, a2 = this._firstCurve, this._firstCurve = null), { paths: [a2] };
+  }
+}
+class h$3 {
+  static local() {
+    return h$3.instance === null && (h$3.instance = new h$3()), h$3.instance;
+  }
+  execute(t2, i2, e2) {
+    return new n$9(t2, i2, e2);
+  }
+}
+h$3.instance = null;
+class n$9 {
+  constructor(t2, i2, h2) {
+    switch (this._inputGeometries = t2, this._curveHelper = new s$7(), this._width = (i2.width !== void 0 ? i2.width : 2) * h2, i2.method) {
+      case "Mitered":
+      default:
+        this._method = "Mitered";
+        break;
+      case "Bevelled":
+        this._method = "Bevelled";
+        break;
+      case "Rounded":
+      case "TrueBuffer":
+        this._method = "Rounded";
+        break;
+      case "Square":
+        this._method = "Square";
+    }
+    this._option = i2.option, this._offsetFlattenError = t$3 * h2;
+  }
+  next() {
+    let e2 = this._inputGeometries.next();
+    for (; e2; ) {
+      if (u$6(e2) && this._width > 0) {
+        if (Math.min(e2.xmax - e2.xmin, e2.ymax - e2.ymin) - 2 * this._width < 0)
+          return e2;
+        const t2 = [];
+        return t2.push([[e2.xmin, e2.ymin], [e2.xmin, e2.ymax], [e2.xmax, e2.ymax], [e2.xmax, e2.ymin], [e2.xmin, e2.ymin]]), t2.push([[e2.xmin + this._width, e2.ymin + this._width], [e2.xmax - this._width, e2.ymin + this._width], [e2.xmax - this._width, e2.ymax - this._width], [e2.xmin + this._width, e2.ymax - this._width], [e2.xmin + this._width, e2.ymin + this._width]]), { rings: t2 };
+      }
+      if (y$3(e2) && this._width > 0) {
+        const t2 = [];
+        for (const i2 of e2.rings) {
+          const e3 = this._curveHelper.calculatePathLength(i2), s2 = this._curveHelper.offset(i2, this._width, this._method, 4, this._offsetFlattenError);
+          s2 && (e3 < 0 && s2.reverse(), t2.push(s2));
+        }
+        if (t2.length)
+          return { rings: t2 };
+      }
+      e2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+}
+class s$4 {
+  static local() {
+    return s$4.instance === null && (s$4.instance = new s$4()), s$4.instance;
+  }
+  execute(t2, i2, s2) {
+    return new e$2(t2, i2, s2);
+  }
+}
+s$4.instance = null;
+class e$2 extends y$1 {
+  constructor(t2, s2, e2) {
+    super(t2, false, true), this._curveHelper = new s$7(), this._length = (s2.length !== void 0 ? s2.length : 20) * e2, this._angle = s2.angle !== void 0 ? s2.angle : 225, this._position = s2.position !== void 0 ? s2.position : 50, this._length < 0 && (this._length = -this._length), this._position < 20 && (this._position = 20), this._position > 80 && (this._position = 80), this._mirror = false;
+  }
+  processPath(t2) {
+    if (this._curveHelper.isEmpty(t2, false))
+      return null;
+    const i2 = t2[0], s2 = t2[t2.length - 1], e2 = [s2[0] - i2[0], s2[1] - i2[1]];
+    this._curveHelper.normalize(e2);
+    const n2 = [i2[0] + (s2[0] - i2[0]) * this._position / 100, i2[1] + (s2[1] - i2[1]) * this._position / 100], h2 = Math.cos((90 - this._angle) / 180 * Math.PI);
+    let r2 = Math.sin((90 - this._angle) / 180 * Math.PI);
+    this._mirror && (r2 = -r2), this._mirror = !this._mirror;
+    return { paths: [[i2, [n2[0] - this._length / 2 * h2, n2[1] - this._length / 2 * r2], [n2[0] + this._length / 2 * h2, n2[1] + this._length / 2 * r2], s2]] };
+  }
+}
+class n$8 {
+  static local() {
+    return n$8.instance === null && (n$8.instance = new n$8()), n$8.instance;
+  }
+  execute(t2, s2, e2) {
+    return new r$6(t2, s2, e2);
+  }
+}
+n$8.instance = null;
+class r$6 {
+  constructor(t2, s2, e2) {
+    this._inputGeometries = t2, this._offsetX = s2.offsetX !== void 0 ? s2.offsetX * e2 : 0, this._offsetY = s2.offsetY !== void 0 ? -s2.offsetY * e2 : 0;
+  }
+  next() {
+    let n2 = this._inputGeometries.next();
+    for (; n2; ) {
+      if (u$6(n2))
+        return { xmin: n2.xmin + this._offsetX, xmax: n2.xmax + this._offsetX, ymin: n2.ymin + this._offsetY, ymax: n2.ymax + this._offsetY };
+      if (y$3(n2)) {
+        const s2 = y$2(n2);
+        return this._moveMultipath(s2.rings, this._offsetX, this._offsetY), s2;
+      }
+      if (f$5(n2)) {
+        const s2 = y$2(n2);
+        return this._moveMultipath(s2.paths, this._offsetX, this._offsetY), s2;
+      }
+      if (s$8(n2)) {
+        const s2 = y$2(n2);
+        return this._movePath(s2.points, this._offsetX, this._offsetY), s2;
+      }
+      if (l$5(n2))
+        return { x: n2.x + this._offsetX, y: n2.y + this._offsetY };
+      n2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+  _moveMultipath(t2, s2, e2) {
+    if (t2)
+      for (const i2 of t2)
+        this._movePath(i2, s2, e2);
+  }
+  _movePath(t2, s2, e2) {
+    if (t2)
+      for (const i2 of t2)
+        i2[0] += s2, i2[1] += e2;
+  }
+}
+class o$2 {
+  static local() {
+    return o$2.instance === null && (o$2.instance = new o$2()), o$2.instance;
+  }
+  execute(t2, e2, s2) {
+    return new r$5(t2, e2, s2);
+  }
+}
+o$2.instance = null;
+class r$5 {
+  constructor(t2, e2, s2) {
+    this._inputGeometries = t2, this._curveHelper = new s$7(), this._offset = (e2.offset !== void 0 ? e2.offset : 1) * s2, this._method = e2.method, this._option = e2.option, this._offsetFlattenError = t$3 * s2;
+  }
+  next() {
+    let i2 = this._inputGeometries.next();
+    for (; i2; ) {
+      if (this._offset === 0)
+        return i2;
+      if (u$6(i2)) {
+        if (this._method === "Rounded" && this._offset > 0) {
+          const t2 = [[i2.xmin, i2.ymin], [i2.xmin, i2.ymax], [i2.xmax, i2.ymax], [i2.xmax, i2.ymin], [i2.xmin, i2.ymin]], e2 = this._curveHelper.offset(t2, this._offset, this._method, 4, this._offsetFlattenError);
+          return e2 ? { rings: [e2] } : null;
+        }
+        if (Math.min(i2.xmax - i2.xmin, i2.ymax - i2.ymin) + 2 * this._offset > 0)
+          return { xmin: i2.xmin - this._offset, xmax: i2.xmax + this._offset, ymin: i2.ymin - this._offset, ymax: i2.ymax + this._offset };
+      }
+      if (y$3(i2)) {
+        const t2 = [];
+        for (const e2 of i2.rings) {
+          const s2 = this._curveHelper.offset(e2, this._offset, this._method, 4, this._offsetFlattenError);
+          s2 && t2.push(s2);
+        }
+        if (t2.length)
+          return { rings: t2 };
+      }
+      if (f$5(i2)) {
+        const t2 = [];
+        for (const e2 of i2.paths) {
+          const s2 = this._curveHelper.offset(e2, this._offset, this._method, 4, this._offsetFlattenError);
+          s2 && t2.push(s2);
+        }
+        if (t2.length)
+          return { paths: t2 };
+      }
+      i2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+}
+class s$3 {
+  static local() {
+    return s$3.instance === null && (s$3.instance = new s$3()), s$3.instance;
+  }
+  execute(e2, t2, r2) {
+    return new n$7(e2, t2, r2);
+  }
+}
+s$3.instance = null;
+class n$7 {
+  constructor(e2, t2, r2) {
+    this._inputGeometries = e2, this._reverse = t2.reverse === void 0 || t2.reverse;
+  }
+  next() {
+    let s2 = this._inputGeometries.next();
+    for (; s2; ) {
+      if (!this._reverse)
+        return s2;
+      if (f$5(s2)) {
+        const t2 = y$2(s2);
+        return m$2(t2.paths), t2;
+      }
+      s2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+}
+class u$2 {
+  static local() {
+    return u$2.instance === null && (u$2.instance = new u$2()), u$2.instance;
+  }
+  execute(t2, n2, e2) {
+    return new c$2(t2, n2, e2);
+  }
+}
+u$2.instance = null;
+class c$2 {
+  constructor(t2, n2, e2) {
+    this._inputGeometries = t2, this._rotateAngle = n2.angle !== void 0 ? -n2.angle * Math.PI / 180 : 0;
+  }
+  next() {
+    let u2 = this._inputGeometries.next();
+    for (; u2; ) {
+      if (this._rotateAngle === 0)
+        return u2;
+      const c2 = i$5();
+      c$5(c2, u2);
+      const l2 = (c2[2] + c2[0]) / 2, m2 = (c2[3] + c2[1]) / 2;
+      if (u$6(u2)) {
+        const t2 = { rings: [[[u2.xmin, u2.ymin], [u2.xmin, u2.ymax], [u2.xmax, u2.ymax], [u2.xmax, u2.ymin], [u2.xmin, u2.ymin]]] };
+        return this._rotateMultipath(t2.rings, l2, m2), t2;
+      }
+      if (y$3(u2)) {
+        const n2 = y$2(u2);
+        return this._rotateMultipath(n2.rings, l2, m2), n2;
+      }
+      if (f$5(u2)) {
+        const n2 = y$2(u2);
+        return this._rotateMultipath(n2.paths, l2, m2), n2;
+      }
+      if (s$8(u2)) {
+        const n2 = y$2(u2);
+        return this._rotatePath(n2.points, l2, m2), n2;
+      }
+      if (l$5(u2))
+        return u2;
+      u2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+  _rotateMultipath(t2, n2, e2) {
+    if (t2)
+      for (const r2 of t2)
+        this._rotatePath(r2, n2, e2);
+  }
+  _rotatePath(t2, n2, e2) {
+    if (t2) {
+      const r2 = Math.cos(this._rotateAngle), i2 = Math.sin(this._rotateAngle);
+      for (const o2 of t2) {
+        const t3 = o2[0] - n2, s2 = o2[1] - e2;
+        o2[0] = n2 + t3 * r2 - s2 * i2, o2[1] = e2 + t3 * i2 + s2 * r2;
+      }
+    }
+  }
+}
+class c$1 {
+  static local() {
+    return c$1.instance === null && (c$1.instance = new c$1()), c$1.instance;
+  }
+  execute(t2, s2, i2) {
+    return new l$2(t2, s2, i2);
+  }
+}
+c$1.instance = null;
+class l$2 {
+  constructor(t2, s2, i2) {
+    this._inputGeometries = t2, this._xFactor = s2.xScaleFactor !== void 0 ? s2.xScaleFactor : 1.15, this._yFactor = s2.yScaleFactor !== void 0 ? s2.yScaleFactor : 1.15;
+  }
+  next() {
+    let c2 = this._inputGeometries.next();
+    for (; c2; ) {
+      if (this._xFactor === 1 && this._yFactor === 1)
+        return c2;
+      const l2 = i$5();
+      c$5(l2, c2);
+      const u2 = (l2[2] + l2[0]) / 2, m2 = (l2[3] + l2[1]) / 2;
+      if (u$6(c2)) {
+        const t2 = { rings: [[[c2.xmin, c2.ymin], [c2.xmin, c2.ymax], [c2.xmax, c2.ymax], [c2.xmax, c2.ymin], [c2.xmin, c2.ymin]]] };
+        return this._scaleMultipath(t2.rings, u2, m2), t2;
+      }
+      if (y$3(c2)) {
+        const s2 = y$2(c2);
+        return this._scaleMultipath(s2.rings, u2, m2), s2;
+      }
+      if (f$5(c2)) {
+        const s2 = y$2(c2);
+        return this._scaleMultipath(s2.paths, u2, m2), s2;
+      }
+      if (s$8(c2)) {
+        const s2 = y$2(c2);
+        return this._scalePath(s2.points, u2, m2), s2;
+      }
+      if (l$5(c2))
+        return c2;
+      c2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+  _scaleMultipath(t2, s2, i2) {
+    if (t2)
+      for (const r2 of t2)
+        this._scalePath(r2, s2, i2);
+  }
+  _scalePath(t2, s2, i2) {
+    if (t2)
+      for (const r2 of t2) {
+        const t3 = (r2[0] - s2) * this._xFactor, n2 = (r2[1] - i2) * this._yFactor;
+        r2[0] = s2 + t3, r2[1] = i2 + n2;
+      }
+  }
+}
+class n$6 {
+  static local() {
+    return n$6.instance === null && (n$6.instance = new n$6()), n$6.instance;
+  }
+  execute(t2, e2, i2) {
+    return new r$4(t2, e2, i2);
+  }
+}
+n$6.instance = null;
+class r$4 {
+  constructor(t2, e2, i2) {
+    this._inputGeometries = t2, this._height = (e2.amplitude !== void 0 ? e2.amplitude : 2) * i2, this._period = (e2.period !== void 0 ? e2.period : 3) * i2, this._style = e2.waveform, this._height <= 0 && (this._height = Math.abs(this._height)), this._period <= 0 && (this._period = Math.abs(this._period)), this._pattern = new n$a(), this._pattern.addValue(this._period), this._pattern.addValue(this._period), this._walker = new r$8(), this._walker.updateTolerance(i2);
+  }
+  next() {
+    let i2 = this._inputGeometries.next();
+    for (; i2; ) {
+      if (this._height === 0 || this._period === 0)
+        return i2;
+      if (f$5(i2)) {
+        const t2 = this._processGeom(i2.paths);
+        if (t2.length)
+          return { paths: t2 };
+      }
+      if (y$3(i2)) {
+        const t2 = this._processGeom(i2.rings);
+        if (t2.length)
+          return { rings: t2 };
+      }
+      i2 = this._inputGeometries.next();
+    }
+    return null;
+  }
+  _processGeom(t2) {
+    const e2 = [];
+    for (const i2 of t2)
+      if (this._walker.init(i2, this._pattern))
+        switch (this._style) {
+          case "Sinus":
+          default:
+            e2.push(this._constructCurve(i2, false));
+            break;
+          case "Square":
+            e2.push(this._constructSquare(i2));
+            break;
+          case "Triangle":
+            e2.push(this._constructTriangle(i2));
+            break;
+          case "Random":
+            e2.push(this._constructCurve(i2, true));
+        }
+      else
+        e2.push(i2);
+    return e2;
+  }
+  _constructCurve(t2, e2) {
+    const s2 = new e$3(), h2 = this._walker.calculatePathLength(t2);
+    let n2 = Math.round(h2 / this._period);
+    n2 === 0 && (n2 = 1);
+    const r2 = n2 * 16 + 1, a2 = h2 / n2, o2 = this._period / 16, l2 = 1 / r2, _2 = 2 * Math.PI * h2 / a2, c2 = 2 * Math.PI * Math.random(), p2 = 2 * Math.PI * Math.random(), u2 = 2 * Math.PI * Math.random(), d2 = 0.75 - Math.random() / 2, g2 = 0.75 - Math.random() / 2, w = {};
+    this._walker.curPointAndAngle(w), s2.startPath(w.pt);
+    let k = 0;
+    for (; ; ) {
+      if (!this._walker.nextPointAndAngle(o2, w)) {
+        s2.lineTo(t2[t2.length - 1]);
+        break;
+      }
+      {
+        const t3 = k;
+        let i2;
+        if (k += l2, e2) {
+          const e3 = this._height / 2 * (1 + 0.3 * Math.sin(d2 * _2 * t3 + c2));
+          i2 = e3 * Math.sin(_2 * t3 + p2), i2 += e3 * Math.sin(g2 * _2 * t3 + u2), i2 /= 2;
+        } else
+          i2 = 0.5 * this._height * Math.sin(0.5 * _2 * t3);
+        s2.lineTo([w.pt[0] - i2 * w.sa, w.pt[1] + i2 * w.ca]);
+      }
+    }
+    return s2.path();
+  }
+  _constructSquare(t2) {
+    const e2 = new e$3(), s2 = this._walker.calculatePathLength(t2);
+    Math.round(s2 / this._period);
+    let n2 = true;
+    for (; ; ) {
+      let t3 = false;
+      if (this._walker.curPositionIsValid()) {
+        const i2 = {};
+        this._walker.curPointAndAngle(i2);
+        const s3 = {};
+        if (this._walker.nextPointAndAngle(this._period, s3)) {
+          const h2 = {};
+          this._walker.nextPointAndAngle(this._period, h2) && (n2 ? (e2.startPath(i2.pt), n2 = false) : e2.lineTo(i2.pt), e2.lineTo([i2.pt[0] - this._height / 2 * i2.sa, i2.pt[1] + this._height / 2 * i2.ca]), e2.lineTo([s3.pt[0] - this._height / 2 * s3.sa, s3.pt[1] + this._height / 2 * s3.ca]), e2.lineTo([s3.pt[0] + this._height / 2 * s3.sa, s3.pt[1] - this._height / 2 * s3.ca]), e2.lineTo([h2.pt[0] + this._height / 2 * h2.sa, h2.pt[1] - this._height / 2 * h2.ca]), t3 = true);
+        }
+      }
+      if (!t3) {
+        e2.lineTo(this._walker.getPathEnd());
+        break;
+      }
+    }
+    return e2.path();
+  }
+  _constructTriangle(t2) {
+    const e2 = new e$3(), s2 = this._walker.calculatePathLength(t2);
+    Math.round(s2 / this._period);
+    let n2 = true;
+    for (; ; ) {
+      let t3 = false;
+      if (this._walker.curPositionIsValid()) {
+        const i2 = {};
+        this._walker.curPointAndAngle(i2);
+        const s3 = {};
+        if (this._walker.nextPointAndAngle(this._period / 2, s3)) {
+          const h2 = {};
+          this._walker.nextPointAndAngle(this._period, h2) && (this._walker.nextPosition(this._period / 2) && (n2 ? (e2.startPath(i2.pt), n2 = false) : e2.lineTo(i2.pt), e2.lineTo([s3.pt[0] - this._height / 2 * s3.sa, s3.pt[1] + this._height / 2 * s3.ca]), e2.lineTo([h2.pt[0] + this._height / 2 * h2.sa, h2.pt[1] - this._height / 2 * h2.ca])), t3 = true);
+        }
+      }
+      if (!t3) {
+        e2.lineTo(this._walker.getPathEnd());
+        break;
+      }
+    }
+    return e2.path();
+  }
+}
+var t$2;
+!function(t2) {
+  t2.NoConstraint = "NoConstraint", t2.WithMarkers = "WithMarkers", t2.WithFullGap = "WithFullGap", t2.WithHalfGap = "WithHalfGap", t2.Custom = "Custom";
+}(t$2 || (t$2 = {}));
+class n$5 {
+  static local() {
+    return n$5.instance === null && (n$5.instance = new n$5()), n$5.instance;
+  }
+  execute(t2, e2, s2) {
+    return new a$1(t2, e2, s2);
+  }
+}
+n$5.instance = null;
+class a$1 extends C {
+  constructor(t2, i2, n2) {
+    super(t2, true, true), this._grometryWalker = new r$8(), this._grometryWalker.updateTolerance(n2), this._angleToLine = i2.angleToLine === void 0 || i2.angleToLine, this._offset = i2.offset !== void 0 ? i2.offset * n2 : 0, this._originalEndings = i2.endings, this._offsetAtEnd = i2.customEndingOffset !== void 0 ? i2.customEndingOffset * n2 : 0, this._position = i2.offsetAlongLine !== void 0 ? i2.offsetAlongLine * n2 : 0, this._pattern = new n$a(), this._pattern.init(i2.placementTemplate, false), this._pattern.scale(n2), this._endings = this._originalEndings;
+  }
+  processPath(t2) {
+    if (this._pattern.isEmpty())
+      return null;
+    let e2;
+    if (this.iteratePath)
+      e2 = this._pattern.nextValue();
+    else {
+      this._originalEndings === t$2.WithFullGap && this.isClosed ? this._endings = t$2.WithMarkers : this._endings = this._originalEndings, this._pattern.extPtGap = 0;
+      let s3, n2 = true;
+      switch (this._endings) {
+        case t$2.NoConstraint:
+          s3 = -this._position, s3 = this._adjustPosition(s3), n2 = false;
+          break;
+        case t$2.WithHalfGap:
+        default:
+          s3 = -this._pattern.lastValue() / 2;
+          break;
+        case t$2.WithFullGap:
+          s3 = -this._pattern.lastValue(), this._pattern.extPtGap = this._pattern.lastValue();
+          break;
+        case t$2.WithMarkers:
+          s3 = 0;
+          break;
+        case t$2.Custom:
+          s3 = -this._position, s3 = this._adjustPosition(s3), this._pattern.extPtGap = 0.5 * this._offsetAtEnd;
+      }
+      if (!this._grometryWalker.init(t2, this._pattern, n2))
+        return null;
+      this._pattern.reset();
+      let a2 = 0;
+      for (; s3 > a2; )
+        s3 -= a2, a2 = this._pattern.nextValue();
+      a2 -= s3, e2 = a2, this.iteratePath = true;
+    }
+    const s2 = {};
+    return this._grometryWalker.nextPointAndAngle(e2, s2) ? this._endings === t$2.WithFullGap && this._grometryWalker.isPathEnd() ? (this.iteratePath = false, null) : this._endings === t$2.WithMarkers && this._grometryWalker.isPathEnd() && (this.iteratePath = false, this.isClosed) ? null : (this.internalPlacement.setTranslate(s2.pt[0] + this._offset * s2.sa, s2.pt[1] - this._offset * s2.ca), this._angleToLine && this.internalPlacement.setRotateCS(s2.ca, s2.sa), this.internalPlacement) : (this.iteratePath = false, null);
+  }
+  _adjustPosition(t2) {
+    let e2 = t2 / this._pattern.length();
+    return e2 -= Math.floor(e2), e2 * this._pattern.length();
+  }
+}
+class i$1 {
+  static local() {
+    return i$1.instance === null && (i$1.instance = new i$1()), i$1.instance;
+  }
+  execute(e2, t2, s2) {
+    return new n$4(e2, t2, s2);
+  }
+}
+i$1.instance = null;
+class n$4 extends C {
+  constructor(e2, t2, i2) {
+    super(e2, false, true), this._curveHelper = new s$7(), this._angleToLine = t2.angleToLine === void 0 || t2.angleToLine, this._offset = t2.offset !== void 0 ? t2.offset * i2 : 0, this._type = t2.extremityPlacement, this._position = t2.offsetAlongLine !== void 0 ? t2.offsetAlongLine * i2 : 0, this._beginProcessed = false;
+  }
+  processPath(e2) {
+    let t2;
+    switch (this._type) {
+      case "Both":
+      default:
+        this._beginProcessed ? (t2 = this._atExtremities(e2, this._position, false), this._beginProcessed = false, this.iteratePath = false) : (t2 = this._atExtremities(e2, this._position, true), this._beginProcessed = true, this.iteratePath = true);
+        break;
+      case "JustBegin":
+        t2 = this._atExtremities(e2, this._position, true);
+        break;
+      case "JustEnd":
+        t2 = this._atExtremities(e2, this._position, false);
+        break;
+      case "None":
+    }
+    return t2;
+  }
+  _atExtremities(e2, s2, i2) {
+    const n2 = e2.length;
+    if (n2 < 2)
+      return null;
+    const r2 = i2 ? 1 : n2 - 2, o2 = i2 ? n2 : -1, a2 = i2 ? 1 : -1;
+    let l2, h2 = 0, c2 = i2 ? e2[0] : e2[n2 - 1];
+    for (let _2 = r2; _2 !== o2; _2 += a2) {
+      l2 = c2, c2 = e2[_2];
+      const i3 = this._curveHelper.calculateLength(l2, c2);
+      if (h2 + i3 > s2) {
+        const e3 = (s2 - h2) / i3, [n3, r3] = this._curveHelper.getAngleCS(l2, c2, e3), o3 = P(l2, c2, e3);
+        return this.internalPlacement.setTranslate(o3[0] - this._offset * r3, o3[1] + this._offset * n3), this._angleToLine && this.internalPlacement.setRotateCS(-n3, -r3), this.internalPlacement;
+      }
+      h2 += i3;
+    }
+    return null;
+  }
+}
+class e$1 {
+  static local() {
+    return e$1.instance === null && (e$1.instance = new e$1()), e$1.instance;
+  }
+  execute(t2, i2, s2) {
+    return new n$3(t2, i2, s2);
+  }
+}
+e$1.instance = null;
+class n$3 extends C {
+  constructor(t2, e2, n2) {
+    super(t2, true, true), this._walker = new r$8(), this._walker.updateTolerance(n2), this._angleToLine = e2.angleToLine === void 0 || e2.angleToLine, this._offset = e2.offset !== void 0 ? e2.offset * n2 : 0, this._beginGap = e2.beginPosition !== void 0 ? e2.beginPosition * n2 : 0, this._endGap = e2.endPosition !== void 0 ? e2.endPosition * n2 : 0, this._flipFirst = e2.flipFirst === void 0 || e2.flipFirst, this._pattern = new n$a(), this._pattern.init(e2.positionArray, false, false), this._subPathLen = 0, this._posCount = this._pattern.size(), this._isFirst = true, this._prevPos = 0;
+  }
+  processPath(t2) {
+    if (this._pattern.isEmpty())
+      return null;
+    let i2;
+    if (this.iteratePath) {
+      const t3 = this._pattern.nextValue() * this._subPathLen, s3 = this._beginGap + t3;
+      i2 = s3 - this._prevPos, this._prevPos = s3;
+    } else {
+      if (this._posCount = this._pattern.size(), this._isFirst = true, this._prevPos = 0, this._subPathLen = this._walker.calculatePathLength(t2) - this._beginGap - this._endGap, this._subPathLen < 0)
+        return this.iteratePath = false, null;
+      if (!this._walker.init(t2, this._pattern, false))
+        return null;
+      this._pattern.reset();
+      const s3 = this._pattern.nextValue() * this._subPathLen, e3 = this._beginGap + s3;
+      i2 = e3 - this._prevPos, this._prevPos = e3, this.iteratePath = true;
+    }
+    const s2 = {};
+    if (!this._walker.nextPointAndAngle(i2, s2, 1))
+      return this.iteratePath = false, null;
+    this.internalPlacement.setTranslate(s2.pt[0] + this._offset * s2.sa, s2.pt[1] - this._offset * s2.ca);
+    const e2 = this._isFirst && this._flipFirst;
+    let n2, a2;
+    return this._angleToLine ? (n2 = s2.ca, a2 = s2.sa) : (n2 = 1, a2 = 0), e2 && (n2 = -n2, a2 = -a2), this.internalPlacement.setRotateCS(n2, a2), this._isFirst = false, this._posCount--, this._posCount === 0 && (this.iteratePath = false), this.internalPlacement;
+  }
+}
+function s$2(t2) {
+  return t2.rings !== void 0;
+}
+class i {
+  static local() {
+    return i.instance === null && (i.instance = new i()), i.instance;
+  }
+  execute(t2, s2, i2) {
+    return new h$2(t2, s2, i2);
+  }
+}
+i.instance = null;
+class h$2 {
+  constructor(i2, h2, e2) {
+    if (this._xMin = 0, this._xMax = 0, this._yMin = 0, this._yMax = 0, this._currentX = 0, this._currentY = 0, this._stepX = (h2.stepX !== void 0 ? Math.abs(h2.stepX) : 16) * e2, this._stepY = (h2.stepY !== void 0 ? Math.abs(h2.stepY) : 16) * e2, this._stepX !== 0 && this._stepY !== 0 && i2 && s$2(i2) && i2.rings) {
+      if (this._gridType = h2.gridType !== void 0 ? h2.gridType : "Fixed", this._gridType === "Random")
+        this._randomness = h2.randomness !== void 0 ? h2.randomness / 100 : 1, this._gridAngle = 0, this._shiftOddRows = false, this._cosAngle = 1, this._sinAngle = 0, this._offsetX = 0, this._offsetY = 0;
+      else {
+        if (this._randomness = 0, this._gridAngle = h2.gridAngle !== void 0 ? h2.gridAngle : 0, this._shiftOddRows = h2.shiftOddRows !== void 0 && h2.shiftOddRows, this._offsetX = h2.offsetX !== void 0 ? h2.offsetX * e2 : 0, this._offsetY = h2.offsetY !== void 0 ? h2.offsetY * e2 : 0, this._cosAngle = Math.cos(this._gridAngle / 180 * Math.PI), this._sinAngle = -Math.sin(this._gridAngle / 180 * Math.PI), this._stepX)
+          if (this._offsetX < 0)
+            for (; this._offsetX < -0.5 * this._stepX; )
+              this._offsetX += this._stepX;
+          else
+            for (; this._offsetX >= 0.5 * this._stepX; )
+              this._offsetX -= this._stepX;
+        if (this._stepY)
+          if (this._offsetY < 0)
+            for (; this._offsetY < -0.5 * this._stepY; )
+              this._offsetY += this._stepY;
+          else
+            for (; this._offsetY >= 0.5 * this._stepY; )
+              this._offsetY -= this._stepY;
+      }
+      this._graphicOriginX = 0, this._graphicOriginY = 0, this._internalPlacement = new t$4(), this._calculateMinMax(i2), this._geometry = i2;
+    }
+  }
+  next() {
+    return this._geometry ? this._nextInside() : null;
+  }
+  _calculateMinMax(t2) {
+    let s2, i2, h2, e2, n2, _2, r2, o2;
+    this._xMin = 0, this._xMax = 0, this._yMin = 0, this._yMax = 0, n2 = _2 = Number.MAX_VALUE, r2 = o2 = -Number.MAX_VALUE;
+    for (const a2 of t2.rings) {
+      const t3 = a2 ? a2.length : 0;
+      for (let f2 = 0; f2 < t3; ++f2)
+        s2 = a2[f2][0] - this._graphicOriginX - this._offsetX, i2 = a2[f2][1] - this._graphicOriginY - this._offsetY, h2 = this._cosAngle * s2 - this._sinAngle * i2, e2 = this._sinAngle * s2 + this._cosAngle * i2, n2 = Math.min(n2, h2), r2 = Math.max(r2, h2), _2 = Math.min(_2, e2), o2 = Math.max(o2, e2);
+    }
+    n2 += this._graphicOriginX, r2 += this._graphicOriginX, _2 += this._graphicOriginY, o2 += this._graphicOriginY, this._xMin = Math.round(n2 / this._stepX), this._xMax = Math.round(r2 / this._stepX), this._yMin = Math.round(_2 / this._stepY), this._yMax = Math.round(o2 / this._stepY), this._currentX = this._xMax + 1, this._currentY = this._yMin - 1;
+  }
+  _nextInside() {
+    for (; ; ) {
+      if (this._currentX > this._xMax) {
+        if (this._currentY++, this._currentY > this._yMax)
+          return null;
+        this._currentX = this._xMin, this._shiftOddRows && this._currentY % 2 && this._currentX--;
+      }
+      let t2 = this._currentX * this._stepX + this._offsetX;
+      this._shiftOddRows && this._currentY % 2 && (t2 += 0.5 * this._stepX);
+      const s2 = this._currentY * this._stepY + this._offsetY;
+      let i2, h2;
+      return this._currentX++, this._gridType === "Random" ? (i2 = this._graphicOriginX + t2 + this._stepX * this._randomness * (0.5 - Math.random()) * 2 / 3, h2 = this._graphicOriginY + s2 + this._stepY * this._randomness * (0.5 - Math.random()) * 2 / 3) : (i2 = this._graphicOriginX + this._cosAngle * t2 + this._sinAngle * s2, h2 = this._graphicOriginY - this._sinAngle * t2 + this._cosAngle * s2), this._internalPlacement.setTranslate(i2, h2), this._internalPlacement;
+    }
+  }
+}
+const s$1 = 1e-3;
+class r$3 {
+  static local() {
+    return r$3.instance === null && (r$3.instance = new r$3()), r$3.instance;
+  }
+  execute(e2, t2, n2) {
+    return new l$1(e2, t2, n2);
+  }
+}
+r$3.instance = null;
+class l$1 extends C {
+  constructor(e2, t2, n2) {
+    super(e2, true, true), this._curveHelper = new s$7(), this._angleToLine = t2.angleToLine === void 0 || t2.angleToLine, this._offset = t2.offset !== void 0 ? t2.offset * n2 : 0, this._relativeTo = t2.relativeTo, this._position = t2.startPointOffset !== void 0 ? t2.startPointOffset * n2 : 0, this._epsilon = s$1 * n2;
+  }
+  processPath(e2) {
+    const i2 = this._position;
+    if (this._relativeTo === "SegmentMidpoint") {
+      for (this.iteratePath || (this._segmentCount = e2.length, this._curSegment = 1, this.iteratePath = true); this._curSegment < this._segmentCount; ) {
+        const n2 = this._curSegment;
+        this._curSegment++;
+        const i3 = e2[n2 - 1], s3 = e2[n2], r2 = this._curveHelper.calculateLength(i3, s3);
+        if (r2 < this._epsilon)
+          continue;
+        const l2 = 0.5 + this._position / r2, [a2, o2] = this._curveHelper.getAngleCS(i3, s3, l2), h2 = P(i3, s3, l2);
+        return this.internalPlacement.setTranslate(h2[0] - this._offset * o2, h2[1] + this._offset * a2), this._angleToLine && this.internalPlacement.setRotateCS(a2, o2), this.internalPlacement;
+      }
+      return this.iteratePath = false, null;
+    }
+    this._relativeTo === "LineEnd" && f$4(e2);
+    const s2 = this.onLine(e2, i2);
+    return this._relativeTo === "LineEnd" && f$4(e2), s2;
+  }
+  onLine(e2, n2) {
+    let i2, s2 = false;
+    switch (this._relativeTo) {
+      case "LineMiddle":
+      default:
+        i2 = this._curveHelper.calculatePathLength(e2) / 2 + n2;
+        break;
+      case "LineBeginning":
+        i2 = n2;
+        break;
+      case "LineEnd":
+        i2 = n2, s2 = true;
+    }
+    const r2 = e2.length;
+    let l2, a2 = 0, o2 = e2[0];
+    for (let h2 = 1; h2 < r2; ++h2) {
+      l2 = o2, o2 = e2[h2];
+      const n3 = this._curveHelper.calculateLength(l2, o2);
+      if (a2 + n3 > i2) {
+        const e3 = (i2 - a2) / n3, [r3, h3] = this._curveHelper.getAngleCS(l2, o2, e3), c2 = P(l2, o2, e3), u2 = s2 ? this._offset : -this._offset;
+        return this.internalPlacement.setTranslate(c2[0] - u2 * h3, c2[1] + u2 * r3), this._angleToLine && (s2 ? this.internalPlacement.setRotateCS(-r3, -h3) : this.internalPlacement.setRotateCS(r3, h3)), this.internalPlacement;
+      }
+      a2 += n3;
+    }
+    return null;
+  }
+}
+class n$2 {
+  static local() {
+    return n$2.instance === null && (n$2.instance = new n$2()), n$2.instance;
+  }
+  execute(t2, e2, s2) {
+    return new r$2(t2, e2, s2);
+  }
+}
+n$2.instance = null;
+const a = 1e-15;
+class r$2 extends C {
+  constructor(t2, e2, s2) {
+    super(t2, true, true), this._curveHelper = new s$7(), this._angleToLine = e2.angleToLine === void 0 || e2.angleToLine, this._offset = e2.offset !== void 0 ? e2.offset * s2 : 0, this._endPoints = e2.placeOnEndPoints === void 0 || e2.placeOnEndPoints, this._controlPoints = e2.placeOnControlPoints === void 0 || e2.placeOnControlPoints, this._regularVertices = e2.placeOnRegularVertices === void 0 || e2.placeOnRegularVertices, this._tags = [], this._tagIterator = 0;
+  }
+  processPath(t2) {
+    if (this.iteratePath || (this._preparePath(t2), this.iteratePath = true), this._tagIterator >= this._tags.length)
+      return this._tags.length = 0, this._tagIterator = 0, this.iteratePath = false, null;
+    const e2 = this._tags[this._tagIterator];
+    this._angleToLine && this.internalPlacement.setRotate(e2[2]);
+    let s2 = e2[0], i2 = e2[1];
+    if (this._offset !== 0) {
+      const t3 = Math.cos(e2[2]), n2 = Math.sin(e2[2]);
+      s2 -= this._offset * n2, i2 += this._offset * t3;
+    }
+    return this.internalPlacement.setTranslate(s2, i2), this._tagIterator++, this.internalPlacement;
+  }
+  _preparePath(t2) {
+    this._tags.length = 0, this._tagIterator = 0;
+    const i2 = x(t2), n2 = t2.length - 1;
+    let a2, r2, o2 = 0, l2 = 0, _2 = 0, c2 = 0, g$1 = 0;
+    for (; o2 < n2; ) {
+      o2++, a2 = t2[o2 - 1], r2 = t2[o2];
+      const e2 = g(a2), u2 = g(r2);
+      (this._angleToLine || this._offset !== 0) && (c2 = this._curveHelper.getAngle(a2, r2, 0)), o2 === 1 ? i2 ? (l2 = c2, _2 = e2) : this._endPoints && this._tags.push([a2[0], a2[1], c2]) : e2 === 1 ? this._controlPoints && this._tags.push([a2[0], a2[1], h$1(g$1, c2)]) : this._regularVertices && this._tags.push([a2[0], a2[1], h$1(g$1, c2)]), (this._angleToLine || this._offset !== 0) && (g$1 = this._curveHelper.getAngle(a2, r2, 1)), o2 === n2 && (i2 ? u2 === 1 || _2 === 1 ? this._controlPoints && this._tags.push([r2[0], r2[1], h$1(g$1, l2)]) : this._regularVertices && this._tags.push([r2[0], r2[1], h$1(g$1, l2)]) : this._endPoints && this._tags.push([r2[0], r2[1], g$1]));
+    }
+    this._tagIterator = 0;
+  }
+}
+function h$1(t2, e2) {
+  const s2 = Math.PI;
+  for (; Math.abs(e2 - t2) > s2 + 2 * a; )
+    e2 - t2 > s2 ? e2 -= 2 * s2 : e2 += 2 * s2;
+  return (t2 + e2) / 2;
+}
+function s(t2) {
+  return t2.rings !== void 0;
+}
+class o$1 {
+  static local() {
+    return o$1.instance === null && (o$1.instance = new o$1()), o$1.instance;
+  }
+  execute(t2, e2, n2) {
+    return new r$1(t2, e2, n2);
+  }
+}
+o$1.instance = null;
+class r$1 {
+  constructor(t2, e2, s2) {
+    this._geometry = t2, this._offsetX = e2.offsetX !== void 0 ? e2.offsetX * s2 : 0, this._offsetY = e2.offsetY !== void 0 ? e2.offsetY * s2 : 0, this._method = e2.method !== void 0 ? e2.method : "OnPolygon", this._internalPlacement = new t$4();
+  }
+  next() {
+    const t2 = this._geometry;
+    return this._geometry = null, t2 && s(t2) ? this._polygonCenter(t2) : null;
+  }
+  _polygonCenter(n2) {
+    let s2 = false;
+    switch (this._method) {
+      case "OnPolygon":
+      default:
+      case "CenterOfMass":
+      case "BoundingBoxCenter": {
+        const o2 = i$5();
+        c$5(o2, n2), this._internalPlacement.setTranslate((o2[2] + o2[0]) / 2 + this._offsetX, (o2[3] + o2[1]) / 2 - this._offsetY), s2 = true;
+        break;
+      }
+    }
+    return s2 ? this._internalPlacement : null;
+  }
+}
+function G(p2) {
+  if (!p2)
+    return null;
+  switch (p2.type) {
+    case "CIMGeometricEffectAddControlPoints":
+      return o$4.local();
+    case "CIMGeometricEffectArrow":
+      return c$3.local();
+    case "CIMGeometricEffectBuffer":
+      return o$3.local();
+    case "CIMGeometricEffectCut":
+      return u$3.local();
+    case "CIMGeometricEffectDashes":
+      return i$2.local();
+    case "CIMGeometricEffectDonut":
+      return h$3.local();
+    case "CIMGeometricEffectJog":
+      return s$4.local();
+    case "CIMGeometricEffectMove":
+      return n$8.local();
+    case "CIMGeometricEffectOffset":
+      return o$2.local();
+    case "CIMGeometricEffectReverse":
+      return s$3.local();
+    case "CIMGeometricEffectRotate":
+      return u$2.local();
+    case "CIMGeometricEffectScale":
+      return c$1.local();
+    case "CIMGeometricEffectWave":
+      return n$6.local();
+  }
+  return null;
+}
+function A(e2) {
+  if (!e2)
+    return null;
+  switch (e2.type) {
+    case "CIMMarkerPlacementAlongLineSameSize":
+      return n$5.local();
+    case "CIMMarkerPlacementAtExtremities":
+      return i$1.local();
+    case "CIMMarkerPlacementAtRatioPositions":
+      return e$1.local();
+    case "CIMMarkerPlacementInsidePolygon":
+      return i.local();
+    case "CIMMarkerPlacementOnLine":
+      return r$3.local();
+    case "CIMMarkerPlacementOnVertices":
+      return n$2.local();
+    case "CIMMarkerPlacementPolygonCenter":
+      return o$1.local();
+  }
+  return null;
+}
+class t$1 {
+  constructor(t2 = 0, h2 = 0, i2 = 0, s2 = 0) {
+    this.x = t2, this.y = h2, this.width = i2, this.height = s2;
+  }
+  get isEmpty() {
+    return this.width <= 0 || this.height <= 0;
+  }
+  union(t2) {
+    this.x = Math.min(this.x, t2.x), this.y = Math.min(this.y, t2.y), this.width = Math.max(this.width, t2.width), this.height = Math.max(this.height, t2.height);
+  }
+}
+const c = Math.PI / 180, f$2 = n$b.getLogger("esri.symbols.cim.CIMSymbolDrawHelper");
+class m$1 {
+  constructor(t2) {
+    this._t = t2;
+  }
+  static createIdentity() {
+    return new m$1([1, 0, 0, 0, 1, 0]);
+  }
+  clone() {
+    const t2 = this._t;
+    return new m$1(t2.slice());
+  }
+  transform(t2) {
+    const s2 = this._t;
+    return [s2[0] * t2[0] + s2[1] * t2[1] + s2[2], s2[3] * t2[0] + s2[4] * t2[1] + s2[5]];
+  }
+  static createScale(t2, s2) {
+    return new m$1([t2, 0, 0, 0, s2, 0]);
+  }
+  scale(t2, s2) {
+    const e2 = this._t;
+    return e2[0] *= t2, e2[1] *= t2, e2[2] *= t2, e2[3] *= s2, e2[4] *= s2, e2[5] *= s2, this;
+  }
+  scaleRatio() {
+    return Math.sqrt(this._t[0] * this._t[0] + this._t[1] * this._t[1]);
+  }
+  static createTranslate(t2, s2) {
+    return new m$1([0, 0, t2, 0, 0, s2]);
+  }
+  translate(t2, s2) {
+    const e2 = this._t;
+    return e2[2] += t2, e2[5] += s2, this;
+  }
+  static createRotate(t2) {
+    const s2 = Math.cos(t2), e2 = Math.sin(t2);
+    return new m$1([s2, -e2, 0, e2, s2, 0]);
+  }
+  rotate(t2) {
+    return this.multiply(m$1.createRotate(t2));
+  }
+  multiply(t2) {
+    const s2 = this._t, e2 = t2._t, r2 = s2[0] * e2[0] + s2[3] * e2[1], i2 = s2[1] * e2[0] + s2[4] * e2[1], o2 = s2[2] * e2[0] + s2[5] * e2[1] + e2[2], a2 = s2[0] * e2[3] + s2[3] * e2[4], n2 = s2[1] * e2[3] + s2[4] * e2[4], h2 = s2[2] * e2[3] + s2[5] * e2[4] + e2[5];
+    return s2[0] = r2, s2[1] = i2, s2[2] = o2, s2[3] = a2, s2[4] = n2, s2[5] = h2, this;
+  }
+}
+class u$1 {
+  constructor(t2) {
+    this._transfos = [], this._sizeTransfos = [], this._transfos.push(t2 || m$1.createIdentity()), this._sizeTransfos.push(t2 ? t2.scaleRatio() : 1);
+  }
+  transformPt(t2) {
+    return this._transfos[this._transfos.length - 1].transform(t2);
+  }
+  transformSize(t2) {
+    return t2 * this._sizeTransfos[this._sizeTransfos.length - 1];
+  }
+  back() {
+    return this._transfos[this._transfos.length - 1];
+  }
+  push(t2, s2) {
+    const e2 = s2 ? t2.scaleRatio() : 1;
+    t2.multiply(this.back()), this._transfos.push(t2), this._sizeTransfos.push(this._sizeTransfos[this._sizeTransfos.length - 1] * e2);
+  }
+  pop() {
+    this._transfos.splice(-1, 1), this._sizeTransfos.splice(-1, 1);
+  }
+  drawSymbol(t2, s2) {
+    if (t2)
+      switch (t2.type) {
+        case "CIMPointSymbol":
+        case "CIMLineSymbol":
+        case "CIMPolygonSymbol":
+          this.drawMultiLayerSymbol(t2, s2);
+      }
+  }
+  drawMultiLayerSymbol(t2, s2) {
+    if (!t2)
+      return;
+    const e2 = t2.symbolLayers;
+    if (!e2)
+      return;
+    const r2 = t2.effects;
+    if (r2) {
+      const t3 = this.executeEffects(r2, s2);
+      if (t3) {
+        let s3 = t3.next();
+        for (; s3; )
+          this.drawSymbolLayers(e2, s3), s3 = t3.next();
+      }
+    } else
+      this.drawSymbolLayers(e2, s2);
+  }
+  executeEffects(t2, s2) {
+    const e2 = 1;
+    let r2 = new r$b(s2);
+    for (const i2 of t2) {
+      const t3 = G(i2);
+      t3 && (r2 = t3.execute(r2, i2, e2));
+    }
+    return r2;
+  }
+  drawSymbolLayers(t2, s2) {
+    let e2 = t2.length;
+    for (; e2--; ) {
+      const r2 = t2[e2];
+      if (!r2 || r2.enable === false)
+        continue;
+      const i2 = r2.effects;
+      if (i2) {
+        const t3 = this.executeEffects(i2, s2);
+        if (t3) {
+          let s3 = t3.next();
+          for (; s3; )
+            this.drawSymbolLayer(r2, s3), s3 = t3.next();
+        }
+      } else
+        this.drawSymbolLayer(r2, s2);
+    }
+  }
+  drawSymbolLayer(t2, s2) {
+    switch (t2.type) {
+      case "CIMSolidFill":
+        this.drawSolidFill(s2, t2.color);
+        break;
+      case "CIMHatchFill":
+        this.drawHatchFill(t2, s2);
+        break;
+      case "CIMSolidStroke":
+        this.drawSolidStroke(s2, t2.color, t2.width, t2.capStyle, t2.joinStyle, t2.miterLimit);
+        break;
+      case "CIMCharacterMarker":
+      case "CIMPictureMarker":
+      case "CIMVectorMarker":
+        this.drawMarkerLayer(t2, s2);
+    }
+  }
+  drawHatchFill(t2, s2) {
+    const e2 = 1, r2 = this._buildHatchPolyline(t2, s2, e2);
+    r2 && (this.pushClipPath(s2), this.drawMultiLayerSymbol(t2.lineSymbol, r2), this.popClipPath());
+  }
+  drawMarkerLayer(t2, s2) {
+    const e2 = t2.markerPlacement;
+    if (e2) {
+      const r2 = A(e2);
+      if (r2) {
+        const i2 = e2.type === "CIMMarkerPlacementInsidePolygon";
+        i2 && this.pushClipPath(s2);
+        const o2 = 1, a2 = r2.execute(s2, e2, o2);
+        if (a2) {
+          let s3 = a2.next();
+          for (; s3; )
+            this.drawMarker(t2, s3), s3 = a2.next();
+        }
+        i2 && this.popClipPath();
+      }
+    } else {
+      const e3 = new t$4();
+      e3.tx = s2.x, e3.ty = s2.y, this.drawMarker(t2, e3);
+    }
+  }
+  drawMarker(t2, s2) {
+    switch (t2.type) {
+      case "CIMCharacterMarker":
+      case "CIMPictureMarker":
+        this.drawPictureMarker(t2, s2);
+        break;
+      case "CIMVectorMarker":
+        this.drawVectorMarker(t2, s2);
+    }
+  }
+  drawPictureMarker(t2, s2) {
+    if (!t2)
+      return;
+    const e2 = t2.size || 10, r2 = m$1.createIdentity(), i2 = t2.anchorPoint;
+    if (i2) {
+      let s3 = i2.x, o2 = i2.y;
+      t2.anchorPointUnits !== "Absolute" && (s3 *= e2, o2 *= e2), r2.translate(-s3, -o2);
+    }
+    t2.rotation && r2.rotate(t2.rotation * c), r2.translate(t2.offsetX || 0, t2.offsetY || 0), r2.translate(s2.tx, s2.ty), this.push(r2, false), this.drawImage(t2.url, e2, t2.scaleX), this.pop();
+  }
+  drawVectorMarker(t2, s2) {
+    if (!t2)
+      return;
+    const e2 = t2.markerGraphics;
+    if (!e2)
+      return;
+    const r2 = t2.size, i2 = t2.frame, o2 = i2 ? i2.ymax - i2.ymin : 0, a2 = r2 && o2 ? r2 / o2 : 1, n2 = m$1.createIdentity();
+    i2 && n2.translate(0.5 * -(i2.xmax + i2.xmin), 0.5 * -(i2.ymax + i2.ymin));
+    const h2 = t2.anchorPoint;
+    if (h2) {
+      let s3 = h2.x, e3 = h2.y;
+      t2.anchorPointUnits !== "Absolute" && i2 && (s3 *= i2.xmax - i2.xmin, e3 *= i2.ymax - i2.ymin), n2.translate(-s3, -e3);
+    }
+    a2 !== 1 && n2.scale(a2, a2), t2.rotation && n2.rotate(t2.rotation * c), n2.translate(t2.offsetX || 0, t2.offsetY || 0), n2.translate(s2.tx, s2.ty), this.push(n2, t2.scaleSymbolsProportionally);
+    for (const l2 of e2)
+      l2 && l2.symbol && l2.geometry || f$2.error("Invalid marker graphic", l2), this.drawSymbol(l2.symbol, l2.geometry);
+    this.pop();
+  }
+  _buildHatchPolyline(t2, e2, r2) {
+    let o2 = (t2.separation !== void 0 ? t2.separation : 4) * r2, a2 = t2.rotation !== void 0 ? t2.rotation : 0;
+    if (o2 === 0)
+      return null;
+    o2 < 0 && (o2 = -o2);
+    let n2 = 0;
+    const h2 = 0.5 * o2;
+    for (; n2 > h2; )
+      n2 -= o2;
+    for (; n2 < -h2; )
+      n2 += o2;
+    const l2 = i$5();
+    c$5(l2, e2), l2[0] -= h2, l2[1] -= h2, l2[2] += h2, l2[3] += h2;
+    const f2 = [[l2[0], l2[1]], [l2[0], l2[3]], [l2[2], l2[3]], [l2[2], l2[1]]];
+    for (; a2 > 180; )
+      a2 -= 180;
+    for (; a2 < 0; )
+      a2 += 180;
+    const m2 = Math.cos(a2 * c), u2 = Math.sin(a2 * c), p2 = -o2 * u2, _2 = o2 * m2;
+    let y2, d2, x2, M;
+    n2 = (t2.offsetX !== void 0 ? t2.offsetX * r2 : 0) * u2 - (t2.offsetY !== void 0 ? t2.offsetY * r2 : 0) * m2, y2 = x2 = Number.MAX_VALUE, d2 = M = -Number.MAX_VALUE;
+    for (const s2 of f2) {
+      const t3 = s2[0], e3 = s2[1], r3 = m2 * t3 + u2 * e3, i2 = -u2 * t3 + m2 * e3;
+      y2 = Math.min(y2, r3), x2 = Math.min(x2, i2), d2 = Math.max(d2, r3), M = Math.max(M, i2);
+    }
+    x2 = Math.floor(x2 / o2) * o2;
+    let b = m2 * y2 - u2 * x2 - p2 * n2 / o2, w = u2 * y2 + m2 * x2 - _2 * n2 / o2, P2 = m2 * d2 - u2 * x2 - p2 * n2 / o2, S2 = u2 * d2 + m2 * x2 - _2 * n2 / o2;
+    const g2 = 1 + Math.round((M - x2) / o2), C2 = [];
+    for (let s2 = 0; s2 < g2; s2++)
+      b += p2, w += _2, P2 += p2, S2 += _2, C2.push([[b, w], [P2, S2]]);
+    return { paths: C2 };
+  }
+}
+class p$1 extends u$1 {
+  constructor() {
+    super(), this.reset();
+  }
+  reset() {
+    this._xmin = this._ymin = 1 / 0, this._xmax = this._ymax = -1 / 0, this._clipCount = 0;
+  }
+  envelope() {
+    return new t$1(this._xmin, this._ymin, this._xmax - this._xmin, this._ymax - this._ymin);
+  }
+  drawSolidFill(t2) {
+    !t2 || this._clipCount > 0 || (y$3(t2) ? this._processPath(t2.rings, 0) : f$5(t2) && this._processPath(t2.paths, 0));
+  }
+  drawSolidStroke(t2, s2, i2) {
+    if (!t2 || this._clipCount > 0)
+      return;
+    const o2 = 0.5 * this.transformSize(i2);
+    y$3(t2) ? this._processPath(t2.rings, o2) : f$5(t2) && this._processPath(t2.paths, o2);
+  }
+  pushClipPath(t2) {
+    this.drawSolidFill(t2), ++this._clipCount;
+  }
+  popClipPath() {
+    --this._clipCount;
+  }
+  drawImage(t2, s2, e2) {
+    const r2 = s2 / 2;
+    this._merge(this.transformPt([0, 0]), r2);
+  }
+  _processPath(t2, s2) {
+    if (t2)
+      for (const e2 of t2) {
+        const t3 = e2 ? e2.length : 0;
+        if (t3 > 1) {
+          this._merge(this.transformPt(e2[0]), s2);
+          for (let r2 = 1; r2 < t3; ++r2)
+            this._merge(this.transformPt(e2[r2]), s2);
+        }
+      }
+  }
+  _merge(t2, s2) {
+    t2[0] - s2 < this._xmin && (this._xmin = t2[0] - s2), t2[0] + s2 > this._xmax && (this._xmax = t2[0] + s2), t2[1] - s2 < this._ymin && (this._ymin = t2[1] - s2), t2[1] + s2 > this._ymax && (this._ymax = t2[1] + s2);
+  }
+}
+class _ extends u$1 {
+  constructor(t2, s2) {
+    super(s2), this._ctx = t2;
+  }
+  drawSolidFill(t2, s2) {
+    if (!t2)
+      return;
+    if (y$3(t2))
+      this._buildPath(t2.rings, true);
+    else {
+      if (!f$5(t2))
+        return;
+      this._buildPath(t2.paths, true);
+    }
+    const i2 = this._ctx;
+    i2.fillStyle = typeof s2 == "string" ? s2 : "rgba(" + Math.round(s2[0]) + "," + Math.round(s2[1]) + "," + Math.round(s2[2]) + "," + s2[3] / 255 + ")", i2.fill("evenodd");
+  }
+  drawSolidStroke(t2, s2, i2, o2, a2, n2) {
+    if (!t2 || !s2 || i2 === 0)
+      return;
+    if (y$3(t2))
+      this._buildPath(t2.rings, true);
+    else {
+      if (!f$5(t2))
+        return;
+      this._buildPath(t2.paths, false);
+    }
+    const h2 = this._ctx;
+    h2.strokeStyle = typeof s2 == "string" ? s2 : "rgba(" + Math.round(s2[0]) + "," + Math.round(s2[1]) + "," + Math.round(s2[2]) + "," + s2[3] / 255 + ")", h2.lineWidth = this.transformSize(i2) + 0.5, this._setCapStyle(o2), this._setJoinStyle(a2), h2.miterLimit = n2, h2.stroke();
+  }
+  pushClipPath(t2) {
+    this._ctx.save(), y$3(t2) ? this._buildPath(t2.rings, true) : f$5(t2) && this._buildPath(t2.paths, true), this._ctx.clip("evenodd");
+  }
+  popClipPath() {
+    this._ctx.restore();
+  }
+  drawImage(t2, s2, e2) {
+  }
+  _buildPath(t2, s2) {
+    const e2 = this._ctx;
+    if (e2.beginPath(), t2)
+      for (const r2 of t2) {
+        const t3 = r2 ? r2.length : 0;
+        if (t3 > 1) {
+          let i2 = this.transformPt(r2[0]);
+          e2.moveTo(i2[0], i2[1]);
+          for (let s3 = 1; s3 < t3; ++s3)
+            i2 = this.transformPt(r2[s3]), e2.lineTo(i2[0], i2[1]);
+          s2 && e2.closePath();
+        }
+      }
+  }
+  _setCapStyle(t2) {
+    switch (t2) {
+      case "Butt":
+        this._ctx.lineCap = "butt";
+        break;
+      case "Round":
+        this._ctx.lineCap = "round";
+        break;
+      case "Square":
+        this._ctx.lineCap = "square";
+    }
+  }
+  _setJoinStyle(t2) {
+    switch (t2) {
+      case "Bevel":
+        this._ctx.lineJoin = "bevel";
+        break;
+      case "Round":
+        this._ctx.lineJoin = "round";
+        break;
+      case "Miter":
+        this._ctx.lineJoin = "miter";
+    }
+  }
+}
+const t = [1, 256, 65536, 16777216], n$1 = [1 / 256, 1 / 65536, 1 / 16777216, 1 / 4294967296], o = e(new Uint8ClampedArray([255, 255, 255, 255]));
+function r(n2, r2, e2 = 0) {
+  const c2 = f$1(n2, 0, o);
+  for (let o2 = 0; o2 < 4; o2++)
+    r2[e2 + o2] = Math.floor(256 * u(c2 * t[o2]));
+}
+function e(t2, o2 = 0) {
+  let r2 = 0;
+  for (let e2 = 0; e2 < 4; e2++)
+    r2 += t2[o2 + e2] * n$1[e2];
+  return r2;
+}
+function f$1(t2, n2, o2) {
+  return t2 < n2 ? n2 : t2 > o2 ? o2 : t2;
+}
+function u(t2) {
+  return t2 - Math.floor(t2);
+}
+const n = Math.PI, l = n / 2, m = 4, y = n$b.getLogger("esri.symbols.cim.CIMSymbolHelper");
+function f(e2, t2) {
+  switch (t2.type) {
+    case "CIMSymbolReference": {
+      const r2 = { type: "point", x: 0, y: 0 };
+      e2.drawSymbol(t2.symbol, r2);
+      break;
+    }
+    case "CIMPointSymbol": {
+      const r2 = { type: "point", x: 0, y: 0 };
+      e2.drawSymbol(t2, r2);
+      break;
+    }
+    case "CIMTextSymbol":
+      break;
+    case "CIMVectorMarker": {
+      const r2 = new t$4();
+      e2.drawMarker(t2, r2);
+      break;
+    }
+  }
+  return e2.envelope();
+}
+class h {
+  static getEnvelope(e2) {
+    const t2 = new p$1();
+    if (Array.isArray(e2)) {
+      let r2;
+      for (const o2 of e2)
+        r2 ? r2.union(f(t2, o2)) : r2 = f(t2, o2);
+      return r2;
+    }
+    return f(t2, e2);
+  }
+  static getTextureAnchor(e2) {
+    const t2 = this.getEnvelope(e2);
+    if (!t2 || t2.width <= 0 || t2.height <= 0)
+      return [0, 0, 0];
+    const r2 = 96 / 72, o2 = (t2.x + 0.5 * t2.width) * r2, s2 = -(t2.y + 0.5 * t2.height) * r2, a2 = t2.width * r2 + 2, i2 = t2.height * r2 + 2;
+    return [o2 / a2, s2 / i2, i2];
+  }
+  static rasterize(e2, t2, r2, s2 = true) {
+    const c2 = r2 || this.getEnvelope(t2);
+    if (!c2 || c2.width <= 0 || c2.height <= 0)
+      return [null, 0, 0, 0, 0];
+    const n2 = 96 / 72, l2 = (c2.x + 0.5 * c2.width) * n2, m2 = (c2.y + 0.5 * c2.height) * n2;
+    e2.width = c2.width * n2, e2.height = c2.height * n2, r2 || (e2.width += 2, e2.height += 2);
+    const y2 = e2.getContext("2d"), f2 = m$1.createScale(n2, -n2);
+    f2.translate(0.5 * e2.width - l2, 0.5 * e2.height + m2);
+    const h2 = new _(y2, f2);
+    switch (t2.type) {
+      case "CIMPointSymbol": {
+        const e3 = { type: "point", x: 0, y: 0 };
+        h2.drawSymbol(t2, e3);
+        break;
+      }
+      case "CIMVectorMarker": {
+        const e3 = new t$4();
+        h2.drawMarker(t2, e3);
+        break;
+      }
+    }
+    const p2 = y2.getImageData(0, 0, e2.width, e2.height), S2 = new Uint8Array(p2.data);
+    if (s2) {
+      let e3;
+      for (let t3 = 0; t3 < S2.length; t3 += 4)
+        e3 = S2[t3 + 3] / 255, S2[t3] = S2[t3] * e3, S2[t3 + 1] = S2[t3 + 1] * e3, S2[t3 + 2] = S2[t3 + 2] * e3;
+    }
+    return [S2, e2.width, e2.height, -l2 / e2.width, -m2 / e2.height];
+  }
+  static fromSimpleMarker(e2) {
+    const t2 = 100, r2 = 50;
+    let o2, s2;
+    const a2 = e2.style;
+    if (a2 === "circle" || a2 === "esriSMSCircle") {
+      const e3 = 0.25;
+      let t3 = Math.acos(1 - e3 / r2), a3 = Math.ceil(n / t3 / 4);
+      a3 === 0 && (a3 = 1), t3 = l / a3, a3 *= 4;
+      const i3 = [];
+      i3.push([r2, 0]);
+      for (let o3 = 1; o3 < a3; o3++)
+        i3.push([r2 * Math.cos(o3 * t3), -r2 * Math.sin(o3 * t3)]);
+      i3.push([r2, 0]), o2 = { rings: [i3] }, s2 = { xmin: -r2, ymin: -r2, xmax: r2, ymax: r2 };
+    } else if (a2 === "cross" || a2 === "esriSMSCross") {
+      const e3 = 0;
+      o2 = { rings: [[[e3, r2], [e3, e3], [r2, e3], [r2, -e3], [e3, -e3], [e3, -r2], [-e3, -r2], [-e3, -e3], [-r2, -e3], [-r2, e3], [-e3, e3], [-e3, r2], [e3, r2]]] }, s2 = { xmin: -r2, ymin: -r2, xmax: r2, ymax: r2 };
+    } else if (a2 === "diamond" || a2 === "esriSMSDiamond")
+      o2 = { rings: [[[-r2, 0], [0, r2], [r2, 0], [0, -r2], [-r2, 0]]] }, s2 = { xmin: -r2, ymin: -r2, xmax: r2, ymax: r2 };
+    else if (a2 === "square" || a2 === "esriSMSSquare")
+      o2 = { rings: [[[-r2, -r2], [-r2, r2], [r2, r2], [r2, -r2], [-r2, -r2]]] }, s2 = { xmin: -r2, ymin: -r2, xmax: r2, ymax: r2 };
+    else if (a2 === "x" || a2 === "esriSMSX") {
+      const e3 = 0;
+      o2 = { rings: [[[0, e3], [r2 - e3, r2], [r2, r2 - e3], [e3, 0], [r2, e3 - r2], [r2 - e3, -r2], [0, -e3], [e3 - r2, -r2], [-r2, e3 - r2], [-e3, 0], [-r2, r2 - e3], [e3 - r2, r2], [0, e3]]] }, s2 = { xmin: -r2, ymin: -r2, xmax: r2, ymax: r2 };
+    } else if (a2 === "triangle" || a2 === "esriSMSTriangle") {
+      const e3 = t2 * 0.5773502691896257, r3 = -e3, a3 = 2 / 3 * t2, i3 = a3 - t2;
+      o2 = { rings: [[[r3, i3], [0, a3], [e3, i3], [r3, i3]]] }, s2 = { xmin: r3, ymin: i3, xmax: e3, ymax: a3 };
+    } else
+      a2 !== "arrow" && a2 !== "esriSMSArrow" || (o2 = { rings: [[[-50, 50], [50, 0], [-50, -50], [-33, -20], [-33, 20], [-50, 50]]] }, s2 = { xmin: -r2, ymin: -r2, xmax: r2, ymax: r2 });
+    let i2;
+    if (o2 && s2) {
+      const t3 = [{ type: "CIMSolidFill", enable: true, color: e2.color }];
+      e2.outline && t3.push({ type: "CIMSolidStroke", enable: true, width: e2.outline.width, color: e2.outline.color });
+      const r3 = { type: "CIMPolygonSymbol", symbolLayers: t3 };
+      i2 = { type: "CIMPointSymbol", symbolLayers: [{ type: "CIMVectorMarker", enable: true, rotation: e2.angle, size: e2.size, offsetX: e2.xoffset, offsetY: e2.yoffset, frame: s2, markerGraphics: [{ type: "CIMMarkerGraphic", geometry: o2, symbol: r3 }] }] };
+    }
+    return i2;
+  }
+  static fromCIMHatchFill(e2) {
+    const t2 = e2.separation !== void 0 ? e2.separation : m, r2 = t2 / 2;
+    let o2 = this._getLineSymbolPeriod(e2.lineSymbol) || m;
+    for (; o2 < 4; )
+      o2 *= 2;
+    const s2 = o2 / 2;
+    return { type: "CIMVectorMarker", frame: { xmin: -s2, xmax: s2, ymin: -r2, ymax: r2 }, markerGraphics: [{ type: "CIMMarkerGraphic", geometry: { paths: [[[-s2, 0], [s2, 0]]] }, symbol: e2.lineSymbol }], size: t2 };
+  }
+  static _getLineSymbolPeriod(e2) {
+    if (e2) {
+      const t2 = this._getEffectsRepeat(e2.effects);
+      if (t2)
+        return t2;
+      if (e2.symbolLayers)
+        for (const r2 of e2.symbolLayers) {
+          const e3 = this._getEffectsRepeat(r2.effects);
+          if (e3)
+            return e3;
+          if (r2) {
+            const e4 = this._getPlacementRepeat(r2.markerPlacement);
+            if (e4)
+              return e4;
+          }
+        }
+    }
+    return 0;
+  }
+  static _getEffectsRepeat(e2) {
+    if (e2) {
+      for (const t2 of e2)
+        if (t2)
+          switch (t2.type) {
+            case "CIMGeometricEffectDashes": {
+              const e3 = t2.dashTemplate;
+              if (e3 && e3.length) {
+                let t3 = 0;
+                for (const r2 of e3)
+                  t3 += r2;
+                return 1 & e3.length && (t3 *= 2), t3;
+              }
+              break;
+            }
+            case "CIMGeometricEffectWave":
+              return t2.period;
+            default:
+              y.error(`unsupported geometric effect type ${t2.type}`);
+          }
+    }
+    return 0;
+  }
+  static _getPlacementRepeat(e2) {
+    if (e2)
+      switch (e2.type) {
+        case "CIMMarkerPlacementAlongLineSameSize":
+        case "CIMMarkerPlacementAlongLineRandomSize":
+        case "CIMMarkerPlacementAlongLineVariableSize": {
+          const t2 = e2.placementTemplate;
+          if (t2 && t2.length) {
+            let e3 = 0;
+            for (const r2 of t2)
+              e3 += r2;
+            return 1 & t2.length && (e3 *= 2), e3;
+          }
+          break;
+        }
+      }
+    return 0;
+  }
+  static fromCIMInsidePolygon(e2) {
+    const t2 = e2.markerPlacement, r2 = __spreadValues({ type: e2.type }, e2);
+    let o2, s2, a2, i2;
+    if (r2.markerPlacement = null, r2.anchorPoint = null, t2.shiftOddRows === true) {
+      s2 = t2.stepX / 2, a2 = t2.stepY, i2 = 2 * t2.stepY;
+      o2 = [{ x: -s2, y: 0 }, { x: s2, y: 0 }, { x: 0, y: a2 }, { x: 0, y: -a2 }].map((e3) => ({ type: "CIMMarkerGraphic", geometry: e3, symbol: { type: "CIMPointSymbol", symbolLayers: [r2] } }));
+    } else
+      s2 = t2.stepX / 2, a2 = t2.stepY / 2, i2 = t2.stepY, o2 = [{ type: "CIMMarkerGraphic", geometry: { x: 0, y: 0 }, symbol: { type: "CIMPointSymbol", symbolLayers: [r2] } }];
+    return { type: "CIMVectorMarker", frame: { xmin: -s2, xmax: s2, ymin: -a2, ymax: a2 }, markerGraphics: o2, size: i2 };
+  }
+  static getFillColor(e2) {
+    if (!e2)
+      return null;
+    switch (e2.type) {
+      case "CIMPolygonSymbol":
+        if (e2.symbolLayers)
+          for (const t2 of e2.symbolLayers) {
+            const e3 = h.getFillColor(t2);
+            if (e3 != null)
+              return e3;
+          }
+        break;
+      case "CIMTextSymbol":
+        return h.getFillColor(e2.symbol);
+      case "CIMSolidFill":
+        return e2.color;
+    }
+  }
+  static getStrokeColor(e2) {
+    if (e2)
+      switch (e2.type) {
+        case "CIMPolygonSymbol":
+        case "CIMLineSymbol":
+          if (e2.symbolLayers)
+            for (const t2 of e2.symbolLayers) {
+              const e3 = h.getStrokeColor(t2);
+              if (e3 !== void 0)
+                return e3;
+            }
+          break;
+        case "CIMTextSymbol":
+          return h.getStrokeColor(e2.symbol);
+        case "CIMSolidStroke":
+          return e2.color;
+      }
+  }
+  static getStrokeWidth(e2) {
+    if (e2)
+      switch (e2.type) {
+        case "CIMPolygonSymbol":
+        case "CIMLineSymbol":
+          if (e2.symbolLayers)
+            for (const t2 of e2.symbolLayers) {
+              const e3 = h.getStrokeWidth(t2);
+              if (e3 !== void 0)
+                return e3;
+            }
+          break;
+        case "CIMTextSymbol":
+          return h.getStrokeWidth(e2.symbol);
+        case "CIMSolidStroke":
+        case "CIMGradientStroke":
+        case "CIMPictureStroke":
+          return e2.width;
+      }
+  }
+  static getSize(e2) {
+    if (e2)
+      switch (e2.type) {
+        case "CIMPointSymbol":
+        case "CIMLineSymbol":
+        case "CIMPolygonSymbol": {
+          let t2 = 0;
+          if (e2.symbolLayers)
+            for (const r2 of e2.symbolLayers) {
+              const e3 = h.getSize(r2);
+              e3 > t2 && (t2 = e3);
+            }
+          return t2;
+        }
+        case "CIMSolidStroke":
+        case "CIMPictureStroke":
+        case "CIMGradientStroke":
+          return e2.width;
+        case "CIMCharacterMarker":
+        case "CIMPictureMarker":
+        case "CIMVectorMarker":
+          return e2.size;
+      }
+  }
+  static getMarkerScaleRatio(e2) {
+    if (e2)
+      switch (e2.type) {
+        case "CIMVectorMarker":
+          if (e2.scaleSymbolsProportionally !== false && e2.frame) {
+            const t2 = e2.frame.ymax - e2.frame.ymin;
+            return e2.size / t2;
+          }
+      }
+    return 1;
+  }
+}
+class p {
+  static rasterizeSimpleFill(e2, r2, o2) {
+    r2 !== "solid" && r2 !== "none" && r2 !== "esriSFSSolid" && r2 !== "esriSFSNull" || console.error("Unexpected: style does not require rasterization");
+    const s2 = a$3(Math.ceil(o2)), a2 = this._isHorizontalOrVertical(r2) ? 8 * s2 : 16 * s2, i2 = 2 * s2;
+    e2.width = a2, e2.height = a2;
+    const c2 = e2.getContext("2d");
+    c2.strokeStyle = "#FFFFFF", c2.lineWidth = s2, c2.beginPath(), r2 !== "vertical" && r2 !== "cross" && r2 !== "esriSFSCross" && r2 !== "esriSFSVertical" || (c2.moveTo(a2 / 2, -i2), c2.lineTo(a2 / 2, a2 + i2)), r2 !== "horizontal" && r2 !== "cross" && r2 !== "esriSFSCross" && r2 !== "esriSFSHorizontal" || (c2.moveTo(-i2, a2 / 2), c2.lineTo(a2 + i2, a2 / 2)), r2 !== "forward-diagonal" && r2 !== "diagonal-cross" && r2 !== "esriSFSDiagonalCross" && r2 !== "esriSFSForwardDiagonal" || (c2.moveTo(-i2, -i2), c2.lineTo(a2 + i2, a2 + i2), c2.moveTo(a2 - i2, -i2), c2.lineTo(a2 + i2, i2), c2.moveTo(-i2, a2 - i2), c2.lineTo(i2, a2 + i2)), r2 !== "backward-diagonal" && r2 !== "diagonal-cross" && r2 !== "esriSFSBackwardDiagonal" && r2 !== "esriSFSDiagonalCross" || (c2.moveTo(a2 + i2, -i2), c2.lineTo(-i2, a2 + i2), c2.moveTo(i2, -i2), c2.lineTo(-i2, i2), c2.moveTo(a2 + i2, a2 - i2), c2.lineTo(a2 - i2, a2 + i2)), c2.stroke();
+    const n2 = c2.getImageData(0, 0, e2.width, e2.height), l2 = new Uint8Array(n2.data);
+    let m2;
+    for (let t2 = 0; t2 < l2.length; t2 += 4)
+      m2 = l2[t2 + 3] / 255, l2[t2] = l2[t2] * m2, l2[t2 + 1] = l2[t2 + 1] * m2, l2[t2 + 2] = l2[t2 + 2] * m2;
+    return [l2, e2.width, e2.height];
+  }
+  static rasterizeSimpleLine(e2, t2) {
+    let r2;
+    switch (t2) {
+      case "butt":
+        r2 = "Butt";
+        break;
+      case "square":
+        r2 = "Square";
+        break;
+      default:
+        r2 = "Round";
+    }
+    const o2 = r2 === "Butt";
+    let s2;
+    switch (e2) {
+      case "dash":
+      case "esriSLSDash":
+        s2 = o2 ? [4, 3] : [3, 4];
+        break;
+      case "dash-dot":
+      case "esriSLSDashDot":
+        s2 = o2 ? [4, 3, 1, 3] : [3, 4, 0, 4];
+        break;
+      case "dot":
+      case "esriSLSDot":
+        s2 = o2 ? [1, 3] : [0, 4];
+        break;
+      case "long-dash":
+      case "esriSLSLongDash":
+        s2 = o2 ? [8, 3] : [7, 4];
+        break;
+      case "long-dash-dot":
+      case "esriSLSLongDashDot":
+        s2 = o2 ? [8, 3, 1, 3] : [7, 4, 0, 4];
+        break;
+      case "long-dash-dot-dot":
+      case "esriSLSDashDotDot":
+        s2 = o2 ? [8, 3, 1, 3, 1, 3] : [7, 4, 0, 4, 0, 4];
+        break;
+      case "short-dash":
+      case "esriSLSShortDash":
+        s2 = o2 ? [4, 1] : [3, 2];
+        break;
+      case "short-dash-dot":
+      case "esriSLSShortDashDot":
+        s2 = o2 ? [4, 1, 1, 1] : [3, 2, 0, 2];
+        break;
+      case "short-dash-dot-dot":
+      case "esriSLSShortDashDotDot":
+        s2 = o2 ? [4, 1, 1, 1, 1, 1] : [3, 2, 0, 2, 0, 2];
+        break;
+      case "short-dot":
+      case "esriSLSShortDot":
+        s2 = o2 ? [1, 1] : [0, 2];
+        break;
+      case "solid":
+      case "esriSLSSolid":
+      case "none":
+        y.error("Unexpected: style does not require rasterization"), s2 = [0, 0];
+        break;
+      default:
+        y.error(`Tried to rasterize SLS, but found an unexpected style: ${e2}!`), s2 = [0, 0];
+    }
+    return this.rasterizeDash(s2, r2);
+  }
+  static rasterizeDash(e2, t2) {
+    const r$12 = t2 === "Butt", o2 = t2 === "Square", s2 = !r$12 && !o2, a2 = 15, i2 = 2 * a2 + 1;
+    let n2 = 0;
+    for (const c2 of e2)
+      n2 += c2;
+    const l2 = n2 * a2, m2 = l2 * i2, y2 = new Float32Array(m2), f2 = s2 ? a2 * a2 : a2;
+    for (let c2 = 0; c2 < m2; ++c2)
+      y2[c2] = f2;
+    const h2 = a2, p2 = 0.5 * a2;
+    let S2 = 0, d2 = 0, M = true;
+    for (const c2 of e2) {
+      S2 = d2, d2 += c2 * a2;
+      let e3 = S2;
+      for (; e3 < d2; ) {
+        let t3 = 0;
+        for (; t3 < i2; ) {
+          const a3 = t3 * l2 + e3, i3 = s2 ? (t3 - h2) * (t3 - h2) : Math.abs(t3 - h2);
+          y2[a3] = M ? r$12 ? Math.max(Math.max(S2 + p2 - e3, i3), Math.max(e3 - d2 + p2, i3)) : i3 : s2 ? Math.min((e3 - S2) * (e3 - S2) + i3, (e3 - d2) * (e3 - d2) + i3) : o2 ? Math.min(Math.max(e3 - S2, i3), Math.max(d2 - e3, i3)) : Math.min(Math.max(e3 - S2 + p2, i3), Math.max(d2 + p2 - e3, i3)), t3++;
+        }
+        e3++;
+      }
+      M = !M;
+    }
+    const b = y2.length, g2 = new Uint8Array(4 * b);
+    for (let u2 = 0; u2 < b; ++u2) {
+      const e3 = (s2 ? Math.sqrt(y2[u2]) : y2[u2]) / a2;
+      r(e3, g2, 4 * u2);
+    }
+    return [g2, l2, i2];
+  }
+  static _isHorizontalOrVertical(e2) {
+    return e2 === "vertical" || e2 === "horizontal" || e2 === "cross" || e2 === "esriSFSCross" || e2 === "esriSFSVertical" || e2 === "esriSFSHorizontal";
+  }
+}
+class S {
+  static findApplicableOverrides(e2, t2, r2) {
+    if (t2) {
+      if (e2.primitiveName) {
+        let o2 = false;
+        for (const t3 of r2)
+          if (t3.primitiveName === e2.primitiveName) {
+            o2 = true;
+            break;
+          }
+        if (!o2)
+          for (const s2 of t2)
+            s2.primitiveName === e2.primitiveName && r2.push(s2);
+      }
+      switch (e2.type) {
+        case "CIMPointSymbol":
+        case "CIMLineSymbol":
+        case "CIMPolygonSymbol":
+          if (e2.effects)
+            for (const o2 of e2.effects)
+              S.findApplicableOverrides(o2, t2, r2);
+          if (e2.symbolLayers)
+            for (const o2 of e2.symbolLayers)
+              S.findApplicableOverrides(o2, t2, r2);
+          break;
+        case "CIMTextSymbol":
+          break;
+        case "CIMSolidStroke":
+        case "CIMPictureStroke":
+        case "CIMGradientStroke":
+        case "CIMSolidFill":
+        case "CIMPictureFill":
+        case "CIMHatchFill":
+        case "CIMGradientFill":
+        case "CIMVectorMarker":
+        case "CIMCharacterMarker":
+        case "CIMPictureMarker":
+          if (e2.effects)
+            for (const o2 of e2.effects)
+              S.findApplicableOverrides(o2, t2, r2);
+          if (e2.markerPlacement && S.findApplicableOverrides(e2.markerPlacement, t2, r2), e2.type === "CIMVectorMarker") {
+            if (e2.markerGraphics)
+              for (const o2 of e2.markerGraphics)
+                S.findApplicableOverrides(o2, t2, r2), S.findApplicableOverrides(o2.symbol, t2, r2);
+          } else
+            e2.type === "CIMCharacterMarker" ? S.findApplicableOverrides(e2.symbol, t2, r2) : e2.type === "CIMHatchFill" && S.findApplicableOverrides(e2.lineSymbol, t2, r2);
+      }
+    }
+  }
+  static applyOverrides(e2, t2, r2, o2) {
+    if (!t2)
+      return;
+    const s2 = (e3) => e3 ? e3.charAt(0).toLowerCase() + e3.substr(1) : e3;
+    if (e2.primitiveName) {
+      for (const a2 of t2)
+        if (a2.primitiveName === e2.primitiveName) {
+          const t3 = s2(a2.propertyName);
+          if (o2 && o2.push({ cim: e2, nocapPropertyName: t3, value: e2[t3] }), a2.expression && (a2.value = S.toValue(a2.propertyName, a2.expression)), r2) {
+            let t4 = false;
+            for (const o3 of r2)
+              o3.primitiveName === e2.primitiveName && (t4 = true);
+            t4 || r2.push(a2);
+          }
+          e2[t3] = a2.value;
+        }
+    }
+    switch (e2.type) {
+      case "CIMPointSymbol":
+      case "CIMLineSymbol":
+      case "CIMPolygonSymbol":
+        if (e2.effects)
+          for (const s3 of e2.effects)
+            S.applyOverrides(s3, t2, r2, o2);
+        if (e2.symbolLayers)
+          for (const s3 of e2.symbolLayers)
+            S.applyOverrides(s3, t2, r2, o2);
+        break;
+      case "CIMTextSymbol":
+        break;
+      case "CIMSolidStroke":
+      case "CIMSolidFill":
+      case "CIMVectorMarker":
+        if (e2.effects)
+          for (const s3 of e2.effects)
+            S.applyOverrides(s3, t2, r2, o2);
+        if (e2.type === "CIMVectorMarker" && e2.markerGraphics)
+          for (const s3 of e2.markerGraphics)
+            S.applyOverrides(s3, t2, r2, o2), S.applyOverrides(s3.symbol, t2, r2, o2);
+    }
+  }
+  static restoreOverrides(e2) {
+    for (const t2 of e2)
+      t2.cim[t2.nocapPropertyName] = t2.value;
+  }
+  static buildOverrideKey(e2) {
+    let t2 = "";
+    for (const r2 of e2)
+      r2.value !== void 0 && (t2 += `${r2.primitiveName}${r2.propertyName}${JSON.stringify(r2.value)}`);
+    return t2;
+  }
+  static toValue(e2, t2) {
+    if (e2 === "DashTemplate")
+      return t2.split(" ").map((e3) => Number(e3));
+    if (e2 === "Color") {
+      const e3 = new o$6(t2).toRgba();
+      return e3[3] *= 255, e3;
+    }
+    return t2;
+  }
+}
+export { A, G, S, r as a, p as b, h, o$5 as o, p$2 as p, r$b as r, t$1 as t };

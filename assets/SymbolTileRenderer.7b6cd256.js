@@ -1,1 +1,557 @@
-import{a5 as e,a0 as t,bY as s,aI as r,aF as i,aG as n,bZ as o,ay as a,at as h,bN as u,ae as f,ag as l,b6 as c}from"./vendor.74d5941c.js";import{m as d}from"./visualVariablesUtils.bb9f81fa.js";import{j as _}from"./schemaUtils.ab77d03d.js";import{s as p}from"./CircularArray.2e27cf26.js";import{t as m,E as b,I as g}from"./Utils.3f1577e5.js";import{r as w,o as y}from"./FeatureContainer.3e3899c9.js";import{o as C}from"./BaseTileRenderer.e65ebe3a.js";import{g as k}from"./WGLContainer.74815466.js";import"./definitions.6737c10c.js";import"./visualVariablesUtils.cb58e4df.js";import"./MD5.1ef35834.js";import"./MaterialKey.3bc4aaea.js";import"./CIMSymbolHelper.6546a069.js";import"./Rect.b51904ac.js";import"./BidiEngine.9b392b22.js";import"./FramebufferObject.18518335.js";import"./_commonjsHelpers.f2a458db.js";import"./TileContainer.763b6c09.js";import"./Container.d2c27c9d.js";import"./mat4f32.a5cabe00.js";import"./VertexArrayObject.67803418.js";import"./vec4f32.6de15d07.js";import"./ShaderCompiler.b19da10d.js";import"./earcut.0e5467f0.js";import"./GeometryUtils.9c8423f5.js";const V=4294967296;class S{constructor(e){this._head=e,this._cursor=e}static from(e){const t=v.from(new Float32Array(e));return new S(t)}get id(){return this._cursor.id}get baseZoom(){return this._cursor.baseZoom}get anchorX(){return this._cursor.anchorX}get anchorY(){return this._cursor.anchorY}get directionX(){return this._cursor.directionX}get directionY(){return this._cursor.directionY}get size(){return this._cursor.size}get hasVV(){return this._cursor.hasVV}get boundsCount(){return this._cursor.boundsCount}computedMinZoom(){return this._cursor.computedMinZoom()}setComputedMinZoom(e){return this._cursor.setComputedMinZoom(e)}boundsComputedAnchorX(e){return this._cursor.boundsComputedAnchorX(e)}boundsComputedAnchorY(e){return this._cursor.boundsComputedAnchorY(e)}setBoundsComputedAnchorX(e,t){return this._cursor.setBoundsComputedAnchorX(e,t)}setBoundsComputedAnchorY(e,t){return this._cursor.setBoundsComputedAnchorY(e,t)}boundsCenterX(e){return this._cursor.boundsCenterX(e)}boundsCenterY(e){return this._cursor.boundsCenterY(e)}boundsWidth(e){return this._cursor.boundsWidth(e)}boundsHeight(e){return this._cursor.boundsHeight(e)}link(t){if(e(t._head))return this._cursor.link(t._head)}getCursor(){return this.copy()}copy(){var e;const t=new S(null==(e=this._head)?void 0:e.copy());if(!t._head)return t;let s=t._head,r=t._head._link;for(;r;)s._link=r.copy(),s=r,r=s._link;return t}peekId(){var e;return null!=(e=this._cursor.peekId())?e:this._cursor._link.peekId()}nextId(){const e=this.id;for(;e===this.id;)if(!this.next())return!1;return!0}save(){this._savedCursor=this._cursor,this._savedOffset=this._cursor._offset}restore(){this._cursor=this._savedCursor,this._cursor._offset=this._savedOffset}next(){if(!this._cursor)return!1;if(!this._cursor.next()){if(!this._cursor._link)return!1;this._cursor=this._cursor._link,this._cursor._offset=0}return!0}lookup(e){for(this._cursor=this._head;this._cursor&&!this._cursor.lookup(e);){if(!this._cursor._link)return!1;this._cursor=this._cursor._link}return!!this._cursor}delete(t){let s=this._head,r=null;for(;s;){if(s.delete(t))return s.isEmpty()&&e(r)&&(r._link=s._link),!0;r=s,s=s._link}return!1}}class v{constructor(e){this._offset=-1,this._link=null,this._count=0,this._deletedCount=0,this._offsets={instance:null},this._buffer=e}static from(e){return new v(new Float32Array(e))}isEmpty(){return this._deletedCount===this.count}get count(){return this._count||(this._count=this._computeCount()),this._count}get id(){return this._buffer[this._offset+0]}set id(e){this._buffer[this._offset+0]=e}get baseZoom(){return this._buffer[this._offset+1]}get anchorX(){return this._buffer[this._offset+2]}get anchorY(){return this._buffer[this._offset+3]}get directionX(){return this._buffer[this._offset+4]}get directionY(){return this._buffer[this._offset+5]}get size(){return this._buffer[this._offset+6]}get hasVV(){return this._buffer[this._offset+7]}computedMinZoom(){return this._buffer[this._offset+8]}setComputedMinZoom(e){this._buffer[this._offset+8]=e}get boundsCount(){return this._buffer[this._offset+9]}boundsComputedAnchorX(e){return this._buffer[this._offset+10+6*e+0]}boundsComputedAnchorY(e){return this._buffer[this._offset+10+6*e+1]}setBoundsComputedAnchorX(e,t){this._buffer[this._offset+10+6*e+0]=t}setBoundsComputedAnchorY(e,t){this._buffer[this._offset+10+6*e+1]=t}boundsCenterX(e){return this._buffer[this._offset+10+6*e+2]}boundsCenterY(e){return this._buffer[this._offset+10+6*e+3]}boundsWidth(e){return this._buffer[this._offset+10+6*e+4]}boundsHeight(e){return this._buffer[this._offset+10+6*e+5]}link(e){let t=this;for(;t._link;)t=t._link;t._link=e}getCursor(){return this.copy()}copy(){const e=new v(this._buffer);return e._link=this._link,e._offset=this._offset,e._deletedCount=this._deletedCount,e._offsets=this._offsets,e._count=this._count,e}peekId(){const e=this._offset+10+6*this.boundsCount+0;return e>=this._buffer.length?0:this._buffer[e]}next(){let e=0;for(;this._offset<this._buffer.length&&e++<100&&(-1===this._offset?this._offset=0:this._offset+=10+6*this.boundsCount,this.id===V););return this.id!==V&&this._offset<this._buffer.length}delete(e){const t=this._offset,s=this.lookup(e);if(s)for(this.id=4294967295,++this._deletedCount;this.next()&&this.id===e;)this.id=4294967295,++this._deletedCount;return this._offset=t,s}lookup(e){const s=this._offset;if(t(this._offsets.instance)){this._offsets.instance=new Map;const e=this.copy();e._offset=-1;let t=0;for(;e.next();)e.id!==t&&(this._offsets.instance.set(e.id,e._offset),t=e.id)}return!!this._offsets.instance.has(e)&&(this._offset=this._offsets.instance.get(e),this.id!==V||(this._offset=s,!1))}_computeCount(){const e=this._offset;let t=0;for(this._offset=-1;this.next();)t++;return this._offset=e,t}}class x{constructor(e,t){this._buffers=[],this.geometryType=e,this._stage=t}destroy(){this._buffers.forEach((e=>e.release()))}insert(e,t){if(!t.records.byteLength)return;"update"===e&&this._buffers.forEach((e=>e.free(t)));const s={done:!1,offset:0,vertexData:t};this._buffers.forEach((e=>e.insert(s)));let r=1e3;for(;!s.done&&--r;){const e=this._stage.pools.bufferData.acquire(t,this.geometryType,s.offset);e.insert(s),this._buffers.push(e)}}remove(e){this._buffers.forEach((t=>t.freeIds(e)))}upload(e){this._buffers.forEach((t=>t.upload(e)))}forEachCommand(e){this._buffers.forEach((t=>t.displayList.forEach(e)))}}let M=0;class T extends w{constructor(e,t,r){super(e,t),this.instanceId=M++,this.patchCount=0,this._renderState={current:{geometry:new Map,metrics:null},next:null,swap:!1,swapFrames:0,locked:!1},this._patches=new p(100),this._lastCommitTime=0,this._lastMessageWasClear=!1,this.transforms.labelMat2d=s(),this._store=r}destroy(){super.destroy(),this._renderState.current.geometry.forEach((e=>e.destroy()))}get labelMetrics(){return this._renderState.current.metrics}get hasData(){return!!this._renderState.current.geometry.size}getGeometry(e){return this._renderState.current.geometry.get(e)}setTransform(e,t){super.setTransform(e,t);const s=this.transforms.labelMat2d,a=e.getScreenTransform(s,t),u=h();r(u,this.coords,a),i(s),n(s,s,u),o(s,e.viewMat2d,s)}patch(e){this.patchCount++,e.clear&&this._lastMessageWasClear||(this._lastMessageWasClear=e.clear,e.clear&&this._patches.size>=50&&this._dropPatches(),this._patches.enqueue(e),this.requestRender())}commit(e){if(this._lastCommitTime!==e.time){this._lastCommitTime=e.time;for(let e=0;e<4;e++)this._updateMesh();this._renderState.swap&&(this._swapRenderStates(),this.requestRender())}}lock(){this._renderState.locked=!0}unlock(){this._renderState.locked=!1,this._flushUpdates(),this._swap()}_swapRenderStates(){if(this._renderState.next){if(this._renderState.locked)return this._renderState.swap=!0,void this.requestRender();if(this._renderState.swap=!0,0===this._renderState.swapFrames)return this._renderState.swapFrames=8,void this.requestRender();1==this._renderState.swapFrames--?this._swap():this.requestRender()}}_swap(){this._renderState.swap&&(this._renderState.swap=!1,e(this._renderState.next)&&(this._renderState.current.geometry.forEach((e=>e.destroy())),this._renderState.current=this._renderState.next,this._renderState.next=null))}_flushUpdates(){let e=this._patches.maxSize;for(;this._patches.size&&e--;)this._updateMesh(),this._swap()}_updateMesh(){const t=this._patches.peek();if(e(t)&&t.clear&&null!==this._renderState.next)return;const s=this._patches.dequeue();if(e(s)){if(!0===s.clear){if(!this.isReady)return;return this._renderState.next,void(this._renderState.next={geometry:new Map,metrics:null})}this.requestRender(),this._patch(s),s.end&&(this.ready(),this._swapRenderStates())}}_patch(e){m((t=>{this._remove(t,e.remove),this._insert(e.type,t,e.addOrUpdate,e.clear)}))}_insert(e,s,r,i){try{const n=a(this._renderState.next,this._renderState.current),o=null==r?void 0:r.data[s],h=n.geometry;if(t(o))return;h.has(s)||h.set(s,new x(s,this.stage)),h.get(s).insert(e,o),s===b.LABEL&&this._insertLabelMetrics(e,o.metrics,i)}catch(n){}}_insertLabelMetrics(e,s,r){const i=a(this._renderState.next,this._renderState.current);if(t(s))return;const n=S.from(s);if(t(i.metrics))i.metrics=n;else{if("update"===e){const e=n.getCursor();for(;e.next();)i.metrics.delete(e.id)}i.metrics.link(n)}}_remove(e,t){const s=a(this._renderState.next,this._renderState.current).geometry.get(e);t&&t.length&&s&&(s.remove(t),this._removeLabelMetrics(t))}_removeLabelMetrics(e){const{metrics:s}=a(this._renderState.next,this._renderState.current);if(!t(s)&&e.length)for(const t of e)for(;s.delete(t););}_dropPatches(){const e=new Array;let s=!1;for(;this._patches.size;){const r=this._patches.dequeue();if(t(r))break;if(r.clear){if(s)break;s=!0}e.push(r)}this._patches.clear(),e.forEach((e=>this._patches.enqueue(e)))}}class E extends y{constructor(e,t,s){super(e),this._pointToCallbacks=new Map,this._layer=s,this._layerView=t}renderChildren(e){this.attributeView.update(),this.hasAnimation&&e.painter.effects.integrate.draw(e,e.attributeView),super.renderChildren(e)}hitTest(e,t){const s=[e,t],r=u();return this._pointToCallbacks.set(s,r),this.requestRender(),r.promise}onTileData(e,t){e.patch(t),this.contains(e)||this.addChild(e),this.requestRender()}onTileError(e){this.contains(e)||this.addChild(e)}doRender(e){const{minScale:t,maxScale:s}=this._layer,r=e.state.scale;r<=(t||1/0)&&r>=s&&super.doRender(e)}onAttributeStoreUpdate(){this.hasLabels&&this._layerView.view.labelManager.requestUpdate()}get hasAnimation(){return this.hasLabels}get hasLabels(){const e=this._layer.featureReduction,t=e&&"cluster"===e.type&&e.labelsVisible&&e.labelingInfo&&e.labelingInfo.length;return this._layer.labelingInfo&&this._layer.labelingInfo.length&&this._layer.labelsVisible||!!t}get labelsVisible(){return this._layer.labelsVisible}prepareRenderPasses(e){const t=e.registerRenderPass({name:"label",brushes:[k.label],target:()=>this.hasLabels?this.children:null,drawPhase:g.LABEL|g.LABEL_ALPHA}),s=e.registerRenderPass({name:"geometry",brushes:[k.fill,k.line,k.marker,k.text],target:()=>this.children,enableDefaultDraw:()=>!this._layerView.hasEffects,effects:[{apply:e.effects.outsideEffect,enable:()=>this._layerView.hasEffects,args:()=>this._layerView.effectLists.excluded},{apply:e.effects.insideEffect,enable:()=>this._layerView.hasEffects,args:()=>this._layerView.effectLists.included},{apply:e.effects.hittest,enable:()=>!!this._pointToCallbacks.size,args:()=>this._pointToCallbacks}]}),r=e.registerRenderPass({name:"highlight",brushes:[k.fill,k.line,k.marker,k.text],target:()=>this.children,drawPhase:g.HIGHLIGHT,enableDefaultDraw:()=>!1,effects:[{apply:e.effects.highlight,enable:()=>!!this._layerView.hasHighlight()}]});return[...super.prepareRenderPasses(e),s,r,t]}}let j=class extends C{install(e){const t=new E(this.tileInfoView,this.layerView,this.layer);this.featuresView=t,e.addChild(t)}uninstall(e){e.removeChild(this.featuresView),this.featuresView.destroy()}hitTest(e,t){return this.featuresView.hitTest(e,t)}supportsRenderer(e){return null!=e&&-1!==["simple","class-breaks","unique-value","dot-density","dictionary"].indexOf(e.type)}onConfigUpdate(e){let t=null;if("visualVariables"in e){const s=(_(e).visualVariables||[]).map((e=>{const t=e.clone();return"normalizationField"in e&&(t.normalizationField=null),e.valueExpression&&"$view.scale"!==e.valueExpression&&(t.valueExpression=null,t.field="nop"),t}));t=d(s)}this.featuresView.setRendererInfo(e,t,this.layerView.effects)}onTileData(e){const t=this.tiles.get(e.tileKey);t&&e.data&&this.featuresView.onTileData(t,e.data),this.layerView.view.labelManager.requestUpdate()}onTileError(e){const t=this.tiles.get(e.tileKey);t&&this.featuresView.onTileError(t)}forceAttributeTextureUpload(){this.featuresView.attributeView.forceTextureUpload()}lockGPUUploads(){this.featuresView.attributeView.lockTextureUpload(),this.tiles.forEach((e=>e.lock()))}unlockGPUUploads(){this.featuresView.attributeView.unlockTextureUpload(),this.tiles.forEach((e=>e.unlock()))}async getMaterialItems(e){return this.featuresView.getMaterialItems(e)}invalidateLabels(){this.featuresView.hasLabels&&this.layerView.view.labelManager.requestUpdate()}createTile(e){const t=this.tileInfoView.getTileBounds(c(),e);return new T(e,t,this.featuresView.attributeView)}disposeTile(e){this.featuresView.removeChild(e),e.destroy(),this.layerView.view.labelManager.requestUpdate()}};j=f([l("esri.views.2d.layers.features.tileRenderers.SymbolTileRenderer")],j);var A=j;export default A;
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { a5 as r$1, a0 as t, bY as n$1, aI as D, aF as n$2, aG as i$1, bZ as o$1, ay as c, at as n$3, bN as B, ae as e$2, ag as i$2, b6 as i$3 } from "./vendor.74d5941c.js";
+import { m } from "./visualVariablesUtils.bb9f81fa.js";
+import { j as s$1 } from "./schemaUtils.ab77d03d.js";
+import { s } from "./CircularArray.2e27cf26.js";
+import { t as te, E, I } from "./Utils.3f1577e5.js";
+import { r as r$2, o as o$2 } from "./FeatureContainer.3e3899c9.js";
+import { o as o$3 } from "./BaseTileRenderer.e65ebe3a.js";
+import { g as g$1 } from "./WGLContainer.74815466.js";
+import "./definitions.6737c10c.js";
+import "./visualVariablesUtils.cb58e4df.js";
+import "./MD5.1ef35834.js";
+import "./MaterialKey.3bc4aaea.js";
+import "./CIMSymbolHelper.6546a069.js";
+import "./Rect.b51904ac.js";
+import "./BidiEngine.9b392b22.js";
+import "./FramebufferObject.18518335.js";
+import "./_commonjsHelpers.f2a458db.js";
+import "./TileContainer.763b6c09.js";
+import "./Container.d2c27c9d.js";
+import "./mat4f32.a5cabe00.js";
+import "./VertexArrayObject.67803418.js";
+import "./vec4f32.6de15d07.js";
+import "./ShaderCompiler.b19da10d.js";
+import "./earcut.0e5467f0.js";
+import "./GeometryUtils.9c8423f5.js";
+const e$1 = 6, r = 4294967296;
+class o {
+  constructor(t2) {
+    this._head = t2, this._cursor = t2;
+  }
+  static from(t2) {
+    const s2 = i.from(new Float32Array(t2));
+    return new o(s2);
+  }
+  get id() {
+    return this._cursor.id;
+  }
+  get baseZoom() {
+    return this._cursor.baseZoom;
+  }
+  get anchorX() {
+    return this._cursor.anchorX;
+  }
+  get anchorY() {
+    return this._cursor.anchorY;
+  }
+  get directionX() {
+    return this._cursor.directionX;
+  }
+  get directionY() {
+    return this._cursor.directionY;
+  }
+  get size() {
+    return this._cursor.size;
+  }
+  get hasVV() {
+    return this._cursor.hasVV;
+  }
+  get boundsCount() {
+    return this._cursor.boundsCount;
+  }
+  computedMinZoom() {
+    return this._cursor.computedMinZoom();
+  }
+  setComputedMinZoom(t2) {
+    return this._cursor.setComputedMinZoom(t2);
+  }
+  boundsComputedAnchorX(t2) {
+    return this._cursor.boundsComputedAnchorX(t2);
+  }
+  boundsComputedAnchorY(t2) {
+    return this._cursor.boundsComputedAnchorY(t2);
+  }
+  setBoundsComputedAnchorX(t2, s2) {
+    return this._cursor.setBoundsComputedAnchorX(t2, s2);
+  }
+  setBoundsComputedAnchorY(t2, s2) {
+    return this._cursor.setBoundsComputedAnchorY(t2, s2);
+  }
+  boundsCenterX(t2) {
+    return this._cursor.boundsCenterX(t2);
+  }
+  boundsCenterY(t2) {
+    return this._cursor.boundsCenterY(t2);
+  }
+  boundsWidth(t2) {
+    return this._cursor.boundsWidth(t2);
+  }
+  boundsHeight(t2) {
+    return this._cursor.boundsHeight(t2);
+  }
+  link(s2) {
+    if (r$1(s2._head))
+      return this._cursor.link(s2._head);
+  }
+  getCursor() {
+    return this.copy();
+  }
+  copy() {
+    var t2;
+    const s2 = new o((t2 = this._head) == null ? void 0 : t2.copy());
+    if (!s2._head)
+      return s2;
+    let e2 = s2._head, r2 = s2._head._link;
+    for (; r2; )
+      e2._link = r2.copy(), e2 = r2, r2 = e2._link;
+    return s2;
+  }
+  peekId() {
+    var t2;
+    return (t2 = this._cursor.peekId()) != null ? t2 : this._cursor._link.peekId();
+  }
+  nextId() {
+    const t2 = this.id;
+    for (; t2 === this.id; )
+      if (!this.next())
+        return false;
+    return true;
+  }
+  save() {
+    this._savedCursor = this._cursor, this._savedOffset = this._cursor._offset;
+  }
+  restore() {
+    this._cursor = this._savedCursor, this._cursor._offset = this._savedOffset;
+  }
+  next() {
+    if (!this._cursor)
+      return false;
+    if (!this._cursor.next()) {
+      if (!this._cursor._link)
+        return false;
+      this._cursor = this._cursor._link, this._cursor._offset = 0;
+    }
+    return true;
+  }
+  lookup(t2) {
+    for (this._cursor = this._head; this._cursor && !this._cursor.lookup(t2); ) {
+      if (!this._cursor._link)
+        return false;
+      this._cursor = this._cursor._link;
+    }
+    return !!this._cursor;
+  }
+  delete(s2) {
+    let e2 = this._head, r2 = null;
+    for (; e2; ) {
+      if (e2.delete(s2))
+        return e2.isEmpty() && r$1(r2) && (r2._link = e2._link), true;
+      r2 = e2, e2 = e2._link;
+    }
+    return false;
+  }
+}
+class i {
+  constructor(t2) {
+    this._offset = -1, this._link = null, this._count = 0, this._deletedCount = 0, this._offsets = { instance: null }, this._buffer = t2;
+  }
+  static from(t2) {
+    return new i(new Float32Array(t2));
+  }
+  isEmpty() {
+    return this._deletedCount === this.count;
+  }
+  get count() {
+    return this._count || (this._count = this._computeCount()), this._count;
+  }
+  get id() {
+    return this._buffer[this._offset + 0];
+  }
+  set id(t2) {
+    this._buffer[this._offset + 0] = t2;
+  }
+  get baseZoom() {
+    return this._buffer[this._offset + 1];
+  }
+  get anchorX() {
+    return this._buffer[this._offset + 2];
+  }
+  get anchorY() {
+    return this._buffer[this._offset + 3];
+  }
+  get directionX() {
+    return this._buffer[this._offset + 4];
+  }
+  get directionY() {
+    return this._buffer[this._offset + 5];
+  }
+  get size() {
+    return this._buffer[this._offset + 6];
+  }
+  get hasVV() {
+    return this._buffer[this._offset + 7];
+  }
+  computedMinZoom() {
+    return this._buffer[this._offset + 8];
+  }
+  setComputedMinZoom(t2) {
+    this._buffer[this._offset + 8] = t2;
+  }
+  get boundsCount() {
+    return this._buffer[this._offset + 9];
+  }
+  boundsComputedAnchorX(t2) {
+    return this._buffer[this._offset + 10 + t2 * e$1 + 0];
+  }
+  boundsComputedAnchorY(t2) {
+    return this._buffer[this._offset + 10 + t2 * e$1 + 1];
+  }
+  setBoundsComputedAnchorX(t2, s2) {
+    this._buffer[this._offset + 10 + t2 * e$1 + 0] = s2;
+  }
+  setBoundsComputedAnchorY(t2, s2) {
+    this._buffer[this._offset + 10 + t2 * e$1 + 1] = s2;
+  }
+  boundsCenterX(t2) {
+    return this._buffer[this._offset + 10 + t2 * e$1 + 2];
+  }
+  boundsCenterY(t2) {
+    return this._buffer[this._offset + 10 + t2 * e$1 + 3];
+  }
+  boundsWidth(t2) {
+    return this._buffer[this._offset + 10 + t2 * e$1 + 4];
+  }
+  boundsHeight(t2) {
+    return this._buffer[this._offset + 10 + t2 * e$1 + 5];
+  }
+  link(t2) {
+    let s2 = this;
+    for (; s2._link; )
+      s2 = s2._link;
+    s2._link = t2;
+  }
+  getCursor() {
+    return this.copy();
+  }
+  copy() {
+    const t2 = new i(this._buffer);
+    return t2._link = this._link, t2._offset = this._offset, t2._deletedCount = this._deletedCount, t2._offsets = this._offsets, t2._count = this._count, t2;
+  }
+  peekId() {
+    const t2 = this._offset + 10 + this.boundsCount * e$1 + 0;
+    return t2 >= this._buffer.length ? 0 : this._buffer[t2];
+  }
+  next() {
+    let t2 = 0;
+    for (; this._offset < this._buffer.length && t2++ < 100 && (this._offset === -1 ? this._offset = 0 : this._offset += 10 + this.boundsCount * e$1, this.id === r); )
+      ;
+    return this.id !== r && this._offset < this._buffer.length;
+  }
+  delete(t2) {
+    const s2 = this._offset, e2 = this.lookup(t2);
+    if (e2)
+      for (this.id = 4294967295, ++this._deletedCount; this.next() && this.id === t2; )
+        this.id = 4294967295, ++this._deletedCount;
+    return this._offset = s2, e2;
+  }
+  lookup(t$1) {
+    const e2 = this._offset;
+    if (t(this._offsets.instance)) {
+      this._offsets.instance = new Map();
+      const t2 = this.copy();
+      t2._offset = -1;
+      let s2 = 0;
+      for (; t2.next(); )
+        t2.id !== s2 && (this._offsets.instance.set(t2.id, t2._offset), s2 = t2.id);
+    }
+    return !!this._offsets.instance.has(t$1) && (this._offset = this._offsets.instance.get(t$1), this.id !== r || (this._offset = e2, false));
+  }
+  _computeCount() {
+    const t2 = this._offset;
+    let s2 = 0;
+    for (this._offset = -1; this.next(); )
+      s2++;
+    return this._offset = t2, s2;
+  }
+}
+class e {
+  constructor(e2, s2) {
+    this._buffers = [], this.geometryType = e2, this._stage = s2;
+  }
+  destroy() {
+    this._buffers.forEach((e2) => e2.release());
+  }
+  insert(e2, s2) {
+    if (!s2.records.byteLength)
+      return;
+    e2 === "update" && this._buffers.forEach((e3) => e3.free(s2));
+    const r2 = { done: false, offset: 0, vertexData: s2 };
+    this._buffers.forEach((e3) => e3.insert(r2));
+    let t2 = 1e3;
+    for (; !r2.done && --t2; ) {
+      const e3 = this._stage.pools.bufferData.acquire(s2, this.geometryType, r2.offset);
+      e3.insert(r2), this._buffers.push(e3);
+    }
+  }
+  remove(e2) {
+    this._buffers.forEach((s2) => s2.freeIds(e2));
+  }
+  upload(e2) {
+    this._buffers.forEach((s2) => s2.upload(e2));
+  }
+  forEachCommand(e2) {
+    this._buffers.forEach((s2) => s2.displayList.forEach(e2));
+  }
+}
+const u$1 = 50, f = 4, S = 8;
+let w = 0;
+class g extends r$2 {
+  constructor(e2, t2, r2) {
+    super(e2, t2), this.instanceId = w++, this.patchCount = 0, this._renderState = { current: { geometry: new Map(), metrics: null }, next: null, swap: false, swapFrames: 0, locked: false }, this._patches = new s(100), this._lastCommitTime = 0, this._lastMessageWasClear = false, this.transforms.labelMat2d = n$1(), this._store = r2;
+  }
+  destroy() {
+    super.destroy(), this._renderState.current.geometry.forEach((e2) => e2.destroy());
+  }
+  get labelMetrics() {
+    return this._renderState.current.metrics;
+  }
+  get hasData() {
+    return !!this._renderState.current.geometry.size;
+  }
+  getGeometry(e2) {
+    return this._renderState.current.geometry.get(e2);
+  }
+  setTransform(e2, t2) {
+    super.setTransform(e2, t2);
+    const r2 = this.transforms.labelMat2d, s2 = e2.getScreenTransform(r2, t2), o2 = n$3();
+    D(o2, this.coords, s2), n$2(r2), i$1(r2, r2, o2), o$1(r2, e2.viewMat2d, r2);
+  }
+  patch(e2) {
+    this.patchCount++, e2.clear && this._lastMessageWasClear || (this._lastMessageWasClear = e2.clear, e2.clear && this._patches.size >= u$1 && this._dropPatches(), this._patches.enqueue(e2), this.requestRender());
+  }
+  commit(e2) {
+    if (this._lastCommitTime !== e2.time) {
+      this._lastCommitTime = e2.time;
+      for (let e3 = 0; e3 < f; e3++)
+        this._updateMesh();
+      this._renderState.swap && (this._swapRenderStates(), this.requestRender());
+    }
+  }
+  lock() {
+    this._renderState.locked = true;
+  }
+  unlock() {
+    this._renderState.locked = false, this._flushUpdates(), this._swap();
+  }
+  _swapRenderStates() {
+    if (this._renderState.next) {
+      if (this._renderState.locked)
+        return this._renderState.swap = true, void this.requestRender();
+      if (this._renderState.swap = true, this._renderState.swapFrames === 0)
+        return this._renderState.swapFrames = S, void this.requestRender();
+      this._renderState.swapFrames-- == 1 ? this._swap() : this.requestRender();
+    }
+  }
+  _swap() {
+    this._renderState.swap && (this._renderState.swap = false, r$1(this._renderState.next) && (this._renderState.current.geometry.forEach((e2) => e2.destroy()), this._renderState.current = this._renderState.next, this._renderState.next = null));
+  }
+  _flushUpdates() {
+    let e2 = this._patches.maxSize;
+    for (; this._patches.size && e2--; )
+      this._updateMesh(), this._swap();
+  }
+  _updateMesh() {
+    const t2 = this._patches.peek();
+    if (r$1(t2) && t2.clear && this._renderState.next !== null)
+      return;
+    const r2 = this._patches.dequeue();
+    if (r$1(r2)) {
+      if (r2.clear === true) {
+        if (!this.isReady)
+          return;
+        return this._renderState.next, void (this._renderState.next = { geometry: new Map(), metrics: null });
+      }
+      this.requestRender(), this._patch(r2), r2.end && (this.ready(), this._swapRenderStates());
+    }
+  }
+  _patch(e2) {
+    te((t2) => {
+      this._remove(t2, e2.remove), this._insert(e2.type, t2, e2.addOrUpdate, e2.clear);
+    });
+  }
+  _insert(e$12, s2, i2, a2) {
+    try {
+      const n2 = c(this._renderState.next, this._renderState.current), h = i2 == null ? void 0 : i2.data[s2], o2 = n2.geometry;
+      if (t(h))
+        return;
+      o2.has(s2) || o2.set(s2, new e(s2, this.stage)), o2.get(s2).insert(e$12, h), s2 === E.LABEL && this._insertLabelMetrics(e$12, h.metrics, a2);
+    } catch (n2) {
+    }
+  }
+  _insertLabelMetrics(e2, s2, i2) {
+    const a2 = c(this._renderState.next, this._renderState.current);
+    if (t(s2))
+      return;
+    const n2 = o.from(s2);
+    if (t(a2.metrics))
+      a2.metrics = n2;
+    else {
+      if (e2 === "update") {
+        const e3 = n2.getCursor();
+        for (; e3.next(); )
+          a2.metrics.delete(e3.id);
+      }
+      a2.metrics.link(n2);
+    }
+  }
+  _remove(e2, r2) {
+    const s2 = c(this._renderState.next, this._renderState.current).geometry.get(e2);
+    r2 && r2.length && s2 && (s2.remove(r2), this._removeLabelMetrics(r2));
+  }
+  _removeLabelMetrics(e2) {
+    const { metrics: s2 } = c(this._renderState.next, this._renderState.current);
+    if (!t(s2) && e2.length)
+      for (const t2 of e2)
+        for (; s2.delete(t2); )
+          ;
+  }
+  _dropPatches() {
+    const e2 = new Array();
+    let t$1 = false;
+    for (; this._patches.size; ) {
+      const s2 = this._patches.dequeue();
+      if (t(s2))
+        break;
+      if (s2.clear) {
+        if (t$1)
+          break;
+        t$1 = true;
+      }
+      e2.push(s2);
+    }
+    this._patches.clear(), e2.forEach((e3) => this._patches.enqueue(e3));
+  }
+}
+class a extends o$2 {
+  constructor(e2, s2, t2) {
+    super(e2), this._pointToCallbacks = new Map(), this._layer = t2, this._layerView = s2;
+  }
+  renderChildren(e2) {
+    if (this.attributeView.update(), this.hasAnimation) {
+      e2.painter.effects.integrate.draw(e2, e2.attributeView);
+    }
+    super.renderChildren(e2);
+  }
+  hitTest(s2, t2) {
+    const i2 = [s2, t2], a2 = B();
+    return this._pointToCallbacks.set(i2, a2), this.requestRender(), a2.promise;
+  }
+  onTileData(e2, s2) {
+    e2.patch(s2), this.contains(e2) || this.addChild(e2), this.requestRender();
+  }
+  onTileError(e2) {
+    this.contains(e2) || this.addChild(e2);
+  }
+  doRender(e2) {
+    const { minScale: s2, maxScale: t2 } = this._layer, i2 = e2.state.scale;
+    i2 <= (s2 || 1 / 0) && i2 >= t2 && super.doRender(e2);
+  }
+  onAttributeStoreUpdate() {
+    this.hasLabels && this._layerView.view.labelManager.requestUpdate();
+  }
+  get hasAnimation() {
+    return this.hasLabels;
+  }
+  get hasLabels() {
+    const e2 = this._layer.featureReduction, s2 = e2 && e2.type === "cluster" && e2.labelsVisible && e2.labelingInfo && e2.labelingInfo.length;
+    return this._layer.labelingInfo && this._layer.labelingInfo.length && this._layer.labelsVisible || !!s2;
+  }
+  get labelsVisible() {
+    return this._layer.labelsVisible;
+  }
+  prepareRenderPasses(e2) {
+    const i2 = e2.registerRenderPass({ name: "label", brushes: [g$1.label], target: () => this.hasLabels ? this.children : null, drawPhase: I.LABEL | I.LABEL_ALPHA }), a2 = e2.registerRenderPass({ name: "geometry", brushes: [g$1.fill, g$1.line, g$1.marker, g$1.text], target: () => this.children, enableDefaultDraw: () => !this._layerView.hasEffects, effects: [{ apply: e2.effects.outsideEffect, enable: () => this._layerView.hasEffects, args: () => this._layerView.effectLists.excluded }, { apply: e2.effects.insideEffect, enable: () => this._layerView.hasEffects, args: () => this._layerView.effectLists.included }, { apply: e2.effects.hittest, enable: () => !!this._pointToCallbacks.size, args: () => this._pointToCallbacks }] }), r2 = e2.registerRenderPass({ name: "highlight", brushes: [g$1.fill, g$1.line, g$1.marker, g$1.text], target: () => this.children, drawPhase: I.HIGHLIGHT, enableDefaultDraw: () => false, effects: [{ apply: e2.effects.highlight, enable: () => !!this._layerView.hasHighlight() }] });
+    return [...super.prepareRenderPasses(e2), a2, r2, i2];
+  }
+}
+let u = class extends o$3 {
+  install(e2) {
+    const t2 = new a(this.tileInfoView, this.layerView, this.layer);
+    this.featuresView = t2, e2.addChild(t2);
+  }
+  uninstall(e2) {
+    e2.removeChild(this.featuresView), this.featuresView.destroy();
+  }
+  hitTest(e2, t2) {
+    return this.featuresView.hitTest(e2, t2);
+  }
+  supportsRenderer(e2) {
+    return e2 != null && ["simple", "class-breaks", "unique-value", "dot-density", "dictionary"].indexOf(e2.type) !== -1;
+  }
+  onConfigUpdate(e2) {
+    let t2 = null;
+    if ("visualVariables" in e2) {
+      const r2 = (s$1(e2).visualVariables || []).map((e3) => {
+        const t3 = e3.clone();
+        return "normalizationField" in e3 && (t3.normalizationField = null), e3.valueExpression && e3.valueExpression !== "$view.scale" && (t3.valueExpression = null, t3.field = "nop"), t3;
+      });
+      t2 = m(r2);
+    }
+    this.featuresView.setRendererInfo(e2, t2, this.layerView.effects);
+  }
+  onTileData(e2) {
+    const t2 = this.tiles.get(e2.tileKey);
+    t2 && e2.data && this.featuresView.onTileData(t2, e2.data), this.layerView.view.labelManager.requestUpdate();
+  }
+  onTileError(e2) {
+    const t2 = this.tiles.get(e2.tileKey);
+    t2 && this.featuresView.onTileError(t2);
+  }
+  forceAttributeTextureUpload() {
+    this.featuresView.attributeView.forceTextureUpload();
+  }
+  lockGPUUploads() {
+    this.featuresView.attributeView.lockTextureUpload(), this.tiles.forEach((e2) => e2.lock());
+  }
+  unlockGPUUploads() {
+    this.featuresView.attributeView.unlockTextureUpload(), this.tiles.forEach((e2) => e2.unlock());
+  }
+  getMaterialItems(e2) {
+    return __async(this, null, function* () {
+      return this.featuresView.getMaterialItems(e2);
+    });
+  }
+  invalidateLabels() {
+    this.featuresView.hasLabels && this.layerView.view.labelManager.requestUpdate();
+  }
+  createTile(e2) {
+    const t2 = this.tileInfoView.getTileBounds(i$3(), e2);
+    return new g(e2, t2, this.featuresView.attributeView);
+  }
+  disposeTile(e2) {
+    this.featuresView.removeChild(e2), e2.destroy(), this.layerView.view.labelManager.requestUpdate();
+  }
+};
+u = e$2([i$2("esri.views.2d.layers.features.tileRenderers.SymbolTileRenderer")], u);
+var n = u;
+export default n;

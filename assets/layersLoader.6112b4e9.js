@@ -1,1 +1,150 @@
-import{aa as e,de as t,aj as r,dP as n}from"./vendor.74d5941c.js";import{o as a}from"./jsonContext.70bfdc66.js";import{a as l}from"./lazyLayerLoader.9af2c0cd.js";async function o(n,o){const i=n.instance.portalItem;return i&&i.id?(await i.load(o),function(t){const r=t.instance.portalItem;if(-1===t.supportedTypes.indexOf(r.type))throw new e("portal:invalid-layer-item-type","Invalid layer item type '${type}', expected '${expectedType}'",{type:r.type,expectedType:t.supportedTypes.join(", ")})}(n),async function(n,o){const i=n.instance,p=i.portalItem,{url:d,title:y}=p,f=a(p);if("group"===i.type)return i.read({title:y},f),function(t,n){let a;const o=t.portalItem.type;switch(o){case"Feature Service":a=l.FeatureLayer;break;case"Stream Service":a=l.StreamLayer;break;case"Scene Service":a=l.SceneLayer;break;case"Feature Collection":a=l.FeatureLayer;break;default:throw new e("portal:unsupported-item-type-as-group",`The item type '${o}' is not supported as a 'GroupLayer'`)}let i;return a().then((e=>(i=e,u(n)))).then((e=>c(e)>0?s(t,i,e):function(e,t){if(!e.portalItem.url)return Promise.resolve();const n={responseType:"json",query:{f:"json"}};return r(e.portalItem.url,n).then((r=>{var n,a;const l=r.data;function o(e){return{id:e.id,name:e.name}}l&&s(e,t,{layers:null==(n=l.layers)?void 0:n.map(o),tables:null==(a=l.tables)?void 0:a.map(o)})}))}(t,i)))}(i,n);d&&i.read({url:d},f);const m=await u(n,o);return m&&i.read(m,f),i.resourceReferences={portalItem:p,paths:f.readResourcePaths},i.read({title:y},f),t(i,f)}(n,o)):Promise.resolve()}function s(e,t,r){let n=r.layers||[];const a=r.tables||[];"Feature Collection"===e.portalItem.type&&(n.forEach((e=>{var t;"Table"===(null==e||null==(t=e.layerDefinition)?void 0:t.type)&&a.push(e)})),n=n.filter((e=>{var t;return"Table"!==(null==e||null==(t=e.layerDefinition)?void 0:t.type)}))),n.reverse().forEach((n=>{const a=i(e,t,r,n);e.add(a)})),a.reverse().forEach((n=>{const a=i(e,t,r,n);e.tables.add(a)}))}function i(e,t,r,a){const l=new t({portalItem:e.portalItem.clone(),layerId:a.id,sublayerTitleMode:"service-name"});if("Feature Collection"===e.portalItem.type){const t={origin:"portal-item",portal:e.portalItem.portal||n.getDefault()};l.read(a,t);const o=r.showLegend;null!=o&&l.read({showLegend:o},t)}return l}function u(e,t){if(!1===e.supportsData)return Promise.resolve(void 0);const r=e.instance;return r.portalItem.fetchData("json",t).catch((()=>null)).then((e=>{const t=e;let n;if(function(e){return"stream"!==e.type&&"layerId"in e}(r)){let a=!0;return e&&c(t)>0&&(null==r.layerId&&(r.layerId=function(e){const t=e.layers;if(t&&t.length)return t[0].id;const r=e.tables;return r&&r.length?r[0].id:null}(t)),n=function(e,t){const r=e.layers;if(r)for(let a=0;a<r.length;a++)if(r[a].id===t)return r[a];const n=e.tables;if(n)for(let a=0;a<n.length;a++)if(n[a].id===t)return n[a];return null}(t,r.layerId),n&&(1===c(t)&&(a=!1),null!=e.showLegend&&(n.showLegend=e.showLegend))),a&&"service-name"!==r.sublayerTitleMode&&(r.sublayerTitleMode="item-title-and-service-name"),n}return e}))}function c(e){var t,r,n,a;return(null!=(t=null==e||null==(r=e.layers)?void 0:r.length)?t:0)+(null!=(n=null==e||null==(a=e.tables)?void 0:a.length)?n:0)}export{o as load};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { aa as s$1, de as t, aj as U, dP as w } from "./vendor.74d5941c.js";
+import { o } from "./jsonContext.70bfdc66.js";
+import { a as a$1 } from "./lazyLayerLoader.9af2c0cd.js";
+function a(e, t2) {
+  return __async(this, null, function* () {
+    const r = e.instance.portalItem;
+    return r && r.id ? (yield r.load(t2), s(e), i(e, t2)) : Promise.resolve();
+  });
+}
+function s(t2) {
+  const r = t2.instance.portalItem;
+  if (t2.supportedTypes.indexOf(r.type) === -1)
+    throw new s$1("portal:invalid-layer-item-type", "Invalid layer item type '${type}', expected '${expectedType}'", { type: r.type, expectedType: t2.supportedTypes.join(", ") });
+}
+function i(e, t$1) {
+  return __async(this, null, function* () {
+    const r = e.instance, o$1 = r.portalItem, { url: a2, title: s2 } = o$1, i2 = o(o$1);
+    if (r.type === "group")
+      return r.read({ title: s2 }, i2), u(r, e);
+    a2 && r.read({ url: a2 }, i2);
+    const p2 = yield y(e, t$1);
+    return p2 && r.read(p2, i2), r.resourceReferences = { portalItem: o$1, paths: i2.readResourcePaths }, r.read({ title: s2 }, i2), t(r, i2);
+  });
+}
+function u(t2, r) {
+  let n;
+  const l = t2.portalItem.type;
+  switch (l) {
+    case "Feature Service":
+      n = a$1.FeatureLayer;
+      break;
+    case "Stream Service":
+      n = a$1.StreamLayer;
+      break;
+    case "Scene Service":
+      n = a$1.SceneLayer;
+      break;
+    case "Feature Collection":
+      n = a$1.FeatureLayer;
+      break;
+    default:
+      throw new s$1("portal:unsupported-item-type-as-group", `The item type '${l}' is not supported as a 'GroupLayer'`);
+  }
+  let a2;
+  return n().then((e) => (a2 = e, y(r))).then((e) => h(e) > 0 ? c(t2, a2, e) : p(t2, a2));
+}
+function p(e, r) {
+  if (!e.portalItem.url)
+    return Promise.resolve();
+  const n = { responseType: "json", query: { f: "json" } };
+  return U(e.portalItem.url, n).then((t2) => {
+    var n2, l;
+    const o2 = t2.data;
+    function a2(e2) {
+      return { id: e2.id, name: e2.name };
+    }
+    o2 && c(e, r, { layers: (n2 = o2.layers) == null ? void 0 : n2.map(a2), tables: (l = o2.tables) == null ? void 0 : l.map(a2) });
+  });
+}
+function c(e, t2, r) {
+  let n = r.layers || [];
+  const l = r.tables || [];
+  e.portalItem.type === "Feature Collection" && (n.forEach((e2) => {
+    var t3;
+    (e2 == null || (t3 = e2.layerDefinition) == null ? void 0 : t3.type) === "Table" && l.push(e2);
+  }), n = n.filter((e2) => {
+    var t3;
+    return (e2 == null || (t3 = e2.layerDefinition) == null ? void 0 : t3.type) !== "Table";
+  })), n.reverse().forEach((n2) => {
+    const l2 = d(e, t2, r, n2);
+    e.add(l2);
+  }), l.reverse().forEach((n2) => {
+    const l2 = d(e, t2, r, n2);
+    e.tables.add(l2);
+  });
+}
+function d(e, t2, n, l) {
+  const o2 = new t2({ portalItem: e.portalItem.clone(), layerId: l.id, sublayerTitleMode: "service-name" });
+  if (e.portalItem.type === "Feature Collection") {
+    const t3 = { origin: "portal-item", portal: e.portalItem.portal || w.getDefault() };
+    o2.read(l, t3);
+    const a2 = n.showLegend;
+    a2 != null && o2.read({ showLegend: a2 }, t3);
+  }
+  return o2;
+}
+function y(e, t2) {
+  if (e.supportsData === false)
+    return Promise.resolve(void 0);
+  const r = e.instance;
+  return r.portalItem.fetchData("json", t2).catch(() => null).then((e2) => {
+    const t3 = e2;
+    let n;
+    if (v(r)) {
+      let l = true;
+      return e2 && h(t3) > 0 && (r.layerId == null && (r.layerId = f(t3)), n = m(t3, r.layerId), n && (h(t3) === 1 && (l = false), e2.showLegend != null && (n.showLegend = e2.showLegend))), l && r.sublayerTitleMode !== "service-name" && (r.sublayerTitleMode = "item-title-and-service-name"), n;
+    }
+    return e2;
+  });
+}
+function f(e) {
+  const t2 = e.layers;
+  if (t2 && t2.length)
+    return t2[0].id;
+  const r = e.tables;
+  return r && r.length ? r[0].id : null;
+}
+function m(e, t2) {
+  const r = e.layers;
+  if (r) {
+    for (let l = 0; l < r.length; l++)
+      if (r[l].id === t2)
+        return r[l];
+  }
+  const n = e.tables;
+  if (n) {
+    for (let l = 0; l < n.length; l++)
+      if (n[l].id === t2)
+        return n[l];
+  }
+  return null;
+}
+function h(e) {
+  var t2, r, n, l;
+  return ((t2 = e == null || (r = e.layers) == null ? void 0 : r.length) != null ? t2 : 0) + ((n = e == null || (l = e.tables) == null ? void 0 : l.length) != null ? n : 0);
+}
+function v(e) {
+  return e.type !== "stream" && "layerId" in e;
+}
+export { a as load };

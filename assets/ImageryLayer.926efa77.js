@@ -1,1 +1,1123 @@
-var e,t=Object.defineProperty,r=Object.defineProperties,i=Object.getOwnPropertyDescriptors,n=Object.getOwnPropertySymbols,s=Object.prototype.hasOwnProperty,a=Object.prototype.propertyIsEnumerable,o=(e,r,i)=>r in e?t(e,r,{enumerable:!0,configurable:!0,writable:!0,value:i}):e[r]=i,l=(e,t)=>{for(var r in t||(t={}))s.call(t,r)&&o(e,r,t[r]);if(n)for(var r of n(t))a.call(t,r)&&o(e,r,t[r]);return e},u=(e,t)=>r(e,i(t));import{ae as p,af as c,dQ as d,c4 as m,eS as h,ag as y,dA as f,bT as g,c5 as v,hp as R,gV as w,eZ as b,_ as x,c9 as S,hq as I,dR as N,dS as O,aj as T,d0 as _,a5 as P,e5 as j,e2 as C,dT as F,es as D,cW as A,d5 as M,bi as V,a4 as J,e6 as z,cr as L,hr as E,bF as k,e0 as q,d3 as U,cE as H,dD as Q,a0 as B,aa as G,hs as W,ht as X,ec as $,bG as Y,d1 as K,hu as Z,hv as ee,gR as te,hw as re,gT as ie,gS as ne,dY as se,dZ as ae,dX as oe,d_ as le,e1 as ue,gX as pe,hj as ce,g_ as de,M as me}from"./vendor.74d5941c.js";import{u as he}from"./pixelUtils.5399eb4b.js";import{n as ye,a as fe,d as ge,i as ve,p as Re,k as we,V as be,j as xe,K as Se,b as Ie}from"./rasterRendererHelper.c783c0d1.js";import{f as Ne,n as Oe,p as Te,N as _e,T as Pe,D as je}from"./RasterSymbolizer.07b5503f.js";import"./vectorFieldUtils.cdd2fa8a.js";import"./_commonjsHelpers.f2a458db.js";import"./LercCodec.7b2d60e1.js";const Ce=new Set(["raster","raster2","dem","fillraster"]),Fe=new Set(["rasters"]),De=e=>e&&e.rasterFunction?Le.fromJSON(e):e,Ae=e=>e&&e instanceof Le?e.toJSON():e,Me=e=>(null==e?void 0:e.functionName)&&!e.declaredClass,Ve=e=>Me(e)?new Le(e):e;var Je,ze;(ze=Je||(Je={}))[ze.MOSAIC=0]="MOSAIC",ze[ze.GROUP=1]="GROUP",ze[ze.ITEM=2]="ITEM";let Le=e=class extends f{constructor(e){super(e),this.functionName=null,this.outputPixelType="unknown",this.variableName=null,this.description=null,this.functionDefinition=null,this.thumbnail=null}set functionArguments(e){if(e){const t=Object.keys(e);if(t.some((t=>Ce.has(t.toLowerCase())&&Me(e[t])))||t.some((t=>Fe.has(t.toLowerCase())&&Array.isArray(e[t])&&e[t].some((e=>Me(e)))))){e=g(e);for(const r of t)Ce.has(r.toLowerCase())?e[r]=Ve(e[r]):Fe.has(r.toLowerCase())&&Array.isArray(e[r])&&(e[r]=e[r].map((e=>Ve(e))))}}this._set("functionArguments",e)}readFunctionArguments(e,t){return(e=>{if(null==e)return null;e=g(e);const t={};for(const r of Object.keys(e))Ce.has(r.toLowerCase())?t[r]=De(e[r]):Fe.has(r.toLowerCase())&&Array.isArray(e[r])?t[r]=e[r].map(De):t[r]=e[r];return t})(t.arguments||t.rasterFunctionArguments)}writeFunctionArguments(e,t,r){const i={};for(const n of Object.keys(e))Ce.has(n.toLowerCase())?i[n]=Ae(e[n]):Fe.has(n.toLowerCase())&&Array.isArray(e[n])?i[n]=e[n].map(Ae):i[n]=Ae(e[n]);this.functionDefinition?t.arguments=i:t[r]=i}readFunctionName(e,t){const r=t.rasterFunctionInfos;return t.name||(r&&r.length&&"None"!==r[0].name?r[0].name:t.rasterFunction)}writeFunctionName(e,t,r){this.functionDefinition?t.name=e:t[r]=e}readFunctionType(e){return Je[e]}writeFunctionType(e,t,r){t[r]=Je[e]}clone(){return new e({functionName:this.functionName,functionArguments:g(this.functionArguments),outputPixelType:this.outputPixelType,variableName:this.variableName,description:this.description,functionType:this.functionType,functionDefinition:this.functionDefinition,thumbnail:this.thumbnail})}};p([c({json:{type:Object,write:{target:"rasterFunctionArguments"}}})],Le.prototype,"functionArguments",null),p([d("functionArguments",["rasterFunctionArguments","arguments"])],Le.prototype,"readFunctionArguments",null),p([m("functionArguments")],Le.prototype,"writeFunctionArguments",null),p([c({json:{type:String,write:{target:"rasterFunction"}}})],Le.prototype,"functionName",void 0),p([d("functionName",["rasterFunction","rasterFunctionInfos","name"])],Le.prototype,"readFunctionName",null),p([m("functionName")],Le.prototype,"writeFunctionName",null),p([h({C128:"c128",C64:"c64",F32:"f32",F64:"f64",S16:"s16",S32:"s32",S8:"s8",U1:"u1",U16:"u16",U2:"u2",U32:"u32",U4:"u4",U8:"u8",UNKNOWN:"unknown"},{ignoreUnknown:!1}),c({json:{default:"unknown"}})],Le.prototype,"outputPixelType",void 0),p([c({type:String,json:{read:!0,write:!0}})],Le.prototype,"variableName",void 0),p([c({type:String,json:{read:!0,write:!0,origins:{"web-document":{read:!1,write:!1}}}})],Le.prototype,"description",void 0),p([c({json:{origins:{"web-document":{read:!1,write:!1}}}})],Le.prototype,"functionType",void 0),p([d("functionType")],Le.prototype,"readFunctionType",null),p([m("functionType")],Le.prototype,"writeFunctionType",null),p([c({type:Object,json:{read:{source:"function"},write:{target:"function"},origins:{"web-document":{read:!1,write:!1}}}})],Le.prototype,"functionDefinition",void 0),p([c({type:String,json:{read:!0,write:!0,origins:{"web-document":{read:!1,write:!1}}}})],Le.prototype,"thumbnail",void 0),Le=e=p([y("esri.layers.support.RasterFunction")],Le);var Ee=Le;const ke={u1:[0,1],u2:[0,3],u4:[0,15],u8:[0,255],s8:[-128,127],u16:[0,65535],s16:[-32768,32767]},qe={simple_scalar:"Simple Scalar",wind_barb:"Wind Barb",single_arrow:"Single Arrow",beaufort_kn:"Beaufort Wind (Knots)",beaufort_m:"Beaufort Wind (MetersPerSecond)",ocean_current_m:"Ocean Current (MetersPerSecond)",ocean_current_kn:"Ocean Current (Knots)"},Ue=new Set(["raster-stretch","unique-value","class-breaks","raster-shaded-relief","vector-field","raster-colormap"]);function He(e){return Ue.has(e.type)}function Qe(e,t){if(!e||!t)return g(e||t);const r=g(e);return"none"!==t.functionName.toLowerCase()&&(Ge(r.functionArguments).Raster=t),r}function Be(e,t){switch(t=t||{},e.type){case"raster-stretch":return function(e,t){const r=new Ee;r.functionName="Stretch";const i=We[ye.toJSON(e.stretchType)],n="u8",s={StretchType:i,Statistics:Ye(e.statistics),DRA:e.dynamicRangeAdjustment,UseGamma:e.useGamma,Gamma:e.gamma,ComputeGamma:e.computeGamma};if(null!=e.outputMin&&(s.Min=e.outputMin),null!=e.outputMax&&(s.Max=e.outputMax),i===We.standardDeviation?(s.NumberOfStandardDeviations=e.numberOfStandardDeviations,r.outputPixelType=n):i===We.percentClip?(s.MinPercent=e.minPercent,s.MaxPercent=e.maxPercent,r.outputPixelType=n):i===We.minMax?r.outputPixelType=n:i===We.sigmoid&&(s.SigmoidStrengthLevel=e.sigmoidStrengthLevel),r.functionArguments=s,r.variableName="Raster",e.colorRamp){const i=e.colorRamp,n=new Ee,s=Oe(i);return s?n.functionArguments={colorRamp:s}:!t.convertColorRampToColormap||"algorithmic"!==i.type&&"multipart"!==i.type?n.functionArguments={colorRamp:e.colorRamp.toJSON()}:n.functionArguments={Colormap:Ne(i,256)},n.variableName="Raster",n.functionName="Colormap",n.functionArguments.Raster=r,n}return r}(e,t);case"class-breaks":return function(e,t){const r=[],i=[],n=[],s=[],a=1e-6,{pixelType:o,rasterAttributeTable:l}=t,u=l&&l.features,p=$e(l);if(u&&Array.isArray(u)&&e.classBreakInfos){e.classBreakInfos.forEach(((t,r)=>{const i=t.symbol.color;let n;i.a&&u.forEach((a=>{n=a.attributes[e.field],(n>=t.minValue&&n<t.maxValue||r===e.classBreakInfos.length-1&&n>=t.minValue)&&s.push([a.attributes[p],i.r,i.g,i.b])}))}));const t=o?Xe(s,o):s,r=new Ee;return r.functionName="Colormap",r.functionArguments={},r.functionArguments.Colormap=t,r.variableName="Raster",r}e.classBreakInfos.forEach(((e,t)=>{const o=e.symbol&&e.symbol.color;o.a?(0===t?r.push(e.minValue,e.maxValue+a):r.push(e.minValue+a,e.maxValue+a),i.push(t),s.push([t,o.r,o.g,o.b])):n.push(e.minValue,e.maxValue)}));const c=o?Xe(s,o):s,d=new Ee;d.functionName="Remap",d.functionArguments={InputRanges:r,OutputValues:i,NoDataRanges:n},d.variableName="Raster";const m=new Ee;return m.functionName="Colormap",m.functionArguments={Colormap:c,Raster:d},m}(e,t);case"unique-value":return function(e,t){const r=[],{pixelType:i,rasterAttributeTable:n}=t,s=n&&n.features,a=$e(n);let o=!1;if(e.uniqueValueInfos&&e.uniqueValueInfos.forEach((t=>{const i=t.symbol.color;i.a&&(e.field!==a&&s?s&&s.forEach((n=>{String(n.attributes[e.field])===String(t.value)&&r.push([n.attributes[a],i.r,i.g,i.b])})):isNaN(+t.value)?o=!0:r.push([+t.value,i.r,i.g,i.b]))})),o)return null;const l=i&&r.length>0?Xe(r,i):r,u=new Ee;return u.functionName="Colormap",u.functionArguments={},u.functionArguments.Colormap=l,u.variableName="Raster",u}(e,t);case"raster-colormap":return function(e,t){const r=e.extractColormap();if(!r||0===r.length)return;const{pixelType:i}=t,n=i?Xe(r,i):r,s=new Ee;return s.functionName="Colormap",s.functionArguments={},s.functionArguments.Colormap=n,s}(e,t);case"vector-field":return function(e,t){const r=new Ee;r.functionName="VectorFieldRenderer";const{dataType:i,bandProperties:n}=t,s="vector-uv"===i;let a,o;n&&2===n.length&&(a=n.map((e=>e.BandName.toLowerCase())).indexOf("magnitude"),o=n.map((e=>e.BandName.toLowerCase())).indexOf("direction")),-1!==a&&null!==a||(a=0,o=1);const l="arithmetic"===e.rotationType?1:2,u="flow-from"===e.flowRepresentation?0:1,p=e.visualVariables?e.visualVariables.filter((e=>"Magnitude"===e.field))[0]:new v,c={magnitudeBandID:a,directionBandID:o,isUVComponents:s,referenceSystem:l,massFlowAngleRepresentation:u,symbolTileSize:50,symbolTileSizeUnits:100,calculationMethod:"Vector Average",symbologyName:qe[e.style.toLowerCase().replace("-","_")],minimumMagnitude:p.minDataValue,maximumMagnitude:p.maxDataValue,minimumSymbolSize:p.minSize,maximumSymbolSize:p.maxSize};return r.functionArguments=c,r}(e,t);case"raster-shaded-relief":return function(e,t){if("elevation"!==t.dataType)return new Ee;const r=new Ee;r.functionName="Hillshade";const i="traditional"===e.hillshadeType?0:1,n="none"===e.scalingType?1:3,s={HillshadeType:i,SlopeType:n,ZFactor:e.zFactor};return 0===i&&(s.Azimuth=e.azimuth,s.Altitude=e.altitude),3===n&&(s.PSPower=e.pixelSizePower,s.PSZFactor=e.pixelSizeFactor),r.functionArguments=s,r.variableName="Raster",e.colorRamp&&(r.functionName="ShadedRelief",s.Colormap=Ne(e.colorRamp,256)),r}(e,t)}}function Ge(e){const t=e.Raster;return t&&"esri.layers.support.RasterFunction"===t.declaredClass?Ge(t.functionArguments):e}const We={none:0,standardDeviation:3,histogramEqualization:4,minMax:5,percentClip:6,sigmoid:9};function Xe(e,t){const r=ke[String(t).toLowerCase()];return r&&e.push([Math.floor(r[0]-1),0,0,0],[Math.ceil(r[1]+1),0,0,0]),e}function $e(e){if(!e)return;const{fields:t}=e,r=t&&t.find((e=>e&&e.name&&"value"===e.name.toLowerCase()));return r&&r.name}function Ye(e){const t=[];return e.forEach((e=>{const r=e;if(Array.isArray(r))t.push(r);else{if(null==r.min||null==r.max)return;const e=[r.min,r.max,r.avg||0,r.stddev||0];t.push(e)}})),t}var Ke;const Ze=R()({MT_FIRST:"first",MT_LAST:"last",MT_MIN:"min",MT_MAX:"max",MT_MEAN:"mean",MT_BLEND:"blend",MT_SUM:"sum"}),et=R()({esriMosaicNone:"none",esriMosaicCenter:"center",esriMosaicNadir:"nadir",esriMosaicViewpoint:"viewpoint",esriMosaicAttribute:"attribute",esriMosaicLockRaster:"lock-raster",esriMosaicNorthwest:"northwest",esriMosaicSeamline:"seamline"});let tt=Ke=class extends f{constructor(e){super(e),this.ascending=!0,this.itemRenderingRule=null,this.lockRasterIds=null,this.method=null,this.multidimensionalDefinition=null,this.objectIds=null,this.operation=null,this.sortField=null,this.sortValue=null,this.viewpoint=null,this.where=null}readAscending(e,t){return null!=t.ascending?t.ascending:null==t.sortAscending||t.sortAscending}readMethod(e,t){return function(e){let t;switch(e?e.toLowerCase().replace("esrimosaic",""):""){case"byattribute":case"attribute":t="esriMosaicAttribute";break;case"lockraster":t="esriMosaicLockRaster";break;case"center":t="esriMosaicCenter";break;case"northwest":t="esriMosaicNorthwest";break;case"nadir":t="esriMosaicNadir";break;case"viewpoint":t="esriMosaicViewpoint";break;case"seamline":t="esriMosaicSeamline";break;case"none":default:t="esriMosaicNone"}return et.fromJSON(t)}(t.mosaicMethod||t.defaultMosaicMethod)}readOperation(e,t){const r=t.mosaicOperation,i=t.mosaicOperator&&t.mosaicOperator.toLowerCase(),n=r||(i?Ze.toJSON(i):null);return Ze.fromJSON(n)||"first"}castSortValue(e){return null==e||"string"==typeof e||"number"==typeof e?e:`${e}`}clone(){return new Ke({ascending:this.ascending,itemRenderingRule:g(this.itemRenderingRule),lockRasterIds:g(this.lockRasterIds),method:this.method,multidimensionalDefinition:g(this.multidimensionalDefinition),objectIds:g(this.objectIds),operation:this.operation,sortField:this.sortField,sortValue:this.sortValue,viewpoint:g(this.viewpoint),where:this.where})}};p([c({type:Boolean,json:{write:!0}})],tt.prototype,"ascending",void 0),p([d("ascending",["ascending","sortAscending"])],tt.prototype,"readAscending",null),p([c({type:Ee,json:{write:!0}})],tt.prototype,"itemRenderingRule",void 0),p([c({type:[w],json:{write:{overridePolicy(){return{enabled:"lock-raster"===this.method}}}}})],tt.prototype,"lockRasterIds",void 0),p([c({type:String,json:{type:et.jsonValues,write:{target:"mosaicMethod",writer:et.write}}})],tt.prototype,"method",void 0),p([d("method",["mosaicMethod","defaultMosaicMethod"])],tt.prototype,"readMethod",null),p([c({type:[fe],json:{write:!0}})],tt.prototype,"multidimensionalDefinition",void 0),p([c({type:[w],json:{name:"fids",write:!0}})],tt.prototype,"objectIds",void 0),p([c({json:{type:Ze.jsonValues,read:{reader:Ze.read},write:{target:"mosaicOperation",writer:Ze.write}}})],tt.prototype,"operation",void 0),p([d("operation",["mosaicOperation","mosaicOperator"])],tt.prototype,"readOperation",null),p([c({type:String,json:{write:{overridePolicy(){return{enabled:"attribute"===this.method}}}}})],tt.prototype,"sortField",void 0),p([c({type:[String,Number],json:{write:{allowNull:!0,overridePolicy(){return{enabled:"attribute"===this.method,allowNull:!0}}}}})],tt.prototype,"sortValue",void 0),p([b("sortValue")],tt.prototype,"castSortValue",null),p([c({type:x,json:{write:!0}})],tt.prototype,"viewpoint",void 0),p([c({type:String,json:{write:!0}})],tt.prototype,"where",void 0),tt=Ke=p([y("esri.layers.support.MosaicRule")],tt);var rt=tt;const it=new S({RSP_NearestNeighbor:"nearest",RSP_BilinearInterpolation:"bilinear",RSP_CubicConvolution:"cubic",RSP_Majority:"majority"}),nt=new S({esriNoDataMatchAny:"any",esriNoDataMatchAll:"all"});let st=class extends f{constructor(){super(...arguments),this.layer=null,this.adjustAspectRatio=void 0,this.bandIds=void 0,this.compression=void 0,this.compressionQuality=void 0,this.compressionTolerance=.01,this.format=null,this.interpolation=null,this.noData=null,this.noDataInterpretation=void 0,this.pixelType=void 0,this.lercVersion=2}writeAdjustAspectRatio(e,t,r){this.layer.version<10.3||(t[r]=e)}writeCompressionQuality(e,t,r){this.format&&this.format.toLowerCase().indexOf("jpg")>-1&&null!=e&&(t[r]=e)}writeCompressionTolerance(e,t,r){"lerc"===this.format&&null!=e&&(t[r]=e)}writeLercVersion(e,t,r){"lerc"===this.format&&this.layer.version>=10.5&&(t[r]=e)}get version(){const e=this.layer;return e.commitProperty("bandIds"),e.commitProperty("format"),e.commitProperty("compressionQuality"),e.commitProperty("compressionTolerance"),e.commitProperty("interpolation"),e.commitProperty("noData"),e.commitProperty("noDataInterpretation"),e.commitProperty("mosaicRule"),e.commitProperty("renderingRule"),e.commitProperty("adjustAspectRatio"),e.commitProperty("pixelFilter"),e.commitProperty("renderer"),e.commitProperty("definitionExpression"),(this._get("version")||0)+1}set version(e){this._set("version",e)}get mosaicRule(){const e=this.layer;let t=e.mosaicRule;const r=e.definitionExpression;return t?r&&r!==t.where&&(t=t.clone(),t.where=r):r&&(t=new rt({where:r})),t}get renderingRule(){const e=this.layer;let t=e.renderingRule;const r=e.pixelFilter,i=!e.format||e.format.indexOf("jpg")>-1||e.format.indexOf("png")>-1;return t=this._addResampleRasterFunction(t),i&&!r&&(t=this.combineRendererWithRenderingRule()),t}combineRendererWithRenderingRule(){var e;const t=this.layer,{rasterInfo:r,renderingRule:i,renderer:n}=t;return n&&He(n)?Qe(Be(n,{rasterAttributeTable:r.attributeTable,pixelType:r.pixelType,dataType:r.dataType,bandProperties:null==(e=r.keyProperties)?void 0:e.BandProperties,convertColorRampToColormap:t.version<10.6}),i):i}_addResampleRasterFunction(e){var t;if("vector-field"!==(null==(t=this.layer.renderer)?void 0:t.type)||"Resample"===(null==e?void 0:e.functionName))return e;const r="esriImageServiceDataTypeVector-UV"===this.layer.serviceDataType?7:10;return Qe(new Ee({functionName:"Resample",functionArguments:{ResamplingType:r,InputCellSize:{x:this.layer.pixelSizeX,y:this.layer.pixelSizeY}}}),e)}};p([c()],st.prototype,"layer",void 0),p([c({json:{write:!0}})],st.prototype,"adjustAspectRatio",void 0),p([m("adjustAspectRatio")],st.prototype,"writeAdjustAspectRatio",null),p([c({json:{write:!0}}),I("layer.bandIds")],st.prototype,"bandIds",void 0),p([c({json:{write:!0}})],st.prototype,"compression",void 0),p([c({json:{write:!0}}),I("layer.compressionQuality")],st.prototype,"compressionQuality",void 0),p([m("compressionQuality")],st.prototype,"writeCompressionQuality",null),p([c({json:{write:!0}}),I("layer.compressionTolerance")],st.prototype,"compressionTolerance",void 0),p([m("compressionTolerance")],st.prototype,"writeCompressionTolerance",null),p([c({json:{write:!0}}),I("layer.format")],st.prototype,"format",void 0),p([c({type:String,json:{read:{reader:it.read},write:{writer:it.write}}}),I("layer.interpolation")],st.prototype,"interpolation",void 0),p([c({json:{write:!0}}),I("layer.noData")],st.prototype,"noData",void 0),p([c({type:String,json:{read:{reader:nt.read},write:{writer:nt.write}}}),I("layer.noDataInterpretation")],st.prototype,"noDataInterpretation",void 0),p([c({json:{write:!0}})],st.prototype,"pixelType",void 0),p([c({json:{write:!0}})],st.prototype,"lercVersion",void 0),p([m("lercVersion")],st.prototype,"writeLercVersion",null),p([c({type:Number})],st.prototype,"version",null),p([c({json:{write:!0}})],st.prototype,"mosaicRule",null),p([c({json:{write:!0}})],st.prototype,"renderingRule",null),st=p([y("esri.layers.mixins.ExportImageServiceParameters")],st);let at=class extends f{constructor(){super(...arguments),this.catalogItemVisibilities=null,this.catalogItems=null,this.location=null,this.name=null,this.objectId=null,this.processedValues=null,this.properties=null,this.value=null}};p([c({json:{write:!0}})],at.prototype,"catalogItemVisibilities",void 0),p([c({type:N,json:{write:!0}})],at.prototype,"catalogItems",void 0),p([c({type:x,json:{write:!0}})],at.prototype,"location",void 0),p([c({json:{write:!0}})],at.prototype,"name",void 0),p([c({json:{write:!0}})],at.prototype,"objectId",void 0),p([c({json:{write:!0}})],at.prototype,"processedValues",void 0),p([c({json:{write:!0}})],at.prototype,"properties",void 0),p([c({json:{write:!0}})],at.prototype,"value",void 0),at=p([y("esri.tasks.support.ImageIdentifyResult")],at);var ot=at;async function lt(e,t,r){const i=O(e),n=t.geometry?[t.geometry]:[],s=await _(n),a=t.toJSON();!function(e){const t=null==e?void 0:e.time;if(t&&(null!=t.start||null!=t.end)){const r=[];null!=t.start&&r.push(t.start),null!=t.end&&-1===r.indexOf(t.end)&&r.push(t.end),e.time=r.join(",")}}(a);const o=s&&s[0];P(o)&&(a.geometry=o.toJSON());const p=j(l(u(l({},i.query),{f:"json"}),a));return C(p,r)}let ut=class extends F{execute(e,t){return async function(e,t,r){const i=O(e),n=t.geometry?[t.geometry]:[];return _(n).then((e=>{const n=t.toJSON(),s=e&&e[0];P(s)&&(n.geometry=JSON.stringify(s.toJSON()));const a=j(l(u(l({},i.query),{f:"json"}),n)),o=C(a,r);return T(i.path+"/identify",o)})).then((e=>ot.fromJSON(e.data)))}(this.url,e,t)}};ut=p([y("esri.tasks.ImageIdentifyTask")],ut);var pt,ct=ut;let dt=pt=class extends f{constructor(){super(...arguments),this.geometry=null,this.mosaicRule=null,this.renderingRule=null,this.pixelSize=null,this.raster=void 0,this.timeExtent=null}writeGeometry(e,t,r){null!=e&&(t.geometryType=V(e),t[r]=e.toJSON())}clone(){return new pt(g({geometry:this.geometry,mosaicRule:this.mosaicRule,renderingRule:this.renderingRule,pixelSize:this.pixelSize,raster:this.raster,timeExtent:this.timeExtent}))}};p([c({types:D,json:{read:A}})],dt.prototype,"geometry",void 0),p([m("geometry")],dt.prototype,"writeGeometry",null),p([c({type:rt,json:{write:!0}})],dt.prototype,"mosaicRule",void 0),p([c({type:Ee,json:{write:!0}})],dt.prototype,"renderingRule",void 0),p([c({type:x,json:{write:!0}})],dt.prototype,"pixelSize",void 0),p([c({json:{write:!0}})],dt.prototype,"raster",void 0),p([c({type:M,json:{read:{source:"time"},write:{target:"time"}}})],dt.prototype,"timeExtent",void 0),dt=pt=p([y("esri.tasks.support.ImageHistogramParameters")],dt);var mt,ht=dt;let yt=mt=class extends f{constructor(){super(...arguments),this.geometry=null,this.renderingRules=null,this.pixelSize=null,this.returnGeometry=!0,this.returnCatalogItems=!0,this.returnPixelValues=!0,this.maxItemCount=null,this.timeExtent=null,this.raster=void 0,this.viewId=void 0}writeGeometry(e,t,r){null!=e&&(t.geometryType=V(e),t[r]=JSON.stringify(e.toJSON()))}set mosaicRule(e){let t=e;t&&t.mosaicMethod&&(t=rt.fromJSON(u(l({},t.toJSON()),{mosaicMethod:t.mosaicMethod,mosaicOperation:t.mosaicOperation}))),this._set("mosaicRule",t)}writeMosaicRule(e,t,r){null!=e&&(t[r]=JSON.stringify(e.toJSON()))}set renderingRule(e){let t=e;t&&t.rasterFunction&&(t=Ee.fromJSON(u(l({},t.toJSON()),{rasterFunction:t.rasterFunction,rasterFunctionArguments:t.rasterFunctionArguments}))),this._set("renderingRule",t)}writeRenderingRule(e,t,r){null!=e&&(t[r]=JSON.stringify(e.toJSON()))}writeRenderingRules(e,t,r){null!=e&&(t[r]=JSON.stringify(e.map((e=>e.toJSON()))))}writePixelSize(e,t,r){null!=e&&(t[r]=JSON.stringify(e))}writeTimeExtent(e,t,r){if(null!=e){const i=e.start?e.start.getTime():null,n=e.end?e.end.getTime():null;t[r]=null!=i?null!=n?`${i},${n}`:`${i}`:null}}clone(){return new mt(g({geometry:this.geometry,mosaicRule:this.mosaicRule,renderingRule:this.renderingRule,pixelSize:this.pixelSize,returnGeometry:this.returnGeometry,returnCatalogItems:this.returnCatalogItems,returnPixelValues:this.returnPixelValues,maxItemCount:this.maxItemCount,raster:this.raster,viewId:this.viewId,timeExtent:this.timeExtent}))}};p([c({json:{write:!0}})],yt.prototype,"geometry",void 0),p([m("geometry")],yt.prototype,"writeGeometry",null),p([c({type:rt,json:{write:!0}})],yt.prototype,"mosaicRule",null),p([m("mosaicRule")],yt.prototype,"writeMosaicRule",null),p([c({type:Ee,json:{write:!0}})],yt.prototype,"renderingRule",null),p([m("renderingRule")],yt.prototype,"writeRenderingRule",null),p([c({type:[Ee],json:{write:!0}})],yt.prototype,"renderingRules",void 0),p([m("renderingRules")],yt.prototype,"writeRenderingRules",null),p([c({type:x,json:{write:!0}})],yt.prototype,"pixelSize",void 0),p([m("pixelSize")],yt.prototype,"writePixelSize",null),p([c({type:Boolean,json:{write:!0}})],yt.prototype,"returnGeometry",void 0),p([c({type:Boolean,json:{write:!0}})],yt.prototype,"returnCatalogItems",void 0),p([c({type:Boolean,json:{write:!0}})],yt.prototype,"returnPixelValues",void 0),p([c({type:Number,json:{write:!0}})],yt.prototype,"maxItemCount",void 0),p([c({type:M,json:{write:{target:"time"}}})],yt.prototype,"timeExtent",void 0),p([m("timeExtent")],yt.prototype,"writeTimeExtent",null),p([c({json:{write:!0}})],yt.prototype,"raster",void 0),p([c({json:{write:!0}})],yt.prototype,"viewId",void 0),yt=mt=p([y("esri.tasks.support.ImageIdentifyParameters")],yt);var ft=yt;const gt=J.getLogger("esri.layers.mixins.ArcGISImageService"),vt=R()({RSP_NearestNeighbor:"nearest",RSP_BilinearInterpolation:"bilinear",RSP_CubicConvolution:"cubic",RSP_Majority:"majority"}),Rt=R()({esriNoDataMatchAny:"any",esriNoDataMatchAll:"all"}),wt=R()({U1:"u1",U2:"u2",U4:"u4",U8:"u8",S8:"s8",U16:"u16",S16:"s16",U32:"u32",S32:"s32",F32:"f32",F64:"f64",C64:"c64",C128:"c128",UNKNOWN:"unknown"}),bt=new Set(["png","png8","png24","png32","jpg","bmp","gif","jpgpng","lerc","tiff"]),xt=Z(ee,{min:0,max:255});const St=e=>{let t=class extends e{constructor(){super(...arguments),this._functionRasterInfos={},this._rasterJobHandler={instance:null,refCount:0,connectionPromise:null},this._symbolizer=null,this._defaultServiceMosaicRule=null,this.rasterAttributeTableFieldPrefix="Raster.",this.adjustAspectRatio=null,this.bandCount=null,this.bandIds=void 0,this.capabilities=null,this.compressionQuality=void 0,this.compressionTolerance=.01,this.copyright=null,this.definitionExpression=null,this.exportImageServiceParameters=null,this.rasterInfo=null,this.fields=null,this.fullExtent=null,this.hasMultidimensions=!1,this.imageMaxHeight=4100,this.imageMaxWidth=4100,this.interpolation=void 0,this.minScale=0,this.maxScale=0,this.multidimensionalInfo=null,this.noData=null,this.noDataInterpretation=void 0,this.objectIdField=null,this.pixelSizeX=null,this.pixelSizeY=null,this.pixelFilter=null,this.raster=void 0,this.viewId=void 0,this.renderer=null,this.rasterAttributeTable=null,this.rasterFunctionInfos=null,this.serviceDataType=null,this.spatialReference=null,this.pixelType=null,this.serviceRasterInfo=null,this.sourceJSON=null,this.url=null,this.version=null}initialize(){this._set("exportImageServiceParameters",new st({layer:this}))}readDefaultServiceMosaicRule(e,t){return rt.fromJSON(t)}get rasterFunctionNamesIndex(){const e=new Map;return!this.rasterFunctionInfos||this.rasterFunctionInfos.length<1||this.rasterFunctionInfos.forEach((t=>{e.set(t.name.toLowerCase().replace(/ /gi,"_"),t.name)})),e}get queryTask(){return new U({url:this.url})}readBandIds(e,t){if(Array.isArray(e)&&e.length>0&&e.every((e=>"number"==typeof e)))return e}readCapabilities(e,t){return this._readCapabilities(t)}writeCompressionQuality(e,t,r){null!=e&&"lerc"!==this.format&&(t[r]=e)}writeCompressionTolerance(e,t,r){"lerc"===this.format&&null!=e&&(t[r]=e)}get fieldsIndex(){return this.fields?new H(this.fields):null}set format(e){e&&bt.has(e.toLowerCase())&&this._set("format",e.toLowerCase())}readFormat(e,t){return"esriImageServiceDataTypeVector-UV"===t.serviceDataType||"esriImageServiceDataTypeVector-MagDir"===t.serviceDataType||null!=this.pixelFilter?"lerc":"jpgpng"}readMinScale(e,t){return null!=t.minLOD&&null!=t.maxLOD?e:0}readMaxScale(e,t){return null!=t.minLOD&&null!=t.maxLOD?e:0}set mosaicRule(e){let t=e;t&&t.mosaicMethod&&(t=rt.fromJSON(u(l({},t.toJSON()),{mosaicMethod:t.mosaicMethod,mosaicOperation:t.mosaicOperation}))),this._set("mosaicRule",t)}readMosaicRule(e,t){return rt.fromJSON(e||t.mosaicRule||t)}writeMosaicRule(e,t,r){let i=this.mosaicRule;const n=this.definitionExpression;i?n&&n!==i.where&&(i=i.clone(),i.where=n):n&&(i=new rt({where:n})),this._isValidCustomizedMosaicRule(i)&&(t[r]=i.toJSON())}writeNoData(e,t,r){null!=e&&"number"==typeof e&&(t[r]=xt(e))}readObjectIdField(e,t){if(!e){const r=t.fields.filter((e=>"esriFieldTypeOID"===e.type||"oid"===e.type));e=r&&r[0]&&r[0].name}return e}get parsedUrl(){return this.url?Q(this.url):null}readRenderer(e,t,r){var i,n;const s=null==t||null==(i=t.layerDefinition)||null==(n=i.drawingInfo)?void 0:n.renderer,a=Re(s,r);return null==a?null:("vector-field"===a.type&&t.symbolTileSize&&!s.symbolTileSize&&(a.symbolTileSize=t.symbolTileSize),He(a)||gt.warn("ArcGISImageService","Imagery layer doesn't support given renderer type."),a)}writeRenderer(e,t,r){t.layerDefinition=t.layerDefinition||{},t.layerDefinition.drawingInfo=t.layerDefinition.drawingInfo||{},t.layerDefinition.drawingInfo.renderer=e.toJSON(),"vector-field"===e.type&&(t.symbolTileSize=e.symbolTileSize)}get rasterFields(){const e=this.rasterAttributeTableFieldPrefix||"Raster.",t=new z({name:"Raster.ItemPixelValue",alias:"Item Pixel Value",domain:null,editable:!1,length:50,type:"string"}),r=new z({name:"Raster.ServicePixelValue",alias:"Service Pixel Value",domain:null,editable:!1,length:50,type:"string"}),i=new z({name:"Raster.ServicePixelValue.Raw",alias:"Raw Service Pixel Value",domain:null,editable:!1,length:50,type:"string"});let n=this.fields?g(this.fields):[];n.push(r),this.capabilities.operations.supportsQuery&&this.fields&&this.fields.length>0&&n.push(t),this.version>=10.4&&this.rasterFunctionInfos&&this.rasterFunctionInfos.some((e=>"none"===e.name.toLowerCase()))&&n.push(i),this.rasterFunctionInfos&&this.rasterFunctionInfos.filter((e=>"none"!==e.name.toLowerCase())).forEach((e=>{n.push(new z({name:"Raster.ServicePixelValue."+e.name,alias:e.name,domain:null,editable:!1,length:50,type:"string"}))})),null==this.pixelFilter||"esriImageServiceDataTypeVector-UV"!==this.serviceDataType&&"esriImageServiceDataTypeVector-MagDir"!==this.serviceDataType||(n.push(new z({name:"Raster.Magnitude",alias:"Magnitude",domain:null,editable:!1,type:"double"})),n.push(new z({name:"Raster.Direction",alias:"Direction",domain:null,editable:!1,type:"double"})));const s=this.rasterInfo.attributeTable&&this.rasterInfo.attributeTable.fields||null;if(s&&s.length>0){const t=s.filter((e=>"esriFieldTypeOID"!==e.type&&"value"!==e.name.toLowerCase())).map((t=>{const r=g(t);return r.name=e+t.name,r}));n=n.concat(t)}return n}set renderingRule(e){let t=e;t&&t.rasterFunction&&(t=Ee.fromJSON(u(l({},t.toJSON()),{rasterFunction:t.rasterFunction,rasterFunctionArguments:t.rasterFunctionArguments}))),this._set("renderingRule",t)}readRenderingRule(e,t){const r=t.rasterFunctionInfos;return t.renderingRule||r&&r.length&&"None"!==r[0].name?Ee.fromJSON(t.renderingRule||{rasterFunctionInfos:t.rasterFunctionInfos}):null}writeRenderingRule(e,t,r){this._isRFTJson(e)||(t[r]=e.toJSON())}readSpatialReference(e,t){const r=e||t.extent.spatialReference;return r?k.fromJSON(r):null}readPixelType(e){return wt.fromJSON(e)||e}writePixelType(e,t,r){(B(this.serviceRasterInfo)||this.pixelType!==this.serviceRasterInfo.pixelType)&&(t[r]=wt.toJSON(e))}readVersion(e,t){let r=t.currentVersion;return r||(r=t.hasOwnProperty("fields")||t.hasOwnProperty("timeInfo")?10:9.3),r}applyFilter(e){let t=e;return this.pixelFilter&&(t=this._clonePixelData(e),this.pixelFilter(t)),t}async applyRenderer(e,t){let r=e;if(!this._isPicture()&&this.renderer&&this._symbolizer&&!this.pixelFilter){const i=JSON.stringify(this._cachedRendererJson)!==JSON.stringify(this.renderer.toJSON()),n=this._rasterJobHandler.instance,{bandIds:s}=this;if(n){i&&(this._symbolizer.bind(),await n.updateSymbolizer(this._symbolizer,t),this._cachedRendererJson=this.renderer.toJSON());const a=await n.symbolize(l({bandIds:s},e),t);r={extent:e.extent,pixelBlock:a}}else r={extent:e.extent,pixelBlock:this._symbolizer.symbolize(l({bandIds:s},e))}}return r}destroy(){this._shutdownJobHandler()}increaseRasterJobHandlerUsage(){this._rasterJobHandler.refCount++}decreaseRasterJobHandlerUsage(){this._rasterJobHandler.refCount--,this._rasterJobHandler.refCount<=0&&this._shutdownJobHandler()}async computeHistograms(e,t){const r=null==t?void 0:t.signal;if(await this._fetchCapabilities(r),!this.capabilities.operations.supportsComputeHistograms)throw new G("imagery-layer:compute-histograms","this operation is not supported on the input image service");e=W(ht,e).clone();const{raster:i,mosaicRule:n,renderingRule:s}=this;return s&&null==e.renderingRule&&(e.renderingRule=s),n&&null==e.mosaicRule&&(e.mosaicRule=n),i&&null==e.raster&&(e.raster=i),async function(e,t,r){const i=await lt(e,t,r),n=O(e),{data:s}=await T(`${n.path}/computeHistograms`,i);return{histograms:s.histograms}}(this.url,e,{signal:r})}async computeStatisticsHistograms(e,t){const r=null==t?void 0:t.signal;if(await this._fetchCapabilities(r),!this.capabilities.operations.supportsComputeStatisticsHistograms)throw new G("imagery-layer:compute-statistics-histograms","this operation is not supported on the input image service");e=W(ht,e).clone();const{raster:i,mosaicRule:n,renderingRule:s}=this;return s&&null==e.renderingRule&&(e.renderingRule=s),n&&null==e.mosaicRule&&(e.mosaicRule=n),i&&null==e.raster&&(e.raster=i),async function(e,t,r){const i=await lt(e,t,r),n=O(e),{data:s}=await T(`${n.path}/computeStatisticsHistograms`,i),{statistics:a}=s;return null!=a&&a.length&&a.forEach((e=>{e.avg=e.mean,e.stddev=e.standardDeviation})),{statistics:a,histograms:s.histograms}}(this.url,e,{signal:r})}fetchImage(e,t,r,i={}){if(null==e||null==t||null==r)return Promise.reject(new G("imagery-layer:fetch-image","Insufficient parameters for requesting an image. A valid extent, width and height values are required."));const n=this.renderer||this._symbolizer?this.generateRasterInfo(this.renderingRule,{signal:i.signal}):null;return X(n).then((n=>{n&&(this.rasterInfo=n);const s={imageServiceParameters:this.getExportImageServiceParameters(e,t,r,i.timeExtent),imageProps:{extent:e,width:t,height:r,format:this.format},requestAsImageElement:i.requestAsImageElement&&!this.pixelFilter||!1,signal:i.signal};return this._requestArrayBuffer(s)}))}fetchKeyProperties(e){const t=e&&e.renderingRule&&e.renderingRule.toJSON();return T(this.parsedUrl.path+"/keyProperties",{query:this._getQueryParams({renderingRule:this.version>=10.3&&t?JSON.stringify(t):null})}).then((e=>e.data))}fetchRasterAttributeTable(e){const t=e&&e.renderingRule&&e.renderingRule.toJSON();return this.version<10.1?Promise.reject(new G("#fetchRasterAttributeTable()","Failed to get rasterAttributeTable")):T(this.parsedUrl.path+"/rasterAttributeTable",{query:this._getQueryParams({renderingRule:this.version>=10.3&&t?JSON.stringify(t):null})}).then((e=>N.fromJSON(e.data)))}async getCatalogItemRasterInfo(e,t){const r=T(this.parsedUrl.path+"/"+e+"/info",l({query:this._getQueryParams()},t)).then((e=>e.data)),i=T(this.parsedUrl.path+"/"+e+"/info/keyProperties",l({query:this._getQueryParams()},t)).then((e=>e.data)).catch((()=>{})),n=await Promise.all([r,i]);if(!n[0])return;const s=L.fromJSON(n[0].extent),a=n[0].statistics?n[0].statistics.map((e=>({min:e[0],max:e[1],avg:e[2],stddev:e[3]}))):null;return new Te({bandCount:n[0].bandCount,extent:s,spatialReference:s.sr,pixelSize:new x({x:n[0].pixelSizeX,y:n[0].pixelSizeY,spatialReference:s.sr}),pixelType:n[0].pixelType.toLowerCase(),statistics:a,histograms:n[0].histograms,keyProperties:n[1]||{}})}async getCatalogItemICSInfo(e,t){const{data:r}=await T(this.parsedUrl.path+"/"+e+"/info/ics",l({query:this._getQueryParams()},t)),i=r&&r.ics;if(!i)return;let n=null;try{n=(await T(this.parsedUrl.path+"/"+e+"/info",l({query:this._getQueryParams()},t))).data.extent}catch{}if(!n||!n.spatialReference)return{ics:i,icsToPixelTransform:null,icsExtent:null,northDirection:null};const s=this.version>=10.7?T(this.parsedUrl.path+"/"+e+"/info/icstopixel",l({query:this._getQueryParams()},t)).then((e=>e.data)).catch((()=>({}))):{},a=n.spatialReference,o={geometries:JSON.stringify({geometryType:"esriGeometryEnvelope",geometries:[n]}),inSR:a.wkid||JSON.stringify(a),outSR:"0:"+e},u=T(this.parsedUrl.path+"/project",l({query:this._getQueryParams(o)},t)).then((e=>e.data)).catch((()=>({}))),p=(n.xmin+n.xmax)/2,c=(n.ymax-n.ymin)/6,d=n.ymin+c,m=[];for(let l=0;l<5;l++)m.push({x:p,y:d+c*l});const h={geometries:JSON.stringify({geometryType:"esriGeometryPoint",geometries:m}),inSR:a.wkid||JSON.stringify(a),outSR:"0:"+e},y=T(this.parsedUrl.path+"/project",l({query:this._getQueryParams(h)},t)).then((e=>e.data)).catch((()=>({}))),f=await Promise.all([s,u,y]);let g=f[0].ipxf;if(null==g){var v,R,w;const e=null==(v=i.geodataXform)?void 0:v.xf_0;"topup"===(null==e||null==(R=e.name)?void 0:R.toLowerCase())&&6===(null==e||null==(w=e.coefficients)?void 0:w.length)&&(g={affine:{name:"ics [sensor: Frame] to pixel (column, row) transformation",coefficients:e.coefficients,cellsizeRatio:0,type:"GeometricXform"}})}const b=L.fromJSON(f[1]&&f[1].geometries&&f[1].geometries[0]);b&&(b.spatialReference=new k({wkid:0,imageCoordinateSystem:i}));const x=f[2].geometries?f[2].geometries.filter((e=>null!=e&&null!=e.x&&null!=e.y&&"NaN"!==e.x&&"NaN"!==e.y)):[],S=x.length;if(S<3)return{ics:i,icsToPixelTransform:g,icsExtent:b,northDirection:null};let I=0,N=0,O=0,_=0;for(let l=0;l<S;l++)I+=x[l].x,N+=x[l].y,O+=x[l].x*x[l].x,_+=x[l].x*x[l].y;const P=(S*_-I*N)/(S*O-I*I);let j=0;const C=x[4].x>x[0].x,F=x[4].y>x[0].y;return P===1/0?j=F?90:270:0===P?j=C?0:180:P>0?j=C?180*Math.atan(P)/Math.PI:180*Math.atan(P)/Math.PI+180:P<0&&(j=F?180+180*Math.atan(P)/Math.PI:360+180*Math.atan(P)/Math.PI),{ics:i,icsToPixelTransform:g,icsExtent:b,northDirection:j}}async generateRasterInfo(e,t){if((!e||"none"===e.functionName.toLowerCase()||this._isVectorFieldResampleFunction(e))&&P(this.serviceRasterInfo))return this.serviceRasterInfo;const r=function(e){if(!e)return null;const t=JSON.stringify(e).match(/"rasterFunction":"(.*?")/gi),r=null==t?void 0:t.map((e=>e.replace('"rasterFunction":"',"").replace('"',"")));return r?r.join("/"):null}(e);if(this._functionRasterInfos[r])return this._functionRasterInfos[r];const i=this._generateRasterInfo(e,t);this._functionRasterInfos[r]=i;try{return await i}catch{return this._functionRasterInfos[r]=null,null}}getExportImageServiceParameters(e,t,r,i){const n=(e=e.clone().shiftCentralMeridian()).spatialReference;let s;if(n.imageCoordinateSystem){const{id:e,referenceServiceName:t}=n.imageCoordinateSystem;s=null!=e?t?this.parsedUrl.path.toLowerCase().indexOf("/"+t.toLowerCase()+"/")>-1?"0:"+e:JSON.stringify({icsid:e,icsns:t}):"0:"+e:JSON.stringify({ics:n.imageCoordinateSystem})}else s=n.wkid||JSON.stringify(n.toJSON());P(this.serviceRasterInfo)&&this.pixelType!==this.serviceRasterInfo.pixelType&&(this.exportImageServiceParameters.pixelType=this.pixelType);const a=this.exportImageServiceParameters.toJSON(),{bandIds:o,noData:u,mosaicRule:p}=a;let{renderingRule:c}=a;if(o instanceof Array&&o.length>0&&!this.renderingRule?a.bandIds=o.join(","):a.bandIds=void 0,null!=o&&o.length&&this.renderingRule)if("Colormap"===c.rasterFunction){const e=new Ee({functionName:"ExtractBand",functionArguments:{BandIds:o,raster:c.rasterFunctionArguments.Raster}});c.rasterFunctionArguments.Raster=e}else c=new Ee({functionName:"ExtractBand",functionArguments:{BandIds:o,raster:c}});u instanceof Array&&u.length>0&&(a.noData=u.join(","));const d=this.timeInfo;p&&p.multidimensionalDefinition&&i&&d&&d.startField&&(p.multidimensionalDefinition=p.multidimensionalDefinition.filter((e=>e.dimensionName!==d.startField))),a.mosaicRule=p&&JSON.stringify(p),a.renderingRule=c&&JSON.stringify(c);const m={};if(i){const{start:e,end:t}=i.toJSON();e&&t&&e===t?m.time=""+e:null==e&&null==t||(m.time=`${null==e?"null":e},${null==t?"null":t}`)}return l(l({bbox:e.xmin+","+e.ymin+","+e.xmax+","+e.ymax,bboxSR:s,imageSR:s,size:t+","+r},a),m)}async identify(e,t){if(await this._fetchCapabilities(null==t?void 0:t.signal),!this.capabilities.operations.supportsIdentify)throw new G("imagery-layer:query-rasters","query operation is not supported on the input image service");e=W(ft,e).clone();const{raster:r,mosaicRule:i,renderingRule:n}=this;return n&&null==e.renderingRule&&(e.renderingRule=n),i&&null==e.mosaicRule&&(e.mosaicRule=i),r&&null==e.raster&&(e.raster=r),new ct({url:this.url}).execute(e,t)}async queryRasters(e,t){if(await this._fetchCapabilities(null==t?void 0:t.signal),!this.capabilities.operations.supportsQuery)throw new G("imagery-layer:query-rasters","query operation is not supported on the input image service");return e=W($,e),this.queryTask.execute(e,t)}queryVisibleRasters(e,t){if(!e)return Promise.reject(new G("imagery-layer: query-visible-rasters","missing query parameter"));const{pixelSize:r,returnDomainValues:i,returnTopmostRaster:n,showNoDataRecords:s}=t||{pixelSize:null,returnDomainValues:!1,returnTopmostRaster:!1,showNoDataRecords:!1};let a=!1,o=null,l=null;const u="raster.servicepixelvalue",p=this.rasterFunctionNamesIndex;if(P(e.outFields)&&(a=e.outFields.some((e=>-1===e.toLowerCase().indexOf(u))),this.version>=10.4)){const t=e.outFields.filter((e=>e.toLowerCase().indexOf(u)>-1&&e.length>u.length)).map((e=>{const t=e.slice(u.length+1);return[this._updateRenderingRulesFunctionName(t,p),t]}));o=t.map((e=>new Ee({functionName:e[0]}))),l=t.map((e=>e[1])),0===o.length?this.renderingRule?(o.push(this.renderingRule),l.push(this.renderingRule.functionName)):o=null:this.renderingRule&&!o.some((e=>e.functionName===this.renderingRule.functionName))&&(o.push(this.renderingRule),l.push(this.renderingRule.functionName))}const c=B(e.outSpatialReference)||e.outSpatialReference.equals(this.spatialReference),d=this._getQueryParams({geometry:e.geometry,timeExtent:e.timeExtent,mosaicRule:this.exportImageServiceParameters.mosaicRule,renderingRule:this.version<10.4?this.renderingRule:null,renderingRules:o,pixelSize:r,returnCatalogItems:a,returnGeometry:c,maxItemCount:n?1:null});delete d.f;const m=new ft(d),h=new ct({url:this.url}),y=this.generateRasterInfo(this.renderingRule);return new Promise((t=>{y.then((()=>{h.execute(m).then((r=>{const n=e.outFields;if(a&&!c&&r.catalogItems&&r.catalogItems.features&&r.catalogItems.features.length>0){const a=this.objectIdField||"ObjectId",o=r.catalogItems.features,u=o.map((e=>e.attributes&&e.attributes[a])),p=new $({objectIds:u,returnGeometry:!0,outSpatialReference:e.outSpatialReference,outFields:[a]});return this.queryRasters(p).then((u=>{u&&u.features&&u.features.length>0&&u.features.forEach((t=>{o.forEach((r=>{r.attributes[a]===t.attributes[a]&&(r.geometry=new Y(t.geometry),r.geometry.spatialReference=e.outSpatialReference)}))})),t(this._processVisibleRastersResponse(r,{returnDomainValues:i,templateRRFunctionNames:l,showNoDataRecords:s,templateFields:n}))})).catch((()=>{throw new G("imagery-layer:query-visible-rasters","encountered error when querying visible rasters geometry")}))}t(this._processVisibleRastersResponse(r,{returnDomainValues:i,templateRRFunctionNames:l,showNoDataRecords:s,templateFields:n}))})).catch((()=>{throw new G("imagery-layer:query-visible-rasters","encountered error when querying visible rasters")}))}))}))}async fetchVariableStatisticsHistograms(e,t){const r=T(this.parsedUrl.path+"/statistics",{query:this._getQueryParams({variable:e}),signal:t}).then((e=>{var t;return null==(t=e.data)?void 0:t.statistics})),i=T(this.parsedUrl.path+"/histograms",{query:this._getQueryParams({variable:e}),signal:t}).then((e=>{var t;return null==(t=e.data)?void 0:t.histograms})),n=await Promise.all([r,i]);return n[0]&&n[0].forEach((e=>{e.avg=e.mean,e.stddev=e.standardDeviation})),{statistics:n[0]||null,histograms:n[1]||null}}async _fetchService(e){await this._fetchServiceInfo(e),P(this.serviceRasterInfo)&&!this.rasterInfo&&(this.rasterInfo=this.serviceRasterInfo);const t=this.sourceJSON,r=P(this.serviceRasterInfo)?Promise.resolve(this.serviceRasterInfo):this._fetchAuxiliaryRasterInfo({serviceInfo:t,signal:e}).then((e=>(this._set("serviceRasterInfo",e),e))),i=this.renderingRule&&"none"!==this.renderingRule.functionName.toLowerCase()?this.generateRasterInfo(this.renderingRule,{signal:e}):null;return Promise.all([r,i]).then((e=>{e[1]?this._set("rasterInfo",e[1]):this._set("rasterInfo",e[0]),this.renderer&&we(this.rasterInfo).indexOf(this.renderer.type)<0&&(this.renderer=null,gt.warn("ArcGISImageService","Switching to the default renderer. Renderer applied is not valid for this Imagery Layer")),this._configDefaultRenderer(),this.watch("renderer",(()=>this._configDefaultRenderer())),this.watch("renderingRule",(e=>{(this.renderer||this._symbolizer||this.popupEnabled&&this.popupTemplate)&&this.generateRasterInfo(e).then((e=>{e&&(this.rasterInfo=e)}))}));const t=P(this.serviceRasterInfo)&&this.serviceRasterInfo.multidimensionalInfo;t&&this._updateMultidimensionalDefinition(t)}))}async _initJobHandler(){if(null!=this._rasterJobHandler.connectionPromise)return this._rasterJobHandler.connectionPromise;const e=new Ie;this._rasterJobHandler.connectionPromise=e.initialize().then((()=>{this._rasterJobHandler.instance=e}),(()=>null)),await this._rasterJobHandler.connectionPromise}_shutdownJobHandler(){this._rasterJobHandler.instance&&this._rasterJobHandler.instance.destroy(),this._rasterJobHandler.instance=null,this._rasterJobHandler.connectionPromise=null,this._rasterJobHandler.refCount=0}async _fetchCapabilities(e){return this.capabilities||await this._fetchServiceInfo(e),this.capabilities}async _fetchServiceInfo(e){var t;let r=this.sourceJSON;if(!r){const{data:t,ssl:i}=await T(this.parsedUrl.path,{query:this._getQueryParams(),signal:e});r=t,this.sourceJSON=r,i&&(this.url=this.url.replace(/^http:/i,"https:"))}if((null==(t=r.capabilities)?void 0:t.toLowerCase().split(",").map((e=>e.trim())).indexOf("tilesonly"))>-1)throw new G("imagery-layer:fetch-service-info","use ImageryTileLayer to open tiles-only image services");this.read(r,{origin:"service",url:this.parsedUrl})}_isVectorFieldResampleFunction(e){if(!P(e))return!1;const{functionName:t,functionArguments:r}=e,i="resample"===t.toLowerCase(),n=(null==r?void 0:r.ResampleType)||(null==r?void 0:r.resampleType);return i&&(7===n||10===n)}_isPicture(){return!this.format||this.format.indexOf("jpg")>-1||this.format.indexOf("png")>-1}_configDefaultRenderer(){if(!this._isPicture()&&!this.pixelFilter){if(!this.bandIds&&this.rasterInfo.bandCount>=3){const e=be(this.rasterInfo);!e||3===this.rasterInfo.bandCount&&0===e[0]&&1===e[1]&&2===e[2]||(this.bandIds=e)}var e,t;this.renderer||(this.renderer=xe(this.rasterInfo,{bandIds:this.bandIds,variableName:this.renderingRule?null:null==(e=this.mosaicRule)||null==(t=e.multidimensionalDefinition)?void 0:t[0].variableName})),this._symbolizer?(this._symbolizer.rendererJSON=Se(this.renderer.toJSON()),this._symbolizer.rasterInfo=this.rasterInfo):this._symbolizer=new _e({rendererJSON:this.renderer.toJSON(),rasterInfo:this.rasterInfo}),this._symbolizer.bind()||(this._symbolizer=null)}}_clonePixelData(e){return null==e?e:{extent:e.extent&&e.extent.clone(),pixelBlock:e.pixelBlock&&e.pixelBlock.clone()}}_getQueryParams(e){const{raster:t,viewId:r}=this;return l({raster:t,viewId:r,f:"json"},e)}_decodePixelBlock(e,t,r){return this._rasterJobHandler.instance?this._rasterJobHandler.instance.decode({data:e,options:t}):Pe(e,t,r)}async _fetchMultidimensionalInfo(e){var t;const r=await T(this.parsedUrl.path+"/multidimensionalInfo",{query:this._getQueryParams(),signal:e}).then((e=>{var t;return null==(t=e.data)?void 0:t.multidimensionalInfo}));return null!=(t=r.variables)&&t.length&&r.variables.forEach((e=>{var t;null!=(t=e.statistics)&&t.length&&e.statistics.forEach((e=>{e.avg=e.mean,e.stddev=e.standardDeviation}))})),r}_fetchAuxiliaryRasterInfo(e){const t=e&&e.serviceInfo;if(!t)return Promise.reject(new G("imagery-layer:fetch-metadata","valid serviceInfo is required"));const r=e.renderingRule?JSON.stringify(e.renderingRule.toJSON()):null,i=e.signal,n=!!(t.hasRasterAttributeTable&&this.version>=10.1)&&T(this.parsedUrl.path+"/rasterAttributeTable",{query:this._getQueryParams({renderingRule:this.version>=10.1?r:null}),signal:i}).then((e=>N.fromJSON(e.data))).catch((()=>null)),s=!!(t.hasColormap&&this.version>=10.1)&&T(this.parsedUrl.path+"/colormap",{query:this._getQueryParams({renderingRule:this.version>=10.6?r:null}),signal:i}).then((e=>{var t;return null==(t=e.data)?void 0:t.colormap})),a=!!(t.hasHistograms&&this.version>=10.1)&&T(this.parsedUrl.path+"/histograms",{query:this._getQueryParams({renderingRule:this.version>=10.1?r:null}),signal:i}).then((e=>{var t;return null==(t=e.data)?void 0:t.histograms})),o=this.version>=10.3&&T(this.parsedUrl.path+"/keyProperties",{query:this._getQueryParams({renderingRule:r}),signal:i}).then((e=>e.data)).catch((()=>{})),l=!!(t.hasMultidimensions&&this.version>=10.3)&&this._fetchMultidimensionalInfo();return Promise.all([n,s,a,o,l]).then((e=>{let r=null;if(t.minValues&&t.minValues.length===t.bandCount){r=[];for(let e=0;e<t.minValues.length;e++)r.push({min:t.minValues[e],max:t.maxValues[e],avg:t.meanValues[e],stddev:t.stdvValues[e]})}const i=Math.ceil((t.extent.xmax-t.extent.xmin)/t.pixelSizeX-.1),n=Math.ceil((t.extent.ymax-t.extent.ymin)/t.pixelSizeY-.1),s=k.fromJSON(t.spatialReference||t.extent.spatialReference);return new Te({width:i,height:n,bandCount:t.bandCount,extent:L.fromJSON(t.extent),spatialReference:s,pixelSize:new x({x:t.pixelSizeX,y:t.pixelSizeY,spatialReference:s}),pixelType:t.pixelType.toLowerCase(),statistics:r,attributeTable:e[0]||null,colormap:e[1]||null,histograms:e[2]||null,keyProperties:e[3]||{},multidimensionalInfo:e[4]||null})}))}_requestArrayBuffer(e){const{imageProps:t,requestAsImageElement:r,signal:i}=e;if(r&&!this.pixelFilter&&t.format&&t.format.indexOf("png")>-1)return T(this.parsedUrl.path+"/exportImage",{responseType:"image",query:this._getQueryParams(l({f:"image"},e.imageServiceParameters)),signal:i}).then((e=>({imageElement:e.data,params:t})));const n=this._initJobHandler(),s=T(this.parsedUrl.path+"/exportImage",{responseType:"array-buffer",query:this._getQueryParams(l({f:"image"},e.imageServiceParameters)),signal:i});return Promise.all([s,n]).then((e=>{const r=e[0].data,n=t.format||"jpgpng";let s=n;if("bsq"!==s&&"bip"!==s&&(s=je(r)),!s)throw new G("imagery-layer:fetch-image","unsupported format signature "+String.fromCharCode.apply(null,new Uint8Array(r)));const a="gif"===n||"bmp"===n||n.indexOf("png")>-1&&("png"===s||"jpg"===s),o={signal:i};return a?Pe(r,l({useCanvas:!0},t),o).then((e=>({pixelData:{pixelBlock:e,extent:t.extent},params:t}))):this._decodePixelBlock(r,{width:t.width,height:t.height,planes:null,pixelType:null,noDataValue:null,format:n},o).then((e=>({pixelData:{pixelBlock:e,extent:t.extent},params:t})))}))}async _generateRasterInfo(e,t){const{data:r}=await T(this.parsedUrl.path,l({query:this._getQueryParams({renderingRule:e})},t));return await this._fetchAuxiliaryRasterInfo(l({serviceInfo:r,renderingRule:e},t))}_isValidCustomizedMosaicRule(e){return e&&JSON.stringify(e.toJSON())!==JSON.stringify(this._defaultServiceMosaicRule&&this._defaultServiceMosaicRule.toJSON())}_updateMultidimensionalDefinition(e){if(this._isValidCustomizedMosaicRule(this.mosaicRule))return;const t=e.variables[0].dimensions,r=[];for(const i in t)if(t.hasOwnProperty(i)){const e=t[i],n=e.extent;let s=!0,a=[n[0]];e.hasRanges&&!0===e.hasRanges?(s=!1,a=[e.values[0]]):"stdz"===e.name.toLowerCase()&&Math.abs(n[1])<=Math.abs(n[0])&&(a=[n[1]]),r.push(new fe({variableName:"",dimensionName:t[i].name,isSlice:s,values:a}))}if(r.length>0){this.mosaicRule=this.mosaicRule||new rt;const e=this.mosaicRule.multidimensionalDefinition;(!e||e&&e.length<=0)&&(this.mosaicRule.multidimensionalDefinition=r)}}_formatAttributeValue(e,t){if("string"==typeof e){const r=this.popupTemplate&&this.popupTemplate.fieldInfos,i=this._getFieldInfo(r,t),n=i&&i.format;if(n){let t,r;return e.trim().indexOf(",")>-1?(t=",",r=t+" ",this._formatDelimitedString(e,t,r,n)):e.trim().indexOf(" ")>-1?(t=r=" ",this._formatDelimitedString(e,t,r,n)):this._formatNumberFromString(e,n)}}return e}_getFieldInfo(e,t){if(!e||!e.length||!t)return;const r=t.toLowerCase();let i;return e.some((e=>!(!e.fieldName||e.fieldName.toLowerCase()!==r&&e.fieldName.toLowerCase()!==r.replace(/ /g,"_")||(i=e,0)))),i}_formatDelimitedString(e,t,r,i){return e&&t&&r&&i?e.trim().split(t).map((e=>this._formatNumberFromString(e,i))).join(r):e}_formatNumberFromString(e,t){if(!e||!t)return e;const r=Number(e);return isNaN(r)?e:t.format(r)}_processVisibleRastersResponse(e,t){t=t||{};const r=e.value,{templateRRFunctionNames:i,showNoDataRecords:n,returnDomainValues:s,templateFields:a}=t,o=e.processedValues;let l=e.catalogItems&&e.catalogItems.features,u=e.properties&&e.properties.Values&&e.properties.Values.map((e=>e.replace(/ /gi,", ")))||[];const p=this.objectIdField||"ObjectId",c="string"==typeof r&&r.toLowerCase().indexOf("nodata")>-1,d=[];if(r&&!l&&!c){const e={};e[p]=0,u=[r],l=[new K(this.fullExtent,null,e)]}if(!l)return[];let m,h,y;this._updateResponseFieldNames(l,a);for(let f=0;f<l.length;f++){if(m=l[f],null!=r&&!c){if(h=u[f],y=this.renderingRule&&o&&o.length>0&&i&&i.length>0&&i.indexOf(this.renderingRule.functionName)>-1?o[i.indexOf(this.renderingRule.functionName)]:r,"nodata"===h.toLowerCase()&&!n)continue;const e="Raster.ItemPixelValue",t="Raster.ServicePixelValue";m.attributes[e]=this._formatAttributeValue(h,e),m.attributes[t]=this._formatAttributeValue(y,t),this._updateFeatureWithMagDirValues(m,h);const s=this.fields&&this.fields.length>0;let a=this.renderingRule&&P(this.serviceRasterInfo)&&this.serviceRasterInfo.attributeTable?s?h:r:y;this.renderingRule||(a=s?h:r),this._updateFeatureWithRasterAttributeTableValues(m,a)}if(m.sourceLayer=this,s&&this._updateFeatureWithDomainValues(m),i&&o&&i.length===o.length)for(let e=0;e<i.length;e++){const t="Raster.ServicePixelValue."+i[e];m.attributes[t]=this._formatAttributeValue(o[e],t)}d.push(l[f])}return d}_updateFeatureWithRasterAttributeTableValues(e,t){const r=this.rasterInfo&&this.rasterInfo.attributeTable||P(this.serviceRasterInfo)&&this.serviceRasterInfo.attributeTable,i=r&&r.features;if(!i)return;const n=r.fields,s=n.map((e=>e.name)).filter((e=>"value"===e.toLowerCase())),a=s&&s[0];if(!a)return;const o=i.filter((e=>e.attributes[a]===(null!=t?parseInt(t,10):null)));o&&o[0]&&n.forEach((t=>{const r=this.rasterAttributeTableFieldPrefix+t.name;e.attributes[r]=this._formatAttributeValue(o[0].attributes[t.name],r)}))}_updateFeatureWithMagDirValues(e,t){if(!this.pixelFilter||"esriImageServiceDataTypeVector-UV"!==this.serviceDataType&&"esriImageServiceDataTypeVector-MagDir"!==this.serviceDataType)return;const r=t.replace(" ",",").split(",").map((e=>parseFloat(e))),i=r.map((e=>[e])),n=r.map((e=>({minValue:e,maxValue:e,noDataValue:null}))),s=new he({height:1,width:1,pixelType:"f32",pixels:i,statistics:n});this.pixelFilter({pixelBlock:s,extent:new L(0,0,0,0,this.spatialReference)}),e.attributes["Raster.Magnitude"]=s.pixels[0][0],e.attributes["Raster.Direction"]=s.pixels[1][0]}_updateFeatureWithDomainValues(e){const t=this.fields&&this.fields.filter((e=>e.domain&&"coded-value"===e.domain.type));null!=t&&t.forEach((t=>{const r=e.attributes[t.name];if(null!=r){const i=t.domain.codedValues.filter((e=>e.code===r))[0];i&&(e.attributes[t.name]=i.name)}}))}_updateResponseFieldNames(e,t){if(!t||t.length<1)return;const r=this.fieldsIndex;r&&e.forEach((e=>{if(e&&e.attributes)for(const i of t)if(r.has(i)){const t=r.get(i).name;t!==i&&(e.attributes[i]=e.attributes[t],delete e.attributes[t])}}))}_updateRenderingRulesFunctionName(e,t){if(!e||e.length<1)return;if("Raw"===e)return e.replace("Raw","None");const r=e.toLowerCase().replace(/ /gi,"_");return t.has(r)?t.get(r):e}_isRFTJson(e){return e.name&&e.arguments&&e.function&&e.hasOwnProperty("functionType")}_readCapabilities(e){const t=e.capabilities?e.capabilities.toLowerCase().split(",").map((e=>e.trim())):["image","catalog"],{currentVersion:r,advancedQueryCapabilities:i,maxRecordCount:n}=e,s=t.indexOf("image")>-1,a="esriImageServiceDataTypeElevation"===e.serviceDataType,o=!!(e.spatialReference||e.extent&&e.extent.spatialReference);return{operations:{supportsComputeHistograms:s,supportsExportImage:s,supportsIdentify:s,supportsMeasure:t.indexOf("mensuration")>-1&&o,supportsDownload:t.indexOf("download")>-1,supportsQuery:t.indexOf("catalog")>-1&&e.fields&&e.fields.length>0,supportsGetSamples:r>=10.2&&s,supportsProject:r>=10.3&&s,supportsComputeStatisticsHistograms:r>=10.4&&s,supportsQueryBoundary:r>=10.6&&s,supportsCalculateVolume:r>=10.7&&a,supportsComputePixelLocation:r>=10.7&&t.indexOf("catalog")>-1},query:{supportsStatistics:!(!i||!i.supportsStatistics),supportsOrderBy:!(!i||!i.supportsOrderBy),supportsDistinct:!(!i||!i.supportsDistinct),supportsPagination:!(!i||!i.supportsPagination),supportsStandardizedQueriesOnly:!(!i||!i.useStandardizedQueries),maxRecordCount:n}}}};return p([c()],t.prototype,"_functionRasterInfos",void 0),p([c()],t.prototype,"_rasterJobHandler",void 0),p([c()],t.prototype,"_symbolizer",void 0),p([c()],t.prototype,"_defaultServiceMosaicRule",void 0),p([d("_defaultServiceMosaicRule",["defaultMosaicMethod"])],t.prototype,"readDefaultServiceMosaicRule",null),p([c()],t.prototype,"_cachedRendererJson",void 0),p([c()],t.prototype,"rasterAttributeTableFieldPrefix",void 0),p([c({readOnly:!0})],t.prototype,"rasterFunctionNamesIndex",null),p([c({readOnly:!0})],t.prototype,"queryTask",null),p([c()],t.prototype,"adjustAspectRatio",void 0),p([c({readOnly:!0}),I("serviceRasterInfo.bandCount")],t.prototype,"bandCount",void 0),p([c({type:[w],json:{write:!0}})],t.prototype,"bandIds",void 0),p([d("bandIds")],t.prototype,"readBandIds",null),p([c({readOnly:!0,json:{read:!1}})],t.prototype,"capabilities",void 0),p([d("service","capabilities",["capabilities","currentVersion","serviceDataType"])],t.prototype,"readCapabilities",null),p([c({type:Number})],t.prototype,"compressionQuality",void 0),p([m("compressionQuality")],t.prototype,"writeCompressionQuality",null),p([c({type:Number})],t.prototype,"compressionTolerance",void 0),p([m("compressionTolerance")],t.prototype,"writeCompressionTolerance",null),p([c({json:{read:{source:"copyrightText"}}})],t.prototype,"copyright",void 0),p([c({type:String,json:{read:{source:"layerDefinition.definitionExpression"},write:{target:"layerDefinition.definitionExpression"}}})],t.prototype,"definitionExpression",void 0),p([c({readOnly:!0,constructOnly:!0})],t.prototype,"exportImageServiceParameters",void 0),p([c()],t.prototype,"rasterInfo",void 0),p([c({readOnly:!0,type:[z]})],t.prototype,"fields",void 0),p([c({readOnly:!0})],t.prototype,"fieldsIndex",null),p([c({type:["png","png8","png24","png32","jpg","bmp","gif","jpgpng","lerc","tiff"],json:{write:!0}})],t.prototype,"format",null),p([d("service","format",["serviceDataType"])],t.prototype,"readFormat",null),p([c({type:L})],t.prototype,"fullExtent",void 0),p([c({readOnly:!0})],t.prototype,"hasMultidimensions",void 0),p([c({json:{read:{source:"maxImageHeight"}}})],t.prototype,"imageMaxHeight",void 0),p([c({json:{read:{source:"maxImageWidth"}}})],t.prototype,"imageMaxWidth",void 0),p([c({type:String,json:{type:vt.jsonValues,read:vt.read,write:vt.write}})],t.prototype,"interpolation",void 0),p([c()],t.prototype,"minScale",void 0),p([d("service","minScale")],t.prototype,"readMinScale",null),p([c()],t.prototype,"maxScale",void 0),p([d("service","maxScale")],t.prototype,"readMaxScale",null),p([c({type:rt})],t.prototype,"mosaicRule",null),p([d("mosaicRule",["mosaicRule","defaultMosaicMethod"])],t.prototype,"readMosaicRule",null),p([m("mosaicRule")],t.prototype,"writeMosaicRule",null),p([c({readOnly:!0}),I("serviceRasterInfo.multidimensionalInfo")],t.prototype,"multidimensionalInfo",void 0),p([c({json:{type:w}})],t.prototype,"noData",void 0),p([m("noData")],t.prototype,"writeNoData",null),p([c({type:String,json:{type:Rt.jsonValues,read:Rt.read,write:Rt.write}})],t.prototype,"noDataInterpretation",void 0),p([c({type:String,readOnly:!0,json:{read:{source:["fields"]}}})],t.prototype,"objectIdField",void 0),p([d("objectIdField")],t.prototype,"readObjectIdField",null),p([c({readOnly:!0})],t.prototype,"parsedUrl",null),p([c({readOnly:!0}),I("serviceRasterInfo.pixelSize.x")],t.prototype,"pixelSizeX",void 0),p([c({readOnly:!0}),I("serviceRasterInfo.pixelSize.y")],t.prototype,"pixelSizeY",void 0),p([c({type:Function})],t.prototype,"pixelFilter",void 0),p([c()],t.prototype,"raster",void 0),p([c()],t.prototype,"viewId",void 0),p([c({types:ge,json:{name:"layerDefinition.drawingInfo.renderer",origins:{"web-scene":{types:ve,name:"layerDefinition.drawingInfo.renderer",write:{overridePolicy:e=>({enabled:e&&"vector-field"!==e.type})}}}}})],t.prototype,"renderer",void 0),p([d("renderer")],t.prototype,"readRenderer",null),p([m("renderer")],t.prototype,"writeRenderer",null),p([c(E)],t.prototype,"opacity",void 0),p([c({readOnly:!0}),I("serviceRasterInfo.attributeTable")],t.prototype,"rasterAttributeTable",void 0),p([c({readOnly:!0})],t.prototype,"rasterFields",null),p([c({readOnly:!0})],t.prototype,"rasterFunctionInfos",void 0),p([c({type:Ee})],t.prototype,"renderingRule",null),p([d("renderingRule",["renderingRule","rasterFunctionInfos"])],t.prototype,"readRenderingRule",null),p([m("renderingRule")],t.prototype,"writeRenderingRule",null),p([c()],t.prototype,"serviceDataType",void 0),p([c({readOnly:!0,type:k})],t.prototype,"spatialReference",void 0),p([d("spatialReference",["spatialReference","extent"])],t.prototype,"readSpatialReference",null),p([c({json:{type:wt.jsonValues}})],t.prototype,"pixelType",void 0),p([d("pixelType")],t.prototype,"readPixelType",null),p([m("pixelType")],t.prototype,"writePixelType",null),p([c({constructOnly:!0,type:Te})],t.prototype,"serviceRasterInfo",void 0),p([c()],t.prototype,"sourceJSON",void 0),p([c(q)],t.prototype,"url",void 0),p([c({readOnly:!0})],t.prototype,"version",void 0),p([d("version",["currentVersion","fields","timeInfo"])],t.prototype,"readVersion",null),t=p([y("esri.layers.mixins.ArcGISImageService")],t),t};let It=class extends(te(re(ie(ne(se(ae(St(oe(le(ue)))))))))){constructor(...e){super(...e),this.legendEnabled=!0,this.isReference=null,this.operationalLayerType="ArcGISImageServiceLayer",this.popupEnabled=!0,this.popupTemplate=null,this.type="imagery"}normalizeCtorArgs(e,t){return"string"==typeof e?l({url:e},t):e}load(e){const t=P(e)?e.signal:null;return this.addResolvingPromise(this.loadFromPortal({supportedTypes:["Image Service"]},e).then((()=>this._fetchService(t)),(()=>this._fetchService(t)))),Promise.resolve(this)}writeOperationalLayerType(e,t,r){var i;const n="vector-field"===(null==(i=this.renderer)?void 0:i.type);t[r]=n?"ArcGISImageServiceVectorLayer":"ArcGISImageServiceLayer"}get defaultPopupTemplate(){return this.createPopupTemplate()}createPopupTemplate(e){const t=this.rasterFields,r=this.title,i=new Set;let n=!1,s=!1;this.capabilities&&(n=this.capabilities.operations.supportsQuery&&this.fields&&this.fields.length>0,s=n&&("esriImageServiceDataTypeVector-UV"===this.serviceDataType||"esriImageServiceDataTypeVector-MagDir"===this.serviceDataType));const a=new Set;n&&(a.add("raster.itempixelvalue"),s&&a.add("raster.magnitude").add("raster.direction"));for(const o of t){const e=o.name.toLowerCase();a.has(e)||e.indexOf("raster.servicepixelvalue.")>-1||i.add(o.name)}return pe({fields:t,title:r},u(l({},e),{visibleFieldNames:i}))}redraw(){this.emit("redraw")}};p([c(ce)],It.prototype,"legendEnabled",void 0),p([c({type:["show","hide"]})],It.prototype,"listMode",void 0),p([c({type:Boolean,json:{read:!1,write:{enabled:!0,overridePolicy:()=>({enabled:!1})}}})],It.prototype,"isReference",void 0),p([c({type:["ArcGISImageServiceLayer"],json:{origins:{"web-map":{type:["ArcGISImageServiceLayer","ArcGISImageServiceVectorLayer"],read:!1,write:{target:"layerType",ignoreOrigin:!0}}}}})],It.prototype,"operationalLayerType",void 0),p([m("web-map","operationalLayerType")],It.prototype,"writeOperationalLayerType",null),p([c(de)],It.prototype,"popupEnabled",void 0),p([c({type:me,json:{read:{source:"popupInfo"},write:{target:"popupInfo"}}})],It.prototype,"popupTemplate",void 0),p([c({readOnly:!0})],It.prototype,"defaultPopupTemplate",null),p([c({readOnly:!0,json:{read:!1}})],It.prototype,"type",void 0),It=p([y("esri.layers.ImageryLayer")],It);var Nt=It;export default Nt;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b2) => {
+  for (var prop in b2 || (b2 = {}))
+    if (__hasOwnProp.call(b2, prop))
+      __defNormalProp(a2, prop, b2[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b2)) {
+      if (__propIsEnum.call(b2, prop))
+        __defNormalProp(a2, prop, b2[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b2) => __defProps(a2, __getOwnPropDescs(b2));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { ae as e, af as y$6, dQ as e$1, c4 as o, eS as r, ag as i$2, dA as a$2, bT as y$7, c5 as j$2, hp as o$1, gV as N, eZ as c$4, _ as j$3, c9 as t$1, hq as o$2, dR as g$2, dS as r$1, aj as U, d0 as L, a5 as r$2, e5 as n$3, e2 as e$2, dT as p$4, es as i$3, cW as p$5, d5 as d$4, bi as d$5, a4 as n$4, e6 as y$8, cr as M$1, hr as y$9, bF as k, e0 as f$4, d3 as x, cE as e$3, dD as U$1, a0 as t$2, aa as s$1, hs as y$a, ht as q, ec as R$1, bG as x$1, d1 as n$5, hu as j$5, hv as u$5, gR as t$3, hw as f$5, gT as o$3, gS as s$2, dY as l$3, dZ as u$6, dX as p$8, d_ as l$4, e1 as b$1, gX as a$3, hj as d$7, g_ as c$5, M as M$2 } from "./vendor.74d5941c.js";
+import { u as u$4 } from "./pixelUtils.5399eb4b.js";
+import { n, a as n$2, d as d$6, i as i$4, p as p$7, k as k$1, V, j as j$4, K, b as n$6 } from "./rasterRendererHelper.c783c0d1.js";
+import { f as f$3, n as n$1, p as p$6, N as N$1, T, D } from "./RasterSymbolizer.07b5503f.js";
+import "./vectorFieldUtils.cdd2fa8a.js";
+import "./_commonjsHelpers.f2a458db.js";
+import "./LercCodec.7b2d60e1.js";
+var a$1;
+const c$3 = new Set(["raster", "raster2", "dem", "fillraster"]), p$3 = new Set(["rasters"]), m$3 = (t2) => t2 && t2.rasterFunction ? g$1.fromJSON(t2) : t2, f$2 = (t2) => t2 && t2 instanceof g$1 ? t2.toJSON() : t2, l$2 = (t2) => (t2 == null ? void 0 : t2.functionName) && !t2.declaredClass, y$5 = (t2) => l$2(t2) ? new g$1(t2) : t2;
+var d$3;
+!function(t2) {
+  t2[t2.MOSAIC = 0] = "MOSAIC", t2[t2.GROUP = 1] = "GROUP", t2[t2.ITEM = 2] = "ITEM";
+}(d$3 || (d$3 = {}));
+const w$1 = (t2) => {
+  if (t2 == null)
+    return null;
+  t2 = y$7(t2);
+  const o2 = {};
+  for (const e2 of Object.keys(t2))
+    c$3.has(e2.toLowerCase()) ? o2[e2] = m$3(t2[e2]) : p$3.has(e2.toLowerCase()) && Array.isArray(t2[e2]) ? o2[e2] = t2[e2].map(m$3) : o2[e2] = t2[e2];
+  return o2;
+};
+let g$1 = a$1 = class extends a$2 {
+  constructor(t2) {
+    super(t2), this.functionName = null, this.outputPixelType = "unknown", this.variableName = null, this.description = null, this.functionDefinition = null, this.thumbnail = null;
+  }
+  set functionArguments(t2) {
+    if (t2) {
+      const o2 = Object.keys(t2);
+      if (o2.some((e2) => c$3.has(e2.toLowerCase()) && l$2(t2[e2])) || o2.some((e2) => p$3.has(e2.toLowerCase()) && Array.isArray(t2[e2]) && t2[e2].some((t3) => l$2(t3)))) {
+        t2 = y$7(t2);
+        for (const e2 of o2)
+          c$3.has(e2.toLowerCase()) ? t2[e2] = y$5(t2[e2]) : p$3.has(e2.toLowerCase()) && Array.isArray(t2[e2]) && (t2[e2] = t2[e2].map((t3) => y$5(t3)));
+      }
+    }
+    this._set("functionArguments", t2);
+  }
+  readFunctionArguments(t2, e2) {
+    return t2 = e2.arguments || e2.rasterFunctionArguments, w$1(t2);
+  }
+  writeFunctionArguments(t2, e2, o2) {
+    const r2 = {};
+    for (const n2 of Object.keys(t2))
+      c$3.has(n2.toLowerCase()) ? r2[n2] = f$2(t2[n2]) : p$3.has(n2.toLowerCase()) && Array.isArray(t2[n2]) ? r2[n2] = t2[n2].map(f$2) : r2[n2] = f$2(t2[n2]);
+    this.functionDefinition ? e2.arguments = r2 : e2[o2] = r2;
+  }
+  readFunctionName(t2, e2) {
+    const o2 = e2.rasterFunctionInfos, r2 = e2.name;
+    return r2 || (o2 && o2.length && o2[0].name !== "None" ? o2[0].name : e2.rasterFunction);
+  }
+  writeFunctionName(t2, e2, o2) {
+    this.functionDefinition ? e2.name = t2 : e2[o2] = t2;
+  }
+  readFunctionType(t2) {
+    return d$3[t2];
+  }
+  writeFunctionType(t2, e2, o2) {
+    e2[o2] = d$3[t2];
+  }
+  clone() {
+    return new a$1({ functionName: this.functionName, functionArguments: y$7(this.functionArguments), outputPixelType: this.outputPixelType, variableName: this.variableName, description: this.description, functionType: this.functionType, functionDefinition: this.functionDefinition, thumbnail: this.thumbnail });
+  }
+};
+e([y$6({ json: { type: Object, write: { target: "rasterFunctionArguments" } } })], g$1.prototype, "functionArguments", null), e([e$1("functionArguments", ["rasterFunctionArguments", "arguments"])], g$1.prototype, "readFunctionArguments", null), e([o("functionArguments")], g$1.prototype, "writeFunctionArguments", null), e([y$6({ json: { type: String, write: { target: "rasterFunction" } } })], g$1.prototype, "functionName", void 0), e([e$1("functionName", ["rasterFunction", "rasterFunctionInfos", "name"])], g$1.prototype, "readFunctionName", null), e([o("functionName")], g$1.prototype, "writeFunctionName", null), e([r({ C128: "c128", C64: "c64", F32: "f32", F64: "f64", S16: "s16", S32: "s32", S8: "s8", U1: "u1", U16: "u16", U2: "u2", U32: "u32", U4: "u4", U8: "u8", UNKNOWN: "unknown" }, { ignoreUnknown: false }), y$6({ json: { default: "unknown" } })], g$1.prototype, "outputPixelType", void 0), e([y$6({ type: String, json: { read: true, write: true } })], g$1.prototype, "variableName", void 0), e([y$6({ type: String, json: { read: true, write: true, origins: { "web-document": { read: false, write: false } } } })], g$1.prototype, "description", void 0), e([y$6({ json: { origins: { "web-document": { read: false, write: false } } } })], g$1.prototype, "functionType", void 0), e([e$1("functionType")], g$1.prototype, "readFunctionType", null), e([o("functionType")], g$1.prototype, "writeFunctionType", null), e([y$6({ type: Object, json: { read: { source: "function" }, write: { target: "function" }, origins: { "web-document": { read: false, write: false } } } })], g$1.prototype, "functionDefinition", void 0), e([y$6({ type: String, json: { read: true, write: true, origins: { "web-document": { read: false, write: false } } } })], g$1.prototype, "thumbnail", void 0), g$1 = a$1 = e([i$2("esri.layers.support.RasterFunction")], g$1);
+var h$2 = g$1;
+const i$1 = { u1: [0, 1], u2: [0, 3], u4: [0, 15], u8: [0, 255], s8: [-128, 127], u16: [0, 65535], s16: [-32768, 32767] }, s = { simple_scalar: "Simple Scalar", wind_barb: "Wind Barb", single_arrow: "Single Arrow", beaufort_kn: "Beaufort Wind (Knots)", beaufort_m: "Beaufort Wind (MetersPerSecond)", ocean_current_m: "Ocean Current (MetersPerSecond)", ocean_current_kn: "Ocean Current (Knots)" }, u$3 = new Set(["raster-stretch", "unique-value", "class-breaks", "raster-shaded-relief", "vector-field", "raster-colormap"]);
+function l$1(e2) {
+  return u$3.has(e2.type);
+}
+function m$2(t2, n2) {
+  if (!t2 || !n2)
+    return y$7(t2 || n2);
+  const r2 = y$7(t2);
+  if (n2.functionName.toLowerCase() !== "none") {
+    p$2(r2.functionArguments).Raster = n2;
+  }
+  return r2;
+}
+function c$2(e2, t2) {
+  switch (t2 = t2 || {}, e2.type) {
+    case "raster-stretch":
+      return h$1(e2, t2);
+    case "class-breaks":
+      return b(e2, t2);
+    case "unique-value":
+      return R(e2, t2);
+    case "raster-colormap":
+      return v(e2, t2);
+    case "vector-field":
+      return d$2(e2, t2);
+    case "raster-shaded-relief":
+      return g(e2, t2);
+  }
+}
+function p$2(e2) {
+  const t2 = e2.Raster;
+  return t2 && t2.declaredClass === "esri.layers.support.RasterFunction" ? p$2(t2.functionArguments) : e2;
+}
+const f$1 = { none: 0, standardDeviation: 3, histogramEqualization: 4, minMax: 5, percentClip: 6, sigmoid: 9 };
+function d$2(e2, n2) {
+  const r2 = new h$2();
+  r2.functionName = "VectorFieldRenderer";
+  const { dataType: a2, bandProperties: i2 } = n2, u2 = a2 === "vector-uv";
+  let l2, m2;
+  i2 && i2.length === 2 && (l2 = i2.map((e3) => e3.BandName.toLowerCase()).indexOf("magnitude"), m2 = i2.map((e3) => e3.BandName.toLowerCase()).indexOf("direction")), l2 !== -1 && l2 !== null || (l2 = 0, m2 = 1);
+  const c2 = e2.rotationType === "arithmetic" ? 1 : 2, p2 = e2.flowRepresentation === "flow-from" ? 0 : 1, f2 = e2.visualVariables ? e2.visualVariables.filter((e3) => e3.field === "Magnitude")[0] : new j$2(), d2 = { magnitudeBandID: l2, directionBandID: m2, isUVComponents: u2, referenceSystem: c2, massFlowAngleRepresentation: p2, symbolTileSize: 50, symbolTileSizeUnits: 100, calculationMethod: "Vector Average", symbologyName: s[e2.style.toLowerCase().replace("-", "_")], minimumMagnitude: f2.minDataValue, maximumMagnitude: f2.maxDataValue, minimumSymbolSize: f2.minSize, maximumSymbolSize: f2.maxSize };
+  return r2.functionArguments = d2, r2;
+}
+function g(e2, t2) {
+  if (t2.dataType !== "elevation")
+    return new h$2();
+  const r2 = new h$2();
+  r2.functionName = "Hillshade";
+  const a2 = e2.hillshadeType === "traditional" ? 0 : 1, i2 = e2.scalingType === "none" ? 1 : 3, s2 = { HillshadeType: a2, SlopeType: i2, ZFactor: e2.zFactor };
+  return a2 === 0 && (s2.Azimuth = e2.azimuth, s2.Altitude = e2.altitude), i2 === 3 && (s2.PSPower = e2.pixelSizePower, s2.PSZFactor = e2.pixelSizeFactor), r2.functionArguments = s2, r2.variableName = "Raster", e2.colorRamp && (r2.functionName = "ShadedRelief", s2.Colormap = f$3(e2.colorRamp, 256)), r2;
+}
+function h$1(e2, t2) {
+  const i2 = new h$2();
+  i2.functionName = "Stretch";
+  const s2 = f$1[n.toJSON(e2.stretchType)], u2 = "u8", l2 = { StretchType: s2, Statistics: A(e2.statistics), DRA: e2.dynamicRangeAdjustment, UseGamma: e2.useGamma, Gamma: e2.gamma, ComputeGamma: e2.computeGamma };
+  if (e2.outputMin != null && (l2.Min = e2.outputMin), e2.outputMax != null && (l2.Max = e2.outputMax), s2 === f$1.standardDeviation ? (l2.NumberOfStandardDeviations = e2.numberOfStandardDeviations, i2.outputPixelType = u2) : s2 === f$1.percentClip ? (l2.MinPercent = e2.minPercent, l2.MaxPercent = e2.maxPercent, i2.outputPixelType = u2) : s2 === f$1.minMax ? i2.outputPixelType = u2 : s2 === f$1.sigmoid && (l2.SigmoidStrengthLevel = e2.sigmoidStrengthLevel), i2.functionArguments = l2, i2.variableName = "Raster", e2.colorRamp) {
+    const a2 = e2.colorRamp, s3 = new h$2(), u3 = n$1(a2);
+    return u3 ? s3.functionArguments = { colorRamp: u3 } : !t2.convertColorRampToColormap || a2.type !== "algorithmic" && a2.type !== "multipart" ? s3.functionArguments = { colorRamp: e2.colorRamp.toJSON() } : s3.functionArguments = { Colormap: f$3(a2, 256) }, s3.variableName = "Raster", s3.functionName = "Colormap", s3.functionArguments.Raster = i2, s3;
+  }
+  return i2;
+}
+function b(e2, t2) {
+  const n2 = [], r2 = [], a2 = [], i2 = [], s2 = 1e-6, { pixelType: u2, rasterAttributeTable: l2 } = t2, m2 = l2 && l2.features, c2 = S$1(l2);
+  if (m2 && Array.isArray(m2) && e2.classBreakInfos) {
+    e2.classBreakInfos.forEach((t4, n4) => {
+      const r3 = t4.symbol.color;
+      let a3;
+      r3.a && m2.forEach((o2) => {
+        a3 = o2.attributes[e2.field], (a3 >= t4.minValue && a3 < t4.maxValue || n4 === e2.classBreakInfos.length - 1 && a3 >= t4.minValue) && i2.push([o2.attributes[c2], r3.r, r3.g, r3.b]);
+      });
+    });
+    const t3 = u2 ? y$4(i2, u2) : i2, n3 = new h$2();
+    return n3.functionName = "Colormap", n3.functionArguments = {}, n3.functionArguments.Colormap = t3, n3.variableName = "Raster", n3;
+  }
+  e2.classBreakInfos.forEach((e3, t3) => {
+    const o2 = e3.symbol && e3.symbol.color;
+    o2.a ? (t3 === 0 ? n2.push(e3.minValue, e3.maxValue + s2) : n2.push(e3.minValue + s2, e3.maxValue + s2), r2.push(t3), i2.push([t3, o2.r, o2.g, o2.b])) : a2.push(e3.minValue, e3.maxValue);
+  });
+  const p2 = u2 ? y$4(i2, u2) : i2, f2 = new h$2();
+  f2.functionName = "Remap", f2.functionArguments = { InputRanges: n2, OutputValues: r2, NoDataRanges: a2 }, f2.variableName = "Raster";
+  const d2 = new h$2();
+  return d2.functionName = "Colormap", d2.functionArguments = { Colormap: p2, Raster: f2 }, d2;
+}
+function y$4(e2, t2) {
+  const n2 = i$1[String(t2).toLowerCase()];
+  return n2 && e2.push([Math.floor(n2[0] - 1), 0, 0, 0], [Math.ceil(n2[1] + 1), 0, 0, 0]), e2;
+}
+function S$1(e2) {
+  if (!e2)
+    return;
+  const { fields: t2 } = e2, n2 = t2 && t2.find((e3) => e3 && e3.name && e3.name.toLowerCase() === "value");
+  return n2 && n2.name;
+}
+function R(e2, t2) {
+  const n2 = [], { pixelType: r2, rasterAttributeTable: a2 } = t2, i2 = a2 && a2.features, s2 = S$1(a2);
+  let u2 = false;
+  if (e2.uniqueValueInfos && e2.uniqueValueInfos.forEach((t3) => {
+    const r3 = t3.symbol.color;
+    r3.a && (e2.field !== s2 && i2 ? i2 && i2.forEach((a3) => {
+      String(a3.attributes[e2.field]) === String(t3.value) && n2.push([a3.attributes[s2], r3.r, r3.g, r3.b]);
+    }) : isNaN(+t3.value) ? u2 = true : n2.push([+t3.value, r3.r, r3.g, r3.b]));
+  }), u2)
+    return null;
+  const l2 = r2 && n2.length > 0 ? y$4(n2, r2) : n2, m2 = new h$2();
+  return m2.functionName = "Colormap", m2.functionArguments = {}, m2.functionArguments.Colormap = l2, m2.variableName = "Raster", m2;
+}
+function v(e2, t2) {
+  const n2 = e2.extractColormap();
+  if (!n2 || n2.length === 0)
+    return;
+  const { pixelType: r2 } = t2, a2 = r2 ? y$4(n2, r2) : n2, i2 = new h$2();
+  return i2.functionName = "Colormap", i2.functionArguments = {}, i2.functionArguments.Colormap = a2, i2;
+}
+function A(e2) {
+  const t2 = [];
+  return e2.forEach((e3) => {
+    const n2 = e3;
+    if (Array.isArray(n2))
+      t2.push(n2);
+    else {
+      if (n2.min == null || n2.max == null)
+        return;
+      const e4 = [n2.min, n2.max, n2.avg || 0, n2.stddev || 0];
+      t2.push(e4);
+    }
+  }), t2;
+}
+var u$2;
+const m$1 = o$1()({ MT_FIRST: "first", MT_LAST: "last", MT_MIN: "min", MT_MAX: "max", MT_MEAN: "mean", MT_BLEND: "blend", MT_SUM: "sum" }), h = o$1()({ esriMosaicNone: "none", esriMosaicCenter: "center", esriMosaicNadir: "nadir", esriMosaicViewpoint: "viewpoint", esriMosaicAttribute: "attribute", esriMosaicLockRaster: "lock-raster", esriMosaicNorthwest: "northwest", esriMosaicSeamline: "seamline" });
+function M(e2) {
+  let t2;
+  switch (e2 ? e2.toLowerCase().replace("esrimosaic", "") : "") {
+    case "byattribute":
+    case "attribute":
+      t2 = "esriMosaicAttribute";
+      break;
+    case "lockraster":
+      t2 = "esriMosaicLockRaster";
+      break;
+    case "center":
+      t2 = "esriMosaicCenter";
+      break;
+    case "northwest":
+      t2 = "esriMosaicNorthwest";
+      break;
+    case "nadir":
+      t2 = "esriMosaicNadir";
+      break;
+    case "viewpoint":
+      t2 = "esriMosaicViewpoint";
+      break;
+    case "seamline":
+      t2 = "esriMosaicSeamline";
+      break;
+    case "none":
+    default:
+      t2 = "esriMosaicNone";
+  }
+  return h.fromJSON(t2);
+}
+let w = u$2 = class extends a$2 {
+  constructor(e2) {
+    super(e2), this.ascending = true, this.itemRenderingRule = null, this.lockRasterIds = null, this.method = null, this.multidimensionalDefinition = null, this.objectIds = null, this.operation = null, this.sortField = null, this.sortValue = null, this.viewpoint = null, this.where = null;
+  }
+  readAscending(e2, t2) {
+    return t2.ascending != null ? t2.ascending : t2.sortAscending == null || t2.sortAscending;
+  }
+  readMethod(e2, t2) {
+    return M(t2.mosaicMethod || t2.defaultMosaicMethod);
+  }
+  readOperation(e2, t2) {
+    const o2 = t2.mosaicOperation, r2 = t2.mosaicOperator && t2.mosaicOperator.toLowerCase(), i2 = o2 || (r2 ? m$1.toJSON(r2) : null);
+    return m$1.fromJSON(i2) || "first";
+  }
+  castSortValue(e2) {
+    return e2 == null || typeof e2 == "string" || typeof e2 == "number" ? e2 : `${e2}`;
+  }
+  clone() {
+    return new u$2({ ascending: this.ascending, itemRenderingRule: y$7(this.itemRenderingRule), lockRasterIds: y$7(this.lockRasterIds), method: this.method, multidimensionalDefinition: y$7(this.multidimensionalDefinition), objectIds: y$7(this.objectIds), operation: this.operation, sortField: this.sortField, sortValue: this.sortValue, viewpoint: y$7(this.viewpoint), where: this.where });
+  }
+};
+e([y$6({ type: Boolean, json: { write: true } })], w.prototype, "ascending", void 0), e([e$1("ascending", ["ascending", "sortAscending"])], w.prototype, "readAscending", null), e([y$6({ type: h$2, json: { write: true } })], w.prototype, "itemRenderingRule", void 0), e([y$6({ type: [N], json: { write: { overridePolicy() {
+  return { enabled: this.method === "lock-raster" };
+} } } })], w.prototype, "lockRasterIds", void 0), e([y$6({ type: String, json: { type: h.jsonValues, write: { target: "mosaicMethod", writer: h.write } } })], w.prototype, "method", void 0), e([e$1("method", ["mosaicMethod", "defaultMosaicMethod"])], w.prototype, "readMethod", null), e([y$6({ type: [n$2], json: { write: true } })], w.prototype, "multidimensionalDefinition", void 0), e([y$6({ type: [N], json: { name: "fids", write: true } })], w.prototype, "objectIds", void 0), e([y$6({ json: { type: m$1.jsonValues, read: { reader: m$1.read }, write: { target: "mosaicOperation", writer: m$1.write } } })], w.prototype, "operation", void 0), e([e$1("operation", ["mosaicOperation", "mosaicOperator"])], w.prototype, "readOperation", null), e([y$6({ type: String, json: { write: { overridePolicy() {
+  return { enabled: this.method === "attribute" };
+} } } })], w.prototype, "sortField", void 0), e([y$6({ type: [String, Number], json: { write: { allowNull: true, overridePolicy() {
+  return { enabled: this.method === "attribute", allowNull: true };
+} } } })], w.prototype, "sortValue", void 0), e([c$4("sortValue")], w.prototype, "castSortValue", null), e([y$6({ type: j$3, json: { write: true } })], w.prototype, "viewpoint", void 0), e([y$6({ type: String, json: { write: true } })], w.prototype, "where", void 0), w = u$2 = e([i$2("esri.layers.support.MosaicRule")], w);
+var y$3 = w;
+const y$2 = new t$1({ RSP_NearestNeighbor: "nearest", RSP_BilinearInterpolation: "bilinear", RSP_CubicConvolution: "cubic", RSP_Majority: "majority" }), u$1 = new t$1({ esriNoDataMatchAny: "any", esriNoDataMatchAll: "all" });
+let d$1 = class extends a$2 {
+  constructor() {
+    super(...arguments), this.layer = null, this.adjustAspectRatio = void 0, this.bandIds = void 0, this.compression = void 0, this.compressionQuality = void 0, this.compressionTolerance = 0.01, this.format = null, this.interpolation = null, this.noData = null, this.noDataInterpretation = void 0, this.pixelType = void 0, this.lercVersion = 2;
+  }
+  writeAdjustAspectRatio(e2, r2, o2) {
+    this.layer.version < 10.3 || (r2[o2] = e2);
+  }
+  writeCompressionQuality(e2, r2, o2) {
+    this.format && this.format.toLowerCase().indexOf("jpg") > -1 && e2 != null && (r2[o2] = e2);
+  }
+  writeCompressionTolerance(e2, r2, o2) {
+    this.format === "lerc" && e2 != null && (r2[o2] = e2);
+  }
+  writeLercVersion(e2, r2, o2) {
+    this.format === "lerc" && this.layer.version >= 10.5 && (r2[o2] = e2);
+  }
+  get version() {
+    const e2 = this.layer;
+    return e2.commitProperty("bandIds"), e2.commitProperty("format"), e2.commitProperty("compressionQuality"), e2.commitProperty("compressionTolerance"), e2.commitProperty("interpolation"), e2.commitProperty("noData"), e2.commitProperty("noDataInterpretation"), e2.commitProperty("mosaicRule"), e2.commitProperty("renderingRule"), e2.commitProperty("adjustAspectRatio"), e2.commitProperty("pixelFilter"), e2.commitProperty("renderer"), e2.commitProperty("definitionExpression"), (this._get("version") || 0) + 1;
+  }
+  set version(e2) {
+    this._set("version", e2);
+  }
+  get mosaicRule() {
+    const e2 = this.layer;
+    let r2 = e2.mosaicRule;
+    const o2 = e2.definitionExpression;
+    return r2 ? o2 && o2 !== r2.where && (r2 = r2.clone(), r2.where = o2) : o2 && (r2 = new y$3({ where: o2 })), r2;
+  }
+  get renderingRule() {
+    const e2 = this.layer;
+    let r2 = e2.renderingRule;
+    const o2 = e2.pixelFilter, t2 = !e2.format || e2.format.indexOf("jpg") > -1 || e2.format.indexOf("png") > -1;
+    return r2 = this._addResampleRasterFunction(r2), t2 && !o2 && (r2 = this.combineRendererWithRenderingRule()), r2;
+  }
+  combineRendererWithRenderingRule() {
+    var e2;
+    const r2 = this.layer, { rasterInfo: o2, renderingRule: t2, renderer: i2 } = r2;
+    if (!i2 || !l$1(i2))
+      return t2;
+    return m$2(c$2(i2, { rasterAttributeTable: o2.attributeTable, pixelType: o2.pixelType, dataType: o2.dataType, bandProperties: (e2 = o2.keyProperties) == null ? void 0 : e2.BandProperties, convertColorRampToColormap: r2.version < 10.6 }), t2);
+  }
+  _addResampleRasterFunction(e2) {
+    var r2;
+    if (!(((r2 = this.layer.renderer) == null ? void 0 : r2.type) === "vector-field") || (e2 == null ? void 0 : e2.functionName) === "Resample")
+      return e2;
+    const o2 = this.layer.serviceDataType === "esriImageServiceDataTypeVector-UV" ? 7 : 10, t2 = new h$2({ functionName: "Resample", functionArguments: { ResamplingType: o2, InputCellSize: { x: this.layer.pixelSizeX, y: this.layer.pixelSizeY } } });
+    return m$2(t2, e2);
+  }
+};
+e([y$6()], d$1.prototype, "layer", void 0), e([y$6({ json: { write: true } })], d$1.prototype, "adjustAspectRatio", void 0), e([o("adjustAspectRatio")], d$1.prototype, "writeAdjustAspectRatio", null), e([y$6({ json: { write: true } }), o$2("layer.bandIds")], d$1.prototype, "bandIds", void 0), e([y$6({ json: { write: true } })], d$1.prototype, "compression", void 0), e([y$6({ json: { write: true } }), o$2("layer.compressionQuality")], d$1.prototype, "compressionQuality", void 0), e([o("compressionQuality")], d$1.prototype, "writeCompressionQuality", null), e([y$6({ json: { write: true } }), o$2("layer.compressionTolerance")], d$1.prototype, "compressionTolerance", void 0), e([o("compressionTolerance")], d$1.prototype, "writeCompressionTolerance", null), e([y$6({ json: { write: true } }), o$2("layer.format")], d$1.prototype, "format", void 0), e([y$6({ type: String, json: { read: { reader: y$2.read }, write: { writer: y$2.write } } }), o$2("layer.interpolation")], d$1.prototype, "interpolation", void 0), e([y$6({ json: { write: true } }), o$2("layer.noData")], d$1.prototype, "noData", void 0), e([y$6({ type: String, json: { read: { reader: u$1.read }, write: { writer: u$1.write } } }), o$2("layer.noDataInterpretation")], d$1.prototype, "noDataInterpretation", void 0), e([y$6({ json: { write: true } })], d$1.prototype, "pixelType", void 0), e([y$6({ json: { write: true } })], d$1.prototype, "lercVersion", void 0), e([o("lercVersion")], d$1.prototype, "writeLercVersion", null), e([y$6({ type: Number })], d$1.prototype, "version", null), e([y$6({ json: { write: true } })], d$1.prototype, "mosaicRule", null), e([y$6({ json: { write: true } })], d$1.prototype, "renderingRule", null), d$1 = e([i$2("esri.layers.mixins.ExportImageServiceParameters")], d$1);
+let p$1 = class extends a$2 {
+  constructor() {
+    super(...arguments), this.catalogItemVisibilities = null, this.catalogItems = null, this.location = null, this.name = null, this.objectId = null, this.processedValues = null, this.properties = null, this.value = null;
+  }
+};
+e([y$6({ json: { write: true } })], p$1.prototype, "catalogItemVisibilities", void 0), e([y$6({ type: g$2, json: { write: true } })], p$1.prototype, "catalogItems", void 0), e([y$6({ type: j$3, json: { write: true } })], p$1.prototype, "location", void 0), e([y$6({ json: { write: true } })], p$1.prototype, "name", void 0), e([y$6({ json: { write: true } })], p$1.prototype, "objectId", void 0), e([y$6({ json: { write: true } })], p$1.prototype, "processedValues", void 0), e([y$6({ json: { write: true } })], p$1.prototype, "properties", void 0), e([y$6({ json: { write: true } })], p$1.prototype, "value", void 0), p$1 = e([i$2("esri.tasks.support.ImageIdentifyResult")], p$1);
+var l = p$1;
+function i(t2) {
+  const s2 = t2 == null ? void 0 : t2.time;
+  if (s2 && (s2.start != null || s2.end != null)) {
+    const o2 = [];
+    s2.start != null && o2.push(s2.start), s2.end != null && o2.indexOf(s2.end) === -1 && o2.push(s2.end), t2.time = o2.join(",");
+  }
+}
+function m(s2, a2, m2) {
+  return __async(this, null, function* () {
+    const u2 = r$1(s2), c2 = a2.geometry ? [a2.geometry] : [], f2 = yield L(c2), g2 = a2.toJSON();
+    i(g2);
+    const l2 = f2 && f2[0];
+    r$2(l2) && (g2.geometry = l2.toJSON());
+    const p2 = n$3(__spreadValues(__spreadProps(__spreadValues({}, u2.query), { f: "json" }), g2));
+    return e$2(p2, m2);
+  });
+}
+function u(t2, o2, r2) {
+  return __async(this, null, function* () {
+    const e2 = yield m(t2, o2, r2), a2 = r$1(t2), { data: i2 } = yield U(`${a2.path}/computeStatisticsHistograms`, e2), { statistics: u2 } = i2;
+    return u2 != null && u2.length && u2.forEach((t3) => {
+      t3.avg = t3.mean, t3.stddev = t3.standardDeviation;
+    }), { statistics: u2, histograms: i2.histograms };
+  });
+}
+function c$1(t2, o2, r2) {
+  return __async(this, null, function* () {
+    const e2 = yield m(t2, o2, r2), a2 = r$1(t2), { data: i2 } = yield U(`${a2.path}/computeHistograms`, e2);
+    return { histograms: i2.histograms };
+  });
+}
+function f(i2, m2, u2) {
+  return __async(this, null, function* () {
+    const c2 = r$1(i2), f2 = m2.geometry ? [m2.geometry] : [];
+    return L(f2).then((o2) => {
+      const n2 = m2.toJSON(), a2 = o2 && o2[0];
+      r$2(a2) && (n2.geometry = JSON.stringify(a2.toJSON()));
+      const i3 = n$3(__spreadValues(__spreadProps(__spreadValues({}, c2.query), { f: "json" }), n2)), f3 = e$2(i3, u2);
+      return U(c2.path + "/identify", f3);
+    }).then((t2) => l.fromJSON(t2.data));
+  });
+}
+let t = class extends p$4 {
+  execute(r2, s2) {
+    return f(this.url, r2, s2);
+  }
+};
+t = e([i$2("esri.tasks.ImageIdentifyTask")], t);
+var p = t;
+var y$1;
+let j$1 = y$1 = class extends a$2 {
+  constructor() {
+    super(...arguments), this.geometry = null, this.mosaicRule = null, this.renderingRule = null, this.pixelSize = null, this.raster = void 0, this.timeExtent = null;
+  }
+  writeGeometry(e2, r2, t2) {
+    e2 != null && (r2.geometryType = d$5(e2), r2[t2] = e2.toJSON());
+  }
+  clone() {
+    return new y$1(y$7({ geometry: this.geometry, mosaicRule: this.mosaicRule, renderingRule: this.renderingRule, pixelSize: this.pixelSize, raster: this.raster, timeExtent: this.timeExtent }));
+  }
+};
+e([y$6({ types: i$3, json: { read: p$5 } })], j$1.prototype, "geometry", void 0), e([o("geometry")], j$1.prototype, "writeGeometry", null), e([y$6({ type: y$3, json: { write: true } })], j$1.prototype, "mosaicRule", void 0), e([y$6({ type: h$2, json: { write: true } })], j$1.prototype, "renderingRule", void 0), e([y$6({ type: j$3, json: { write: true } })], j$1.prototype, "pixelSize", void 0), e([y$6({ json: { write: true } })], j$1.prototype, "raster", void 0), e([y$6({ type: d$4, json: { read: { source: "time" }, write: { target: "time" } } })], j$1.prototype, "timeExtent", void 0), j$1 = y$1 = e([i$2("esri.tasks.support.ImageHistogramParameters")], j$1);
+var d = j$1;
+var a;
+let y = a = class extends a$2 {
+  constructor() {
+    super(...arguments), this.geometry = null, this.renderingRules = null, this.pixelSize = null, this.returnGeometry = true, this.returnCatalogItems = true, this.returnPixelValues = true, this.maxItemCount = null, this.timeExtent = null, this.raster = void 0, this.viewId = void 0;
+  }
+  writeGeometry(e2, t2, r2) {
+    e2 != null && (t2.geometryType = d$5(e2), t2[r2] = JSON.stringify(e2.toJSON()));
+  }
+  set mosaicRule(e2) {
+    let t2 = e2;
+    t2 && t2.mosaicMethod && (t2 = y$3.fromJSON(__spreadProps(__spreadValues({}, t2.toJSON()), { mosaicMethod: t2.mosaicMethod, mosaicOperation: t2.mosaicOperation }))), this._set("mosaicRule", t2);
+  }
+  writeMosaicRule(e2, t2, r2) {
+    e2 != null && (t2[r2] = JSON.stringify(e2.toJSON()));
+  }
+  set renderingRule(e2) {
+    let t2 = e2;
+    t2 && t2.rasterFunction && (t2 = h$2.fromJSON(__spreadProps(__spreadValues({}, t2.toJSON()), { rasterFunction: t2.rasterFunction, rasterFunctionArguments: t2.rasterFunctionArguments }))), this._set("renderingRule", t2);
+  }
+  writeRenderingRule(e2, t2, r2) {
+    e2 != null && (t2[r2] = JSON.stringify(e2.toJSON()));
+  }
+  writeRenderingRules(e2, t2, r2) {
+    e2 != null && (t2[r2] = JSON.stringify(e2.map((e3) => e3.toJSON())));
+  }
+  writePixelSize(e2, t2, r2) {
+    e2 != null && (t2[r2] = JSON.stringify(e2));
+  }
+  writeTimeExtent(e2, t2, r2) {
+    if (e2 != null) {
+      const o2 = e2.start ? e2.start.getTime() : null, i2 = e2.end ? e2.end.getTime() : null;
+      t2[r2] = o2 != null ? i2 != null ? `${o2},${i2}` : `${o2}` : null;
+    }
+  }
+  clone() {
+    return new a(y$7({ geometry: this.geometry, mosaicRule: this.mosaicRule, renderingRule: this.renderingRule, pixelSize: this.pixelSize, returnGeometry: this.returnGeometry, returnCatalogItems: this.returnCatalogItems, returnPixelValues: this.returnPixelValues, maxItemCount: this.maxItemCount, raster: this.raster, viewId: this.viewId, timeExtent: this.timeExtent }));
+  }
+};
+e([y$6({ json: { write: true } })], y.prototype, "geometry", void 0), e([o("geometry")], y.prototype, "writeGeometry", null), e([y$6({ type: y$3, json: { write: true } })], y.prototype, "mosaicRule", null), e([o("mosaicRule")], y.prototype, "writeMosaicRule", null), e([y$6({ type: h$2, json: { write: true } })], y.prototype, "renderingRule", null), e([o("renderingRule")], y.prototype, "writeRenderingRule", null), e([y$6({ type: [h$2], json: { write: true } })], y.prototype, "renderingRules", void 0), e([o("renderingRules")], y.prototype, "writeRenderingRules", null), e([y$6({ type: j$3, json: { write: true } })], y.prototype, "pixelSize", void 0), e([o("pixelSize")], y.prototype, "writePixelSize", null), e([y$6({ type: Boolean, json: { write: true } })], y.prototype, "returnGeometry", void 0), e([y$6({ type: Boolean, json: { write: true } })], y.prototype, "returnCatalogItems", void 0), e([y$6({ type: Boolean, json: { write: true } })], y.prototype, "returnPixelValues", void 0), e([y$6({ type: Number, json: { write: true } })], y.prototype, "maxItemCount", void 0), e([y$6({ type: d$4, json: { write: { target: "time" } } })], y.prototype, "timeExtent", void 0), e([o("timeExtent")], y.prototype, "writeTimeExtent", null), e([y$6({ json: { write: true } })], y.prototype, "raster", void 0), e([y$6({ json: { write: true } })], y.prototype, "viewId", void 0), y = a = e([i$2("esri.tasks.support.ImageIdentifyParameters")], y);
+var c = y;
+const ee = n$4.getLogger("esri.layers.mixins.ArcGISImageService"), te = o$1()({ RSP_NearestNeighbor: "nearest", RSP_BilinearInterpolation: "bilinear", RSP_CubicConvolution: "cubic", RSP_Majority: "majority" }), re = o$1()({ esriNoDataMatchAny: "any", esriNoDataMatchAll: "all" }), ie = o$1()({ U1: "u1", U2: "u2", U4: "u4", U8: "u8", S8: "s8", U16: "u16", S16: "s16", U32: "u32", S32: "s32", F32: "f32", F64: "f64", C64: "c64", C128: "c128", UNKNOWN: "unknown" }), se = new Set(["png", "png8", "png24", "png32", "jpg", "bmp", "gif", "jpgpng", "lerc", "tiff"]), ne = j$5(u$5, { min: 0, max: 255 });
+function ae(e2) {
+  if (!e2)
+    return null;
+  const t2 = JSON.stringify(e2).match(/"rasterFunction":"(.*?")/gi), r2 = t2 == null ? void 0 : t2.map((e3) => e3.replace('"rasterFunction":"', "").replace('"', ""));
+  return r2 ? r2.join("/") : null;
+}
+const oe = (s2) => {
+  let o$12 = class extends s2 {
+    constructor() {
+      super(...arguments), this._functionRasterInfos = {}, this._rasterJobHandler = { instance: null, refCount: 0, connectionPromise: null }, this._symbolizer = null, this._defaultServiceMosaicRule = null, this.rasterAttributeTableFieldPrefix = "Raster.", this.adjustAspectRatio = null, this.bandCount = null, this.bandIds = void 0, this.capabilities = null, this.compressionQuality = void 0, this.compressionTolerance = 0.01, this.copyright = null, this.definitionExpression = null, this.exportImageServiceParameters = null, this.rasterInfo = null, this.fields = null, this.fullExtent = null, this.hasMultidimensions = false, this.imageMaxHeight = 4100, this.imageMaxWidth = 4100, this.interpolation = void 0, this.minScale = 0, this.maxScale = 0, this.multidimensionalInfo = null, this.noData = null, this.noDataInterpretation = void 0, this.objectIdField = null, this.pixelSizeX = null, this.pixelSizeY = null, this.pixelFilter = null, this.raster = void 0, this.viewId = void 0, this.renderer = null, this.rasterAttributeTable = null, this.rasterFunctionInfos = null, this.serviceDataType = null, this.spatialReference = null, this.pixelType = null, this.serviceRasterInfo = null, this.sourceJSON = null, this.url = null, this.version = null;
+    }
+    initialize() {
+      this._set("exportImageServiceParameters", new d$1({ layer: this }));
+    }
+    readDefaultServiceMosaicRule(e2, t2) {
+      return y$3.fromJSON(t2);
+    }
+    get rasterFunctionNamesIndex() {
+      const e2 = new Map();
+      return !this.rasterFunctionInfos || this.rasterFunctionInfos.length < 1 || this.rasterFunctionInfos.forEach((t2) => {
+        e2.set(t2.name.toLowerCase().replace(/ /gi, "_"), t2.name);
+      }), e2;
+    }
+    get queryTask() {
+      return new x({ url: this.url });
+    }
+    readBandIds(e2, t2) {
+      if (Array.isArray(e2) && e2.length > 0 && e2.every((e3) => typeof e3 == "number"))
+        return e2;
+    }
+    readCapabilities(e2, t2) {
+      return this._readCapabilities(t2);
+    }
+    writeCompressionQuality(e2, t2, r2) {
+      e2 != null && this.format !== "lerc" && (t2[r2] = e2);
+    }
+    writeCompressionTolerance(e2, t2, r2) {
+      this.format === "lerc" && e2 != null && (t2[r2] = e2);
+    }
+    get fieldsIndex() {
+      return this.fields ? new e$3(this.fields) : null;
+    }
+    set format(e2) {
+      e2 && se.has(e2.toLowerCase()) && this._set("format", e2.toLowerCase());
+    }
+    readFormat(e2, t2) {
+      return t2.serviceDataType === "esriImageServiceDataTypeVector-UV" || t2.serviceDataType === "esriImageServiceDataTypeVector-MagDir" || this.pixelFilter != null ? "lerc" : "jpgpng";
+    }
+    readMinScale(e2, t2) {
+      return t2.minLOD != null && t2.maxLOD != null ? e2 : 0;
+    }
+    readMaxScale(e2, t2) {
+      return t2.minLOD != null && t2.maxLOD != null ? e2 : 0;
+    }
+    set mosaicRule(e2) {
+      let t2 = e2;
+      t2 && t2.mosaicMethod && (t2 = y$3.fromJSON(__spreadProps(__spreadValues({}, t2.toJSON()), { mosaicMethod: t2.mosaicMethod, mosaicOperation: t2.mosaicOperation }))), this._set("mosaicRule", t2);
+    }
+    readMosaicRule(e2, t2) {
+      return y$3.fromJSON(e2 || t2.mosaicRule || t2);
+    }
+    writeMosaicRule(e2, t2, r2) {
+      let i2 = this.mosaicRule;
+      const s3 = this.definitionExpression;
+      i2 ? s3 && s3 !== i2.where && (i2 = i2.clone(), i2.where = s3) : s3 && (i2 = new y$3({ where: s3 })), this._isValidCustomizedMosaicRule(i2) && (t2[r2] = i2.toJSON());
+    }
+    writeNoData(e2, t2, r2) {
+      e2 != null && typeof e2 == "number" && (t2[r2] = ne(e2));
+    }
+    readObjectIdField(e2, t2) {
+      if (!e2) {
+        const r2 = t2.fields.filter((e3) => e3.type === "esriFieldTypeOID" || e3.type === "oid");
+        e2 = r2 && r2[0] && r2[0].name;
+      }
+      return e2;
+    }
+    get parsedUrl() {
+      return this.url ? U$1(this.url) : null;
+    }
+    readRenderer(e2, t2, r2) {
+      var i2, s3;
+      const n2 = t2 == null || (i2 = t2.layerDefinition) == null || (s3 = i2.drawingInfo) == null ? void 0 : s3.renderer, a2 = p$7(n2, r2);
+      return a2 == null ? null : (a2.type === "vector-field" && t2.symbolTileSize && !n2.symbolTileSize && (a2.symbolTileSize = t2.symbolTileSize), l$1(a2) || ee.warn("ArcGISImageService", "Imagery layer doesn't support given renderer type."), a2);
+    }
+    writeRenderer(e2, t2, r2) {
+      t2.layerDefinition = t2.layerDefinition || {}, t2.layerDefinition.drawingInfo = t2.layerDefinition.drawingInfo || {}, t2.layerDefinition.drawingInfo.renderer = e2.toJSON(), e2.type === "vector-field" && (t2.symbolTileSize = e2.symbolTileSize);
+    }
+    get rasterFields() {
+      const e2 = this.rasterAttributeTableFieldPrefix || "Raster.", r2 = new y$8({ name: "Raster.ItemPixelValue", alias: "Item Pixel Value", domain: null, editable: false, length: 50, type: "string" }), i2 = new y$8({ name: "Raster.ServicePixelValue", alias: "Service Pixel Value", domain: null, editable: false, length: 50, type: "string" }), s3 = new y$8({ name: "Raster.ServicePixelValue.Raw", alias: "Raw Service Pixel Value", domain: null, editable: false, length: 50, type: "string" });
+      let n2 = this.fields ? y$7(this.fields) : [];
+      n2.push(i2), this.capabilities.operations.supportsQuery && this.fields && this.fields.length > 0 && n2.push(r2), this.version >= 10.4 && this.rasterFunctionInfos && this.rasterFunctionInfos.some((e3) => e3.name.toLowerCase() === "none") && n2.push(s3), this.rasterFunctionInfos && this.rasterFunctionInfos.filter((e3) => e3.name.toLowerCase() !== "none").forEach((e3) => {
+        n2.push(new y$8({ name: "Raster.ServicePixelValue." + e3.name, alias: e3.name, domain: null, editable: false, length: 50, type: "string" }));
+      }), this.pixelFilter == null || this.serviceDataType !== "esriImageServiceDataTypeVector-UV" && this.serviceDataType !== "esriImageServiceDataTypeVector-MagDir" || (n2.push(new y$8({ name: "Raster.Magnitude", alias: "Magnitude", domain: null, editable: false, type: "double" })), n2.push(new y$8({ name: "Raster.Direction", alias: "Direction", domain: null, editable: false, type: "double" })));
+      const a2 = this.rasterInfo.attributeTable && this.rasterInfo.attributeTable.fields || null;
+      if (a2 && a2.length > 0) {
+        const r3 = a2.filter((e3) => e3.type !== "esriFieldTypeOID" && e3.name.toLowerCase() !== "value").map((r4) => {
+          const i3 = y$7(r4);
+          return i3.name = e2 + r4.name, i3;
+        });
+        n2 = n2.concat(r3);
+      }
+      return n2;
+    }
+    set renderingRule(e2) {
+      let t2 = e2;
+      t2 && t2.rasterFunction && (t2 = h$2.fromJSON(__spreadProps(__spreadValues({}, t2.toJSON()), { rasterFunction: t2.rasterFunction, rasterFunctionArguments: t2.rasterFunctionArguments }))), this._set("renderingRule", t2);
+    }
+    readRenderingRule(e2, t2) {
+      const r2 = t2.rasterFunctionInfos;
+      return t2.renderingRule || r2 && r2.length && r2[0].name !== "None" ? h$2.fromJSON(t2.renderingRule || { rasterFunctionInfos: t2.rasterFunctionInfos }) : null;
+    }
+    writeRenderingRule(e2, t2, r2) {
+      this._isRFTJson(e2) || (t2[r2] = e2.toJSON());
+    }
+    readSpatialReference(e2, t2) {
+      const r2 = e2 || t2.extent.spatialReference;
+      return r2 ? k.fromJSON(r2) : null;
+    }
+    readPixelType(e2) {
+      return ie.fromJSON(e2) || e2;
+    }
+    writePixelType(e2, t2, i2) {
+      (t$2(this.serviceRasterInfo) || this.pixelType !== this.serviceRasterInfo.pixelType) && (t2[i2] = ie.toJSON(e2));
+    }
+    readVersion(e2, t2) {
+      let r2 = t2.currentVersion;
+      return r2 || (r2 = t2.hasOwnProperty("fields") || t2.hasOwnProperty("timeInfo") ? 10 : 9.3), r2;
+    }
+    applyFilter(e2) {
+      let t2 = e2;
+      return this.pixelFilter && (t2 = this._clonePixelData(e2), this.pixelFilter(t2)), t2;
+    }
+    applyRenderer(e2, t2) {
+      return __async(this, null, function* () {
+        let r2 = e2;
+        if (!this._isPicture() && this.renderer && this._symbolizer && !this.pixelFilter) {
+          const i2 = JSON.stringify(this._cachedRendererJson) !== JSON.stringify(this.renderer.toJSON()), s3 = this._rasterJobHandler.instance, { bandIds: n2 } = this;
+          if (s3) {
+            i2 && (this._symbolizer.bind(), yield s3.updateSymbolizer(this._symbolizer, t2), this._cachedRendererJson = this.renderer.toJSON());
+            const a2 = yield s3.symbolize(__spreadValues({ bandIds: n2 }, e2), t2);
+            r2 = { extent: e2.extent, pixelBlock: a2 };
+          } else
+            r2 = { extent: e2.extent, pixelBlock: this._symbolizer.symbolize(__spreadValues({ bandIds: n2 }, e2)) };
+        }
+        return r2;
+      });
+    }
+    destroy() {
+      this._shutdownJobHandler();
+    }
+    increaseRasterJobHandlerUsage() {
+      this._rasterJobHandler.refCount++;
+    }
+    decreaseRasterJobHandlerUsage() {
+      this._rasterJobHandler.refCount--, this._rasterJobHandler.refCount <= 0 && this._shutdownJobHandler();
+    }
+    computeHistograms(e2, t2) {
+      return __async(this, null, function* () {
+        const r2 = t2 == null ? void 0 : t2.signal;
+        if (yield this._fetchCapabilities(r2), !this.capabilities.operations.supportsComputeHistograms)
+          throw new s$1("imagery-layer:compute-histograms", "this operation is not supported on the input image service");
+        e2 = y$a(d, e2).clone();
+        const { raster: i2, mosaicRule: s3, renderingRule: n2 } = this;
+        return n2 && e2.renderingRule == null && (e2.renderingRule = n2), s3 && e2.mosaicRule == null && (e2.mosaicRule = s3), i2 && e2.raster == null && (e2.raster = i2), c$1(this.url, e2, { signal: r2 });
+      });
+    }
+    computeStatisticsHistograms(e2, t2) {
+      return __async(this, null, function* () {
+        const r2 = t2 == null ? void 0 : t2.signal;
+        if (yield this._fetchCapabilities(r2), !this.capabilities.operations.supportsComputeStatisticsHistograms)
+          throw new s$1("imagery-layer:compute-statistics-histograms", "this operation is not supported on the input image service");
+        e2 = y$a(d, e2).clone();
+        const { raster: i2, mosaicRule: s3, renderingRule: n2 } = this;
+        return n2 && e2.renderingRule == null && (e2.renderingRule = n2), s3 && e2.mosaicRule == null && (e2.mosaicRule = s3), i2 && e2.raster == null && (e2.raster = i2), u(this.url, e2, { signal: r2 });
+      });
+    }
+    fetchImage(e2, t2, r2, i2 = {}) {
+      if (e2 == null || t2 == null || r2 == null)
+        return Promise.reject(new s$1("imagery-layer:fetch-image", "Insufficient parameters for requesting an image. A valid extent, width and height values are required."));
+      const s3 = this.renderer || this._symbolizer ? this.generateRasterInfo(this.renderingRule, { signal: i2.signal }) : null;
+      return q(s3).then((s4) => {
+        s4 && (this.rasterInfo = s4);
+        const n2 = { imageServiceParameters: this.getExportImageServiceParameters(e2, t2, r2, i2.timeExtent), imageProps: { extent: e2, width: t2, height: r2, format: this.format }, requestAsImageElement: i2.requestAsImageElement && !this.pixelFilter || false, signal: i2.signal };
+        return this._requestArrayBuffer(n2);
+      });
+    }
+    fetchKeyProperties(e2) {
+      const t2 = e2 && e2.renderingRule && e2.renderingRule.toJSON();
+      return U(this.parsedUrl.path + "/keyProperties", { query: this._getQueryParams({ renderingRule: this.version >= 10.3 && t2 ? JSON.stringify(t2) : null }) }).then((e3) => e3.data);
+    }
+    fetchRasterAttributeTable(e2) {
+      const t2 = e2 && e2.renderingRule && e2.renderingRule.toJSON();
+      return this.version < 10.1 ? Promise.reject(new s$1("#fetchRasterAttributeTable()", "Failed to get rasterAttributeTable")) : U(this.parsedUrl.path + "/rasterAttributeTable", { query: this._getQueryParams({ renderingRule: this.version >= 10.3 && t2 ? JSON.stringify(t2) : null }) }).then((e3) => g$2.fromJSON(e3.data));
+    }
+    getCatalogItemRasterInfo(e2, t2) {
+      return __async(this, null, function* () {
+        const r2 = U(this.parsedUrl.path + "/" + e2 + "/info", __spreadValues({ query: this._getQueryParams() }, t2)).then((e3) => e3.data), i2 = U(this.parsedUrl.path + "/" + e2 + "/info/keyProperties", __spreadValues({ query: this._getQueryParams() }, t2)).then((e3) => e3.data).catch(() => {
+        }), s3 = yield Promise.all([r2, i2]);
+        if (!s3[0])
+          return;
+        const n2 = M$1.fromJSON(s3[0].extent), a2 = s3[0].statistics ? s3[0].statistics.map((e3) => ({ min: e3[0], max: e3[1], avg: e3[2], stddev: e3[3] })) : null;
+        return new p$6({ bandCount: s3[0].bandCount, extent: n2, spatialReference: n2.sr, pixelSize: new j$3({ x: s3[0].pixelSizeX, y: s3[0].pixelSizeY, spatialReference: n2.sr }), pixelType: s3[0].pixelType.toLowerCase(), statistics: a2, histograms: s3[0].histograms, keyProperties: s3[1] || {} });
+      });
+    }
+    getCatalogItemICSInfo(e2, t2) {
+      return __async(this, null, function* () {
+        const { data: r2 } = yield U(this.parsedUrl.path + "/" + e2 + "/info/ics", __spreadValues({ query: this._getQueryParams() }, t2)), i2 = r2 && r2.ics;
+        if (!i2)
+          return;
+        let s3 = null;
+        try {
+          s3 = (yield U(this.parsedUrl.path + "/" + e2 + "/info", __spreadValues({ query: this._getQueryParams() }, t2))).data.extent;
+        } catch (e3) {
+        }
+        if (!s3 || !s3.spatialReference)
+          return { ics: i2, icsToPixelTransform: null, icsExtent: null, northDirection: null };
+        const n2 = this.version >= 10.7 ? U(this.parsedUrl.path + "/" + e2 + "/info/icstopixel", __spreadValues({ query: this._getQueryParams() }, t2)).then((e3) => e3.data).catch(() => ({})) : {}, a2 = s3.spatialReference, o2 = { geometries: JSON.stringify({ geometryType: "esriGeometryEnvelope", geometries: [s3] }), inSR: a2.wkid || JSON.stringify(a2), outSR: "0:" + e2 }, l2 = U(this.parsedUrl.path + "/project", __spreadValues({ query: this._getQueryParams(o2) }, t2)).then((e3) => e3.data).catch(() => ({})), u2 = 5, p2 = (s3.xmin + s3.xmax) / 2, c2 = (s3.ymax - s3.ymin) / (u2 + 1), m2 = s3.ymin + c2, d2 = [];
+        for (let R2 = 0; R2 < u2; R2++)
+          d2.push({ x: p2, y: m2 + c2 * R2 });
+        const h2 = { geometries: JSON.stringify({ geometryType: "esriGeometryPoint", geometries: d2 }), inSR: a2.wkid || JSON.stringify(a2), outSR: "0:" + e2 }, f2 = U(this.parsedUrl.path + "/project", __spreadValues({ query: this._getQueryParams(h2) }, t2)).then((e3) => e3.data).catch(() => ({})), y2 = yield Promise.all([n2, l2, f2]);
+        let g2 = y2[0].ipxf;
+        if (g2 == null) {
+          var v2, b2, S2;
+          const e3 = (v2 = i2.geodataXform) == null ? void 0 : v2.xf_0;
+          (e3 == null || (b2 = e3.name) == null ? void 0 : b2.toLowerCase()) === "topup" && (e3 == null || (S2 = e3.coefficients) == null ? void 0 : S2.length) === 6 && (g2 = { affine: { name: "ics [sensor: Frame] to pixel (column, row) transformation", coefficients: e3.coefficients, cellsizeRatio: 0, type: "GeometricXform" } });
+        }
+        const w2 = M$1.fromJSON(y2[1] && y2[1].geometries && y2[1].geometries[0]);
+        w2 && (w2.spatialReference = new k({ wkid: 0, imageCoordinateSystem: i2 }));
+        const _ = y2[2].geometries ? y2[2].geometries.filter((e3) => e3 != null && e3.x != null && e3.y != null && e3.x !== "NaN" && e3.y !== "NaN") : [], O = _.length;
+        if (O < 3)
+          return { ics: i2, icsToPixelTransform: g2, icsExtent: w2, northDirection: null };
+        let N2 = 0, P = 0, F = 0, T2 = 0;
+        for (let R2 = 0; R2 < O; R2++)
+          N2 += _[R2].x, P += _[R2].y, F += _[R2].x * _[R2].x, T2 += _[R2].x * _[R2].y;
+        const j2 = (O * T2 - N2 * P) / (O * F - N2 * N2);
+        let D2 = 0;
+        const C = _[u2 - 1].x > _[0].x, J = _[u2 - 1].y > _[0].y;
+        return j2 === 1 / 0 ? D2 = J ? 90 : 270 : j2 === 0 ? D2 = C ? 0 : 180 : j2 > 0 ? D2 = C ? 180 * Math.atan(j2) / Math.PI : 180 * Math.atan(j2) / Math.PI + 180 : j2 < 0 && (D2 = J ? 180 + 180 * Math.atan(j2) / Math.PI : 360 + 180 * Math.atan(j2) / Math.PI), { ics: i2, icsToPixelTransform: g2, icsExtent: w2, northDirection: D2 };
+      });
+    }
+    generateRasterInfo(e2, t2) {
+      return __async(this, null, function* () {
+        if ((!e2 || e2.functionName.toLowerCase() === "none" || this._isVectorFieldResampleFunction(e2)) && r$2(this.serviceRasterInfo))
+          return this.serviceRasterInfo;
+        const r2 = ae(e2);
+        if (this._functionRasterInfos[r2])
+          return this._functionRasterInfos[r2];
+        const s3 = this._generateRasterInfo(e2, t2);
+        this._functionRasterInfos[r2] = s3;
+        try {
+          return yield s3;
+        } catch (e3) {
+          return this._functionRasterInfos[r2] = null, null;
+        }
+      });
+    }
+    getExportImageServiceParameters(e2, t2, r2, s3) {
+      const n2 = (e2 = e2.clone().shiftCentralMeridian()).spatialReference;
+      let a2;
+      if (n2.imageCoordinateSystem) {
+        const { id: e3, referenceServiceName: t3 } = n2.imageCoordinateSystem;
+        a2 = e3 != null ? t3 ? this.parsedUrl.path.toLowerCase().indexOf("/" + t3.toLowerCase() + "/") > -1 ? "0:" + e3 : JSON.stringify({ icsid: e3, icsns: t3 }) : "0:" + e3 : JSON.stringify({ ics: n2.imageCoordinateSystem });
+      } else
+        a2 = n2.wkid || JSON.stringify(n2.toJSON());
+      r$2(this.serviceRasterInfo) && this.pixelType !== this.serviceRasterInfo.pixelType && (this.exportImageServiceParameters.pixelType = this.pixelType);
+      const o2 = this.exportImageServiceParameters.toJSON(), { bandIds: l2, noData: u2, mosaicRule: p2 } = o2;
+      let { renderingRule: c2 } = o2;
+      if (l2 instanceof Array && l2.length > 0 && !this.renderingRule ? o2.bandIds = l2.join(",") : o2.bandIds = void 0, l2 != null && l2.length && this.renderingRule)
+        if (c2.rasterFunction === "Colormap") {
+          const e3 = new h$2({ functionName: "ExtractBand", functionArguments: { BandIds: l2, raster: c2.rasterFunctionArguments.Raster } });
+          c2.rasterFunctionArguments.Raster = e3;
+        } else {
+          c2 = new h$2({ functionName: "ExtractBand", functionArguments: { BandIds: l2, raster: c2 } });
+        }
+      u2 instanceof Array && u2.length > 0 && (o2.noData = u2.join(","));
+      const m2 = this.timeInfo;
+      p2 && p2.multidimensionalDefinition && s3 && m2 && m2.startField && (p2.multidimensionalDefinition = p2.multidimensionalDefinition.filter((e3) => e3.dimensionName !== m2.startField)), o2.mosaicRule = p2 && JSON.stringify(p2), o2.renderingRule = c2 && JSON.stringify(c2);
+      const d2 = {};
+      if (s3) {
+        const { start: e3, end: t3 } = s3.toJSON();
+        e3 && t3 && e3 === t3 ? d2.time = "" + e3 : e3 == null && t3 == null || (d2.time = `${e3 == null ? "null" : e3},${t3 == null ? "null" : t3}`);
+      }
+      return __spreadValues(__spreadValues({ bbox: e2.xmin + "," + e2.ymin + "," + e2.xmax + "," + e2.ymax, bboxSR: a2, imageSR: a2, size: t2 + "," + r2 }, o2), d2);
+    }
+    identify(e2, t2) {
+      return __async(this, null, function* () {
+        if (yield this._fetchCapabilities(t2 == null ? void 0 : t2.signal), !this.capabilities.operations.supportsIdentify)
+          throw new s$1("imagery-layer:query-rasters", "query operation is not supported on the input image service");
+        e2 = y$a(c, e2).clone();
+        const { raster: r2, mosaicRule: i2, renderingRule: s3 } = this;
+        s3 && e2.renderingRule == null && (e2.renderingRule = s3), i2 && e2.mosaicRule == null && (e2.mosaicRule = i2), r2 && e2.raster == null && (e2.raster = r2);
+        return new p({ url: this.url }).execute(e2, t2);
+      });
+    }
+    queryRasters(e2, t2) {
+      return __async(this, null, function* () {
+        if (yield this._fetchCapabilities(t2 == null ? void 0 : t2.signal), !this.capabilities.operations.supportsQuery)
+          throw new s$1("imagery-layer:query-rasters", "query operation is not supported on the input image service");
+        return e2 = y$a(R$1, e2), this.queryTask.execute(e2, t2);
+      });
+    }
+    queryVisibleRasters(e2, t2) {
+      if (!e2)
+        return Promise.reject(new s$1("imagery-layer: query-visible-rasters", "missing query parameter"));
+      const { pixelSize: s3, returnDomainValues: n2, returnTopmostRaster: a2, showNoDataRecords: o2 } = t2 || { pixelSize: null, returnDomainValues: false, returnTopmostRaster: false, showNoDataRecords: false };
+      let l2 = false, u2 = null, p$12 = null;
+      const c$12 = "raster.servicepixelvalue", m2 = this.rasterFunctionNamesIndex;
+      if (r$2(e2.outFields) && (l2 = e2.outFields.some((e3) => e3.toLowerCase().indexOf(c$12) === -1), this.version >= 10.4)) {
+        const t3 = e2.outFields.filter((e3) => e3.toLowerCase().indexOf(c$12) > -1 && e3.length > c$12.length).map((e3) => {
+          const t4 = e3.slice(c$12.length + 1);
+          return [this._updateRenderingRulesFunctionName(t4, m2), t4];
+        });
+        u2 = t3.map((e3) => new h$2({ functionName: e3[0] })), p$12 = t3.map((e3) => e3[1]), u2.length === 0 ? this.renderingRule ? (u2.push(this.renderingRule), p$12.push(this.renderingRule.functionName)) : u2 = null : this.renderingRule && !u2.some((e3) => e3.functionName === this.renderingRule.functionName) && (u2.push(this.renderingRule), p$12.push(this.renderingRule.functionName));
+      }
+      const d2 = t$2(e2.outSpatialReference) || e2.outSpatialReference.equals(this.spatialReference), h2 = this._getQueryParams({ geometry: e2.geometry, timeExtent: e2.timeExtent, mosaicRule: this.exportImageServiceParameters.mosaicRule, renderingRule: this.version < 10.4 ? this.renderingRule : null, renderingRules: u2, pixelSize: s3, returnCatalogItems: l2, returnGeometry: d2, maxItemCount: a2 ? 1 : null });
+      delete h2.f;
+      const y2 = new c(h2), g2 = new p({ url: this.url }), R2 = this.generateRasterInfo(this.renderingRule);
+      return new Promise((t3) => {
+        R2.then(() => {
+          g2.execute(y2).then((r2) => {
+            const i2 = e2.outFields;
+            if (l2 && !d2 && r2.catalogItems && r2.catalogItems.features && r2.catalogItems.features.length > 0) {
+              const s4 = this.objectIdField || "ObjectId", a3 = r2.catalogItems.features, l3 = a3.map((e3) => e3.attributes && e3.attributes[s4]), u3 = new R$1({ objectIds: l3, returnGeometry: true, outSpatialReference: e2.outSpatialReference, outFields: [s4] });
+              return this.queryRasters(u3).then((l4) => {
+                l4 && l4.features && l4.features.length > 0 && l4.features.forEach((t4) => {
+                  a3.forEach((r3) => {
+                    r3.attributes[s4] === t4.attributes[s4] && (r3.geometry = new x$1(t4.geometry), r3.geometry.spatialReference = e2.outSpatialReference);
+                  });
+                }), t3(this._processVisibleRastersResponse(r2, { returnDomainValues: n2, templateRRFunctionNames: p$12, showNoDataRecords: o2, templateFields: i2 }));
+              }).catch(() => {
+                throw new s$1("imagery-layer:query-visible-rasters", "encountered error when querying visible rasters geometry");
+              });
+            }
+            t3(this._processVisibleRastersResponse(r2, { returnDomainValues: n2, templateRRFunctionNames: p$12, showNoDataRecords: o2, templateFields: i2 }));
+          }).catch(() => {
+            throw new s$1("imagery-layer:query-visible-rasters", "encountered error when querying visible rasters");
+          });
+        });
+      });
+    }
+    fetchVariableStatisticsHistograms(e2, t2) {
+      return __async(this, null, function* () {
+        const r2 = U(this.parsedUrl.path + "/statistics", { query: this._getQueryParams({ variable: e2 }), signal: t2 }).then((e3) => {
+          var t3;
+          return (t3 = e3.data) == null ? void 0 : t3.statistics;
+        }), i2 = U(this.parsedUrl.path + "/histograms", { query: this._getQueryParams({ variable: e2 }), signal: t2 }).then((e3) => {
+          var t3;
+          return (t3 = e3.data) == null ? void 0 : t3.histograms;
+        }), s3 = yield Promise.all([r2, i2]);
+        return s3[0] && s3[0].forEach((e3) => {
+          e3.avg = e3.mean, e3.stddev = e3.standardDeviation;
+        }), { statistics: s3[0] || null, histograms: s3[1] || null };
+      });
+    }
+    _fetchService(e2) {
+      return __async(this, null, function* () {
+        yield this._fetchServiceInfo(e2), r$2(this.serviceRasterInfo) && !this.rasterInfo && (this.rasterInfo = this.serviceRasterInfo);
+        const t2 = this.sourceJSON, r2 = r$2(this.serviceRasterInfo) ? Promise.resolve(this.serviceRasterInfo) : this._fetchAuxiliaryRasterInfo({ serviceInfo: t2, signal: e2 }).then((e3) => (this._set("serviceRasterInfo", e3), e3)), s3 = this.renderingRule && this.renderingRule.functionName.toLowerCase() !== "none" ? this.generateRasterInfo(this.renderingRule, { signal: e2 }) : null;
+        return Promise.all([r2, s3]).then((e3) => {
+          e3[1] ? this._set("rasterInfo", e3[1]) : this._set("rasterInfo", e3[0]), this.renderer && k$1(this.rasterInfo).indexOf(this.renderer.type) < 0 && (this.renderer = null, ee.warn("ArcGISImageService", "Switching to the default renderer. Renderer applied is not valid for this Imagery Layer")), this._configDefaultRenderer(), this.watch("renderer", () => this._configDefaultRenderer()), this.watch("renderingRule", (e4) => {
+            (this.renderer || this._symbolizer || this.popupEnabled && this.popupTemplate) && this.generateRasterInfo(e4).then((e5) => {
+              e5 && (this.rasterInfo = e5);
+            });
+          });
+          const t3 = r$2(this.serviceRasterInfo) && this.serviceRasterInfo.multidimensionalInfo;
+          t3 && this._updateMultidimensionalDefinition(t3);
+        });
+      });
+    }
+    _initJobHandler() {
+      return __async(this, null, function* () {
+        if (this._rasterJobHandler.connectionPromise != null)
+          return this._rasterJobHandler.connectionPromise;
+        const e2 = new n$6();
+        this._rasterJobHandler.connectionPromise = e2.initialize().then(() => {
+          this._rasterJobHandler.instance = e2;
+        }, () => null), yield this._rasterJobHandler.connectionPromise;
+      });
+    }
+    _shutdownJobHandler() {
+      this._rasterJobHandler.instance && this._rasterJobHandler.instance.destroy(), this._rasterJobHandler.instance = null, this._rasterJobHandler.connectionPromise = null, this._rasterJobHandler.refCount = 0;
+    }
+    _fetchCapabilities(e2) {
+      return __async(this, null, function* () {
+        return this.capabilities || (yield this._fetchServiceInfo(e2)), this.capabilities;
+      });
+    }
+    _fetchServiceInfo(e2) {
+      return __async(this, null, function* () {
+        var t2;
+        let r2 = this.sourceJSON;
+        if (!r2) {
+          const { data: t3, ssl: i2 } = yield U(this.parsedUrl.path, { query: this._getQueryParams(), signal: e2 });
+          r2 = t3, this.sourceJSON = r2, i2 && (this.url = this.url.replace(/^http:/i, "https:"));
+        }
+        if (((t2 = r2.capabilities) == null ? void 0 : t2.toLowerCase().split(",").map((e3) => e3.trim()).indexOf("tilesonly")) > -1)
+          throw new s$1("imagery-layer:fetch-service-info", "use ImageryTileLayer to open tiles-only image services");
+        this.read(r2, { origin: "service", url: this.parsedUrl });
+      });
+    }
+    _isVectorFieldResampleFunction(e2) {
+      if (!r$2(e2))
+        return false;
+      const { functionName: t2, functionArguments: r2 } = e2, s3 = t2.toLowerCase() === "resample", n2 = (r2 == null ? void 0 : r2.ResampleType) || (r2 == null ? void 0 : r2.resampleType);
+      return s3 && (n2 === 7 || n2 === 10);
+    }
+    _isPicture() {
+      return !this.format || this.format.indexOf("jpg") > -1 || this.format.indexOf("png") > -1;
+    }
+    _configDefaultRenderer() {
+      if (!this._isPicture() && !this.pixelFilter) {
+        if (!this.bandIds && this.rasterInfo.bandCount >= 3) {
+          const e3 = V(this.rasterInfo);
+          !e3 || this.rasterInfo.bandCount === 3 && e3[0] === 0 && e3[1] === 1 && e3[2] === 2 || (this.bandIds = e3);
+        }
+        var e2, t2;
+        if (!this.renderer)
+          this.renderer = j$4(this.rasterInfo, { bandIds: this.bandIds, variableName: this.renderingRule ? null : (e2 = this.mosaicRule) == null || (t2 = e2.multidimensionalDefinition) == null ? void 0 : t2[0].variableName });
+        this._symbolizer ? (this._symbolizer.rendererJSON = K(this.renderer.toJSON()), this._symbolizer.rasterInfo = this.rasterInfo) : this._symbolizer = new N$1({ rendererJSON: this.renderer.toJSON(), rasterInfo: this.rasterInfo }), this._symbolizer.bind() || (this._symbolizer = null);
+      }
+    }
+    _clonePixelData(e2) {
+      return e2 == null ? e2 : { extent: e2.extent && e2.extent.clone(), pixelBlock: e2.pixelBlock && e2.pixelBlock.clone() };
+    }
+    _getQueryParams(e2) {
+      const { raster: t2, viewId: r2 } = this;
+      return __spreadValues({ raster: t2, viewId: r2, f: "json" }, e2);
+    }
+    _decodePixelBlock(e2, t2, r2) {
+      return this._rasterJobHandler.instance ? this._rasterJobHandler.instance.decode({ data: e2, options: t2 }) : T(e2, t2, r2);
+    }
+    _fetchMultidimensionalInfo(e2) {
+      return __async(this, null, function* () {
+        var t2;
+        const r2 = yield U(this.parsedUrl.path + "/multidimensionalInfo", { query: this._getQueryParams(), signal: e2 }).then((e3) => {
+          var t3;
+          return (t3 = e3.data) == null ? void 0 : t3.multidimensionalInfo;
+        });
+        return (t2 = r2.variables) != null && t2.length && r2.variables.forEach((e3) => {
+          var t3;
+          (t3 = e3.statistics) != null && t3.length && e3.statistics.forEach((e4) => {
+            e4.avg = e4.mean, e4.stddev = e4.standardDeviation;
+          });
+        }), r2;
+      });
+    }
+    _fetchAuxiliaryRasterInfo(e2) {
+      const t2 = e2 && e2.serviceInfo;
+      if (!t2)
+        return Promise.reject(new s$1("imagery-layer:fetch-metadata", "valid serviceInfo is required"));
+      const r2 = e2.renderingRule ? JSON.stringify(e2.renderingRule.toJSON()) : null, i2 = e2.signal, s3 = !!(t2.hasRasterAttributeTable && this.version >= 10.1) && U(this.parsedUrl.path + "/rasterAttributeTable", { query: this._getQueryParams({ renderingRule: this.version >= 10.1 ? r2 : null }), signal: i2 }).then((e3) => g$2.fromJSON(e3.data)).catch(() => null), n2 = !!(t2.hasColormap && this.version >= 10.1) && U(this.parsedUrl.path + "/colormap", { query: this._getQueryParams({ renderingRule: this.version >= 10.6 ? r2 : null }), signal: i2 }).then((e3) => {
+        var t3;
+        return (t3 = e3.data) == null ? void 0 : t3.colormap;
+      }), a2 = !!(t2.hasHistograms && this.version >= 10.1) && U(this.parsedUrl.path + "/histograms", { query: this._getQueryParams({ renderingRule: this.version >= 10.1 ? r2 : null }), signal: i2 }).then((e3) => {
+        var t3;
+        return (t3 = e3.data) == null ? void 0 : t3.histograms;
+      }), o2 = this.version >= 10.3 && U(this.parsedUrl.path + "/keyProperties", { query: this._getQueryParams({ renderingRule: r2 }), signal: i2 }).then((e3) => e3.data).catch(() => {
+      }), l2 = !!(t2.hasMultidimensions && this.version >= 10.3) && this._fetchMultidimensionalInfo();
+      return Promise.all([s3, n2, a2, o2, l2]).then((e3) => {
+        let r3 = null;
+        if (t2.minValues && t2.minValues.length === t2.bandCount) {
+          r3 = [];
+          for (let e4 = 0; e4 < t2.minValues.length; e4++)
+            r3.push({ min: t2.minValues[e4], max: t2.maxValues[e4], avg: t2.meanValues[e4], stddev: t2.stdvValues[e4] });
+        }
+        const i3 = Math.ceil((t2.extent.xmax - t2.extent.xmin) / t2.pixelSizeX - 0.1), s4 = Math.ceil((t2.extent.ymax - t2.extent.ymin) / t2.pixelSizeY - 0.1), n3 = k.fromJSON(t2.spatialReference || t2.extent.spatialReference);
+        return new p$6({ width: i3, height: s4, bandCount: t2.bandCount, extent: M$1.fromJSON(t2.extent), spatialReference: n3, pixelSize: new j$3({ x: t2.pixelSizeX, y: t2.pixelSizeY, spatialReference: n3 }), pixelType: t2.pixelType.toLowerCase(), statistics: r3, attributeTable: e3[0] || null, colormap: e3[1] || null, histograms: e3[2] || null, keyProperties: e3[3] || {}, multidimensionalInfo: e3[4] || null });
+      });
+    }
+    _requestArrayBuffer(e2) {
+      const { imageProps: t2, requestAsImageElement: r2, signal: i2 } = e2;
+      if (r2 && !this.pixelFilter && t2.format && t2.format.indexOf("png") > -1)
+        return U(this.parsedUrl.path + "/exportImage", { responseType: "image", query: this._getQueryParams(__spreadValues({ f: "image" }, e2.imageServiceParameters)), signal: i2 }).then((e3) => ({ imageElement: e3.data, params: t2 }));
+      const s3 = this._initJobHandler(), n2 = U(this.parsedUrl.path + "/exportImage", { responseType: "array-buffer", query: this._getQueryParams(__spreadValues({ f: "image" }, e2.imageServiceParameters)), signal: i2 });
+      return Promise.all([n2, s3]).then((e3) => {
+        const r3 = e3[0].data, s4 = t2.format || "jpgpng";
+        let n3 = s4;
+        if (n3 !== "bsq" && n3 !== "bip" && (n3 = D(r3)), !n3) {
+          throw new s$1("imagery-layer:fetch-image", "unsupported format signature " + String.fromCharCode.apply(null, new Uint8Array(r3)));
+        }
+        const a2 = s4 === "gif" || s4 === "bmp" || s4.indexOf("png") > -1 && (n3 === "png" || n3 === "jpg"), o2 = { signal: i2 };
+        return a2 ? T(r3, __spreadValues({ useCanvas: true }, t2), o2).then((e4) => ({ pixelData: { pixelBlock: e4, extent: t2.extent }, params: t2 })) : this._decodePixelBlock(r3, { width: t2.width, height: t2.height, planes: null, pixelType: null, noDataValue: null, format: s4 }, o2).then((e4) => ({ pixelData: { pixelBlock: e4, extent: t2.extent }, params: t2 }));
+      });
+    }
+    _generateRasterInfo(e2, t2) {
+      return __async(this, null, function* () {
+        const { data: r2 } = yield U(this.parsedUrl.path, __spreadValues({ query: this._getQueryParams({ renderingRule: e2 }) }, t2));
+        return yield this._fetchAuxiliaryRasterInfo(__spreadValues({ serviceInfo: r2, renderingRule: e2 }, t2));
+      });
+    }
+    _isValidCustomizedMosaicRule(e2) {
+      return e2 && JSON.stringify(e2.toJSON()) !== JSON.stringify(this._defaultServiceMosaicRule && this._defaultServiceMosaicRule.toJSON());
+    }
+    _updateMultidimensionalDefinition(e2) {
+      if (this._isValidCustomizedMosaicRule(this.mosaicRule))
+        return;
+      const t2 = e2.variables[0].dimensions, r2 = "", i2 = [];
+      for (const s3 in t2)
+        if (t2.hasOwnProperty(s3)) {
+          const e3 = t2[s3], n2 = e3.extent;
+          let a2 = true, o2 = [n2[0]];
+          e3.hasRanges && e3.hasRanges === true ? (a2 = false, o2 = [e3.values[0]]) : e3.name.toLowerCase() === "stdz" && Math.abs(n2[1]) <= Math.abs(n2[0]) && (o2 = [n2[1]]), i2.push(new n$2({ variableName: r2, dimensionName: t2[s3].name, isSlice: a2, values: o2 }));
+        }
+      if (i2.length > 0) {
+        this.mosaicRule = this.mosaicRule || new y$3();
+        const e3 = this.mosaicRule.multidimensionalDefinition;
+        (!e3 || e3 && e3.length <= 0) && (this.mosaicRule.multidimensionalDefinition = i2);
+      }
+    }
+    _formatAttributeValue(e2, t2) {
+      if (typeof e2 == "string") {
+        const r2 = this.popupTemplate && this.popupTemplate.fieldInfos, i2 = this._getFieldInfo(r2, t2), s3 = i2 && i2.format;
+        if (s3) {
+          let t3, r3;
+          return e2.trim().indexOf(",") > -1 ? (t3 = ",", r3 = t3 + " ", this._formatDelimitedString(e2, t3, r3, s3)) : e2.trim().indexOf(" ") > -1 ? (t3 = r3 = " ", this._formatDelimitedString(e2, t3, r3, s3)) : this._formatNumberFromString(e2, s3);
+        }
+      }
+      return e2;
+    }
+    _getFieldInfo(e2, t2) {
+      if (!e2 || !e2.length || !t2)
+        return;
+      const r2 = t2.toLowerCase();
+      let i2;
+      return e2.some((e3) => !(!e3.fieldName || e3.fieldName.toLowerCase() !== r2 && e3.fieldName.toLowerCase() !== r2.replace(/ /g, "_")) && (i2 = e3, true)), i2;
+    }
+    _formatDelimitedString(e2, t2, r2, i2) {
+      return e2 && t2 && r2 && i2 ? e2.trim().split(t2).map((e3) => this._formatNumberFromString(e3, i2)).join(r2) : e2;
+    }
+    _formatNumberFromString(e2, t2) {
+      if (!e2 || !t2)
+        return e2;
+      const r2 = Number(e2);
+      return isNaN(r2) ? e2 : t2.format(r2);
+    }
+    _processVisibleRastersResponse(e2, t2) {
+      t2 = t2 || {};
+      const r2 = e2.value, { templateRRFunctionNames: s3, showNoDataRecords: n2, returnDomainValues: a2, templateFields: o2 } = t2, l2 = e2.processedValues;
+      let u2 = e2.catalogItems && e2.catalogItems.features, p2 = e2.properties && e2.properties.Values && e2.properties.Values.map((e3) => e3.replace(/ /gi, ", ")) || [];
+      const c2 = this.objectIdField || "ObjectId", m2 = typeof r2 == "string" && r2.toLowerCase().indexOf("nodata") > -1, d2 = [];
+      if (r2 && !u2 && !m2) {
+        const e3 = {};
+        e3[c2] = 0;
+        p2 = [r2], u2 = [new n$5(this.fullExtent, null, e3)];
+      }
+      if (!u2)
+        return [];
+      let h2, f2, y2;
+      this._updateResponseFieldNames(u2, o2);
+      for (let g2 = 0; g2 < u2.length; g2++) {
+        if (h2 = u2[g2], r2 != null && !m2) {
+          if (f2 = p2[g2], y2 = this.renderingRule && l2 && l2.length > 0 && s3 && s3.length > 0 && s3.indexOf(this.renderingRule.functionName) > -1 ? l2[s3.indexOf(this.renderingRule.functionName)] : r2, f2.toLowerCase() === "nodata" && !n2)
+            continue;
+          const e3 = "Raster.ItemPixelValue", t3 = "Raster.ServicePixelValue";
+          h2.attributes[e3] = this._formatAttributeValue(f2, e3), h2.attributes[t3] = this._formatAttributeValue(y2, t3), this._updateFeatureWithMagDirValues(h2, f2);
+          const a3 = this.fields && this.fields.length > 0;
+          let o3 = this.renderingRule && r$2(this.serviceRasterInfo) && this.serviceRasterInfo.attributeTable ? a3 ? f2 : r2 : y2;
+          this.renderingRule || (o3 = a3 ? f2 : r2), this._updateFeatureWithRasterAttributeTableValues(h2, o3);
+        }
+        if (h2.sourceLayer = this, a2 && this._updateFeatureWithDomainValues(h2), s3 && l2 && s3.length === l2.length)
+          for (let e3 = 0; e3 < s3.length; e3++) {
+            const t3 = "Raster.ServicePixelValue." + s3[e3];
+            h2.attributes[t3] = this._formatAttributeValue(l2[e3], t3);
+          }
+        d2.push(u2[g2]);
+      }
+      return d2;
+    }
+    _updateFeatureWithRasterAttributeTableValues(e2, t2) {
+      const r2 = this.rasterInfo && this.rasterInfo.attributeTable || r$2(this.serviceRasterInfo) && this.serviceRasterInfo.attributeTable, s3 = r2 && r2.features;
+      if (!s3)
+        return;
+      const n2 = r2.fields, a2 = n2.map((e3) => e3.name).filter((e3) => e3.toLowerCase() === "value"), o2 = a2 && a2[0];
+      if (!o2)
+        return;
+      const l2 = s3.filter((e3) => e3.attributes[o2] === (t2 != null ? parseInt(t2, 10) : null));
+      l2 && l2[0] && n2.forEach((t3) => {
+        const r3 = this.rasterAttributeTableFieldPrefix + t3.name;
+        e2.attributes[r3] = this._formatAttributeValue(l2[0].attributes[t3.name], r3);
+      });
+    }
+    _updateFeatureWithMagDirValues(e2, t2) {
+      if (!this.pixelFilter || this.serviceDataType !== "esriImageServiceDataTypeVector-UV" && this.serviceDataType !== "esriImageServiceDataTypeVector-MagDir")
+        return;
+      const r2 = t2.replace(" ", ",").split(",").map((e3) => parseFloat(e3)), i2 = r2.map((e3) => [e3]), s3 = r2.map((e3) => ({ minValue: e3, maxValue: e3, noDataValue: null })), n2 = new u$4({ height: 1, width: 1, pixelType: "f32", pixels: i2, statistics: s3 });
+      this.pixelFilter({ pixelBlock: n2, extent: new M$1(0, 0, 0, 0, this.spatialReference) }), e2.attributes["Raster.Magnitude"] = n2.pixels[0][0], e2.attributes["Raster.Direction"] = n2.pixels[1][0];
+    }
+    _updateFeatureWithDomainValues(e2) {
+      const t2 = this.fields && this.fields.filter((e3) => e3.domain && e3.domain.type === "coded-value");
+      t2 != null && t2.forEach((t3) => {
+        const r2 = e2.attributes[t3.name];
+        if (r2 != null) {
+          const i2 = t3.domain.codedValues.filter((e3) => e3.code === r2)[0];
+          i2 && (e2.attributes[t3.name] = i2.name);
+        }
+      });
+    }
+    _updateResponseFieldNames(e2, t2) {
+      if (!t2 || t2.length < 1)
+        return;
+      const r2 = this.fieldsIndex;
+      r2 && e2.forEach((e3) => {
+        if (e3 && e3.attributes) {
+          for (const i2 of t2)
+            if (r2.has(i2)) {
+              const t3 = r2.get(i2).name;
+              t3 !== i2 && (e3.attributes[i2] = e3.attributes[t3], delete e3.attributes[t3]);
+            }
+        }
+      });
+    }
+    _updateRenderingRulesFunctionName(e2, t2) {
+      if (!e2 || e2.length < 1)
+        return;
+      if (e2 === "Raw")
+        return e2.replace("Raw", "None");
+      const r2 = e2.toLowerCase().replace(/ /gi, "_");
+      return t2.has(r2) ? t2.get(r2) : e2;
+    }
+    _isRFTJson(e2) {
+      return e2.name && e2.arguments && e2.function && e2.hasOwnProperty("functionType");
+    }
+    _readCapabilities(e2) {
+      const t2 = e2.capabilities ? e2.capabilities.toLowerCase().split(",").map((e3) => e3.trim()) : ["image", "catalog"], { currentVersion: r2, advancedQueryCapabilities: i2, maxRecordCount: s3 } = e2, n2 = t2.indexOf("image") > -1, a2 = e2.serviceDataType === "esriImageServiceDataTypeElevation", o2 = !!(e2.spatialReference || e2.extent && e2.extent.spatialReference);
+      return { operations: { supportsComputeHistograms: n2, supportsExportImage: n2, supportsIdentify: n2, supportsMeasure: t2.indexOf("mensuration") > -1 && o2, supportsDownload: t2.indexOf("download") > -1, supportsQuery: t2.indexOf("catalog") > -1 && e2.fields && e2.fields.length > 0, supportsGetSamples: r2 >= 10.2 && n2, supportsProject: r2 >= 10.3 && n2, supportsComputeStatisticsHistograms: r2 >= 10.4 && n2, supportsQueryBoundary: r2 >= 10.6 && n2, supportsCalculateVolume: r2 >= 10.7 && a2, supportsComputePixelLocation: r2 >= 10.7 && t2.indexOf("catalog") > -1 }, query: { supportsStatistics: !(!i2 || !i2.supportsStatistics), supportsOrderBy: !(!i2 || !i2.supportsOrderBy), supportsDistinct: !(!i2 || !i2.supportsDistinct), supportsPagination: !(!i2 || !i2.supportsPagination), supportsStandardizedQueriesOnly: !(!i2 || !i2.useStandardizedQueries), maxRecordCount: s3 } };
+    }
+  };
+  return e([y$6()], o$12.prototype, "_functionRasterInfos", void 0), e([y$6()], o$12.prototype, "_rasterJobHandler", void 0), e([y$6()], o$12.prototype, "_symbolizer", void 0), e([y$6()], o$12.prototype, "_defaultServiceMosaicRule", void 0), e([e$1("_defaultServiceMosaicRule", ["defaultMosaicMethod"])], o$12.prototype, "readDefaultServiceMosaicRule", null), e([y$6()], o$12.prototype, "_cachedRendererJson", void 0), e([y$6()], o$12.prototype, "rasterAttributeTableFieldPrefix", void 0), e([y$6({ readOnly: true })], o$12.prototype, "rasterFunctionNamesIndex", null), e([y$6({ readOnly: true })], o$12.prototype, "queryTask", null), e([y$6()], o$12.prototype, "adjustAspectRatio", void 0), e([y$6({ readOnly: true }), o$2("serviceRasterInfo.bandCount")], o$12.prototype, "bandCount", void 0), e([y$6({ type: [N], json: { write: true } })], o$12.prototype, "bandIds", void 0), e([e$1("bandIds")], o$12.prototype, "readBandIds", null), e([y$6({ readOnly: true, json: { read: false } })], o$12.prototype, "capabilities", void 0), e([e$1("service", "capabilities", ["capabilities", "currentVersion", "serviceDataType"])], o$12.prototype, "readCapabilities", null), e([y$6({ type: Number })], o$12.prototype, "compressionQuality", void 0), e([o("compressionQuality")], o$12.prototype, "writeCompressionQuality", null), e([y$6({ type: Number })], o$12.prototype, "compressionTolerance", void 0), e([o("compressionTolerance")], o$12.prototype, "writeCompressionTolerance", null), e([y$6({ json: { read: { source: "copyrightText" } } })], o$12.prototype, "copyright", void 0), e([y$6({ type: String, json: { read: { source: "layerDefinition.definitionExpression" }, write: { target: "layerDefinition.definitionExpression" } } })], o$12.prototype, "definitionExpression", void 0), e([y$6({ readOnly: true, constructOnly: true })], o$12.prototype, "exportImageServiceParameters", void 0), e([y$6()], o$12.prototype, "rasterInfo", void 0), e([y$6({ readOnly: true, type: [y$8] })], o$12.prototype, "fields", void 0), e([y$6({ readOnly: true })], o$12.prototype, "fieldsIndex", null), e([y$6({ type: ["png", "png8", "png24", "png32", "jpg", "bmp", "gif", "jpgpng", "lerc", "tiff"], json: { write: true } })], o$12.prototype, "format", null), e([e$1("service", "format", ["serviceDataType"])], o$12.prototype, "readFormat", null), e([y$6({ type: M$1 })], o$12.prototype, "fullExtent", void 0), e([y$6({ readOnly: true })], o$12.prototype, "hasMultidimensions", void 0), e([y$6({ json: { read: { source: "maxImageHeight" } } })], o$12.prototype, "imageMaxHeight", void 0), e([y$6({ json: { read: { source: "maxImageWidth" } } })], o$12.prototype, "imageMaxWidth", void 0), e([y$6({ type: String, json: { type: te.jsonValues, read: te.read, write: te.write } })], o$12.prototype, "interpolation", void 0), e([y$6()], o$12.prototype, "minScale", void 0), e([e$1("service", "minScale")], o$12.prototype, "readMinScale", null), e([y$6()], o$12.prototype, "maxScale", void 0), e([e$1("service", "maxScale")], o$12.prototype, "readMaxScale", null), e([y$6({ type: y$3 })], o$12.prototype, "mosaicRule", null), e([e$1("mosaicRule", ["mosaicRule", "defaultMosaicMethod"])], o$12.prototype, "readMosaicRule", null), e([o("mosaicRule")], o$12.prototype, "writeMosaicRule", null), e([y$6({ readOnly: true }), o$2("serviceRasterInfo.multidimensionalInfo")], o$12.prototype, "multidimensionalInfo", void 0), e([y$6({ json: { type: N } })], o$12.prototype, "noData", void 0), e([o("noData")], o$12.prototype, "writeNoData", null), e([y$6({ type: String, json: { type: re.jsonValues, read: re.read, write: re.write } })], o$12.prototype, "noDataInterpretation", void 0), e([y$6({ type: String, readOnly: true, json: { read: { source: ["fields"] } } })], o$12.prototype, "objectIdField", void 0), e([e$1("objectIdField")], o$12.prototype, "readObjectIdField", null), e([y$6({ readOnly: true })], o$12.prototype, "parsedUrl", null), e([y$6({ readOnly: true }), o$2("serviceRasterInfo.pixelSize.x")], o$12.prototype, "pixelSizeX", void 0), e([y$6({ readOnly: true }), o$2("serviceRasterInfo.pixelSize.y")], o$12.prototype, "pixelSizeY", void 0), e([y$6({ type: Function })], o$12.prototype, "pixelFilter", void 0), e([y$6()], o$12.prototype, "raster", void 0), e([y$6()], o$12.prototype, "viewId", void 0), e([y$6({ types: d$6, json: { name: "layerDefinition.drawingInfo.renderer", origins: { "web-scene": { types: i$4, name: "layerDefinition.drawingInfo.renderer", write: { overridePolicy: (e2) => ({ enabled: e2 && e2.type !== "vector-field" }) } } } } })], o$12.prototype, "renderer", void 0), e([e$1("renderer")], o$12.prototype, "readRenderer", null), e([o("renderer")], o$12.prototype, "writeRenderer", null), e([y$6(y$9)], o$12.prototype, "opacity", void 0), e([y$6({ readOnly: true }), o$2("serviceRasterInfo.attributeTable")], o$12.prototype, "rasterAttributeTable", void 0), e([y$6({ readOnly: true })], o$12.prototype, "rasterFields", null), e([y$6({ readOnly: true })], o$12.prototype, "rasterFunctionInfos", void 0), e([y$6({ type: h$2 })], o$12.prototype, "renderingRule", null), e([e$1("renderingRule", ["renderingRule", "rasterFunctionInfos"])], o$12.prototype, "readRenderingRule", null), e([o("renderingRule")], o$12.prototype, "writeRenderingRule", null), e([y$6()], o$12.prototype, "serviceDataType", void 0), e([y$6({ readOnly: true, type: k })], o$12.prototype, "spatialReference", void 0), e([e$1("spatialReference", ["spatialReference", "extent"])], o$12.prototype, "readSpatialReference", null), e([y$6({ json: { type: ie.jsonValues } })], o$12.prototype, "pixelType", void 0), e([e$1("pixelType")], o$12.prototype, "readPixelType", null), e([o("pixelType")], o$12.prototype, "writePixelType", null), e([y$6({ constructOnly: true, type: p$6 })], o$12.prototype, "serviceRasterInfo", void 0), e([y$6()], o$12.prototype, "sourceJSON", void 0), e([y$6(f$4)], o$12.prototype, "url", void 0), e([y$6({ readOnly: true })], o$12.prototype, "version", void 0), e([e$1("version", ["currentVersion", "fields", "timeInfo"])], o$12.prototype, "readVersion", null), o$12 = e([i$2("esri.layers.mixins.ArcGISImageService")], o$12), o$12;
+};
+let S = class extends t$3(f$5(o$3(s$2(l$3(u$6(oe(p$8(l$4(b$1))))))))) {
+  constructor(...e2) {
+    super(...e2), this.legendEnabled = true, this.isReference = null, this.operationalLayerType = "ArcGISImageServiceLayer", this.popupEnabled = true, this.popupTemplate = null, this.type = "imagery";
+  }
+  normalizeCtorArgs(e2, r2) {
+    return typeof e2 == "string" ? __spreadValues({ url: e2 }, r2) : e2;
+  }
+  load(e2) {
+    const o2 = r$2(e2) ? e2.signal : null;
+    return this.addResolvingPromise(this.loadFromPortal({ supportedTypes: ["Image Service"] }, e2).then(() => this._fetchService(o2), () => this._fetchService(o2))), Promise.resolve(this);
+  }
+  writeOperationalLayerType(e2, r2, o2) {
+    var t2;
+    const i2 = ((t2 = this.renderer) == null ? void 0 : t2.type) === "vector-field";
+    r2[o2] = i2 ? "ArcGISImageServiceVectorLayer" : "ArcGISImageServiceLayer";
+  }
+  get defaultPopupTemplate() {
+    return this.createPopupTemplate();
+  }
+  createPopupTemplate(e2) {
+    const r2 = this.rasterFields, o2 = this.title, t2 = new Set();
+    let i2 = false, p2 = false;
+    this.capabilities && (i2 = this.capabilities.operations.supportsQuery && this.fields && this.fields.length > 0, p2 = i2 && (this.serviceDataType === "esriImageServiceDataTypeVector-UV" || this.serviceDataType === "esriImageServiceDataTypeVector-MagDir"));
+    const s2 = new Set();
+    i2 && (s2.add("raster.itempixelvalue"), p2 && s2.add("raster.magnitude").add("raster.direction"));
+    for (const a2 of r2) {
+      const e3 = a2.name.toLowerCase();
+      s2.has(e3) || e3.indexOf("raster.servicepixelvalue.") > -1 || t2.add(a2.name);
+    }
+    return a$3({ fields: r2, title: o2 }, __spreadProps(__spreadValues({}, e2), { visibleFieldNames: t2 }));
+  }
+  redraw() {
+    this.emit("redraw");
+  }
+};
+e([y$6(d$7)], S.prototype, "legendEnabled", void 0), e([y$6({ type: ["show", "hide"] })], S.prototype, "listMode", void 0), e([y$6({ type: Boolean, json: { read: false, write: { enabled: true, overridePolicy: () => ({ enabled: false }) } } })], S.prototype, "isReference", void 0), e([y$6({ type: ["ArcGISImageServiceLayer"], json: { origins: { "web-map": { type: ["ArcGISImageServiceLayer", "ArcGISImageServiceVectorLayer"], read: false, write: { target: "layerType", ignoreOrigin: true } } } } })], S.prototype, "operationalLayerType", void 0), e([o("web-map", "operationalLayerType")], S.prototype, "writeOperationalLayerType", null), e([y$6(c$5)], S.prototype, "popupEnabled", void 0), e([y$6({ type: M$2, json: { read: { source: "popupInfo" }, write: { target: "popupInfo" } } })], S.prototype, "popupTemplate", void 0), e([y$6({ readOnly: true })], S.prototype, "defaultPopupTemplate", null), e([y$6({ readOnly: true, json: { read: false } })], S.prototype, "type", void 0), S = e([i$2("esri.layers.ImageryLayer")], S);
+var j = S;
+export default j;

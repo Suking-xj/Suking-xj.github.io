@@ -1,1 +1,1917 @@
-var e=Object.defineProperty,t=Object.defineProperties,s=Object.getOwnPropertyDescriptors,i=Object.getOwnPropertySymbols,r=Object.prototype.hasOwnProperty,o=Object.prototype.propertyIsEnumerable,n=(t,s,i)=>s in t?e(t,s,{enumerable:!0,configurable:!0,writable:!0,value:i}):t[s]=i,a=(e,t)=>{for(var s in t||(t={}))r.call(t,s)&&n(e,s,t[s]);if(i)for(var s of i(t))o.call(t,s)&&n(e,s,t[s]);return e},l=(e,i)=>t(e,s(i));import{a5 as h,b$ as c,a0 as u,cF as d,eo as y,ep as f,eq as _,f4 as p,aj as g,ak as m,f5 as b,dU as w,ai as x,cd as S,an as v,dd as T,ce as I,cu as C,f6 as R,av as P,bN as D,b6 as M,ei as L,eP as B,a4 as O,b3 as k,aa as U,d1 as A,cB as V,f7 as z,ej as q,bI as F,ae as H,af as j,ag as E}from"./vendor.74d5941c.js";import{a as Q}from"./StyleRepository.bb6fee73.js";import{e as N,t as J,c as W}from"./earcut.0e5467f0.js";import{o as G}from"./FramebufferObject.18518335.js";import{s as $,a as K}from"./VertexArrayObject.67803418.js";import{r as X,i as Y}from"./TileContainer.763b6c09.js";import{l as Z,d as ee}from"./LayerView2D.06dde519.js";import{r as te}from"./TileIndex.ec5f806e.js";import{t as se}from"./Rect.b51904ac.js";import{I as ie}from"./Utils.3f1577e5.js";import"./vec4f32.6de15d07.js";import"./definitions.6737c10c.js";import"./_commonjsHelpers.f2a458db.js";import"./Container.d2c27c9d.js";import"./mat4f32.a5cabe00.js";import"./WGLContainer.74815466.js";import"./ShaderCompiler.b19da10d.js";import"./GeometryUtils.9c8423f5.js";import"./MaterialKey.3bc4aaea.js";class re{constructor(e){this.xTile=0,this.yTile=0,this.hash=0,this.priority=1,this.colliders=[],this.textVertexRanges=[],this.iconVertexRanges=[],this.tile=e}}class oe{constructor(){this.tileSymbols=[],this.parts=[{startTime:0,startOpacity:0,targetOpacity:0,show:!1},{startTime:0,startOpacity:0,targetOpacity:0,show:!1}],this.show=!1}}function ne(e,t,s,i,r,o){const n=s-r;if(n>=0)return(t>>n)+(i-(o<<n))*(e>>n);const a=-n;return t-(o-(i<<a))*(e>>a)<<a}class ae{constructor(e,t,s){this._rows=Math.ceil(t/s),this._columns=Math.ceil(e/s),this._cellSize=s,this.cells=new Array(this._rows);for(let i=0;i<this._rows;i++){this.cells[i]=new Array(this._columns);for(let e=0;e<this._columns;e++)this.cells[i][e]=[]}}getCell(e,t){const s=Math.min(Math.max(Math.floor(t/this._cellSize),0),this._rows-1),i=Math.min(Math.max(Math.floor(e/this._cellSize),0),this._columns-1);return this.cells[s]&&this.cells[s][i]||null}getCellSpan(e,t,s,i){return[Math.min(Math.max(Math.floor(e/this._cellSize),0),this.columns-1),Math.min(Math.max(Math.floor(t/this._cellSize),0),this.rows-1),Math.min(Math.max(Math.floor(s/this._cellSize),0),this.columns-1),Math.min(Math.max(Math.floor(i/this._cellSize),0),this.rows-1)]}get cellSize(){return this._cellSize}get columns(){return this._columns}get rows(){return this._rows}}function le(e,t,s,i,r){const o=e.layerData.get(r);if(3===o.type){for(const t of i){const i=t.unique;let r;if(t.selectedForRendering){const t=i.parts[0],o=t.startOpacity,n=t.targetOpacity;e.allSymbolsFadingOut=e.allSymbolsFadingOut&&0===n;const a=s?Math.floor(127*o)|n<<7:n?255:0;r=a<<24|a<<16|a<<8|a}else r=0;for(const[e,s]of t.iconVertexRanges)for(let t=e;t<e+s;t+=4)o.iconOpacity[t/4]=r;if(t.selectedForRendering){const t=i.parts[1],o=t.startOpacity,n=t.targetOpacity;e.allSymbolsFadingOut=e.allSymbolsFadingOut&&0===n;const a=s?Math.floor(127*o)|n<<7:n?255:0;r=a<<24|a<<16|a<<8|a}else r=0;for(const[e,s]of t.textVertexRanges)for(let t=e;t<e+s;t+=4)o.textOpacity[t/4]=r}o.lastOpacityUpdate=t,o.opacityChanged=!0}}class he{constructor(e,t){this.layerUIDs=[],this.isDestroyed=!1,this.data=e,this.memoryUsed=e.byteLength;let s=1;const i=new Uint32Array(e);this.layerUIDs=[];const r=i[s++];for(let o=0;o<r;o++)this.layerUIDs[o]=i[s++];this.bufferDataOffset=s,t&&(this.layer=t.getStyleLayerByUID(this.layerUIDs[0]))}get isPreparedForRendering(){return u(this.data)}get offset(){return this.bufferDataOffset}destroy(){this.isDestroyed||(this.doDestroy(),this.isDestroyed=!0)}prepareForRendering(e){u(this.data)||(this.doPrepareForRendering(e,this.data,this.bufferDataOffset),this.data=null)}}class ce extends he{constructor(e,t){super(e,t),this.type=2,this.lineIndexStart=0,this.lineIndexCount=0;const s=new Uint32Array(e);let i=this.bufferDataOffset;this.lineIndexStart=s[i++],this.lineIndexCount=s[i++],this.bufferDataOffset=i}hasData(){return this.lineIndexCount>0}triangleCount(){return this.lineIndexCount/3}doDestroy(){h(this.lineVertexArrayObject)&&this.lineVertexArrayObject.dispose(),h(this.lineVertexBuffer)&&this.lineVertexBuffer.dispose(),h(this.lineIndexBuffer)&&this.lineIndexBuffer.dispose(),this.lineVertexArrayObject=null,this.lineVertexBuffer=null,this.lineIndexBuffer=null,this.memoryUsed=0}doPrepareForRendering(e,t,s){const i=new Uint32Array(t),r=new Int32Array(i.buffer),o=i[s++];this.lineVertexBuffer=$.createVertex(e,35044,new Int32Array(r.buffer,4*s,o)),s+=o;const n=i[s++];this.lineIndexBuffer=$.createIndex(e,35044,new Uint32Array(i.buffer,4*s,n)),s+=n;const a=this.layer.lineMaterial;this.lineVertexArrayObject=new K(e,a.getAttributeLocations(),a.getLayoutInfo(),{geometry:this.lineVertexBuffer},this.lineIndexBuffer)}}class ue extends he{constructor(e,t){super(e,t),this.type=1,this.fillIndexStart=0,this.fillIndexCount=0,this.outlineIndexStart=0,this.outlineIndexCount=0;const s=new Uint32Array(e);let i=this.bufferDataOffset;this.fillIndexStart=s[i++],this.fillIndexCount=s[i++],this.outlineIndexStart=s[i++],this.outlineIndexCount=s[i++],this.bufferDataOffset=i}hasData(){return this.fillIndexCount>0||this.outlineIndexCount>0}triangleCount(){return(this.fillIndexCount+this.outlineIndexCount)/3}doDestroy(){h(this.fillVertexArrayObject)&&this.fillVertexArrayObject.dispose(),h(this.fillVertexBuffer)&&this.fillVertexBuffer.dispose(),h(this.fillIndexBuffer)&&this.fillIndexBuffer.dispose(),this.fillVertexArrayObject=null,this.fillVertexBuffer=null,this.fillIndexBuffer=null,h(this.outlineVertexArrayObject)&&this.outlineVertexArrayObject.dispose(),h(this.outlineVertexBuffer)&&this.outlineVertexBuffer.dispose(),h(this.outlineIndexBuffer)&&this.outlineIndexBuffer.dispose(),this.outlineVertexArrayObject=null,this.outlineVertexBuffer=null,this.outlineIndexBuffer=null,this.memoryUsed=0}doPrepareForRendering(e,t,s){const i=new Uint32Array(t),r=new Int32Array(i.buffer),o=i[s++];this.fillVertexBuffer=$.createVertex(e,35044,new Int32Array(r.buffer,4*s,o)),s+=o;const n=i[s++];this.fillIndexBuffer=$.createIndex(e,35044,new Uint32Array(i.buffer,4*s,n)),s+=n;const a=i[s++];this.outlineVertexBuffer=$.createVertex(e,35044,new Int32Array(r.buffer,4*s,a)),s+=a;const l=i[s++];this.outlineIndexBuffer=$.createIndex(e,35044,new Uint32Array(i.buffer,4*s,l)),s+=l;const h=this.layer,c=h.fillMaterial,u=h.outlineMaterial;this.fillVertexArrayObject=new K(e,c.getAttributeLocations(),c.getLayoutInfo(),{geometry:this.fillVertexBuffer},this.fillIndexBuffer),this.outlineVertexArrayObject=new K(e,u.getAttributeLocations(),u.getLayoutInfo(),{geometry:this.outlineVertexBuffer},this.outlineIndexBuffer)}}class de extends he{constructor(e,t,s){super(e,t),this.type=3,this.iconPerPageElementsMap=new Map,this.glyphPerPageElementsMap=new Map,this.symbolInstances=[],this.isIconSDF=!1,this.opacityChanged=!1,this.lastOpacityUpdate=0,this.symbols=[];const i=new Uint32Array(e),r=new Int32Array(e),o=new Float32Array(e);let n=this.bufferDataOffset;this.isIconSDF=!!i[n++];const a=i[n++];for(let u=0;u<a;u++){const e=i[n++],t=i[n++],s=i[n++];this.iconPerPageElementsMap.set(e,[t,s])}const l=i[n++];for(let u=0;u<l;u++){const e=i[n++],t=i[n++],s=i[n++];this.glyphPerPageElementsMap.set(e,[t,s])}const h=i[n++],c=i[n++];this.iconOpacity=new Int32Array(h),this.textOpacity=new Int32Array(c),n=function(e,t,s,i,r,o){const n=t[i++];for(let a=0;a<n;a++){const n=new re(o);n.xTile=t[i++],n.yTile=t[i++],n.hash=t[i++],n.priority=t[i++];const a=t[i++];for(let e=0;e<a;e++){const e=t[i++],r=t[i++],o=t[i++],a=t[i++],l=!!t[i++],h=t[i++],c=s[i++],u=s[i++],d=t[i++],y=t[i++];n.colliders.push({xTile:e,yTile:r,dxPixels:o,dyPixels:a,hard:l,partIndex:h,width:d,height:y,minLod:c,maxLod:u})}const l=e[i++];for(let t=0;t<l;t++)n.textVertexRanges.push([e[i++],e[i++]]);const h=e[i++];for(let t=0;t<h;t++)n.iconVertexRanges.push([e[i++],e[i++]]);r.push(n)}return i}(i,r,o,n,this.symbols,s),this.bufferDataOffset=n}hasData(){return this.iconPerPageElementsMap.size>0||this.glyphPerPageElementsMap.size>0}triangleCount(){let e=0;for(const[t,s]of this.iconPerPageElementsMap)e+=s[1];for(const[t,s]of this.glyphPerPageElementsMap)e+=s[1];return e/3}doDestroy(){h(this.iconVertexArrayObject)&&this.iconVertexArrayObject.dispose(),h(this.iconVertexBuffer)&&this.iconVertexBuffer.dispose(),h(this.iconOpacityBuffer)&&this.iconOpacityBuffer.dispose(),h(this.iconIndexBuffer)&&this.iconIndexBuffer.dispose(),this.iconVertexArrayObject=null,this.iconVertexBuffer=null,this.iconOpacityBuffer=null,this.iconIndexBuffer=null,h(this.textVertexArrayObject)&&this.textVertexArrayObject.dispose(),h(this.textVertexBuffer)&&this.textVertexBuffer.dispose(),h(this.textOpacityBuffer)&&this.textOpacityBuffer.dispose(),h(this.textIndexBuffer)&&this.textIndexBuffer.dispose(),this.textVertexArrayObject=null,this.textVertexBuffer=null,this.textOpacityBuffer=null,this.textIndexBuffer=null,this.memoryUsed=0}updateOpacityInfo(){if(!this.opacityChanged)return;this.opacityChanged=!1;const e=c(this.iconOpacity),t=c(this.iconOpacityBuffer);e.length>0&&e.byteLength===t.size&&t.setSubData(e);const s=c(this.textOpacity),i=c(this.textOpacityBuffer);s.length>0&&s.byteLength===i.size&&i.setSubData(s)}doPrepareForRendering(e,t,s){const i=new Uint32Array(t),r=new Int32Array(i.buffer),o=i[s++];this.iconVertexBuffer=$.createVertex(e,35044,new Int32Array(r.buffer,4*s,o)),s+=o;const n=i[s++];this.iconIndexBuffer=$.createIndex(e,35044,new Uint32Array(i.buffer,4*s,n)),s+=n;const a=i[s++];this.textVertexBuffer=$.createVertex(e,35044,new Int32Array(r.buffer,4*s,a)),s+=a;const l=i[s++];this.textIndexBuffer=$.createIndex(e,35044,new Uint32Array(i.buffer,4*s,l)),s+=l,this.iconOpacityBuffer=$.createVertex(e,35044,c(this.iconOpacity).buffer),this.textOpacityBuffer=$.createVertex(e,35044,c(this.textOpacity).buffer);const h=this.layer,u=h.iconMaterial,d=h.textMaterial;this.iconVertexArrayObject=new K(e,u.getAttributeLocations(),u.getLayoutInfo(),{geometry:this.iconVertexBuffer,opacity:this.iconOpacityBuffer},this.iconIndexBuffer),this.textVertexArrayObject=new K(e,d.getAttributeLocations(),d.getLayoutInfo(),{geometry:this.textVertexBuffer,opacity:this.textOpacityBuffer},this.textIndexBuffer)}}class ye extends he{constructor(e,t){super(e,t),this.type=4,this.circleIndexStart=0,this.circleIndexCount=0;const s=new Uint32Array(e);let i=this.bufferDataOffset;this.circleIndexStart=s[i++],this.circleIndexCount=s[i++],this.bufferDataOffset=i}hasData(){return this.circleIndexCount>0}triangleCount(){return this.circleIndexCount/3}doDestroy(){h(this.circleVertexArrayObject)&&this.circleVertexArrayObject.dispose(),h(this.circleVertexBuffer)&&this.circleVertexBuffer.dispose(),h(this.circleIndexBuffer)&&this.circleIndexBuffer.dispose(),this.circleVertexArrayObject=null,this.circleVertexBuffer=null,this.circleIndexBuffer=null,this.memoryUsed=0}doPrepareForRendering(e,t,s){const i=new Uint32Array(t),r=new Int32Array(i.buffer),o=i[s++];this.circleVertexBuffer=$.createVertex(e,35044,new Int32Array(r.buffer,4*s,o)),s+=o;const n=i[s++];this.circleIndexBuffer=$.createIndex(e,35044,new Uint32Array(i.buffer,4*s,n)),s+=n;const a=this.layer.circleMaterial;this.circleVertexArrayObject=new K(e,a.getAttributeLocations(),a.getLayoutInfo(),{geometry:this.circleVertexBuffer},this.circleIndexBuffer)}}class fe extends X{constructor(e,t,s,i,r=null){super(e,s,i,[4096,4096]),this._memCache=r,this._referenced=0,this._hasSymbolBuckets=!1,this._memoryUsedByLayerData=0,this.layerData=new Map,this.layerCount=0,this.status="loading",this.allSymbolsFadingOut=!1,this.lastOpacityUpdate=0,this.symbols=new Map,this.isCoverage=!1,this.neededForCoverage=!1,this.decluttered=!1,this.invalidating=!1,this.parentTile=null,this.childrenTiles=new Set,this._processed=!1,this._referenced=1,this.styleRepository=t,this.id=e.id,this.transforms.tileUnitsToPixels=d()}get hasSymbolBuckets(){return this._hasSymbolBuckets}get isFading(){return this._hasSymbolBuckets&&performance.now()-this.lastOpacityUpdate<N}get isHoldingForFade(){return this._hasSymbolBuckets&&(!this.allSymbolsFadingOut||performance.now()-this.lastOpacityUpdate<N)}get wasRequested(){return"errored"===this.status||"loaded"===this.status||"reloading"===this.status}setData(e){this.changeDataImpl(e),this.requestRender(),this.ready(),this.invalidating=!1,this._processed=!0}deleteLayerData(e){let t=!1;for(const s of e)if(this.layerData.has(s)){const e=this.layerData.get(s);this._memoryUsedByLayerData-=e.memoryUsed,3===e.type&&this.symbols.has(s)&&(this.symbols.delete(s),t=!0),e.destroy(),this.layerData.delete(s),this.layerCount--}h(this._memCache)&&this._memCache.updateSize(this.key.id,this,this._memoryUsedByLayerData),t&&this.emit("symbols-changed"),this.requestRender()}processed(){return this._processed}hasData(){return this.layerCount>0}dispose(){"unloaded"!==this.status&&(_e.delete(this),fe._destroyRenderBuckets(this.layerData),this.layerData=null,this.layerCount=0,this._memoryUsedByLayerData=0,this.destroy(),this.status="unloaded")}release(){return 0==--this._referenced&&(this.dispose(),this.stage=null,!0)}retain(){++this._referenced}get referenced(){return this._referenced}getMemoryUsage(){return(this._memoryUsedByLayerData+256)/(this._referenced||1)}changeDataImpl(e){let t=!1;if(e){const s=this._createRenderBuckets(e);for(const[e,i]of s){if(this.layerData.has(e)){const t=this.layerData.get(e);this._memoryUsedByLayerData-=i.memoryUsed,t.destroy(),this.layerData.delete(e),this.layerCount--}3===i.type&&(this.symbols.set(e,i.symbols),t=!0),this._memoryUsedByLayerData+=i.memoryUsed,this.layerData.set(e,i),this.layerCount++}h(this._memCache)&&this._memCache.updateSize(this.key.id,this,this._memoryUsedByLayerData)}this._hasSymbolBuckets=!1;for(const[s,i]of this.layerData)3===i.type&&(this._hasSymbolBuckets=!0);t&&this.emit("symbols-changed")}attachWithContext(e){this.stage={context:e,trashDisplayObject(e){e.processDetach()},untrashDisplayObject:()=>!1}}setTransform(e,t){super.setTransform(e,t);const s=t/(e.resolution*e.pixelRatio),i=this.size[0]/this.coordRange[0]*s,r=this.size[1]/this.coordRange[1]*s,o=[0,0];e.toScreen(o,this.coords);const n=this.transforms.tileUnitsToPixels;y(n),f(n,n,o),_(n,n,Math.PI*e.rotation/180),p(n,n,[i,r,1])}static _destroyRenderBuckets(e){if(!e)return;const t=new Set;e.forEach((e=>{t.has(e)||(e.destroy(),t.add(e))})),e.clear()}_createRenderBuckets(e){const t=new Map,s=new Map;for(const i of e){const e=this._deserializeBucket(i,s);for(const s of e.layerUIDs)t.set(s,e)}return t}_deserializeBucket(e,t){let s=t.get(e);if(s)return s;switch(new Uint32Array(e)[0]){case 1:s=new ue(e,this.styleRepository);break;case 2:s=new ce(e,this.styleRepository);break;case 3:s=new de(e,this.styleRepository,this);break;case 4:s=new ye(e,this.styleRepository)}return t.set(e,s),s}}const _e=new Map;class pe{constructor(e,t){this._width=0,this._height=0,this._free=[],this._width=e,this._height=t,this._free.push(new se(0,0,e,t))}get width(){return this._width}get height(){return this._height}allocate(e,t){if(e>this._width||t>this._height)return new se;let s=null,i=-1;for(let r=0;r<this._free.length;++r){const o=this._free[r];e<=o.width&&t<=o.height&&(null===s||o.y<=s.y&&o.x<=s.x)&&(s=o,i=r)}return null===s?new se:(this._free.splice(i,1),s.width<s.height?(s.width>e&&this._free.push(new se(s.x+e,s.y,s.width-e,t)),s.height>t&&this._free.push(new se(s.x,s.y+t,s.width,s.height-t))):(s.width>e&&this._free.push(new se(s.x+e,s.y,s.width-e,s.height)),s.height>t&&this._free.push(new se(s.x,s.y+t,e,s.height-t))),new se(s.x,s.y,e,t))}release(e){for(let t=0;t<this._free.length;++t){const s=this._free[t];if(s.y===e.y&&s.height===e.height&&s.x+s.width===e.x)s.width+=e.width;else if(s.x===e.x&&s.width===e.width&&s.y+s.height===e.y)s.height+=e.height;else if(e.y===s.y&&e.height===s.height&&e.x+e.width===s.x)s.x=e.x,s.width+=e.width;else{if(e.x!==s.x||e.width!==s.width||e.y+e.height!==s.y)continue;s.y=e.y,s.height+=e.height}this._free.splice(t,1),this.release(e)}this._free.push(e)}}class ge{constructor(e,t,s){this.width=0,this.height=0,this._dirties=[],this._glyphData=[],this._currentPage=0,this._glyphIndex={},this._textures=[],this._rangePromises=new Map,this.width=e,this.height=t,this._glyphSource=s,this._binPack=new pe(e-4,t-4),this._glyphData.push(new Uint8Array(e*t)),this._dirties.push(!0),this._textures.push(void 0)}getGlyphItems(e,t){const s=[],i=this._glyphSource,r=new Set;for(const n of t){const e=Math.floor(.00390625*n);r.add(e)}const o=[];return r.forEach((t=>{if(t<=256){const s=e+t;if(this._rangePromises.has(s))o.push(this._rangePromises.get(s));else{const r=i.getRange(e,t).then((()=>{this._rangePromises.delete(s)}),(()=>{this._rangePromises.delete(s)}));this._rangePromises.set(s,r),o.push(r)}}})),Promise.all(o).then((()=>{let r=this._glyphIndex[e];r||(r={},this._glyphIndex[e]=r);for(const o of t){const t=r[o];if(t){s[o]={sdf:!0,rect:t.rect,metrics:t.metrics,page:t.page,code:o};continue}const n=i.getGlyph(e,o);if(!n||!n.metrics)continue;const a=n.metrics;let l;if(0===a.width)l=new se(0,0,0,0);else{const e=3,t=a.width+2*e,s=a.height+2*e;let i=t%4?4-t%4:4,r=s%4?4-s%4:4;1===i&&(i=5),1===r&&(r=5),l=this._binPack.allocate(t+i,s+r),l.isEmpty&&(this._dirties[this._currentPage]||(this._glyphData[this._currentPage]=null),this._currentPage=this._glyphData.length,this._glyphData.push(new Uint8Array(this.width*this.height)),this._dirties.push(!0),this._textures.push(void 0),this._binPack=new pe(this.width-4,this.height-4),l=this._binPack.allocate(t+i,s+r));const o=this._glyphData[this._currentPage],h=n.bitmap;let c,u;if(h)for(let n=0;n<s;n++){c=t*n,u=this.width*(l.y+n+1)+l.x;for(let e=0;e<t;e++)o[u+e+1]=h[c+e]}}r[o]={rect:l,metrics:a,tileIDs:null,page:this._currentPage},s[o]={sdf:!0,rect:l,metrics:a,page:this._currentPage,code:o},this._dirties[this._currentPage]=!0}return s}))}removeGlyphs(e){for(const t in this._glyphIndex){const s=this._glyphIndex[t];if(!s)continue;let i;for(const t in s)if(i=s[t],i.tileIDs.delete(e),0===i.tileIDs.size){const e=this._glyphData[i.page],r=i.rect;let o,n;for(let t=0;t<r.height;t++)for(o=this.width*(r.y+t)+r.x,n=0;n<r.width;n++)e[o+n]=0;delete s[t],this._dirties[i.page]=!0}}}bind(e,t,s,i=0){this._textures[s]||(this._textures[s]=new G(e,{pixelFormat:6406,dataType:5121,width:this.width,height:this.height},new Uint8Array(this.width*this.height)));const r=this._textures[s];r.setSamplingMode(t),this._dirties[s]&&r.setData(this._glyphData[s]),e.bindTexture(r,i),this._dirties[s]=!1}dispose(){this._binPack=null;for(const e of this._textures)e&&e.dispose();this._textures.length=0}}class me{constructor(e){if(this._metrics=[],this._bitmaps=[],e)for(;e.next();)switch(e.tag()){case 1:{const t=e.getMessage();for(;t.next();)switch(t.tag()){case 3:{const e=t.getMessage();let s,i,r,o,n,a,l;for(;e.next();)switch(e.tag()){case 1:s=e.getUInt32();break;case 2:i=e.getBytes();break;case 3:r=e.getUInt32();break;case 4:o=e.getUInt32();break;case 5:n=e.getSInt32();break;case 6:a=e.getSInt32();break;case 7:l=e.getUInt32();break;default:e.skip()}e.release(),s&&(this._metrics[s]={width:r,height:o,left:n,top:a,advance:l},this._bitmaps[s]=i);break}default:t.skip()}t.release();break}default:e.skip()}}getMetrics(e){return this._metrics[e]}getBitmap(e){return this._bitmaps[e]}}class be{constructor(){this._ranges=[]}getRange(e){return this._ranges[e]}addRange(e,t){this._ranges[e]=t}}class we{constructor(e){this._glyphInfo={},this._baseURL=e}getRange(e,t){const s=this._getFontStack(e);if(s.getRange(t))return Promise.resolve();const i=256*t,r=i+255,o=this._baseURL.replace("{fontstack}",e).replace("{range}",i+"-"+r);return g(o,{responseType:"array-buffer"}).then((e=>{s.addRange(t,new me(new m(new Uint8Array(e.data),new DataView(e.data))))})).catch((()=>{s.addRange(t,new me)}))}getGlyph(e,t){const s=this._getFontStack(e);if(!s)return;const i=Math.floor(t/256);if(i>256)return;const r=s.getRange(i);return r?{metrics:r.getMetrics(t),bitmap:r.getBitmap(t)}:void 0}_getFontStack(e){let t=this._glyphInfo[e];return t||(t=this._glyphInfo[e]=new be),t}}class xe{constructor(e,t,s=0){this._size=[],this._mosaicsData=[],this._textures=[],this._dirties=[],this._maxItemSize=0,this._currentPage=0,this._pageWidth=0,this._pageHeight=0,this._mosaicRects={},this.pixelRatio=1,(e<=0||t<=0)&&console.error("Sprites mosaic defaultWidth and defaultHeight must be greater than zero!"),this._pageWidth=e,this._pageHeight=t,s>0&&(this._maxItemSize=s),this._binPack=new pe(e-4,t-4)}getWidth(e){return e>=this._size.length?-1:this._size[e][0]}getHeight(e){return e>=this._size.length?-1:this._size[e][1]}setSpriteSource(e){if(this.dispose(),this.pixelRatio=e.devicePixelRatio,0===this._mosaicsData.length){this._binPack=new pe(this._pageWidth-4,this._pageHeight-4);const e=Math.floor(this._pageWidth),t=Math.floor(this._pageHeight),s=new Uint32Array(e*t);this._mosaicsData[0]=s,this._dirties.push(!0),this._size.push([this._pageWidth,this._pageHeight]),this._textures.push(void 0)}this._sprites=e}getSpriteItem(e,t=!1){let s=this._mosaicRects[e];if(s)return s;if(!this._sprites||"loaded"!==this._sprites.loadStatus)return null;const i=this._sprites.getSpriteInfo(e);if(!i||!i.width||!i.height||i.width<0||i.height<0)return null;const r=i.width,o=i.height,[n,a,l]=this._allocateImage(r,o);return n.width<=0?null:(this._copy(n,i,a,l,t),s={rect:n,width:r,height:o,sdf:i.sdf,simplePattern:!1,pixelRatio:i.pixelRatio,page:a},this._mosaicRects[e]=s,s)}getSpriteItems(e){const t={};for(const s of e)t[s]=this.getSpriteItem(s);return t}getMosaicItemPosition(e,t){const s=this.getSpriteItem(e,t),i=s&&s.rect;if(!i)return null;i.width=s.width,i.height=s.height;const r=s.width,o=s.height,n=this._size[s.page];return{size:[s.width,s.height],tl:[(i.x+2)/n[0],(i.y+2)/n[1]],br:[(i.x+2+r)/n[0],(i.y+2+o)/n[1]],page:s.page}}bind(e,t,s=0,i=0){this._textures[s]||(this._textures[s]=new G(e,{pixelFormat:6408,dataType:5121,wrapMode:33071,width:this._size[s][0],height:this._size[s][1]},new Uint8Array(this._mosaicsData[s].buffer)));const r=this._textures[s];r.setSamplingMode(t),this._dirties[s]&&r.setData(new Uint8Array(this._mosaicsData[s].buffer)),e.bindTexture(r,i),this._dirties[s]=!1}static _copyBits(e,t,s,i,r,o,n,a,l,h,c){let u=i*t+s,d=a*o+n;if(c){d-=o;for(let n=-1;n<=h;n++,u=((n+h)%h+i)*t+s,d+=o)for(let t=-1;t<=l;t++)r[d+t]=e[u+(t+l)%l]}else for(let y=0;y<h;y++){for(let t=0;t<l;t++)r[d+t]=e[u+t];u+=t,d+=o}}_copy(e,t,s,i,r,o){if(!this._sprites||"loaded"!==this._sprites.loadStatus||s>=this._mosaicsData.length)return;const n=new Uint32Array(o?o.buffer:this._sprites.image.buffer),a=this._mosaicsData[s];a&&n||console.error("Source or target images are uninitialized!");const l=o?t.width:this._sprites.width;xe._copyBits(n,l,t.x,t.y,a,i[0],e.x+2,e.y+2,t.width,t.height,r),this._dirties[s]=!0}_allocateImage(e,t){e+=2,t+=2;const s=Math.max(e,t);if(this._maxItemSize&&this._maxItemSize<s){const s=new se(0,0,e,t);return this._mosaicsData.push(new Uint32Array(e*t)),this._dirties.push(!0),this._size.push([e,t]),this._textures.push(void 0),[s,this._mosaicsData.length-1,[e,t]]}let i=e%4?4-e%4:4,r=t%4?4-t%4:4;1===i&&(i=5),1===r&&(r=5);const o=this._binPack.allocate(e+i,t+r);return o.width<=0?(this._dirties[this._currentPage]||(this._mosaicsData[this._currentPage]=null),this._currentPage=this._mosaicsData.length,this._mosaicsData.push(new Uint32Array(this._pageWidth*this._pageHeight)),this._dirties.push(!0),this._size.push([this._pageWidth,this._pageHeight]),this._textures.push(void 0),this._binPack=new pe(this._pageWidth-4,this._pageHeight-4),this._allocateImage(e,t)):[o,this._currentPage,[this._pageWidth,this._pageHeight]]}dispose(){this._binPack=null,this._mosaicRects={};for(const e of this._textures)e&&e.dispose();this._textures.length=0}}function Se(e,t,s,i,r,o){e.fillStyle=t,e.fillRect(s,i,r,o)}function ve(e,t,s,i,r,o){e.strokeStyle=t,e.strokeRect(s,i,r,o)}function Te(e,t){e.strokeStyle="black";const s=t.cellSize,i=t.rows,r=t.columns;for(let o=0;o<i;o++){const i=t.cells[o],n=o*s,a=(o+1)*s;for(let t=0;t<r;t++){const r=i[t],o=t*s,l=(t+1)*s;e.strokeRect(o,n,l-o,a-n),e.fillText(`cells:${r.length}`,o+4,n+12)}}}function Ie(e,t){const s=window.COLLISION_XRAY;for(let i=0;i<t.length;++i){const r=!t[i].unique.show;if(s||!r)for(const o of t[i].colliders){if(!o.enabled)continue;const n=!t[i].unique.parts[o.partIndex].show;if(!s&&n)continue;const a=o.xScreen,l=o.yScreen,h=o.dxScreen,c=o.dyScreen;e.globalAlpha=r||n?.2:1,Se(e,"green",a-1,l-1,3,3),ve(e,"red",a+h,l+c,o.width,o.height),Se(e,"blue",a+h-1,l+c-1,3,3),e.globalAlpha=1}}}const Ce=new b(10),Re=new Map;class Pe{constructor(e,t,s){this._vectorTileLayer=e,this._styleRepository=t,this.devicePixelRatio=s,this._spriteMosaic=null,this._glyphMosaic=null,this._connection=null}destroy(){this._connection&&(this._connection.close(),this._connection=null),this._styleRepository=null,this._vectorTileLayer=null,this._spriteMosaic&&(this._spriteMosaic=null),this._glyphMosaic&&(this._glyphMosaic=null)}get spriteMosaic(){return this._spriteSourcePromise.then((()=>this._spriteMosaic))}get glyphMosaic(){return this._glyphMosaic}async start(e){const t=this._vectorTileLayer,s=t.sourceNameToSource,i=[];for(const n in s)i.push(this._fetchTileMap(s[n],e));this._spriteSourcePromise=this._vectorTileLayer.loadSpriteSource(this.devicePixelRatio,e),this._spriteSourcePromise.then((e=>{this._spriteMosaic=new xe(1024,1024,250),this._spriteMosaic.setSpriteSource(e)}));const r=this._styleRepository,o=new we(r.glyphs);return this._glyphMosaic=new ge(1024,1024,o),this._broadcastPromise=w("WorkerTileHandler",{client:this,scheduler:e.scheduler,signal:e.signal}).then((s=>(this._connection=s,Promise.all(this._connection.broadcast("setStyle",{style:t.currentStyleInfo.style,vectorTileLayerMaxBuffers:x("vectortilelayer-max-buffers")},e))))),Promise.all(i)}async updateStyle(e){return await this._broadcastPromise,this._broadcastPromise=new Promise(((t,s)=>{Promise.all(this._connection.broadcast("updateStyle",e)).then(t,s)})),this._broadcastPromise}async setStyle(e,t){await this._broadcastPromise,this._styleRepository=e;const s=this._vectorTileLayer.sourceNameToSource,i=[];for(const o in s)i.push(this._fetchTileMap(s[o],null));this._spriteSourcePromise=this._vectorTileLayer.loadSpriteSource(this.devicePixelRatio,null),this._spriteSourcePromise.then((e=>{this._spriteMosaic=new xe(1024,1024,250),this._spriteMosaic.setSpriteSource(e)}));const r=new we(e.glyphs);return this._glyphMosaic=new ge(1024,1024,r),this._broadcastPromise=new Promise(((e,s)=>{Promise.all(this._connection.broadcast("setStyle",{style:t,vectorTileLayerMaxBuffers:x("vectortilelayer-max-buffers")})).then(e,s)})),i.push(this._broadcastPromise),Promise.all(i)}fetchTileData(e,t){return this._getRefKeys(e,t).then((e=>{const s=this._vectorTileLayer.sourceNameToSource,i=[];for(const t in s)i.push(t);return this._getSourcesData(i,e,t)}))}parseTileData(e,t){const s=e&&e.data;if(!s)return Promise.resolve(null);const{sourceName2DataAndRefKey:i,transferList:r}=s;return 0===Object.keys(i).length?Promise.resolve(null):this._broadcastPromise.then((()=>this._connection.getAvailableClient().then((s=>s.invoke("createTileAndParse",{key:e.key.id,sourceName2DataAndRefKey:i,styleLayerUIDs:e.styleLayerUIDs},l(a({},t),{transferList:r})).then((e=>({tileData:e})))))))}async getSprites(e){return await this._spriteSourcePromise,this._spriteMosaic.getSpriteItems(e)}getGlyphs(e){return this._glyphMosaic.getGlyphItems(e.font,e.codePoints)}perfReport({key:e,milliseconds:t}){!function(e,t,s){if(!window.PERFORMANCE_RECORDING_STORAGE)return;const i=window.PERFORMANCE_RECORDING_STORAGE;i.perf=i.perf||{};const r=i.perf;r[e]=r[e]||{start:null,time:0,min:void 0,max:void 0,samples:[],unit:s},r[e].time+=t,r[e].samples.push(t),(null==r[e].min||t<r[e].min)&&(r[e].min=t),(null==r[e].max||t>r[e].max)&&(r[e].max=t)}(e,t,"ms")}async _getTilePayload(e,t,s){const i=S.pool.acquire(e.id),r=this._vectorTileLayer.sourceNameToSource[t].getSourceTileUrl(i.level,i.row,i.col);S.pool.release(i);try{return{protobuff:await this.request(r,s),sourceName:t}}catch(o){if(v(o))throw o;return{protobuff:null,sourceName:t}}}request(e,t){return g(e,a({responseType:"array-buffer"},t)).then((({data:e})=>e))}async _fetchTileMap(e,t){if(e.capabilities.operations.supportsTileMap&&e.tileIndex)return Promise.resolve();if(!e.tileMapURL)return;const s=Ce.get(e.tileMapURL);if(s)return void(e.tileIndex=s);let i;if(Re.has(e.tileMapURL)){try{i=await Re.get(e.tileMapURL),e.tileIndex=new te(i.data)}catch(o){if(v(o))throw o}return}const r=g(e.tileMapURL,t);Re.set(e.tileMapURL,r);try{i=await r,Re.delete(e.tileMapURL),Ce.put(e.tileMapURL,e.tileIndex),e.tileIndex=new te(i.data)}catch(o){if(Re.delete(e.tileMapURL),v(o))throw o}}_getRefKeys(e,t){const s=this._vectorTileLayer.sourceNameToSource,i=new Array;for(const r in s){const o=s[r].getRefKey(e,t);i.push(o)}return T(i)}_getSourcesData(e,t,s){const i=[];for(let r=0;r<t.length;r++)if(null==t[r].value||null==e[r])i.push(null);else{const o=this._getTilePayload(t[r].value,e[r],s);i.push(o)}return T(i).then((e=>{const s={},i=[];for(let r=0;r<e.length;r++)if(e[r].value&&e[r].value&&e[r].value.protobuff&&e[r].value.protobuff.byteLength>0){const o=t[r].value.id;s[e[r].value.sourceName]={refKey:o,protobuff:e[r].value.protobuff},i.push(e[r].value.protobuff)}return{sourceName2DataAndRefKey:s,transferList:i}}))}}const De=(e,t)=>e+1/(1<<2*t);class Me{constructor(e,t){this._tiles=new Map,this._tileCache=new I(40,(e=>e.dispose())),this._viewSize=[0,0],this._visibleTiles=new Map,this.acquireTile=e.acquireTile,this.releaseTile=e.releaseTile,this.tileInfoView=e.tileInfoView,this._container=t}destroy(){for(const[e,t]of this._tiles)t.dispose();this._tiles=null,this._tileCache.clear(),this._tileCache=null}update(e){this._updateCacheSize(e);const t=this.tileInfoView,s=t.getTileCoverage(e.state,0,"smallest"),{spans:i,lodInfo:r}=s,{level:o}=r,n=new Set,a=new Set;for(const{row:h,colFrom:c,colTo:u}of i)for(let e=c;e<=u;e++){const t=S.getId(o,h,r.normalizeCol(e),r.getWorldForColumn(e)),s=this._getOrAcquireTile(t);n.add(t),s.processed()?this._addToContainer(s):a.add(new S(t))}for(const[h,c]of this._tiles)c.isCoverage=n.has(h);for(const h of a)this._findPlaceholdersForMissingTiles(h,n);let l=!1;for(const[h,c]of this._tiles)c.neededForCoverage=n.has(h),c.neededForCoverage||c.isHoldingForFade&&t.intersects(s,c.key)&&n.add(h),c.isFading&&(l=!0);for(const[h,c]of this._tiles)n.has(h)||this._releaseTile(h);return C.pool.release(s),!l}clear(){this._tiles.clear(),this._tileCache.clear(),this._visibleTiles.clear()}clearCache(){this._tileCache.clear()}_findPlaceholdersForMissingTiles(e,t){const s=[];for(const[r,o]of this._tiles)this._addPlaceholderChild(s,o,e,t);const i=s.reduce(De,0);Math.abs(1-i)<1e-6||this._addPlaceholderParent(e.id,t)}_addPlaceholderChild(e,t,s,i){t.key.level<=s.level||!t.hasData()||function(e,t){const s=t.level-e.level;return e.row===t.row>>s&&e.col===t.col>>s&&e.world===t.world}(s,t.key)&&(this._addToContainer(t),i.add(t.id),e.push(t.key.level-s.level))}_addPlaceholderParent(e,t){let s=e;for(;;){if(s=Le(s),!s||t.has(s))return;const e=this._getTile(s);if(e&&e.hasData())return this._addToContainer(e),void t.add(e.id)}}_getOrAcquireTile(e){let t=this._tiles.get(e);return t||(t=this._tileCache.pop(e),t||(t=this.acquireTile(new S(e))),this._tiles.set(e,t),t)}_getTile(e){let t=this._tiles.get(e);return t||(t=this._tileCache.pop(e),t&&this._tiles.set(e,t),t)}_releaseTile(e){const t=this._tiles.get(e);this.releaseTile(t),this._removeFromContainer(t),this._tiles.delete(e),t.hasData()?this._tileCache.put(e,t,1):t.dispose()}_addToContainer(e){let t;const s=[],i=this._container;if(i.contains(e))return;const r=this._visibleTiles;for(const[o,n]of r)this._canConnectDirectly(e,n)&&s.push(n),u(t)&&this._canConnectDirectly(n,e)&&(t=n);if(h(t)){for(const i of s)t.childrenTiles.delete(i),e.childrenTiles.add(i),i.parentTile=e;t.childrenTiles.add(e),e.parentTile=t}else for(const o of s)e.childrenTiles.add(o),o.parentTile=e;r.set(e.id,e),i.addChild(e)}_removeFromContainer(e){if(this._visibleTiles.delete(e.id),this._container.removeChild(e),h(e.parentTile)){e.parentTile.childrenTiles.delete(e);for(const t of e.childrenTiles)h(e.parentTile)&&e.parentTile.childrenTiles.add(t)}for(const t of e.childrenTiles)t.parentTile=e.parentTile;e.parentTile=null,e.childrenTiles.clear()}_canConnectDirectly(e,t){const s=e.key;let{level:i,row:r,col:o,world:n}=t.key;const a=this._visibleTiles;for(;i>0;){if(i--,r>>=1,o>>=1,s.level===i&&s.row===r&&s.col===o&&s.world===n)return!0;if(a.has(`${i}/${r}/${o}/${n}`))return!1}return!1}_updateCacheSize(e){const t=e.state.size;if(t[0]===this._viewSize[0]&&t[1]===this._viewSize[1])return;const s=Math.ceil(t[0]/512)+1,i=Math.ceil(t[1]/512)+1;this._viewSize[0]=t[0],this._viewSize[1]=t[1],this._tileCache.maxSize=5*s*i}}function Le(e){const[t,s,i,r]=e.split("/"),o=parseInt(t,10);return 0===o?null:`${o-1}/${parseInt(s,10)>>1}/${parseInt(i,10)>>1}/${parseInt(r,10)}`}function Be(e,t,s,i,r,o){const{iconRotationAlignment:n,textRotationAlignment:a,iconTranslate:l,iconTranslateAnchor:h,textTranslate:c,textTranslateAnchor:u}=i;let d=0;for(const y of e.colliders){const[e,i]=0===y.partIndex?l:c,f=0===y.partIndex?h:u,_=y.minLod<=o&&o<=y.maxLod;d+=_?0:1,y.enabled=_,y.xScreen=y.xTile*r[0]+y.yTile*r[3]+r[6],y.yScreen=y.xTile*r[1]+y.yTile*r[4]+r[7],0===f?(y.xScreen+=s*e-t*i,y.yScreen+=t*e+s*i):(y.xScreen+=e,y.yScreen+=i),1===(0===y.partIndex?n:a)?(y.dxScreen=y.dxPixels,y.dyScreen=y.dyPixels):(y.dxScreen=s*(y.dxPixels+y.width/2)-t*(y.dyPixels+y.height/2)-y.width/2,y.dyScreen=t*(y.dxPixels+y.width/2)+s*(y.dyPixels+y.height/2)-y.height/2)}e.colliders.length>0&&d===e.colliders.length&&(e.unique.show=!1)}class Oe{constructor(e,t,s,i,r,o){this._symbols=e,this._styleRepository=i,this._zoom=r,this._currentLayerCursor=0,this._currentSymbolCursor=0,this._styleProps=new Map,this._allNeededMatrices=new Map,this._gridIndex=new ae(t,s,J),this._si=Math.sin(Math.PI*o/180),this._co=Math.cos(Math.PI*o/180);for(const n of e)for(const e of n.symbols)this._allNeededMatrices.has(e.tile)||this._allNeededMatrices.set(e.tile,R(e.tile.transforms.tileUnitsToPixels))}work(e){const t=this._gridIndex;function s(e){const s=e.xScreen+e.dxScreen,i=e.yScreen+e.dyScreen,r=s+e.width,o=i+e.height,[n,a,l,h]=t.getCellSpan(s,i,r,o);for(let c=a;c<=h;c++)for(let e=n;e<=l;e++){const n=t.cells[c][e];for(const e of n){const t=e.xScreen+e.dxScreen,n=e.yScreen+e.dyScreen,a=t+e.width,l=n+e.height;if(!(r<t||s>a||o<n||i>l))return!0}}return!1}const i=performance.now();for(;this._currentLayerCursor<this._symbols.length;this._currentLayerCursor++,this._currentSymbolCursor=0){const t=this._symbols[this._currentLayerCursor],r=this._getProperties(t.styleLayerUID);for(;this._currentSymbolCursor<t.symbols.length;this._currentSymbolCursor++){if(this._currentSymbolCursor%100==99&&performance.now()-i>e)return!1;const o=t.symbols[this._currentSymbolCursor];if(!o.unique.show)continue;Be(o,this._si,this._co,r,this._allNeededMatrices.get(o.tile),this._zoom);const n=o.unique;if(!n.show)continue;const{iconAllowOverlap:a,iconIgnorePlacement:l,textAllowOverlap:h,textIgnorePlacement:c}=r;for(const e of o.colliders){if(!e.enabled)continue;const t=n.parts[e.partIndex];t.show&&(!(e.partIndex?h:a)&&s(e)&&(e.hard?n.show=!1:t.show=!1))}if(n.show)for(const e of o.colliders){if(!e.enabled)continue;if(e.partIndex?c:l)continue;if(!n.parts[e.partIndex].show)continue;const t=e.xScreen+e.dxScreen,s=e.yScreen+e.dyScreen,i=t+e.width,r=s+e.height,[o,a,h,u]=this._gridIndex.getCellSpan(t,s,i,r);for(let n=a;n<=u;n++)for(let t=o;t<=h;t++)this._gridIndex.cells[n][t].push(e)}}}return!0}_getProperties(e){const t=this._styleProps.get(e);if(t)return t;const s=this._zoom,i=this._styleRepository.getStyleLayerByUID(e),r=0!==i.getLayoutValue("symbol-placement",s);let o=i.getLayoutValue("icon-rotation-alignment",s);2===o&&(o=r?0:1);let n=i.getLayoutValue("text-rotation-alignment",s);2===n&&(n=r?0:1);const a=i.getPaintValue("icon-translate",s),l=i.getPaintValue("icon-translate-anchor",s),h=i.getPaintValue("text-translate",s),c=i.getPaintValue("text-translate-anchor",s),u={iconAllowOverlap:i.getLayoutValue("icon-allow-overlap",s),iconIgnorePlacement:i.getLayoutValue("icon-ignore-placement",s),textAllowOverlap:i.getLayoutValue("text-allow-overlap",s),textIgnorePlacement:i.getLayoutValue("text-ignore-placement",s),iconRotationAlignment:o,textRotationAlignment:n,iconTranslateAnchor:l,iconTranslate:a,textTranslateAnchor:c,textTranslate:h};return this._styleProps.set(e,u),u}}function ke(e,t){if(e.priority-t.priority)return e.priority-t.priority;const s=e.tile.key,i=t.tile.key;return s.world-i.world?s.world-i.world:s.level-i.level?s.level-i.level:s.row-i.row?s.row-i.row:s.col-i.col?s.col-i.col:e.xTile-t.xTile?e.xTile-t.xTile:e.yTile-t.yTile}class Ue{constructor(e,t,s,i,r,o){this._visibleTiles=e,this._symbolRepository=t,this._createCollisionJob=s,this._assignTileSymbolsOpacity=i,this._symbolLayerSorter=r,this._isLayerVisible=o,this._selectionJob=null,this._selectionJobCompleted=!1,this._collisionJob=null,this._collisionJobCompleted=!1,this._opacityJob=null,this._opacityJobCompleted=!1,this._running=!0}get running(){return this._running}setScreenSize(e,t){this._screenWidth===e&&this._screenHeight===t||this.restart(),this._screenWidth=e,this._screenHeight=t}restart(){this._selectionJob=null,this._selectionJobCompleted=!1,this._collisionJob=null,this._collisionJobCompleted=!1,this._opacityJob=null,this._opacityJobCompleted=!1,this._running=!0}continue(e){if(this._selectionJob||(this._selectionJob=this._createSelectionJob()),!this._selectionJobCompleted){const t=performance.now();if(!this._selectionJob.work(e))return!1;if(this._selectionJobCompleted=!0,0===(e=Math.max(0,e-(performance.now()-t))))return!1}if(this._collisionJob||(this._collisionJob=this._createCollisionJob(this._selectionJob.sortedSymbols,this._screenWidth,this._screenHeight)),!this._collisionJobCompleted){const t=performance.now();if(!this._collisionJob.work(e))return!1;if(this._collisionJobCompleted=!0,0===(e=Math.max(0,e-(performance.now()-t))))return!1}if(this._opacityJob||(this._opacityJob=this._createOpacityJob()),!this._opacityJobCompleted){const t=performance.now();if(!this._opacityJob.work(e))return!1;if(this._opacityJobCompleted=!0,0===(e=Math.max(0,e-(performance.now()-t))))return!1}return this._running=!1,!0}_createSelectionJob(){const e=this._symbolRepository.uniqueSymbols,t=[];let s=0,i=0;const r=this._isLayerVisible;const o=this._symbolLayerSorter;return{work:function(o){let n;const a=performance.now();for(;i<e.length;i++,s=0){const l=e[i],h=l.styleLayerUID;if(!r(h)){t[i]||(t[i]={styleLayerUID:h,symbols:[]});continue}t[i]=t[i]||{styleLayerUID:h,symbols:[]};const c=t[i];for(;s<l.uniqueSymbols.length;s++){if(n=l.uniqueSymbols[s],s%100==99&&performance.now()-a>o)return!1;let e=null,t=!1,i=!1;for(const s of n.tileSymbols)if(s.selectedForRendering=!1,!i||!t){const r=s.tile;(!e||r.isCoverage||r.neededForCoverage&&!t)&&(e=s,(r.neededForCoverage||r.isCoverage)&&(i=!0),r.isCoverage&&(t=!0))}if(e.selectedForRendering=!0,i){c.symbols.push(e),n.show=!0;for(const e of n.parts)e.show=!0}else n.show=!1}}for(const e of t)e.symbols.sort(ke);return!0},get sortedSymbols(){return t.sort(o)}}}_createOpacityJob(){const e=this._assignTileSymbolsOpacity,t=this._visibleTiles;let s=0;function i(t,s){const r=t.symbols;for(const[e,i]of r)Ae(i,s);e(t,s);for(const e of t.childrenTiles)i(e,s)}return{work(e){const r=performance.now();for(;s<t.length;s++){if(performance.now()-r>e)return!1;const o=t[s];h(o.parentTile)||i(o,performance.now())}return!0}}}}function Ae(e,t){for(const s of e){const e=s.unique;for(const s of e.parts){const i=s.targetOpacity>.5?1:-1;s.startOpacity+=i*((t-s.startTime)/N),s.startOpacity=Math.min(Math.max(s.startOpacity,0),1),s.startTime=t,s.targetOpacity=e.show&&s.show?1:0}}}class Ve{constructor(e,t,s){this.tileCoordRange=e,this._visibleTiles=t,this._createUnique=s,this._tiles=new Map,this._uniqueSymbolsReferences=new Map}get uniqueSymbols(){return u(this._uniqueSymbolLayerArray)&&(this._uniqueSymbolLayerArray=this._createUniqueSymbolLayerArray()),this._uniqueSymbolLayerArray}add(e,t){this._uniqueSymbolLayerArray=null;let s=this._tiles.get(e.id);s||(s={symbols:new Map},this._tiles.set(e.id,s));const i=new Map;if(t)for(const n of t)s.symbols.has(n)&&(i.set(n,s.symbols.get(n)),s.symbols.delete(n));else for(const[n,a]of e.layerData)s.symbols.has(n)&&(i.set(n,s.symbols.get(n)),s.symbols.delete(n));this._removeSymbols(i);const r=e.symbols,o=new Map;for(const[n,a]of r){let e=a.length;if(e>=32){let t=this.tileCoordRange;do{t/=2,e/=4}while(e>8&&t>64);const i=new ae(this.tileCoordRange,this.tileCoordRange,t);o.set(n,{flat:a,index:i}),s.symbols.set(n,{flat:a,index:i});for(const e of a)i.getCell(e.xTile,e.yTile).push(e)}else o.set(n,{flat:a}),s.symbols.set(n,{flat:a})}this._addSymbols(e.key,r)}deleteStyleLayers(e){this._uniqueSymbolLayerArray=null;for(const[t,s]of this._tiles){const i=new Map;for(const t of e)s.symbols.has(t)&&(i.set(t,s.symbols.get(t)),s.symbols.delete(t));this._removeSymbols(i),0===s.symbols.size&&this._tiles.delete(t)}}removeTile(e){this._uniqueSymbolLayerArray=null;const t=this._tiles.get(e.id);if(!t)return;const s=new Map;for(const[i,r]of e.symbols)t.symbols.has(i)&&(s.set(i,t.symbols.get(i)),t.symbols.delete(i));this._removeSymbols(s),0===t.symbols.size&&this._tiles.delete(e.id)}_removeSymbols(e){for(const[t,{flat:s}]of e)for(const e of s){const s=e.unique,i=s.tileSymbols,r=i.length-1;for(let t=0;t<r;t++)if(i[t]===e){i[t]=i[r];break}if(i.length=r,0===r){const e=this._uniqueSymbolsReferences.get(t);e.delete(s),0===e.size&&this._uniqueSymbolsReferences.delete(t)}e.unique=null}}_addSymbols(e,t){if(0===t.size)return;const s=this._visibleTiles;for(const i of s)i.parentTile||i.key.world!==e.world||i.key.level===e.level&&!i.key.equals(e)||this._matchSymbols(i,e,t);for(const[i,r]of t)for(const e of r)if(u(e.unique)){const t=this._createUnique();e.unique=t,t.tileSymbols.push(e);let s=this._uniqueSymbolsReferences.get(i);s||(s=new Set,this._uniqueSymbolsReferences.set(i,s)),s.add(t)}}_matchSymbols(e,t,s){if(e.key.level>t.level){const s=e.key.level-t.level;if(e.key.row>>s!==t.row||e.key.col>>s!==t.col)return}if(t.level>e.key.level){const s=t.level-e.key.level;if(t.row>>s!==e.key.row||t.col>>s!==e.key.col)return}if(t.equals(e.key)){for(const i of e.childrenTiles)this._matchSymbols(i,t,s);return}const i=new Map;for(const[r,o]of s){const s=[];for(const i of o){const r=ne(this.tileCoordRange,i.xTile,t.level,t.col,e.key.level,e.key.col),o=ne(this.tileCoordRange,i.yTile,t.level,t.row,e.key.level,e.key.row);r>=0&&r<this.tileCoordRange&&o>=0&&o<this.tileCoordRange&&s.push({symbol:i,xTransformed:r,yTransformed:o})}const n=[],a=e.key.level<t.level?1:1<<e.key.level-t.level,l=this._tiles.get(e.id).symbols.get(r);if(l){const e=l.flat;for(const t of s){let s,i=!1;const r=t.xTransformed,o=t.yTransformed;s=h(l.index)?l.index.getCell(r,o):e;const c=t.symbol,u=c.hash;for(const e of s)if(u===e.hash&&Math.abs(r-e.xTile)<=a&&Math.abs(o-e.yTile)<=a){const t=e.unique;c.unique=t,t.tileSymbols.push(c),i=!0;break}i||n.push(c)}}n.length>0&&i.set(r,n)}for(const r of e.childrenTiles)this._matchSymbols(r,t,i)}_createUniqueSymbolLayerArray(){const e=this._uniqueSymbolsReferences,t=new Array(e.size);let s,i=0;for(const[r,o]of e){const e=new Array(o.size);s=0;for(const t of o)e[s++]=t;t[i]={styleLayerUID:r,uniqueSymbols:e},i++}return t}}class ze extends P{constructor(e,t){super(),this.styleRepository=e,this._tileToHandle=new Map,this._viewState={scale:0,rotation:0,center:[0,0],size:[0,0]},this._declutterViewState={scale:0,rotation:0,center:[0,0],size:[0,0]},this._completed=!1,this._symbolRepository=new Ve(4096,t,(()=>new oe)),this._symbolDeclutterer=new Ue(t,this._symbolRepository,((e,t,s)=>new Oe(e,t,s,this.styleRepository,this._zoom,this._viewState.rotation)),((e,t)=>{e.allSymbolsFadingOut=!0,e.lastOpacityUpdate=t,function(e,t,s){for(const[i,r]of e.symbols)le(e,t,s,r,i)}(e,t,!0),e.decluttered=!0,e.requestRender()}),((e,t)=>this.styleRepository.getStyleLayerByUID(e.styleLayerUID).z-this.styleRepository.getStyleLayerByUID(t.styleLayerUID).z),(e=>{const t=this.styleRepository.getStyleLayerByUID(e).getLayoutProperty("visibility");return!t||1!==t.getValue()}))}addTile(e){e.decluttered=!1,this._tileToHandle.set(e,e.on("symbols-changed",(()=>{this._symbolRepository.add(e),this.restartDeclutter()}))),this._symbolRepository.add(e),this.restartDeclutter()}removeTile(e){const t=this._tileToHandle.get(e);t&&(this._symbolRepository.removeTile(e),this.restartDeclutter(),t.remove(),this._tileToHandle.delete(e))}update(e,t){return this._zoom=e,this._viewState={scale:t.scale,rotation:t.rotation,center:[t.center[0],t.center[1]],size:[t.size[0],t.size[1]]},this._continueDeclutter(),this._completed}restartDeclutter(){this._completed=!1,this._symbolDeclutterer.restart(),this._notifyUnstable()}clear(){this._completed=!1,this._symbolRepository=null,this._symbolDeclutterer.restart(),this._tileToHandle.forEach((e=>e.remove())),this._tileToHandle.clear()}get stale(){return this._zoom!==this._declutterZoom||this._viewState.size[0]!==this._declutterViewState.size[0]||this._viewState.size[1]!==this._declutterViewState.size[1]||this._viewState.scale!==this._declutterViewState.scale||this._viewState.rotation!==this._declutterViewState.rotation}deleteStyleLayers(e){this._symbolRepository.deleteStyleLayers(e)}_continueDeclutter(){this._completed&&!this.stale||(this._symbolDeclutterer.running||(this._declutterZoom=this._zoom,this._declutterViewState.center[0]=this._viewState.center[0],this._declutterViewState.center[1]=this._viewState.center[1],this._declutterViewState.rotation=this._viewState.rotation,this._declutterViewState.scale=this._viewState.scale,this._declutterViewState.size[0]=this._viewState.size[0],this._declutterViewState.size[1]=this._viewState.size[1],this._symbolDeclutterer.restart()),this._symbolDeclutterer.setScreenSize(this._viewState.size[0],this._viewState.size[1]),this._completed=this._symbolDeclutterer.continue(W),this._completed&&this._scheduleNotifyStable())}_scheduleNotifyStable(){h(this._stableNotificationHandle)&&clearTimeout(this._stableNotificationHandle),this._stableNotificationHandle=setTimeout((()=>{this._stableNotificationHandle=null,this.emit("fade-complete")}),1.5*N)}_notifyUnstable(){h(this._stableNotificationHandle)&&(clearTimeout(this._stableNotificationHandle),this._stableNotificationHandle=null),this.emit("fade-start")}}const qe=1e-6;function Fe(e,t){if(e){const s=e.getLayoutProperty("visibility");if(!s||1!==s.getValue()&&(void 0===e.minzoom||e.minzoom<t+qe)&&(void 0===e.maxzoom||e.maxzoom>=t-qe))return!0}return!1}class He extends Y{constructor(e){super(e),this._backgroundTiles=[],this._pointToCallbacks=new Map,this._fading=!1}destroy(){this.removeAllChildren(),this._spriteMosaic&&(this._spriteMosaic.dispose(),this._spriteMosaic=null),this._glyphMosaic&&(this._glyphMosaic.dispose(),this._glyphMosaic=null),h(this._symbolFader)&&(this._symbolFader.clear(),this._symbolFader=null),this._styleRepository=null,this._backgroundTiles=[],this._pointToCallbacks.clear()}setStyleResources(e,t,s){if(this._spriteMosaic=e,this._glyphMosaic=t,this._styleRepository=s,u(this._symbolFader)){const e=new ze(this._styleRepository,this.children);e.on("fade-start",(()=>{this.emit("fade-start"),this._fading=!0,this.requestRender()})),e.on("fade-complete",(()=>{this.emit("fade-complete"),this._fading=!1,this.requestRender()})),this._symbolFader=e}c(this._symbolFader).styleRepository=s}deleteStyleLayers(e){h(this._symbolFader)&&this._symbolFader.deleteStyleLayers(e)}async hitTest(e,t){const s=[e,t],i=D();return this._pointToCallbacks.set(s,i),this.requestRender(),i.promise}enterTileInvalidation(){for(const e of this.children)e.invalidating=!0}createRenderParams(e){return l(a({},super.createRenderParams(e)),{renderPass:null,styleLayer:null,styleLayerUID:-1,glyphMosaic:this._glyphMosaic,spriteMosaic:this._spriteMosaic,hasClipping:!!this._clippingInfos})}doRender(e){!this.visible||e.drawPhase!==ie.MAP&&e.drawPhase!==ie.DEBUG||void 0===this._spriteMosaic||super.doRender(e)}addChild(e){return super.addChild(e),h(this._symbolFader)?this._symbolFader.addTile(e):e.decluttered=!0,this.requestRender(),e}removeChild(e){return h(this._symbolFader)&&this._symbolFader.removeTile(e),this.requestRender(),super.removeChild(e)}renderChildren(e){if(e.drawPhase!==ie.DEBUG){if(this._doRender(e),this._pointToCallbacks.size>0){const{context:t}=e,s=t.getBoundFramebufferObject();e.drawPhase=ie.HITTEST;const i=e.painter.effects.hittest;i.bind(e),this._doRender(e),i.draw(e,this._pointToCallbacks),t.bindFramebuffer(s)}}else super.renderChildren(e)}removeAllChildren(){for(let e=0;e<this.children.length;e++){const t=this.children[e];h(this._symbolFader)&&this._symbolFader.removeTile(t),t.dispose()}super.removeAllChildren()}getStencilTarget(){return this.children.filter((e=>e.neededForCoverage&&e.hasData()))}restartDeclutter(){h(this._symbolFader)&&this._symbolFader.restartDeclutter()}_doRender(e){const{context:t}=e,s=this._styleRepository;if(!s)return;const i=s.layers;let r=!0;e.drawPhase===ie.HITTEST&&(r=!1),s.backgroundBucketIds.length>0&&(e.renderPass="background",this._renderBackgroundLayers(e,s.backgroundBucketIds)),super.renderChildren(e),e.drawPhase===ie.MAP&&this._fade(e.displayLevel,e.state);const o=this.children.filter((e=>e.visible&&e.hasData()));if(o&&0!==o.length){for(const e of o)e.triangleCount=0;t.setStencilWriteMask(0),t.setColorMask(!0,!0,!0,!0),t.setStencilOp(7680,7680,7681),t.setStencilTestEnabled(!0),t.setBlendingEnabled(!1),t.setDepthTestEnabled(!0),t.setDepthWriteEnabled(!0),t.setDepthFunction(515),t.setClearDepth(1),t.clear(t.gl.DEPTH_BUFFER_BIT),e.renderPass="opaque";for(let t=i.length-1;t>=0;t--)this._renderStyleLayer(i[t],e,o);t.setDepthWriteEnabled(!1),t.setBlendingEnabled(r),t.setBlendFunctionSeparate(1,771,1,771),e.renderPass="translucent";for(let t=0;t<i.length;t++)this._renderStyleLayer(i[t],e,o);t.setDepthTestEnabled(!1),e.renderPass="symbol";for(let t=0;t<i.length;t++)this._renderStyleLayer(i[t],e,o);if(t.bindVAO(),t.setStencilTestEnabled(!0),t.setBlendingEnabled(!0),e.drawPhase===ie.MAP){const e=window.COLLISION_DEBUG_CTX;if(e&&h(this._symbolFader)&&(e.clearRect(0,0,e.canvas.width,e.canvas.height),!this._fading||window.COLLISION_XRAY))for(const t of this.children)if(t.symbols){const s=[];if(t.symbols.forEach((e=>{s.push(...e)})),window.COLLISION_SHOW_GRID){var n,a,l;const t=null==(n=this._symbolFader)||null==(a=n._symbolDeclutterer)||null==(l=a._collisionJob)?void 0:l._gridIndex;t&&Te(e,t)}Ie(e,s)}}}}_fade(e,t){h(this._symbolFader)&&(this._symbolFader.update(e,t)||this.requestRender())}_renderStyleLayer(e,t,s){const{painter:i,renderPass:r}=t;if(void 0===e)return;const o=e.getLayoutProperty("visibility");if(o&&1===o.getValue())return;let n;switch(e.type){case 0:return;case 1:if("opaque"!==r&&"translucent"!==t.renderPass)return;n="vtlFill";break;case 2:if("translucent"!==r)return;n="vtlLine";break;case 4:if("symbol"!==r)return;n="vtlCircle";break;case 3:if("symbol"!==r)return;n="vtlSymbol"}if(s=3===e.type?s.filter((e=>e.decluttered)):s.filter((e=>e.neededForCoverage)),"vtlSymbol"!==n){const i=t.displayLevel;if(0===s.length||void 0!==e.minzoom&&e.minzoom>=i+qe||void 0!==e.maxzoom&&e.maxzoom<i-qe)return}const a=e.uid;t.styleLayerUID=a,t.styleLayer=e;for(const l of s)if(l.layerData.has(a)){i.renderObjects(t,s,n);break}}_renderBackgroundLayers(e,t){const{context:s,displayLevel:i,painter:r,state:o}=e,n=this._styleRepository;let a=!1;for(const h of t)if(Fe(n.getLayerById(h),i)){a=!0;break}if(!a)return;const l=this._tileInfoView.getTileCoverage(e.state,0,"smallest"),{spans:c,lodInfo:u}=l,{level:d}=u,y=M(),f=[];if(this._renderPasses){const t=this._renderPasses[0];h(this._clippingInfos)&&(t.brushes[0].prepareState(e,this._clippingInfos[0]),t.brushes[0].drawMany(e,this._clippingInfos))}const _=this._backgroundTiles;let p,g=0;for(const{row:h,colFrom:b,colTo:w}of c)for(let e=b;e<=w;e++){if(g<_.length)p=_[g],p.key.set(d,h,u.normalizeCol(e),u.getWorldForColumn(e)),this._tileInfoView.getTileBounds(y,p.key,!1),p.bounds=y,p.coords[0]=y[0],p.coords[1]=y[3];else{const t=new S(d,h,u.normalizeCol(e),u.getWorldForColumn(e));p=new X(t,this._tileInfoView.getTileBounds(M(),t),[512,512],[4096,4096]),_.push(p)}p.setTransform(o,this._tileInfoView.getTileResolution(p.key)),f.push(p),g++}s.setStencilWriteMask(0),s.setColorMask(!0,!0,!0,!0),s.setStencilOp(7680,7680,7681),s.setStencilFunction(514,0,255);let m=!0;e.drawPhase===ie.HITTEST&&(m=!1),s.setStencilTestEnabled(m);for(const h of t){const t=n.getLayerById(h);Fe(t,i)&&(e.styleLayerUID=t.uid,e.styleLayer=t,r.renderObjects(e,f,"vtlBackground"))}C.pool.release(l)}}class je extends L{constructor(){super(...arguments),this._fullCacheLodInfos=null,this._levelByScale={}}getTileParentId(e){const t=S.pool.acquire(e),s=0===t.level?null:S.getId(t.level-1,t.row>>1,t.col>>1,t.world);return S.pool.release(t),s}getTileCoverage(e,t,s){const i=super.getTileCoverage(e,t,s);if(!i)return i;const r=1<<i.lodInfo.level;return i.spans=i.spans.filter((e=>e.row>=0&&e.row<r)),i}scaleToLevel(e){if(this._fullCacheLodInfos||this._initializeFullCacheLODs(this._lodInfos),this._levelByScale[e])return this._levelByScale[e];{const t=this._fullCacheLodInfos;if(e>t[0].scale)return t[0].level;let s,i;for(let r=0;r<t.length-1;r++)if(i=t[r+1],e>i.scale)return s=t[r],s.level+(s.scale-e)/(s.scale-i.scale);return t[t.length-1].level}}_initializeFullCacheLODs(e){let t;if(0===e[0].level)t=e.map((e=>({level:e.level,resolution:e.resolution,scale:e.scale})));else{const e=this.tileInfo.size[0],s=this.tileInfo.spatialReference;t=B.create({size:e,spatialReference:s}).lods.map((e=>({level:e.level,resolution:e.resolution,scale:e.scale})))}for(let s=0;s<t.length;s++)this._levelByScale[t[s].scale]=t[s].level;this._fullCacheLodInfos=t}}const Ee=O.getLogger("esri.views.2d.layers.VectorTileLayerView2D");let Qe=class extends(Z(ee)){constructor(){super(...arguments),this._styleChanges=[],this._handles=new k,this._fetchQueue=null,this._parseQueue=null,this._isTileHandlerReady=!1,this.fading=!1}initialize(){const e=this.layer.tileInfo;if(!(e&&e.spatialReference).equals(this.view.spatialReference))return void this.addResolvingPromise(Promise.reject(new U("layerview:spatial-reference-incompatible","The spatial reference of this layer does not meet the requirements of the view",{layer:this.layer})));const{style:t,spriteUrl:s,glyphsUrl:i}=this.layer.currentStyleInfo;this._styleRepository=new Q(t,{spriteUrl:s,glyphsUrl:i}),this._tileInfoView=new je(this.layer.tileInfo,this.layer.fullExtent),this._vectorTileContainer=new He(this._tileInfoView),this._tileHandler=new Pe(this.layer,this._styleRepository,window.devicePixelRatio||1),this.container.addChild(this._vectorTileContainer),this.handles.add([this._vectorTileContainer.on("fade-start",(()=>{this.fading=!0,this.notifyChange("updating"),this.requestUpdate()})),this._vectorTileContainer.on("fade-complete",(()=>{this.fading=!1,this.notifyChange("updating"),this.requestUpdate()}))])}destroy(){var e;this._stop(),this.container.removeAllChildren(),this._vectorTileContainer&&(this._vectorTileContainer.destroy(),this._vectorTileContainer=null),null==(e=this._tileHandler)||e.destroy(),this._tileHandler=null}async hitTest(e,t){if(this.suspended||!this._tileHandlerPromise)return null;await this._tileHandlerPromise;const s=await this._vectorTileContainer.hitTest(e,t);if(!s||0===s.length)return null;const i=s[0]-1,r=this._styleRepository,o=r.getStyleLayerByUID(i);if(!o)return null;const n=r.getStyleLayerIndex(o.id),a=new A({attributes:{layerId:n,layerName:o.id,layerUID:i}});return a.layer=this.layer,a.sourceLayer=this.layer,a}update(e){if(this._tileHandlerPromise&&this._isTileHandlerReady)return e.pixelRatio!==this._tileHandler.devicePixelRatio?(this._start(),void(this._tileHandler.devicePixelRatio=e.pixelRatio)):void(this._styleChanges.length>0?this._tileHandlerPromise=this._applyStyleChanges():(this._fetchQueue.pause(),this._parseQueue.pause(),this._fetchQueue.state=e.state,this._parseQueue.state=e.state,this._tileManager.update(e)||this.requestUpdate(),this._parseQueue.resume(),this._fetchQueue.resume()))}attach(){this._start(),this._handles.add([this.layer.on("paint-change",(e=>{if(e.isDataDriven)this._styleChanges.push({type:0,data:e}),this.notifyChange("updating"),this.requestUpdate();else{const t=this._styleRepository,s=t.getLayerById(e.layerName);if(!s)return;const i=3===s.type;t.setPaintProperties(e.layerName,e.paint),i&&this._vectorTileContainer.restartDeclutter(),this._vectorTileContainer.requestRender()}})),this.layer.on("layout-change",(e=>{const t=this._styleRepository,s=t.getLayerById(e.layer);if(!s)return;const i=V(s.layout,e.layout);if(!u(i)){if(z(i,"visibility")&&1===function(e){if(u(e))return 0;switch(e.type){case"partial":return Object.keys(e.diff).length;case"complete":return Math.max(Object.keys(e.oldValue).length,Object.keys(e.newValue).length);case"collection":return Object.keys(e.added).length+Object.keys(e.changed).length+Object.keys(e.removed).length}}(i))return t.setLayoutProperties(e.layer,e.layout),3===s.type&&this._vectorTileContainer.restartDeclutter(),void this._vectorTileContainer.requestRender();this._styleChanges.push({type:1,data:e}),this.notifyChange("updating"),this.requestUpdate()}})),this.layer.on("style-layer-visibility-change",(e=>{const t=this._styleRepository,s=t.getLayerById(e.layer);s&&(t.setStyleLayerVisibility(e.layer,e.visibility),3===s.type&&this._vectorTileContainer.restartDeclutter(),this._vectorTileContainer.requestRender())})),this.layer.on("style-layer-change",(e=>{this._styleChanges.push({type:2,data:e}),this.notifyChange("updating"),this.requestUpdate()})),this.layer.on("delete-style-layer",(e=>{this._styleChanges.push({type:3,data:e}),this.notifyChange("updating"),this.requestUpdate()})),this.layer.on("load-style",(()=>this._loadStyle()))])}detach(){this._stop(),this._handles.removeAll()}moveStart(){this.requestUpdate()}viewChange(){this.requestUpdate()}moveEnd(){this.requestUpdate()}canResume(){let e=super.canResume();const t=this.layer;if(e&&t.currentStyleInfo){const s=this.view.scale,i=t.currentStyleInfo;if(i&&i.layerDefinition){const t=i.layerDefinition;t.minScale&&t.minScale<s&&(e=!1),t.maxScale&&t.maxScale>s&&(e=!1)}}return e}isUpdating(){const e=this._vectorTileContainer.children;return!this._isTileHandlerReady||!this._fetchQueue||!this._parseQueue||this._fetchQueue.updating||this._parseQueue.updating||e.length>0&&e.filter((e=>e.invalidating)).length>0||this.fading}acquireTile(e){const t=this._createVectorTile(e);return this._tileHandlerPromise.then((()=>{this._fetchQueue.push(t.key).then((e=>this._parseQueue.push({key:t.key,data:e}))).then((e=>{t.once("attach",(()=>this.requestUpdate())),e&&(t.setData(e.tileData),this.requestUpdate(),this.notifyChange("updating"))})).catch((e=>{this.notifyChange("updating"),v(e)||Ee.error(e)}))})),t}releaseTile(e){const t=e.key.id;this._fetchQueue.abort(t),this._parseQueue.abort(t),this.requestUpdate()}_start(){if(this._stop(),this._tileManager=new Me({acquireTile:e=>this.acquireTile(e),releaseTile:e=>this.releaseTile(e),tileInfoView:this._tileInfoView},this._vectorTileContainer),!this.layer.currentStyleInfo)return;const e=new AbortController,t=this._tileHandler.start({signal:e.signal}).then((()=>{this._fetchQueue=new q({tileInfoView:this._tileInfoView,process:(e,t)=>this._getTileData(e,t),concurrency:15}),this._parseQueue=new q({tileInfoView:this._tileInfoView,process:(e,t)=>this._parseTileData(e,t),concurrency:8}),this.requestUpdate(),this._isTileHandlerReady=!0}));this._tileHandler.spriteMosaic.then((e=>{this._vectorTileContainer.setStyleResources(e,this._tileHandler.glyphMosaic,this._styleRepository),this.requestUpdate()})),this._tileHandlerAbortController=e,this._tileHandlerPromise=t}_stop(){if(!this._tileHandlerAbortController||!this._vectorTileContainer)return;const e=this._tileHandlerAbortController;e&&e.abort(),this._tileHandlerPromise=null,this._isTileHandlerReady=!1,this._fetchQueue&&(this._fetchQueue.destroy(),this._fetchQueue=null),this._parseQueue&&(this._parseQueue.destroy(),this._parseQueue=null),this._tileManager&&(this._tileManager.destroy(),this._tileManager=null),this._vectorTileContainer.removeAllChildren()}async _getTileData(e,t){const s=await this._tileHandler.fetchTileData(e,t);return this.notifyChange("updating"),s}async _parseTileData(e,t){return this._tileHandler.parseTileData(e,t)}async _applyStyleChanges(){this._isTileHandlerReady=!1,this._fetchQueue.pause(),this._parseQueue.pause(),this._fetchQueue.clear(),this._parseQueue.clear(),this._tileManager.clearCache();const e=this._styleChanges;try{await this._tileHandler.updateStyle(e)}catch(n){Ee.error("error applying vector-tiles style update",n.message),this._fetchQueue.resume(),this._parseQueue.resume(),this._isTileHandlerReady=!0}const t=this._styleRepository,s=[];e.forEach((e=>{if(3!==e.type)return;const i=e.data,r=t.getLayerById(i.layerName);r&&s.push(r.uid)}));const i=[];let r;e.forEach((e=>{const s=e.type,o=e.data;switch(s){case 0:t.setPaintProperties(o.layerName,o.paint),r=o.layerName;break;case 1:t.setLayoutProperties(o.layerName,o.layout),r=o.layerName;break;case 3:return void t.deleteStyleLayer(o.layerName);case 2:t.setStyleLayer(o.layer,o.index),r=o.layer.id}const n=t.getLayerById(r);n&&i.push(n.uid)}));const o=this._vectorTileContainer.children;if(s.length>0){this._vectorTileContainer.deleteStyleLayers(s);for(const e of o)e.deleteLayerData(s)}if(this._fetchQueue.resume(),this._parseQueue.resume(),i.length>0){const e=[];for(const t of o){const s=this._fetchQueue.push(t.key).then((e=>this._parseQueue.push({key:t.key,data:e,styleLayerUIDs:i}))).then((e=>t.setData(e.tileData)));e.push(s)}await Promise.all(e)}this._styleChanges=[],this._isTileHandlerReady=!0,this.notifyChange("updating"),this.requestUpdate()}async _loadStyle(){const{style:e,spriteUrl:t,glyphsUrl:s}=this.layer.currentStyleInfo;this._isTileHandlerReady=!1,this._fetchQueue.pause(),this._parseQueue.pause(),this._fetchQueue.clear(),this._parseQueue.clear(),this.notifyChange("updating"),this._styleRepository=new Q(e,{spriteUrl:t,glyphsUrl:s}),this._vectorTileContainer.destroy(),this._tileManager.clear(),this._tileHandlerAbortController.abort(),this._tileHandlerAbortController=F();const{signal:i}=this._tileHandlerAbortController;try{this._tileHandlerPromise=this._tileHandler.setStyle(this._styleRepository,e),await this._tileHandlerPromise}catch(o){if(!v(o))throw o}if(i.aborted)return this._fetchQueue.resume(),this._parseQueue.resume(),this._isTileHandlerReady=!0,this.notifyChange("updating"),void this.requestUpdate();const r=await this._tileHandler.spriteMosaic;this._vectorTileContainer.setStyleResources(r,this._tileHandler.glyphMosaic,this._styleRepository),this._fetchQueue.resume(),this._parseQueue.resume(),this._isTileHandlerReady=!0,this.notifyChange("updating"),this.requestUpdate()}_createVectorTile(e){const t=this._tileInfoView.getTileBounds(M(),e);return new fe(e,this._styleRepository,t,[512,512])}};H([j()],Qe.prototype,"_fetchQueue",void 0),H([j()],Qe.prototype,"_parseQueue",void 0),H([j()],Qe.prototype,"_isTileHandlerReady",void 0),H([j()],Qe.prototype,"suspended",void 0),H([j()],Qe.prototype,"fading",void 0),H([j()],Qe.prototype,"updating",void 0),Qe=H([E("esri.views.2d.layers.VectorTileLayerView2D")],Qe);var Ne=Qe;export default Ne;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { a5 as r$4, b$ as e$2, a0 as t$4, cF as r$6, eo as r$7, ep as M, eq as h$3, f4 as f$2, aj as U, ak as n$5, f5 as e$4, dU as p$2, ai as t$6, cd as e$5, an as g, dd as A, ce as e$6, cu as l$4, f6 as n$6, av as n$7, bN as B, b6 as i$3, ei as h$4, eP as x, a4 as n$8, b3 as u$2, aa as s$7, d1 as n$9, cB as m$2, f7 as a$5, ej as p$3, bI as h$5, ae as e$7, af as y$1, ag as i$4 } from "./vendor.74d5941c.js";
+import { a as a$4 } from "./StyleRepository.bb6fee73.js";
+import { e as e$3, t as t$7, c as c$1 } from "./earcut.0e5467f0.js";
+import { o as o$5 } from "./FramebufferObject.18518335.js";
+import { s as s$5, a as s$6 } from "./VertexArrayObject.67803418.js";
+import { r as r$5, i as i$2 } from "./TileContainer.763b6c09.js";
+import { l as l$5, d as d$1 } from "./LayerView2D.06dde519.js";
+import { r as r$8 } from "./TileIndex.ec5f806e.js";
+import { t as t$5 } from "./Rect.b51904ac.js";
+import { I } from "./Utils.3f1577e5.js";
+import "./vec4f32.6de15d07.js";
+import "./definitions.6737c10c.js";
+import "./_commonjsHelpers.f2a458db.js";
+import "./Container.d2c27c9d.js";
+import "./mat4f32.a5cabe00.js";
+import "./WGLContainer.74815466.js";
+import "./ShaderCompiler.b19da10d.js";
+import "./GeometryUtils.9c8423f5.js";
+import "./MaterialKey.3bc4aaea.js";
+class t$3 {
+  constructor(t2) {
+    this.xTile = 0, this.yTile = 0, this.hash = 0, this.priority = 1, this.colliders = [], this.textVertexRanges = [], this.iconVertexRanges = [], this.tile = t2;
+  }
+}
+class s$4 {
+  constructor() {
+    this.tileSymbols = [], this.parts = [{ startTime: 0, startOpacity: 0, targetOpacity: 0, show: false }, { startTime: 0, startOpacity: 0, targetOpacity: 0, show: false }], this.show = false;
+  }
+}
+function l$3(t2, e2, r2, s2, i2, l2) {
+  const o2 = r2 - i2;
+  if (o2 >= 0)
+    return (e2 >> o2) + (s2 - (l2 << o2)) * (t2 >> o2);
+  const n2 = -o2;
+  return e2 - (l2 - (s2 << n2)) * (t2 >> n2) << n2;
+}
+class o$4 {
+  constructor(t2, e2, r2) {
+    this._rows = Math.ceil(e2 / r2), this._columns = Math.ceil(t2 / r2), this._cellSize = r2, this.cells = new Array(this._rows);
+    for (let s2 = 0; s2 < this._rows; s2++) {
+      this.cells[s2] = new Array(this._columns);
+      for (let t3 = 0; t3 < this._columns; t3++)
+        this.cells[s2][t3] = [];
+    }
+  }
+  getCell(t2, e2) {
+    const r2 = Math.min(Math.max(Math.floor(e2 / this._cellSize), 0), this._rows - 1), s2 = Math.min(Math.max(Math.floor(t2 / this._cellSize), 0), this._columns - 1);
+    return this.cells[r2] && this.cells[r2][s2] || null;
+  }
+  getCellSpan(t2, e2, r2, s2) {
+    return [Math.min(Math.max(Math.floor(t2 / this._cellSize), 0), this.columns - 1), Math.min(Math.max(Math.floor(e2 / this._cellSize), 0), this.rows - 1), Math.min(Math.max(Math.floor(r2 / this._cellSize), 0), this.columns - 1), Math.min(Math.max(Math.floor(s2 / this._cellSize), 0), this.rows - 1)];
+  }
+  get cellSize() {
+    return this._cellSize;
+  }
+  get columns() {
+    return this._columns;
+  }
+  get rows() {
+    return this._rows;
+  }
+}
+function n$4(t2, r2, s2, i2, l2, o2) {
+  const n2 = r2[i2++];
+  for (let h2 = 0; h2 < n2; h2++) {
+    const n3 = new t$3(o2);
+    n3.xTile = r2[i2++], n3.yTile = r2[i2++], n3.hash = r2[i2++], n3.priority = r2[i2++];
+    const h3 = r2[i2++];
+    for (let t3 = 0; t3 < h3; t3++) {
+      const t4 = r2[i2++], e2 = r2[i2++], l3 = r2[i2++], o3 = r2[i2++], h4 = !!r2[i2++], a3 = r2[i2++], c3 = s2[i2++], d2 = s2[i2++], p2 = r2[i2++], u2 = r2[i2++];
+      n3.colliders.push({ xTile: t4, yTile: e2, dxPixels: l3, dyPixels: o3, hard: h4, partIndex: a3, width: p2, height: u2, minLod: c3, maxLod: d2 });
+    }
+    const a2 = t2[i2++];
+    for (let e2 = 0; e2 < a2; e2++)
+      n3.textVertexRanges.push([t2[i2++], t2[i2++]]);
+    const c2 = t2[i2++];
+    for (let e2 = 0; e2 < c2; e2++)
+      n3.iconVertexRanges.push([t2[i2++], t2[i2++]]);
+    l2.push(n3);
+  }
+  return i2;
+}
+function h$2(t2, e2, r2) {
+  for (const [s2, i2] of t2.symbols)
+    a$3(t2, e2, r2, i2, s2);
+}
+function a$3(t2, e2, r2, s2, i2) {
+  const l2 = t2.layerData.get(i2);
+  if (l2.type === 3) {
+    for (const e3 of s2) {
+      const s3 = e3.unique;
+      let i3;
+      if (e3.selectedForRendering) {
+        const e4 = s3.parts[0], l3 = e4.startOpacity, o2 = e4.targetOpacity;
+        t2.allSymbolsFadingOut = t2.allSymbolsFadingOut && o2 === 0;
+        const n2 = r2 ? Math.floor(127 * l3) | o2 << 7 : o2 ? 255 : 0;
+        i3 = n2 << 24 | n2 << 16 | n2 << 8 | n2;
+      } else
+        i3 = 0;
+      for (const [t3, r3] of e3.iconVertexRanges)
+        for (let e4 = t3; e4 < t3 + r3; e4 += 4)
+          l2.iconOpacity[e4 / 4] = i3;
+      if (e3.selectedForRendering) {
+        const e4 = s3.parts[1], l3 = e4.startOpacity, o2 = e4.targetOpacity;
+        t2.allSymbolsFadingOut = t2.allSymbolsFadingOut && o2 === 0;
+        const n2 = r2 ? Math.floor(127 * l3) | o2 << 7 : o2 ? 255 : 0;
+        i3 = n2 << 24 | n2 << 16 | n2 << 8 | n2;
+      } else
+        i3 = 0;
+      for (const [t3, r3] of e3.textVertexRanges)
+        for (let e4 = t3; e4 < t3 + r3; e4 += 4)
+          l2.textOpacity[e4 / 4] = i3;
+    }
+    l2.lastOpacityUpdate = e2, l2.opacityChanged = true;
+  }
+}
+class f$1 {
+  constructor(e2, t2) {
+    this.layerUIDs = [], this.isDestroyed = false, this.data = e2, this.memoryUsed = e2.byteLength;
+    let r2 = 1;
+    const i2 = new Uint32Array(e2);
+    this.layerUIDs = [];
+    const s2 = i2[r2++];
+    for (let n2 = 0; n2 < s2; n2++)
+      this.layerUIDs[n2] = i2[r2++];
+    this.bufferDataOffset = r2, t2 && (this.layer = t2.getStyleLayerByUID(this.layerUIDs[0]));
+  }
+  get isPreparedForRendering() {
+    return t$4(this.data);
+  }
+  get offset() {
+    return this.bufferDataOffset;
+  }
+  destroy() {
+    this.isDestroyed || (this.doDestroy(), this.isDestroyed = true);
+  }
+  prepareForRendering(t2) {
+    t$4(this.data) || (this.doPrepareForRendering(t2, this.data, this.bufferDataOffset), this.data = null);
+  }
+}
+class a$2 extends f$1 {
+  constructor(e2, t2) {
+    super(e2, t2), this.type = 2, this.lineIndexStart = 0, this.lineIndexCount = 0;
+    const r2 = new Uint32Array(e2);
+    let i2 = this.bufferDataOffset;
+    this.lineIndexStart = r2[i2++], this.lineIndexCount = r2[i2++], this.bufferDataOffset = i2;
+  }
+  hasData() {
+    return this.lineIndexCount > 0;
+  }
+  triangleCount() {
+    return this.lineIndexCount / 3;
+  }
+  doDestroy() {
+    r$4(this.lineVertexArrayObject) && this.lineVertexArrayObject.dispose(), r$4(this.lineVertexBuffer) && this.lineVertexBuffer.dispose(), r$4(this.lineIndexBuffer) && this.lineIndexBuffer.dispose(), this.lineVertexArrayObject = null, this.lineVertexBuffer = null, this.lineIndexBuffer = null, this.memoryUsed = 0;
+  }
+  doPrepareForRendering(e2, t2, r2) {
+    const n2 = new Uint32Array(t2), f2 = new Int32Array(n2.buffer), a2 = n2[r2++];
+    this.lineVertexBuffer = s$5.createVertex(e2, 35044, new Int32Array(f2.buffer, 4 * r2, a2)), r2 += a2;
+    const o2 = n2[r2++];
+    this.lineIndexBuffer = s$5.createIndex(e2, 35044, new Uint32Array(n2.buffer, 4 * r2, o2)), r2 += o2;
+    const l2 = this.layer.lineMaterial;
+    this.lineVertexArrayObject = new s$6(e2, l2.getAttributeLocations(), l2.getLayoutInfo(), { geometry: this.lineVertexBuffer }, this.lineIndexBuffer);
+  }
+}
+class o$3 extends f$1 {
+  constructor(e2, t2) {
+    super(e2, t2), this.type = 1, this.fillIndexStart = 0, this.fillIndexCount = 0, this.outlineIndexStart = 0, this.outlineIndexCount = 0;
+    const r2 = new Uint32Array(e2);
+    let i2 = this.bufferDataOffset;
+    this.fillIndexStart = r2[i2++], this.fillIndexCount = r2[i2++], this.outlineIndexStart = r2[i2++], this.outlineIndexCount = r2[i2++], this.bufferDataOffset = i2;
+  }
+  hasData() {
+    return this.fillIndexCount > 0 || this.outlineIndexCount > 0;
+  }
+  triangleCount() {
+    return (this.fillIndexCount + this.outlineIndexCount) / 3;
+  }
+  doDestroy() {
+    r$4(this.fillVertexArrayObject) && this.fillVertexArrayObject.dispose(), r$4(this.fillVertexBuffer) && this.fillVertexBuffer.dispose(), r$4(this.fillIndexBuffer) && this.fillIndexBuffer.dispose(), this.fillVertexArrayObject = null, this.fillVertexBuffer = null, this.fillIndexBuffer = null, r$4(this.outlineVertexArrayObject) && this.outlineVertexArrayObject.dispose(), r$4(this.outlineVertexBuffer) && this.outlineVertexBuffer.dispose(), r$4(this.outlineIndexBuffer) && this.outlineIndexBuffer.dispose(), this.outlineVertexArrayObject = null, this.outlineVertexBuffer = null, this.outlineIndexBuffer = null, this.memoryUsed = 0;
+  }
+  doPrepareForRendering(e2, t2, r2) {
+    const n2 = new Uint32Array(t2), f2 = new Int32Array(n2.buffer), a2 = n2[r2++];
+    this.fillVertexBuffer = s$5.createVertex(e2, 35044, new Int32Array(f2.buffer, 4 * r2, a2)), r2 += a2;
+    const o2 = n2[r2++];
+    this.fillIndexBuffer = s$5.createIndex(e2, 35044, new Uint32Array(n2.buffer, 4 * r2, o2)), r2 += o2;
+    const l2 = n2[r2++];
+    this.outlineVertexBuffer = s$5.createVertex(e2, 35044, new Int32Array(f2.buffer, 4 * r2, l2)), r2 += l2;
+    const u2 = n2[r2++];
+    this.outlineIndexBuffer = s$5.createIndex(e2, 35044, new Uint32Array(n2.buffer, 4 * r2, u2)), r2 += u2;
+    const h2 = this.layer, c2 = h2.fillMaterial, x2 = h2.outlineMaterial;
+    this.fillVertexArrayObject = new s$6(e2, c2.getAttributeLocations(), c2.getLayoutInfo(), { geometry: this.fillVertexBuffer }, this.fillIndexBuffer), this.outlineVertexArrayObject = new s$6(e2, x2.getAttributeLocations(), x2.getLayoutInfo(), { geometry: this.outlineVertexBuffer }, this.outlineIndexBuffer);
+  }
+}
+class l$2 extends f$1 {
+  constructor(e2, t2, r2) {
+    super(e2, t2), this.type = 3, this.iconPerPageElementsMap = new Map(), this.glyphPerPageElementsMap = new Map(), this.symbolInstances = [], this.isIconSDF = false, this.opacityChanged = false, this.lastOpacityUpdate = 0, this.symbols = [];
+    const i2 = new Uint32Array(e2), s2 = new Int32Array(e2), f2 = new Float32Array(e2);
+    let a2 = this.bufferDataOffset;
+    this.isIconSDF = !!i2[a2++];
+    const o2 = i2[a2++];
+    for (let n2 = 0; n2 < o2; n2++) {
+      const e3 = i2[a2++], t3 = i2[a2++], r3 = i2[a2++];
+      this.iconPerPageElementsMap.set(e3, [t3, r3]);
+    }
+    const l2 = i2[a2++];
+    for (let n2 = 0; n2 < l2; n2++) {
+      const e3 = i2[a2++], t3 = i2[a2++], r3 = i2[a2++];
+      this.glyphPerPageElementsMap.set(e3, [t3, r3]);
+    }
+    const u2 = i2[a2++], h2 = i2[a2++];
+    this.iconOpacity = new Int32Array(u2), this.textOpacity = new Int32Array(h2), a2 = n$4(i2, s2, f2, a2, this.symbols, r2), this.bufferDataOffset = a2;
+  }
+  hasData() {
+    return this.iconPerPageElementsMap.size > 0 || this.glyphPerPageElementsMap.size > 0;
+  }
+  triangleCount() {
+    let e2 = 0;
+    for (const [t2, r2] of this.iconPerPageElementsMap)
+      e2 += r2[1];
+    for (const [t2, r2] of this.glyphPerPageElementsMap)
+      e2 += r2[1];
+    return e2 / 3;
+  }
+  doDestroy() {
+    r$4(this.iconVertexArrayObject) && this.iconVertexArrayObject.dispose(), r$4(this.iconVertexBuffer) && this.iconVertexBuffer.dispose(), r$4(this.iconOpacityBuffer) && this.iconOpacityBuffer.dispose(), r$4(this.iconIndexBuffer) && this.iconIndexBuffer.dispose(), this.iconVertexArrayObject = null, this.iconVertexBuffer = null, this.iconOpacityBuffer = null, this.iconIndexBuffer = null, r$4(this.textVertexArrayObject) && this.textVertexArrayObject.dispose(), r$4(this.textVertexBuffer) && this.textVertexBuffer.dispose(), r$4(this.textOpacityBuffer) && this.textOpacityBuffer.dispose(), r$4(this.textIndexBuffer) && this.textIndexBuffer.dispose(), this.textVertexArrayObject = null, this.textVertexBuffer = null, this.textOpacityBuffer = null, this.textIndexBuffer = null, this.memoryUsed = 0;
+  }
+  updateOpacityInfo() {
+    if (!this.opacityChanged)
+      return;
+    this.opacityChanged = false;
+    const e2 = e$2(this.iconOpacity), t2 = e$2(this.iconOpacityBuffer);
+    e2.length > 0 && e2.byteLength === t2.size && t2.setSubData(e2);
+    const i2 = e$2(this.textOpacity), s2 = e$2(this.textOpacityBuffer);
+    i2.length > 0 && i2.byteLength === s2.size && s2.setSubData(i2);
+  }
+  doPrepareForRendering(e2, t2, n2) {
+    const f2 = new Uint32Array(t2), a2 = new Int32Array(f2.buffer), o2 = f2[n2++];
+    this.iconVertexBuffer = s$5.createVertex(e2, 35044, new Int32Array(a2.buffer, 4 * n2, o2)), n2 += o2;
+    const l2 = f2[n2++];
+    this.iconIndexBuffer = s$5.createIndex(e2, 35044, new Uint32Array(f2.buffer, 4 * n2, l2)), n2 += l2;
+    const u2 = f2[n2++];
+    this.textVertexBuffer = s$5.createVertex(e2, 35044, new Int32Array(a2.buffer, 4 * n2, u2)), n2 += u2;
+    const h2 = f2[n2++];
+    this.textIndexBuffer = s$5.createIndex(e2, 35044, new Uint32Array(f2.buffer, 4 * n2, h2)), n2 += h2, this.iconOpacityBuffer = s$5.createVertex(e2, 35044, e$2(this.iconOpacity).buffer), this.textOpacityBuffer = s$5.createVertex(e2, 35044, e$2(this.textOpacity).buffer);
+    const c2 = this.layer, x2 = c2.iconMaterial, y2 = c2.textMaterial;
+    this.iconVertexArrayObject = new s$6(e2, x2.getAttributeLocations(), x2.getLayoutInfo(), { geometry: this.iconVertexBuffer, opacity: this.iconOpacityBuffer }, this.iconIndexBuffer), this.textVertexArrayObject = new s$6(e2, y2.getAttributeLocations(), y2.getLayoutInfo(), { geometry: this.textVertexBuffer, opacity: this.textOpacityBuffer }, this.textIndexBuffer);
+  }
+}
+class u$1 extends f$1 {
+  constructor(e2, t2) {
+    super(e2, t2), this.type = 4, this.circleIndexStart = 0, this.circleIndexCount = 0;
+    const r2 = new Uint32Array(e2);
+    let i2 = this.bufferDataOffset;
+    this.circleIndexStart = r2[i2++], this.circleIndexCount = r2[i2++], this.bufferDataOffset = i2;
+  }
+  hasData() {
+    return this.circleIndexCount > 0;
+  }
+  triangleCount() {
+    return this.circleIndexCount / 3;
+  }
+  doDestroy() {
+    r$4(this.circleVertexArrayObject) && this.circleVertexArrayObject.dispose(), r$4(this.circleVertexBuffer) && this.circleVertexBuffer.dispose(), r$4(this.circleIndexBuffer) && this.circleIndexBuffer.dispose(), this.circleVertexArrayObject = null, this.circleVertexBuffer = null, this.circleIndexBuffer = null, this.memoryUsed = 0;
+  }
+  doPrepareForRendering(e2, t2, r2) {
+    const n2 = new Uint32Array(t2), f2 = new Int32Array(n2.buffer), a2 = n2[r2++];
+    this.circleVertexBuffer = s$5.createVertex(e2, 35044, new Int32Array(f2.buffer, 4 * r2, a2)), r2 += a2;
+    const o2 = n2[r2++];
+    this.circleIndexBuffer = s$5.createIndex(e2, 35044, new Uint32Array(n2.buffer, 4 * r2, o2)), r2 += o2;
+    const l2 = this.layer.circleMaterial;
+    this.circleVertexArrayObject = new s$6(e2, l2.getAttributeLocations(), l2.getLayoutInfo(), { geometry: this.circleVertexBuffer }, this.circleIndexBuffer);
+  }
+}
+class d extends r$5 {
+  constructor(e2, t2, s2, a2, r2 = null) {
+    super(e2, s2, a2, [4096, 4096]), this._memCache = r2, this._referenced = 0, this._hasSymbolBuckets = false, this._memoryUsedByLayerData = 0, this.layerData = new Map(), this.layerCount = 0, this.status = "loading", this.allSymbolsFadingOut = false, this.lastOpacityUpdate = 0, this.symbols = new Map(), this.isCoverage = false, this.neededForCoverage = false, this.decluttered = false, this.invalidating = false, this.parentTile = null, this.childrenTiles = new Set(), this._processed = false, this._referenced = 1, this.styleRepository = t2, this.id = e2.id, this.transforms.tileUnitsToPixels = r$6();
+  }
+  get hasSymbolBuckets() {
+    return this._hasSymbolBuckets;
+  }
+  get isFading() {
+    return this._hasSymbolBuckets && performance.now() - this.lastOpacityUpdate < e$3;
+  }
+  get isHoldingForFade() {
+    return this._hasSymbolBuckets && (!this.allSymbolsFadingOut || performance.now() - this.lastOpacityUpdate < e$3);
+  }
+  get wasRequested() {
+    return this.status === "errored" || this.status === "loaded" || this.status === "reloading";
+  }
+  setData(e2) {
+    this.changeDataImpl(e2), this.requestRender(), this.ready(), this.invalidating = false, this._processed = true;
+  }
+  deleteLayerData(t2) {
+    let s2 = false;
+    for (const e2 of t2)
+      if (this.layerData.has(e2)) {
+        const t3 = this.layerData.get(e2);
+        this._memoryUsedByLayerData -= t3.memoryUsed, t3.type === 3 && this.symbols.has(e2) && (this.symbols.delete(e2), s2 = true), t3.destroy(), this.layerData.delete(e2), this.layerCount--;
+      }
+    r$4(this._memCache) && this._memCache.updateSize(this.key.id, this, this._memoryUsedByLayerData), s2 && this.emit("symbols-changed"), this.requestRender();
+  }
+  processed() {
+    return this._processed;
+  }
+  hasData() {
+    return this.layerCount > 0;
+  }
+  dispose() {
+    this.status !== "unloaded" && (m$1.delete(this), d._destroyRenderBuckets(this.layerData), this.layerData = null, this.layerCount = 0, this._memoryUsedByLayerData = 0, this.destroy(), this.status = "unloaded");
+  }
+  release() {
+    return --this._referenced == 0 && (this.dispose(), this.stage = null, true);
+  }
+  retain() {
+    ++this._referenced;
+  }
+  get referenced() {
+    return this._referenced;
+  }
+  getMemoryUsage() {
+    return (this._memoryUsedByLayerData + 256) / (this._referenced || 1);
+  }
+  changeDataImpl(t2) {
+    let s2 = false;
+    if (t2) {
+      const a2 = this._createRenderBuckets(t2);
+      for (const [e2, t3] of a2) {
+        if (this.layerData.has(e2)) {
+          const s3 = this.layerData.get(e2);
+          this._memoryUsedByLayerData -= t3.memoryUsed, s3.destroy(), this.layerData.delete(e2), this.layerCount--;
+        }
+        t3.type === 3 && (this.symbols.set(e2, t3.symbols), s2 = true), this._memoryUsedByLayerData += t3.memoryUsed, this.layerData.set(e2, t3), this.layerCount++;
+      }
+      r$4(this._memCache) && this._memCache.updateSize(this.key.id, this, this._memoryUsedByLayerData);
+    }
+    this._hasSymbolBuckets = false;
+    for (const [e2, a2] of this.layerData)
+      a2.type === 3 && (this._hasSymbolBuckets = true);
+    s2 && this.emit("symbols-changed");
+  }
+  attachWithContext(e2) {
+    this.stage = { context: e2, trashDisplayObject(e3) {
+      e3.processDetach();
+    }, untrashDisplayObject: () => false };
+  }
+  setTransform(e2, i2) {
+    super.setTransform(e2, i2);
+    const o2 = i2 / (e2.resolution * e2.pixelRatio), h2 = this.size[0] / this.coordRange[0] * o2, n2 = this.size[1] / this.coordRange[1] * o2, l2 = [0, 0];
+    e2.toScreen(l2, this.coords);
+    const c2 = this.transforms.tileUnitsToPixels;
+    r$7(c2), M(c2, c2, l2), h$3(c2, c2, Math.PI * e2.rotation / 180), f$2(c2, c2, [h2, n2, 1]);
+  }
+  static _destroyRenderBuckets(e2) {
+    if (!e2)
+      return;
+    const t2 = new Set();
+    e2.forEach((e3) => {
+      t2.has(e3) || (e3.destroy(), t2.add(e3));
+    }), e2.clear();
+  }
+  _createRenderBuckets(e2) {
+    const t2 = new Map(), s2 = new Map();
+    for (const a2 of e2) {
+      const e3 = this._deserializeBucket(a2, s2);
+      for (const s3 of e3.layerUIDs)
+        t2.set(s3, e3);
+    }
+    return t2;
+  }
+  _deserializeBucket(e2, t2) {
+    let s2 = t2.get(e2);
+    if (s2)
+      return s2;
+    switch (new Uint32Array(e2)[0]) {
+      case 1:
+        s2 = new o$3(e2, this.styleRepository);
+        break;
+      case 2:
+        s2 = new a$2(e2, this.styleRepository);
+        break;
+      case 3:
+        s2 = new l$2(e2, this.styleRepository, this);
+        break;
+      case 4:
+        s2 = new u$1(e2, this.styleRepository);
+    }
+    return t2.set(e2, s2), s2;
+  }
+}
+const m$1 = new Map();
+class e$1 {
+  constructor(e2, t2) {
+    this._width = 0, this._height = 0, this._free = [], this._width = e2, this._height = t2, this._free.push(new t$5(0, 0, e2, t2));
+  }
+  get width() {
+    return this._width;
+  }
+  get height() {
+    return this._height;
+  }
+  allocate(e2, t2) {
+    if (e2 > this._width || t2 > this._height)
+      return new t$5();
+    let i2 = null, s2 = -1;
+    for (let h2 = 0; h2 < this._free.length; ++h2) {
+      const w2 = this._free[h2];
+      e2 <= w2.width && t2 <= w2.height && (i2 === null || w2.y <= i2.y && w2.x <= i2.x) && (i2 = w2, s2 = h2);
+    }
+    return i2 === null ? new t$5() : (this._free.splice(s2, 1), i2.width < i2.height ? (i2.width > e2 && this._free.push(new t$5(i2.x + e2, i2.y, i2.width - e2, t2)), i2.height > t2 && this._free.push(new t$5(i2.x, i2.y + t2, i2.width, i2.height - t2))) : (i2.width > e2 && this._free.push(new t$5(i2.x + e2, i2.y, i2.width - e2, i2.height)), i2.height > t2 && this._free.push(new t$5(i2.x, i2.y + t2, e2, i2.height - t2))), new t$5(i2.x, i2.y, e2, t2));
+  }
+  release(h2) {
+    for (let e2 = 0; e2 < this._free.length; ++e2) {
+      const t2 = this._free[e2];
+      if (t2.y === h2.y && t2.height === h2.height && t2.x + t2.width === h2.x)
+        t2.width += h2.width;
+      else if (t2.x === h2.x && t2.width === h2.width && t2.y + t2.height === h2.y)
+        t2.height += h2.height;
+      else if (h2.y === t2.y && h2.height === t2.height && h2.x + h2.width === t2.x)
+        t2.x = h2.x, t2.width += h2.width;
+      else {
+        if (h2.x !== t2.x || h2.width !== t2.width || h2.y + h2.height !== t2.y)
+          continue;
+        t2.y = h2.y, t2.height += h2.height;
+      }
+      this._free.splice(e2, 1), this.release(h2);
+    }
+    this._free.push(h2);
+  }
+}
+class s$3 {
+  constructor(t2, e2, s2) {
+    this.width = 0, this.height = 0, this._dirties = [], this._glyphData = [], this._currentPage = 0, this._glyphIndex = {}, this._textures = [], this._rangePromises = new Map(), this.width = t2, this.height = e2, this._glyphSource = s2, this._binPack = new e$1(t2 - 4, e2 - 4), this._glyphData.push(new Uint8Array(t2 * e2)), this._dirties.push(true), this._textures.push(void 0);
+  }
+  getGlyphItems(t2, s2) {
+    const h2 = [], r2 = this._glyphSource, n2 = new Set(), o2 = 1 / 256;
+    for (const e2 of s2) {
+      const t3 = Math.floor(e2 * o2);
+      n2.add(t3);
+    }
+    const a2 = [];
+    return n2.forEach((e2) => {
+      if (e2 <= 256) {
+        const i2 = t2 + e2;
+        if (this._rangePromises.has(i2))
+          a2.push(this._rangePromises.get(i2));
+        else {
+          const s3 = r2.getRange(t2, e2).then(() => {
+            this._rangePromises.delete(i2);
+          }, () => {
+            this._rangePromises.delete(i2);
+          });
+          this._rangePromises.set(i2, s3), a2.push(s3);
+        }
+      }
+    }), Promise.all(a2).then(() => {
+      let n3 = this._glyphIndex[t2];
+      n3 || (n3 = {}, this._glyphIndex[t2] = n3);
+      for (const o3 of s2) {
+        const s3 = n3[o3];
+        if (s3) {
+          h2[o3] = { sdf: true, rect: s3.rect, metrics: s3.metrics, page: s3.page, code: o3 };
+          continue;
+        }
+        const a3 = r2.getGlyph(t2, o3);
+        if (!a3 || !a3.metrics)
+          continue;
+        const c2 = a3.metrics;
+        let l2;
+        if (c2.width === 0)
+          l2 = new t$5(0, 0, 0, 0);
+        else {
+          const t3 = 3, e2 = c2.width + 2 * t3, s4 = c2.height + 2 * t3;
+          let h3 = e2 % 4 ? 4 - e2 % 4 : 4, r3 = s4 % 4 ? 4 - s4 % 4 : 4;
+          h3 === 1 && (h3 = 5), r3 === 1 && (r3 = 5), l2 = this._binPack.allocate(e2 + h3, s4 + r3), l2.isEmpty && (this._dirties[this._currentPage] || (this._glyphData[this._currentPage] = null), this._currentPage = this._glyphData.length, this._glyphData.push(new Uint8Array(this.width * this.height)), this._dirties.push(true), this._textures.push(void 0), this._binPack = new e$1(this.width - 4, this.height - 4), l2 = this._binPack.allocate(e2 + h3, s4 + r3));
+          const n4 = this._glyphData[this._currentPage], o4 = a3.bitmap;
+          let g2, _;
+          if (o4)
+            for (let i2 = 0; i2 < s4; i2++) {
+              g2 = e2 * i2, _ = this.width * (l2.y + i2 + 1) + l2.x;
+              for (let t4 = 0; t4 < e2; t4++)
+                n4[_ + t4 + 1] = o4[g2 + t4];
+            }
+        }
+        n3[o3] = { rect: l2, metrics: c2, tileIDs: null, page: this._currentPage }, h2[o3] = { sdf: true, rect: l2, metrics: c2, page: this._currentPage, code: o3 }, this._dirties[this._currentPage] = true;
+      }
+      return h2;
+    });
+  }
+  removeGlyphs(t2) {
+    for (const e2 in this._glyphIndex) {
+      const i2 = this._glyphIndex[e2];
+      if (!i2)
+        continue;
+      let s2;
+      for (const e3 in i2)
+        if (s2 = i2[e3], s2.tileIDs.delete(t2), s2.tileIDs.size === 0) {
+          const t3 = this._glyphData[s2.page], h2 = s2.rect;
+          let r2, n2;
+          for (let e4 = 0; e4 < h2.height; e4++)
+            for (r2 = this.width * (h2.y + e4) + h2.x, n2 = 0; n2 < h2.width; n2++)
+              t3[r2 + n2] = 0;
+          delete i2[e3], this._dirties[s2.page] = true;
+        }
+    }
+  }
+  bind(e2, i2, s2, h2 = 0) {
+    this._textures[s2] || (this._textures[s2] = new o$5(e2, { pixelFormat: 6406, dataType: 5121, width: this.width, height: this.height }, new Uint8Array(this.width * this.height)));
+    const r2 = this._textures[s2];
+    r2.setSamplingMode(i2), this._dirties[s2] && r2.setData(this._glyphData[s2]), e2.bindTexture(r2, h2), this._dirties[s2] = false;
+  }
+  dispose() {
+    this._binPack = null;
+    for (const t2 of this._textures)
+      t2 && t2.dispose();
+    this._textures.length = 0;
+  }
+}
+class s$2 {
+  constructor(t2) {
+    if (this._metrics = [], this._bitmaps = [], t2)
+      for (; t2.next(); )
+        switch (t2.tag()) {
+          case 1: {
+            const e2 = t2.getMessage();
+            for (; e2.next(); )
+              switch (e2.tag()) {
+                case 3: {
+                  const t3 = e2.getMessage();
+                  let s2, a2, r2, n2, i2, c2, g2;
+                  for (; t3.next(); )
+                    switch (t3.tag()) {
+                      case 1:
+                        s2 = t3.getUInt32();
+                        break;
+                      case 2:
+                        a2 = t3.getBytes();
+                        break;
+                      case 3:
+                        r2 = t3.getUInt32();
+                        break;
+                      case 4:
+                        n2 = t3.getUInt32();
+                        break;
+                      case 5:
+                        i2 = t3.getSInt32();
+                        break;
+                      case 6:
+                        c2 = t3.getSInt32();
+                        break;
+                      case 7:
+                        g2 = t3.getUInt32();
+                        break;
+                      default:
+                        t3.skip();
+                    }
+                  t3.release(), s2 && (this._metrics[s2] = { width: r2, height: n2, left: i2, top: c2, advance: g2 }, this._bitmaps[s2] = a2);
+                  break;
+                }
+                default:
+                  e2.skip();
+              }
+            e2.release();
+            break;
+          }
+          default:
+            t2.skip();
+        }
+  }
+  getMetrics(t2) {
+    return this._metrics[t2];
+  }
+  getBitmap(t2) {
+    return this._bitmaps[t2];
+  }
+}
+class a$1 {
+  constructor() {
+    this._ranges = [];
+  }
+  getRange(t2) {
+    return this._ranges[t2];
+  }
+  addRange(t2, e2) {
+    this._ranges[t2] = e2;
+  }
+}
+class r$3 {
+  constructor(t2) {
+    this._glyphInfo = {}, this._baseURL = t2;
+  }
+  getRange(a2, r2) {
+    const n2 = this._getFontStack(a2);
+    if (n2.getRange(r2))
+      return Promise.resolve();
+    const i2 = 256 * r2, c2 = i2 + 255, g2 = this._baseURL.replace("{fontstack}", a2).replace("{range}", i2 + "-" + c2);
+    return U(g2, { responseType: "array-buffer" }).then((t2) => {
+      n2.addRange(r2, new s$2(new n$5(new Uint8Array(t2.data), new DataView(t2.data))));
+    }).catch(() => {
+      n2.addRange(r2, new s$2());
+    });
+  }
+  getGlyph(t2, e2) {
+    const s2 = this._getFontStack(t2);
+    if (!s2)
+      return;
+    const a2 = Math.floor(e2 / 256);
+    if (a2 > 256)
+      return;
+    const r2 = s2.getRange(a2);
+    return r2 ? { metrics: r2.getMetrics(e2), bitmap: r2.getBitmap(e2) } : void 0;
+  }
+  _getFontStack(t2) {
+    let e2 = this._glyphInfo[t2];
+    return e2 || (e2 = this._glyphInfo[t2] = new a$1()), e2;
+  }
+}
+class s$1 {
+  constructor(t2, i2, s2 = 0) {
+    this._size = [], this._mosaicsData = [], this._textures = [], this._dirties = [], this._maxItemSize = 0, this._currentPage = 0, this._pageWidth = 0, this._pageHeight = 0, this._mosaicRects = {}, this.pixelRatio = 1, (t2 <= 0 || i2 <= 0) && console.error("Sprites mosaic defaultWidth and defaultHeight must be greater than zero!"), this._pageWidth = t2, this._pageHeight = i2, s2 > 0 && (this._maxItemSize = s2), this._binPack = new e$1(t2 - 4, i2 - 4);
+  }
+  getWidth(t2) {
+    return t2 >= this._size.length ? -1 : this._size[t2][0];
+  }
+  getHeight(t2) {
+    return t2 >= this._size.length ? -1 : this._size[t2][1];
+  }
+  setSpriteSource(t2) {
+    if (this.dispose(), this.pixelRatio = t2.devicePixelRatio, this._mosaicsData.length === 0) {
+      this._binPack = new e$1(this._pageWidth - 4, this._pageHeight - 4);
+      const t3 = Math.floor(this._pageWidth), i2 = Math.floor(this._pageHeight), s2 = new Uint32Array(t3 * i2);
+      this._mosaicsData[0] = s2, this._dirties.push(true), this._size.push([this._pageWidth, this._pageHeight]), this._textures.push(void 0);
+    }
+    this._sprites = t2;
+  }
+  getSpriteItem(t2, i2 = false) {
+    let e2 = this._mosaicRects[t2];
+    if (e2)
+      return e2;
+    if (!this._sprites || this._sprites.loadStatus !== "loaded")
+      return null;
+    const s2 = this._sprites.getSpriteInfo(t2);
+    if (!s2 || !s2.width || !s2.height || s2.width < 0 || s2.height < 0)
+      return null;
+    const h2 = s2.width, a2 = s2.height, [r2, o2, _] = this._allocateImage(h2, a2);
+    return r2.width <= 0 ? null : (this._copy(r2, s2, o2, _, i2), e2 = { rect: r2, width: h2, height: a2, sdf: s2.sdf, simplePattern: false, pixelRatio: s2.pixelRatio, page: o2 }, this._mosaicRects[t2] = e2, e2);
+  }
+  getSpriteItems(t2) {
+    const i2 = {};
+    for (const e2 of t2)
+      i2[e2] = this.getSpriteItem(e2);
+    return i2;
+  }
+  getMosaicItemPosition(t2, i2) {
+    const e2 = this.getSpriteItem(t2, i2), s2 = e2 && e2.rect;
+    if (!s2)
+      return null;
+    s2.width = e2.width, s2.height = e2.height;
+    const h2 = e2.width, a2 = e2.height, r2 = 2, o2 = this._size[e2.page];
+    return { size: [e2.width, e2.height], tl: [(s2.x + r2) / o2[0], (s2.y + r2) / o2[1]], br: [(s2.x + r2 + h2) / o2[0], (s2.y + r2 + a2) / o2[1]], page: e2.page };
+  }
+  bind(i2, e2, s2 = 0, h2 = 0) {
+    this._textures[s2] || (this._textures[s2] = new o$5(i2, { pixelFormat: 6408, dataType: 5121, wrapMode: 33071, width: this._size[s2][0], height: this._size[s2][1] }, new Uint8Array(this._mosaicsData[s2].buffer)));
+    const a2 = this._textures[s2];
+    a2.setSamplingMode(e2), this._dirties[s2] && a2.setData(new Uint8Array(this._mosaicsData[s2].buffer)), i2.bindTexture(a2, h2), this._dirties[s2] = false;
+  }
+  static _copyBits(t2, i2, e2, s2, h2, a2, r2, o2, _, n2, g2) {
+    let c2 = s2 * i2 + e2, p2 = o2 * a2 + r2;
+    if (g2) {
+      p2 -= a2;
+      for (let r3 = -1; r3 <= n2; r3++, c2 = ((r3 + n2) % n2 + s2) * i2 + e2, p2 += a2)
+        for (let i3 = -1; i3 <= _; i3++)
+          h2[p2 + i3] = t2[c2 + (i3 + _) % _];
+    } else
+      for (let l2 = 0; l2 < n2; l2++) {
+        for (let i3 = 0; i3 < _; i3++)
+          h2[p2 + i3] = t2[c2 + i3];
+        c2 += i2, p2 += a2;
+      }
+  }
+  _copy(t2, i2, e2, h2, a2, r2) {
+    if (!this._sprites || this._sprites.loadStatus !== "loaded" || e2 >= this._mosaicsData.length)
+      return;
+    const o2 = new Uint32Array(r2 ? r2.buffer : this._sprites.image.buffer), _ = this._mosaicsData[e2];
+    _ && o2 || console.error("Source or target images are uninitialized!");
+    const n2 = 2, g2 = r2 ? i2.width : this._sprites.width;
+    s$1._copyBits(o2, g2, i2.x, i2.y, _, h2[0], t2.x + n2, t2.y + n2, i2.width, i2.height, a2), this._dirties[e2] = true;
+  }
+  _allocateImage(t2, s2) {
+    t2 += 2, s2 += 2;
+    const h2 = Math.max(t2, s2);
+    if (this._maxItemSize && this._maxItemSize < h2) {
+      const e2 = new t$5(0, 0, t2, s2);
+      return this._mosaicsData.push(new Uint32Array(t2 * s2)), this._dirties.push(true), this._size.push([t2, s2]), this._textures.push(void 0), [e2, this._mosaicsData.length - 1, [t2, s2]];
+    }
+    let a2 = t2 % 4 ? 4 - t2 % 4 : 4, r2 = s2 % 4 ? 4 - s2 % 4 : 4;
+    a2 === 1 && (a2 = 5), r2 === 1 && (r2 = 5);
+    const o2 = this._binPack.allocate(t2 + a2, s2 + r2);
+    return o2.width <= 0 ? (this._dirties[this._currentPage] || (this._mosaicsData[this._currentPage] = null), this._currentPage = this._mosaicsData.length, this._mosaicsData.push(new Uint32Array(this._pageWidth * this._pageHeight)), this._dirties.push(true), this._size.push([this._pageWidth, this._pageHeight]), this._textures.push(void 0), this._binPack = new e$1(this._pageWidth - 4, this._pageHeight - 4), this._allocateImage(t2, s2)) : [o2, this._currentPage, [this._pageWidth, this._pageHeight]];
+  }
+  dispose() {
+    this._binPack = null, this._mosaicRects = {};
+    for (const t2 of this._textures)
+      t2 && t2.dispose();
+    this._textures.length = 0;
+  }
+}
+function t$2(t2, e2, n2, o2, l2, i2) {
+  t2.fillStyle = e2, t2.fillRect(n2, o2, l2, i2);
+}
+function e(t2, e2, n2, o2, l2, i2) {
+  t2.strokeStyle = e2, t2.strokeRect(n2, o2, l2, i2);
+}
+function n$3(t2, e2) {
+  t2.strokeStyle = "black";
+  const n2 = e2.cellSize, o2 = e2.rows, l2 = e2.columns;
+  for (let i2 = 0; i2 < o2; i2++) {
+    const o3 = e2.cells[i2], r2 = i2 * n2, s2 = (i2 + 1) * n2;
+    for (let e3 = 0; e3 < l2; e3++) {
+      const l3 = o3[e3], i3 = e3 * n2, d2 = (e3 + 1) * n2;
+      t2.strokeRect(i3, r2, d2 - i3, s2 - r2), t2.fillText(`cells:${l3.length}`, i3 + 4, r2 + 12);
+    }
+  }
+}
+function o$2(n2, o2) {
+  const l2 = window.COLLISION_XRAY;
+  for (let i2 = 0; i2 < o2.length; ++i2) {
+    const r2 = !o2[i2].unique.show;
+    if (l2 || !r2)
+      for (const s2 of o2[i2].colliders) {
+        if (!s2.enabled)
+          continue;
+        const d2 = !o2[i2].unique.parts[s2.partIndex].show;
+        if (!l2 && d2)
+          continue;
+        const a2 = s2.xScreen, c2 = s2.yScreen, m2 = s2.dxScreen, h2 = s2.dyScreen;
+        n2.globalAlpha = r2 || d2 ? 0.2 : 1, t$2(n2, "green", a2 - 1, c2 - 1, 3, 3), e(n2, "red", a2 + m2, c2 + h2, s2.width, s2.height), t$2(n2, "blue", a2 + m2 - 1, c2 + h2 - 1, 3, 3), n2.globalAlpha = 1;
+      }
+  }
+}
+function l$1(t2, e2, n2) {
+  if (!window.PERFORMANCE_RECORDING_STORAGE)
+    return;
+  const o2 = window.PERFORMANCE_RECORDING_STORAGE;
+  o2.perf = o2.perf || {};
+  const l2 = o2.perf;
+  l2[t2] = l2[t2] || { start: null, time: 0, min: void 0, max: void 0, samples: [], unit: n2 }, l2[t2].time += e2, l2[t2].samples.push(e2), (l2[t2].min == null || e2 < l2[t2].min) && (l2[t2].min = e2), (l2[t2].max == null || e2 > l2[t2].max) && (l2[t2].max = e2);
+}
+const p$1 = new e$4(10), y = new Map();
+class f {
+  constructor(e2, t2, s2) {
+    this._vectorTileLayer = e2, this._styleRepository = t2, this.devicePixelRatio = s2, this._spriteMosaic = null, this._glyphMosaic = null, this._connection = null;
+  }
+  destroy() {
+    this._connection && (this._connection.close(), this._connection = null), this._styleRepository = null, this._vectorTileLayer = null, this._spriteMosaic && (this._spriteMosaic = null), this._glyphMosaic && (this._glyphMosaic = null);
+  }
+  get spriteMosaic() {
+    return this._spriteSourcePromise.then(() => this._spriteMosaic);
+  }
+  get glyphMosaic() {
+    return this._glyphMosaic;
+  }
+  start(t2) {
+    return __async(this, null, function* () {
+      const s2 = this._vectorTileLayer, r2 = s2.sourceNameToSource, i2 = [];
+      for (const e2 in r2)
+        i2.push(this._fetchTileMap(r2[e2], t2));
+      this._spriteSourcePromise = this._vectorTileLayer.loadSpriteSource(this.devicePixelRatio, t2), this._spriteSourcePromise.then((e2) => {
+        this._spriteMosaic = new s$1(1024, 1024, 250), this._spriteMosaic.setSpriteSource(e2);
+      });
+      const a2 = this._styleRepository, l2 = new r$3(a2.glyphs);
+      return this._glyphMosaic = new s$3(1024, 1024, l2), this._broadcastPromise = p$2("WorkerTileHandler", { client: this, scheduler: t2.scheduler, signal: t2.signal }).then((r3) => (this._connection = r3, Promise.all(this._connection.broadcast("setStyle", { style: s2.currentStyleInfo.style, vectorTileLayerMaxBuffers: t$6("vectortilelayer-max-buffers") }, t2)))), Promise.all(i2);
+    });
+  }
+  updateStyle(e2) {
+    return __async(this, null, function* () {
+      return yield this._broadcastPromise, this._broadcastPromise = new Promise((t2, s2) => {
+        Promise.all(this._connection.broadcast("updateStyle", e2)).then(t2, s2);
+      }), this._broadcastPromise;
+    });
+  }
+  setStyle(t2, s2) {
+    return __async(this, null, function* () {
+      yield this._broadcastPromise, this._styleRepository = t2;
+      const r2 = this._vectorTileLayer.sourceNameToSource, i2 = [];
+      for (const e2 in r2)
+        i2.push(this._fetchTileMap(r2[e2], null));
+      this._spriteSourcePromise = this._vectorTileLayer.loadSpriteSource(this.devicePixelRatio, null), this._spriteSourcePromise.then((e2) => {
+        this._spriteMosaic = new s$1(1024, 1024, 250), this._spriteMosaic.setSpriteSource(e2);
+      });
+      const o2 = new r$3(t2.glyphs);
+      return this._glyphMosaic = new s$3(1024, 1024, o2), this._broadcastPromise = new Promise((t3, r3) => {
+        Promise.all(this._connection.broadcast("setStyle", { style: s2, vectorTileLayerMaxBuffers: t$6("vectortilelayer-max-buffers") })).then(t3, r3);
+      }), i2.push(this._broadcastPromise), Promise.all(i2);
+    });
+  }
+  fetchTileData(e2, t2) {
+    return this._getRefKeys(e2, t2).then((e3) => {
+      const s2 = this._vectorTileLayer.sourceNameToSource, r2 = [];
+      for (const t3 in s2)
+        r2.push(t3);
+      return this._getSourcesData(r2, e3, t2);
+    });
+  }
+  parseTileData(e2, t2) {
+    const s2 = e2 && e2.data;
+    if (!s2)
+      return Promise.resolve(null);
+    const { sourceName2DataAndRefKey: r2, transferList: i2 } = s2;
+    return Object.keys(r2).length === 0 ? Promise.resolve(null) : this._broadcastPromise.then(() => this._connection.getAvailableClient().then((s3) => s3.invoke("createTileAndParse", { key: e2.key.id, sourceName2DataAndRefKey: r2, styleLayerUIDs: e2.styleLayerUIDs }, __spreadProps(__spreadValues({}, t2), { transferList: i2 })).then((e3) => ({ tileData: e3 }))));
+  }
+  getSprites(e2) {
+    return __async(this, null, function* () {
+      return yield this._spriteSourcePromise, this._spriteMosaic.getSpriteItems(e2);
+    });
+  }
+  getGlyphs(e2) {
+    return this._glyphMosaic.getGlyphItems(e2.font, e2.codePoints);
+  }
+  perfReport({ key: e2, milliseconds: t2 }) {
+    l$1(e2, t2, "ms");
+  }
+  _getTilePayload(e2, s2, r2) {
+    return __async(this, null, function* () {
+      const i2 = e$5.pool.acquire(e2.id), o2 = this._vectorTileLayer.sourceNameToSource[s2].getSourceTileUrl(i2.level, i2.row, i2.col);
+      e$5.pool.release(i2);
+      try {
+        return { protobuff: yield this.request(o2, r2), sourceName: s2 };
+      } catch (l2) {
+        if (g(l2))
+          throw l2;
+        return { protobuff: null, sourceName: s2 };
+      }
+    });
+  }
+  request(e2, t2) {
+    return U(e2, __spreadValues({ responseType: "array-buffer" }, t2)).then(({ data: e3 }) => e3);
+  }
+  _fetchTileMap(e2, s2) {
+    return __async(this, null, function* () {
+      if (e2.capabilities.operations.supportsTileMap && e2.tileIndex)
+        return Promise.resolve();
+      if (!e2.tileMapURL)
+        return;
+      const i2 = p$1.get(e2.tileMapURL);
+      if (i2)
+        return void (e2.tileIndex = i2);
+      let o2;
+      if (y.has(e2.tileMapURL)) {
+        try {
+          o2 = yield y.get(e2.tileMapURL), e2.tileIndex = new r$8(o2.data);
+        } catch (n2) {
+          if (g(n2))
+            throw n2;
+        }
+        return;
+      }
+      const a2 = U(e2.tileMapURL, s2);
+      y.set(e2.tileMapURL, a2);
+      try {
+        o2 = yield a2, y.delete(e2.tileMapURL), p$1.put(e2.tileMapURL, e2.tileIndex), e2.tileIndex = new r$8(o2.data);
+      } catch (n2) {
+        if (y.delete(e2.tileMapURL), g(n2))
+          throw n2;
+      }
+    });
+  }
+  _getRefKeys(e2, t2) {
+    const r2 = this._vectorTileLayer.sourceNameToSource, i2 = new Array();
+    for (const s2 in r2) {
+      const o2 = r2[s2].getRefKey(e2, t2);
+      i2.push(o2);
+    }
+    return A(i2);
+  }
+  _getSourcesData(e2, t2, r2) {
+    const i2 = [];
+    for (let s2 = 0; s2 < t2.length; s2++)
+      if (t2[s2].value == null || e2[s2] == null)
+        i2.push(null);
+      else {
+        const o2 = this._getTilePayload(t2[s2].value, e2[s2], r2);
+        i2.push(o2);
+      }
+    return A(i2).then((e3) => {
+      const s2 = {}, r3 = [];
+      for (let i3 = 0; i3 < e3.length; i3++)
+        if (e3[i3].value && e3[i3].value && e3[i3].value.protobuff && e3[i3].value.protobuff.byteLength > 0) {
+          const o2 = t2[i3].value.id;
+          s2[e3[i3].value.sourceName] = { refKey: o2, protobuff: e3[i3].value.protobuff }, r3.push(e3[i3].value.protobuff);
+        }
+      return { sourceName2DataAndRefKey: s2, transferList: r3 };
+    });
+  }
+}
+const r$2 = 512, o$1 = 1e-6, n$2 = (e2, i2) => e2 + 1 / (1 << 2 * i2);
+class a {
+  constructor(e2, i2) {
+    this._tiles = new Map(), this._tileCache = new e$6(40, (e3) => e3.dispose()), this._viewSize = [0, 0], this._visibleTiles = new Map(), this.acquireTile = e2.acquireTile, this.releaseTile = e2.releaseTile, this.tileInfoView = e2.tileInfoView, this._container = i2;
+  }
+  destroy() {
+    for (const [e2, i2] of this._tiles)
+      i2.dispose();
+    this._tiles = null, this._tileCache.clear(), this._tileCache = null;
+  }
+  update(e2) {
+    this._updateCacheSize(e2);
+    const i2 = this.tileInfoView, t2 = i2.getTileCoverage(e2.state, 0, "smallest"), { spans: r2, lodInfo: o2 } = t2, { level: n2 } = o2, a2 = new Set(), h2 = new Set();
+    for (const { row: l2, colFrom: d2, colTo: _ } of r2)
+      for (let e3 = d2; e3 <= _; e3++) {
+        const i3 = e$5.getId(n2, l2, o2.normalizeCol(e3), o2.getWorldForColumn(e3)), t3 = this._getOrAcquireTile(i3);
+        a2.add(i3), t3.processed() ? this._addToContainer(t3) : h2.add(new e$5(i3));
+      }
+    for (const [s2, l2] of this._tiles)
+      l2.isCoverage = a2.has(s2);
+    for (const s2 of h2)
+      this._findPlaceholdersForMissingTiles(s2, a2);
+    let c2 = false;
+    for (const [s2, l2] of this._tiles)
+      l2.neededForCoverage = a2.has(s2), l2.neededForCoverage || l2.isHoldingForFade && i2.intersects(t2, l2.key) && a2.add(s2), l2.isFading && (c2 = true);
+    for (const [s2, l2] of this._tiles)
+      a2.has(s2) || this._releaseTile(s2);
+    return l$4.pool.release(t2), !c2;
+  }
+  clear() {
+    this._tiles.clear(), this._tileCache.clear(), this._visibleTiles.clear();
+  }
+  clearCache() {
+    this._tileCache.clear();
+  }
+  _findPlaceholdersForMissingTiles(e2, i2) {
+    const t2 = [];
+    for (const [l2, r2] of this._tiles)
+      this._addPlaceholderChild(t2, r2, e2, i2);
+    const s2 = t2.reduce(n$2, 0);
+    Math.abs(1 - s2) < o$1 || this._addPlaceholderParent(e2.id, i2);
+  }
+  _addPlaceholderChild(e2, i2, t2, s2) {
+    i2.key.level <= t2.level || !i2.hasData() || c(t2, i2.key) && (this._addToContainer(i2), s2.add(i2.id), e2.push(i2.key.level - t2.level));
+  }
+  _addPlaceholderParent(e2, i2) {
+    let t2 = e2;
+    for (; ; ) {
+      if (t2 = h$1(t2), !t2 || i2.has(t2))
+        return;
+      const e3 = this._getTile(t2);
+      if (e3 && e3.hasData())
+        return this._addToContainer(e3), void i2.add(e3.id);
+    }
+  }
+  _getOrAcquireTile(e2) {
+    let i2 = this._tiles.get(e2);
+    return i2 || (i2 = this._tileCache.pop(e2), i2 || (i2 = this.acquireTile(new e$5(e2))), this._tiles.set(e2, i2), i2);
+  }
+  _getTile(e2) {
+    let i2 = this._tiles.get(e2);
+    return i2 || (i2 = this._tileCache.pop(e2), i2 && this._tiles.set(e2, i2), i2);
+  }
+  _releaseTile(e2) {
+    const i2 = this._tiles.get(e2);
+    this.releaseTile(i2), this._removeFromContainer(i2), this._tiles.delete(e2), i2.hasData() ? this._tileCache.put(e2, i2, 1) : i2.dispose();
+  }
+  _addToContainer(t2) {
+    let s2;
+    const l2 = [], r2 = this._container;
+    if (r2.contains(t2))
+      return;
+    const o2 = this._visibleTiles;
+    for (const [i2, n2] of o2)
+      this._canConnectDirectly(t2, n2) && l2.push(n2), t$4(s2) && this._canConnectDirectly(n2, t2) && (s2 = n2);
+    if (r$4(s2)) {
+      for (const e2 of l2)
+        s2.childrenTiles.delete(e2), t2.childrenTiles.add(e2), e2.parentTile = t2;
+      s2.childrenTiles.add(t2), t2.parentTile = s2;
+    } else
+      for (const e2 of l2)
+        t2.childrenTiles.add(e2), e2.parentTile = t2;
+    o2.set(t2.id, t2), r2.addChild(t2);
+  }
+  _removeFromContainer(e2) {
+    if (this._visibleTiles.delete(e2.id), this._container.removeChild(e2), r$4(e2.parentTile)) {
+      e2.parentTile.childrenTiles.delete(e2);
+      for (const t2 of e2.childrenTiles)
+        r$4(e2.parentTile) && e2.parentTile.childrenTiles.add(t2);
+    }
+    for (const i2 of e2.childrenTiles)
+      i2.parentTile = e2.parentTile;
+    e2.parentTile = null, e2.childrenTiles.clear();
+  }
+  _canConnectDirectly(e2, i2) {
+    const t2 = e2.key;
+    let { level: s2, row: l2, col: r2, world: o2 } = i2.key;
+    const n2 = this._visibleTiles;
+    for (; s2 > 0; ) {
+      if (s2--, l2 >>= 1, r2 >>= 1, t2.level === s2 && t2.row === l2 && t2.col === r2 && t2.world === o2)
+        return true;
+      if (n2.has(`${s2}/${l2}/${r2}/${o2}`))
+        return false;
+    }
+    return false;
+  }
+  _updateCacheSize(e2) {
+    const i2 = e2.state.size;
+    if (i2[0] === this._viewSize[0] && i2[1] === this._viewSize[1])
+      return;
+    const t2 = Math.ceil(i2[0] / r$2) + 1, s2 = Math.ceil(i2[1] / r$2) + 1;
+    this._viewSize[0] = i2[0], this._viewSize[1] = i2[1], this._tileCache.maxSize = 5 * t2 * s2;
+  }
+}
+function h$1(e2) {
+  const [i2, t2, s2, l2] = e2.split("/"), r2 = parseInt(i2, 10);
+  return r2 === 0 ? null : `${r2 - 1}/${parseInt(t2, 10) >> 1}/${parseInt(s2, 10) >> 1}/${parseInt(l2, 10)}`;
+}
+function c(e2, i2) {
+  const t2 = i2.level - e2.level;
+  return e2.row === i2.row >> t2 && e2.col === i2.col >> t2 && e2.world === i2.world;
+}
+function o(e2, t2, n2, o2, r2, s2) {
+  const { iconRotationAlignment: i2, textRotationAlignment: l2, iconTranslate: a2, iconTranslateAnchor: c2, textTranslate: h2, textTranslateAnchor: u2 } = o2;
+  let d2 = 0;
+  for (const y2 of e2.colliders) {
+    const [e3, o3] = y2.partIndex === 0 ? a2 : h2, x2 = y2.partIndex === 0 ? c2 : u2, g2 = y2.minLod <= s2 && s2 <= y2.maxLod;
+    d2 += g2 ? 0 : 1, y2.enabled = g2, y2.xScreen = y2.xTile * r2[0] + y2.yTile * r2[3] + r2[6], y2.yScreen = y2.xTile * r2[1] + y2.yTile * r2[4] + r2[7], x2 === 0 ? (y2.xScreen += n2 * e3 - t2 * o3, y2.yScreen += t2 * e3 + n2 * o3) : (y2.xScreen += e3, y2.yScreen += o3), (y2.partIndex === 0 ? i2 : l2) === 1 ? (y2.dxScreen = y2.dxPixels, y2.dyScreen = y2.dyPixels) : (y2.dxScreen = n2 * (y2.dxPixels + y2.width / 2) - t2 * (y2.dyPixels + y2.height / 2) - y2.width / 2, y2.dyScreen = t2 * (y2.dxPixels + y2.width / 2) + n2 * (y2.dyPixels + y2.height / 2) - y2.height / 2);
+  }
+  e2.colliders.length > 0 && d2 === e2.colliders.length && (e2.unique.show = false);
+}
+class r$1 {
+  constructor(o2, r2, s2, i2, l2, a2) {
+    this._symbols = o2, this._styleRepository = i2, this._zoom = l2, this._currentLayerCursor = 0, this._currentSymbolCursor = 0, this._styleProps = new Map(), this._allNeededMatrices = new Map(), this._gridIndex = new o$4(r2, s2, t$7), this._si = Math.sin(Math.PI * a2 / 180), this._co = Math.cos(Math.PI * a2 / 180);
+    for (const t2 of o2)
+      for (const n2 of t2.symbols)
+        this._allNeededMatrices.has(n2.tile) || this._allNeededMatrices.set(n2.tile, n$6(n2.tile.transforms.tileUnitsToPixels));
+  }
+  work(e2) {
+    const t2 = this._gridIndex;
+    function n2(e3) {
+      const n3 = e3.xScreen + e3.dxScreen, o2 = e3.yScreen + e3.dyScreen, r3 = n3 + e3.width, s2 = o2 + e3.height, [i2, l2, a2, c2] = t2.getCellSpan(n3, o2, r3, s2);
+      for (let h2 = l2; h2 <= c2; h2++)
+        for (let e4 = i2; e4 <= a2; e4++) {
+          const i3 = t2.cells[h2][e4];
+          for (const e5 of i3) {
+            const t3 = e5.xScreen + e5.dxScreen, i4 = e5.yScreen + e5.dyScreen, l3 = t3 + e5.width, a3 = i4 + e5.height;
+            if (!(r3 < t3 || n3 > l3 || s2 < i4 || o2 > a3))
+              return true;
+          }
+        }
+      return false;
+    }
+    const r2 = performance.now();
+    for (; this._currentLayerCursor < this._symbols.length; this._currentLayerCursor++, this._currentSymbolCursor = 0) {
+      const t3 = this._symbols[this._currentLayerCursor], s2 = this._getProperties(t3.styleLayerUID);
+      for (; this._currentSymbolCursor < t3.symbols.length; this._currentSymbolCursor++) {
+        if (this._currentSymbolCursor % 100 == 99 && performance.now() - r2 > e2)
+          return false;
+        const i2 = t3.symbols[this._currentSymbolCursor];
+        if (!i2.unique.show)
+          continue;
+        o(i2, this._si, this._co, s2, this._allNeededMatrices.get(i2.tile), this._zoom);
+        const l2 = i2.unique;
+        if (!l2.show)
+          continue;
+        const { iconAllowOverlap: a2, iconIgnorePlacement: c2, textAllowOverlap: h2, textIgnorePlacement: u2 } = s2;
+        for (const e3 of i2.colliders) {
+          if (!e3.enabled)
+            continue;
+          const t4 = l2.parts[e3.partIndex];
+          if (!t4.show)
+            continue;
+          !(e3.partIndex ? h2 : a2) && n2(e3) && (e3.hard ? l2.show = false : t4.show = false);
+        }
+        if (l2.show)
+          for (const e3 of i2.colliders) {
+            if (!e3.enabled)
+              continue;
+            if (e3.partIndex ? u2 : c2)
+              continue;
+            if (!l2.parts[e3.partIndex].show)
+              continue;
+            const t4 = e3.xScreen + e3.dxScreen, n3 = e3.yScreen + e3.dyScreen, o2 = t4 + e3.width, r3 = n3 + e3.height, [s3, i3, a3, h3] = this._gridIndex.getCellSpan(t4, n3, o2, r3);
+            for (let l3 = i3; l3 <= h3; l3++)
+              for (let t5 = s3; t5 <= a3; t5++) {
+                this._gridIndex.cells[l3][t5].push(e3);
+              }
+          }
+      }
+    }
+    return true;
+  }
+  _getProperties(e2) {
+    const t2 = this._styleProps.get(e2);
+    if (t2)
+      return t2;
+    const n2 = this._zoom, o2 = this._styleRepository.getStyleLayerByUID(e2), r2 = o2.getLayoutValue("symbol-placement", n2) !== 0;
+    let s2 = o2.getLayoutValue("icon-rotation-alignment", n2);
+    s2 === 2 && (s2 = r2 ? 0 : 1);
+    let i2 = o2.getLayoutValue("text-rotation-alignment", n2);
+    i2 === 2 && (i2 = r2 ? 0 : 1);
+    const l2 = o2.getPaintValue("icon-translate", n2), a2 = o2.getPaintValue("icon-translate-anchor", n2), c2 = o2.getPaintValue("text-translate", n2), h2 = o2.getPaintValue("text-translate-anchor", n2), u2 = { iconAllowOverlap: o2.getLayoutValue("icon-allow-overlap", n2), iconIgnorePlacement: o2.getLayoutValue("icon-ignore-placement", n2), textAllowOverlap: o2.getLayoutValue("text-allow-overlap", n2), textIgnorePlacement: o2.getLayoutValue("text-ignore-placement", n2), iconRotationAlignment: s2, textRotationAlignment: i2, iconTranslateAnchor: a2, iconTranslate: l2, textTranslateAnchor: h2, textTranslate: c2 };
+    return this._styleProps.set(e2, u2), u2;
+  }
+}
+function t$1(o2, e2) {
+  if (o2.priority - e2.priority)
+    return o2.priority - e2.priority;
+  const t2 = o2.tile.key, i2 = e2.tile.key;
+  return t2.world - i2.world ? t2.world - i2.world : t2.level - i2.level ? t2.level - i2.level : t2.row - i2.row ? t2.row - i2.row : t2.col - i2.col ? t2.col - i2.col : o2.xTile - e2.xTile ? o2.xTile - e2.xTile : o2.yTile - e2.yTile;
+}
+class i$1 {
+  constructor(o2, e2, t2, i2, s2, r2) {
+    this._visibleTiles = o2, this._symbolRepository = e2, this._createCollisionJob = t2, this._assignTileSymbolsOpacity = i2, this._symbolLayerSorter = s2, this._isLayerVisible = r2, this._selectionJob = null, this._selectionJobCompleted = false, this._collisionJob = null, this._collisionJobCompleted = false, this._opacityJob = null, this._opacityJobCompleted = false, this._running = true;
+  }
+  get running() {
+    return this._running;
+  }
+  setScreenSize(o2, e2) {
+    this._screenWidth === o2 && this._screenHeight === e2 || this.restart(), this._screenWidth = o2, this._screenHeight = e2;
+  }
+  restart() {
+    this._selectionJob = null, this._selectionJobCompleted = false, this._collisionJob = null, this._collisionJobCompleted = false, this._opacityJob = null, this._opacityJobCompleted = false, this._running = true;
+  }
+  continue(o2) {
+    if (this._selectionJob || (this._selectionJob = this._createSelectionJob()), !this._selectionJobCompleted) {
+      const e2 = performance.now();
+      if (!this._selectionJob.work(o2))
+        return false;
+      if (this._selectionJobCompleted = true, (o2 = Math.max(0, o2 - (performance.now() - e2))) === 0)
+        return false;
+    }
+    if (this._collisionJob || (this._collisionJob = this._createCollisionJob(this._selectionJob.sortedSymbols, this._screenWidth, this._screenHeight)), !this._collisionJobCompleted) {
+      const e2 = performance.now();
+      if (!this._collisionJob.work(o2))
+        return false;
+      if (this._collisionJobCompleted = true, (o2 = Math.max(0, o2 - (performance.now() - e2))) === 0)
+        return false;
+    }
+    if (this._opacityJob || (this._opacityJob = this._createOpacityJob()), !this._opacityJobCompleted) {
+      const e2 = performance.now();
+      if (!this._opacityJob.work(o2))
+        return false;
+      if (this._opacityJobCompleted = true, (o2 = Math.max(0, o2 - (performance.now() - e2))) === 0)
+        return false;
+    }
+    return this._running = false, true;
+  }
+  _createSelectionJob() {
+    const o2 = this._symbolRepository.uniqueSymbols, e2 = [];
+    let i2 = 0, s2 = 0;
+    const r2 = this._isLayerVisible;
+    function n2(n3) {
+      let l3;
+      const c2 = performance.now();
+      for (; s2 < o2.length; s2++, i2 = 0) {
+        const t2 = o2[s2], h2 = t2.styleLayerUID;
+        if (!r2(h2)) {
+          e2[s2] || (e2[s2] = { styleLayerUID: h2, symbols: [] });
+          continue;
+        }
+        e2[s2] = e2[s2] || { styleLayerUID: h2, symbols: [] };
+        const a2 = e2[s2];
+        for (; i2 < t2.uniqueSymbols.length; i2++) {
+          if (l3 = t2.uniqueSymbols[i2], i2 % 100 == 99 && performance.now() - c2 > n3)
+            return false;
+          let o3 = null, e3 = false, s3 = false;
+          for (const t3 of l3.tileSymbols)
+            if (t3.selectedForRendering = false, !s3 || !e3) {
+              const i3 = t3.tile;
+              (!o3 || i3.isCoverage || i3.neededForCoverage && !e3) && (o3 = t3, (i3.neededForCoverage || i3.isCoverage) && (s3 = true), i3.isCoverage && (e3 = true));
+            }
+          if (o3.selectedForRendering = true, s3) {
+            a2.symbols.push(o3), l3.show = true;
+            for (const o4 of l3.parts)
+              o4.show = true;
+          } else
+            l3.show = false;
+        }
+      }
+      for (const o3 of e2)
+        o3.symbols.sort(t$1);
+      return true;
+    }
+    const l2 = this._symbolLayerSorter;
+    return { work: n2, get sortedSymbols() {
+      return e2.sort(l2);
+    } };
+  }
+  _createOpacityJob() {
+    const e2 = this._assignTileSymbolsOpacity, t2 = this._visibleTiles;
+    let i2 = 0;
+    function r2(o2, t3) {
+      const i3 = o2.symbols;
+      for (const [e3, r3] of i3)
+        s(r3, t3);
+      e2(o2, t3);
+      for (const e3 of o2.childrenTiles)
+        r2(e3, t3);
+    }
+    return { work(e3) {
+      const s2 = performance.now();
+      for (; i2 < t2.length; i2++) {
+        if (performance.now() - s2 > e3)
+          return false;
+        const n2 = t2[i2];
+        if (r$4(n2.parentTile))
+          continue;
+        r2(n2, performance.now());
+      }
+      return true;
+    } };
+  }
+}
+function s(o2, t2) {
+  for (const i2 of o2) {
+    const o3 = i2.unique;
+    for (const i3 of o3.parts) {
+      const s2 = i3.targetOpacity > 0.5 ? 1 : -1;
+      i3.startOpacity += s2 * ((t2 - i3.startTime) / e$3), i3.startOpacity = Math.min(Math.max(i3.startOpacity, 0), 1), i3.startTime = t2, i3.targetOpacity = o3.show && i3.show ? 1 : 0;
+    }
+  }
+}
+const l = 32, i = 8, n$1 = 64;
+class r {
+  constructor(e2, s2, o2) {
+    this.tileCoordRange = e2, this._visibleTiles = s2, this._createUnique = o2, this._tiles = new Map(), this._uniqueSymbolsReferences = new Map();
+  }
+  get uniqueSymbols() {
+    return t$4(this._uniqueSymbolLayerArray) && (this._uniqueSymbolLayerArray = this._createUniqueSymbolLayerArray()), this._uniqueSymbolLayerArray;
+  }
+  add(e2, s2) {
+    this._uniqueSymbolLayerArray = null;
+    let t2 = this._tiles.get(e2.id);
+    t2 || (t2 = { symbols: new Map() }, this._tiles.set(e2.id, t2));
+    const r2 = new Map();
+    if (s2)
+      for (const o2 of s2)
+        t2.symbols.has(o2) && (r2.set(o2, t2.symbols.get(o2)), t2.symbols.delete(o2));
+    else
+      for (const [o2, l2] of e2.layerData)
+        t2.symbols.has(o2) && (r2.set(o2, t2.symbols.get(o2)), t2.symbols.delete(o2));
+    this._removeSymbols(r2);
+    const y2 = e2.symbols, a2 = new Map();
+    for (const [f2, c2] of y2) {
+      let e3 = c2.length;
+      if (e3 >= l) {
+        let s3 = this.tileCoordRange;
+        do {
+          s3 /= 2, e3 /= 4;
+        } while (e3 > i && s3 > n$1);
+        const l2 = new o$4(this.tileCoordRange, this.tileCoordRange, s3);
+        a2.set(f2, { flat: c2, index: l2 }), t2.symbols.set(f2, { flat: c2, index: l2 });
+        for (const e4 of c2)
+          l2.getCell(e4.xTile, e4.yTile).push(e4);
+      } else
+        a2.set(f2, { flat: c2 }), t2.symbols.set(f2, { flat: c2 });
+    }
+    this._addSymbols(e2.key, y2);
+  }
+  deleteStyleLayers(e2) {
+    this._uniqueSymbolLayerArray = null;
+    for (const [s2, o2] of this._tiles) {
+      const t2 = new Map();
+      for (const s3 of e2)
+        o2.symbols.has(s3) && (t2.set(s3, o2.symbols.get(s3)), o2.symbols.delete(s3));
+      this._removeSymbols(t2), o2.symbols.size === 0 && this._tiles.delete(s2);
+    }
+  }
+  removeTile(e2) {
+    this._uniqueSymbolLayerArray = null;
+    const s2 = this._tiles.get(e2.id);
+    if (!s2)
+      return;
+    const o2 = new Map();
+    for (const [t2, l2] of e2.symbols)
+      s2.symbols.has(t2) && (o2.set(t2, s2.symbols.get(t2)), s2.symbols.delete(t2));
+    this._removeSymbols(o2), s2.symbols.size === 0 && this._tiles.delete(e2.id);
+  }
+  _removeSymbols(e2) {
+    for (const [s2, { flat: o2 }] of e2)
+      for (const e3 of o2) {
+        const o3 = e3.unique, t2 = o3.tileSymbols, l2 = t2.length - 1;
+        for (let s3 = 0; s3 < l2; s3++)
+          if (t2[s3] === e3) {
+            t2[s3] = t2[l2];
+            break;
+          }
+        if (t2.length = l2, l2 === 0) {
+          const e4 = this._uniqueSymbolsReferences.get(s2);
+          e4.delete(o3), e4.size === 0 && this._uniqueSymbolsReferences.delete(s2);
+        }
+        e3.unique = null;
+      }
+  }
+  _addSymbols(s2, o2) {
+    if (o2.size === 0)
+      return;
+    const t2 = this._visibleTiles;
+    for (const e2 of t2)
+      e2.parentTile || e2.key.world !== s2.world || e2.key.level === s2.level && !e2.key.equals(s2) || this._matchSymbols(e2, s2, o2);
+    for (const [l2, i2] of o2)
+      for (const s3 of i2)
+        if (t$4(s3.unique)) {
+          const e2 = this._createUnique();
+          s3.unique = e2, e2.tileSymbols.push(s3);
+          let o3 = this._uniqueSymbolsReferences.get(l2);
+          o3 || (o3 = new Set(), this._uniqueSymbolsReferences.set(l2, o3)), o3.add(e2);
+        }
+  }
+  _matchSymbols(e2, o2, l2) {
+    if (e2.key.level > o2.level) {
+      const s2 = e2.key.level - o2.level;
+      if (e2.key.row >> s2 !== o2.row || e2.key.col >> s2 !== o2.col)
+        return;
+    }
+    if (o2.level > e2.key.level) {
+      const s2 = o2.level - e2.key.level;
+      if (o2.row >> s2 !== e2.key.row || o2.col >> s2 !== e2.key.col)
+        return;
+    }
+    if (o2.equals(e2.key)) {
+      for (const s2 of e2.childrenTiles)
+        this._matchSymbols(s2, o2, l2);
+      return;
+    }
+    const i2 = new Map();
+    for (const [n2, r2] of l2) {
+      const l3 = [];
+      for (const s2 of r2) {
+        const i3 = l$3(this.tileCoordRange, s2.xTile, o2.level, o2.col, e2.key.level, e2.key.col), n3 = l$3(this.tileCoordRange, s2.yTile, o2.level, o2.row, e2.key.level, e2.key.row);
+        i3 >= 0 && i3 < this.tileCoordRange && n3 >= 0 && n3 < this.tileCoordRange && l3.push({ symbol: s2, xTransformed: i3, yTransformed: n3 });
+      }
+      const y2 = [], a2 = e2.key.level < o2.level ? 1 : 1 << e2.key.level - o2.level, f2 = this._tiles.get(e2.id).symbols.get(n2);
+      if (f2) {
+        const e3 = f2.flat;
+        for (const o3 of l3) {
+          let t2, l4 = false;
+          const i3 = o3.xTransformed, n3 = o3.yTransformed;
+          t2 = r$4(f2.index) ? f2.index.getCell(i3, n3) : e3;
+          const r3 = o3.symbol, c2 = r3.hash;
+          for (const e4 of t2)
+            if (c2 === e4.hash && Math.abs(i3 - e4.xTile) <= a2 && Math.abs(n3 - e4.yTile) <= a2) {
+              const s2 = e4.unique;
+              r3.unique = s2, s2.tileSymbols.push(r3), l4 = true;
+              break;
+            }
+          l4 || y2.push(r3);
+        }
+      }
+      y2.length > 0 && i2.set(n2, y2);
+    }
+    for (const s2 of e2.childrenTiles)
+      this._matchSymbols(s2, o2, i2);
+  }
+  _createUniqueSymbolLayerArray() {
+    const e2 = this._uniqueSymbolsReferences, s2 = new Array(e2.size);
+    let o2, t2 = 0;
+    for (const [l2, i2] of e2) {
+      const e3 = new Array(i2.size);
+      o2 = 0;
+      for (const s3 of i2)
+        e3[o2++] = s3;
+      s2[t2] = { styleLayerUID: l2, uniqueSymbols: e3 }, t2++;
+    }
+    return s2;
+  }
+}
+const h = 0.5;
+class n extends n$7 {
+  constructor(t2, e2) {
+    super(), this.styleRepository = t2, this._tileToHandle = new Map(), this._viewState = { scale: 0, rotation: 0, center: [0, 0], size: [0, 0] }, this._declutterViewState = { scale: 0, rotation: 0, center: [0, 0], size: [0, 0] }, this._completed = false, this._symbolRepository = new r(4096, e2, () => new s$4()), this._symbolDeclutterer = new i$1(e2, this._symbolRepository, (t3, e3, i2) => new r$1(t3, e3, i2, this.styleRepository, this._zoom, this._viewState.rotation), (t3, e3) => {
+      t3.allSymbolsFadingOut = true, t3.lastOpacityUpdate = e3, h$2(t3, e3, true), t3.decluttered = true, t3.requestRender();
+    }, (t3, e3) => this.styleRepository.getStyleLayerByUID(t3.styleLayerUID).z - this.styleRepository.getStyleLayerByUID(e3.styleLayerUID).z, (t3) => {
+      const e3 = this.styleRepository.getStyleLayerByUID(t3).getLayoutProperty("visibility");
+      return !e3 || e3.getValue() !== 1;
+    });
+  }
+  addTile(t2) {
+    t2.decluttered = false, this._tileToHandle.set(t2, t2.on("symbols-changed", () => {
+      this._symbolRepository.add(t2), this.restartDeclutter();
+    })), this._symbolRepository.add(t2), this.restartDeclutter();
+  }
+  removeTile(t2) {
+    const e2 = this._tileToHandle.get(t2);
+    e2 && (this._symbolRepository.removeTile(t2), this.restartDeclutter(), e2.remove(), this._tileToHandle.delete(t2));
+  }
+  update(t2, e2) {
+    return this._zoom = t2, this._viewState = { scale: e2.scale, rotation: e2.rotation, center: [e2.center[0], e2.center[1]], size: [e2.size[0], e2.size[1]] }, this._continueDeclutter(), this._completed;
+  }
+  restartDeclutter() {
+    this._completed = false, this._symbolDeclutterer.restart(), this._notifyUnstable();
+  }
+  clear() {
+    this._completed = false, this._symbolRepository = null, this._symbolDeclutterer.restart(), this._tileToHandle.forEach((t2) => t2.remove()), this._tileToHandle.clear();
+  }
+  get stale() {
+    return this._zoom !== this._declutterZoom || this._viewState.size[0] !== this._declutterViewState.size[0] || this._viewState.size[1] !== this._declutterViewState.size[1] || this._viewState.scale !== this._declutterViewState.scale || this._viewState.rotation !== this._declutterViewState.rotation;
+  }
+  deleteStyleLayers(t2) {
+    this._symbolRepository.deleteStyleLayers(t2);
+  }
+  _continueDeclutter() {
+    this._completed && !this.stale || (this._symbolDeclutterer.running || (this._declutterZoom = this._zoom, this._declutterViewState.center[0] = this._viewState.center[0], this._declutterViewState.center[1] = this._viewState.center[1], this._declutterViewState.rotation = this._viewState.rotation, this._declutterViewState.scale = this._viewState.scale, this._declutterViewState.size[0] = this._viewState.size[0], this._declutterViewState.size[1] = this._viewState.size[1], this._symbolDeclutterer.restart()), this._symbolDeclutterer.setScreenSize(this._viewState.size[0], this._viewState.size[1]), this._completed = this._symbolDeclutterer.continue(c$1), this._completed && this._scheduleNotifyStable());
+  }
+  _scheduleNotifyStable() {
+    r$4(this._stableNotificationHandle) && clearTimeout(this._stableNotificationHandle), this._stableNotificationHandle = setTimeout(() => {
+      this._stableNotificationHandle = null, this.emit("fade-complete");
+    }, (1 + h) * e$3);
+  }
+  _notifyUnstable() {
+    r$4(this._stableNotificationHandle) && (clearTimeout(this._stableNotificationHandle), this._stableNotificationHandle = null), this.emit("fade-start");
+  }
+}
+const u = 1e-6;
+function p(e2, t2) {
+  if (e2) {
+    const s2 = e2.getLayoutProperty("visibility");
+    if (!s2 || s2.getValue() !== 1 && (e2.minzoom === void 0 || e2.minzoom < t2 + u) && (e2.maxzoom === void 0 || e2.maxzoom >= t2 - u))
+      return true;
+  }
+  return false;
+}
+class m extends i$2 {
+  constructor(e2) {
+    super(e2), this._backgroundTiles = [], this._pointToCallbacks = new Map(), this._fading = false;
+  }
+  destroy() {
+    this.removeAllChildren(), this._spriteMosaic && (this._spriteMosaic.dispose(), this._spriteMosaic = null), this._glyphMosaic && (this._glyphMosaic.dispose(), this._glyphMosaic = null), r$4(this._symbolFader) && (this._symbolFader.clear(), this._symbolFader = null), this._styleRepository = null, this._backgroundTiles = [], this._pointToCallbacks.clear();
+  }
+  setStyleResources(e2, r2, i2) {
+    if (this._spriteMosaic = e2, this._glyphMosaic = r2, this._styleRepository = i2, t$4(this._symbolFader)) {
+      const e3 = new n(this._styleRepository, this.children);
+      e3.on("fade-start", () => {
+        this.emit("fade-start"), this._fading = true, this.requestRender();
+      }), e3.on("fade-complete", () => {
+        this.emit("fade-complete"), this._fading = false, this.requestRender();
+      }), this._symbolFader = e3;
+    }
+    e$2(this._symbolFader).styleRepository = i2;
+  }
+  deleteStyleLayers(t2) {
+    r$4(this._symbolFader) && this._symbolFader.deleteStyleLayers(t2);
+  }
+  hitTest(e2, t2) {
+    return __async(this, null, function* () {
+      const s2 = [e2, t2], i2 = B();
+      return this._pointToCallbacks.set(s2, i2), this.requestRender(), i2.promise;
+    });
+  }
+  enterTileInvalidation() {
+    for (const e2 of this.children)
+      e2.invalidating = true;
+  }
+  createRenderParams(e2) {
+    return __spreadProps(__spreadValues({}, super.createRenderParams(e2)), { renderPass: null, styleLayer: null, styleLayerUID: -1, glyphMosaic: this._glyphMosaic, spriteMosaic: this._spriteMosaic, hasClipping: !!this._clippingInfos });
+  }
+  doRender(e2) {
+    !this.visible || e2.drawPhase !== I.MAP && e2.drawPhase !== I.DEBUG || this._spriteMosaic === void 0 || super.doRender(e2);
+  }
+  addChild(t2) {
+    return super.addChild(t2), r$4(this._symbolFader) ? this._symbolFader.addTile(t2) : t2.decluttered = true, this.requestRender(), t2;
+  }
+  removeChild(t2) {
+    return r$4(this._symbolFader) && this._symbolFader.removeTile(t2), this.requestRender(), super.removeChild(t2);
+  }
+  renderChildren(e2) {
+    if (e2.drawPhase !== I.DEBUG) {
+      if (this._doRender(e2), this._pointToCallbacks.size > 0) {
+        const { context: t2 } = e2, s2 = t2.getBoundFramebufferObject();
+        e2.drawPhase = I.HITTEST;
+        const r2 = e2.painter.effects.hittest;
+        r2.bind(e2), this._doRender(e2), r2.draw(e2, this._pointToCallbacks), t2.bindFramebuffer(s2);
+      }
+    } else
+      super.renderChildren(e2);
+  }
+  removeAllChildren() {
+    for (let t2 = 0; t2 < this.children.length; t2++) {
+      const s2 = this.children[t2];
+      r$4(this._symbolFader) && this._symbolFader.removeTile(s2), s2.dispose();
+    }
+    super.removeAllChildren();
+  }
+  getStencilTarget() {
+    return this.children.filter((e2) => e2.neededForCoverage && e2.hasData());
+  }
+  restartDeclutter() {
+    r$4(this._symbolFader) && this._symbolFader.restartDeclutter();
+  }
+  _doRender(t2) {
+    const { context: s2 } = t2, r2 = this._styleRepository;
+    if (!r2)
+      return;
+    const i2 = r2.layers;
+    let o2 = true;
+    t2.drawPhase === I.HITTEST && (o2 = false), r2.backgroundBucketIds.length > 0 && (t2.renderPass = "background", this._renderBackgroundLayers(t2, r2.backgroundBucketIds)), super.renderChildren(t2), t2.drawPhase === I.MAP && this._fade(t2.displayLevel, t2.state);
+    const l2 = this.children.filter((e2) => e2.visible && e2.hasData());
+    if (l2 && l2.length !== 0) {
+      for (const e2 of l2)
+        e2.triangleCount = 0;
+      s2.setStencilWriteMask(0), s2.setColorMask(true, true, true, true), s2.setStencilOp(7680, 7680, 7681), s2.setStencilTestEnabled(true), s2.setBlendingEnabled(false), s2.setDepthTestEnabled(true), s2.setDepthWriteEnabled(true), s2.setDepthFunction(515), s2.setClearDepth(1), s2.clear(s2.gl.DEPTH_BUFFER_BIT), t2.renderPass = "opaque";
+      for (let e2 = i2.length - 1; e2 >= 0; e2--)
+        this._renderStyleLayer(i2[e2], t2, l2);
+      s2.setDepthWriteEnabled(false), s2.setBlendingEnabled(o2), s2.setBlendFunctionSeparate(1, 771, 1, 771), t2.renderPass = "translucent";
+      for (let e2 = 0; e2 < i2.length; e2++)
+        this._renderStyleLayer(i2[e2], t2, l2);
+      s2.setDepthTestEnabled(false), t2.renderPass = "symbol";
+      for (let e2 = 0; e2 < i2.length; e2++)
+        this._renderStyleLayer(i2[e2], t2, l2);
+      if (s2.bindVAO(), s2.setStencilTestEnabled(true), s2.setBlendingEnabled(true), t2.drawPhase === I.MAP) {
+        const t3 = window.COLLISION_DEBUG_CTX;
+        if (t3 && r$4(this._symbolFader) && (t3.clearRect(0, 0, t3.canvas.width, t3.canvas.height), !this._fading || window.COLLISION_XRAY)) {
+          for (const e2 of this.children)
+            if (e2.symbols) {
+              const s3 = [];
+              if (e2.symbols.forEach((e3) => {
+                s3.push(...e3);
+              }), window.COLLISION_SHOW_GRID) {
+                var n2, d2, y2;
+                const e3 = (n2 = this._symbolFader) == null || (d2 = n2._symbolDeclutterer) == null || (y2 = d2._collisionJob) == null ? void 0 : y2._gridIndex;
+                e3 && n$3(t3, e3);
+              }
+              o$2(t3, s3);
+            }
+        }
+      }
+    }
+  }
+  _fade(t2, s2) {
+    r$4(this._symbolFader) && (this._symbolFader.update(t2, s2) || this.requestRender());
+  }
+  _renderStyleLayer(e2, t2, s2) {
+    const { painter: r2, renderPass: i2 } = t2;
+    if (e2 === void 0)
+      return;
+    const o2 = e2.getLayoutProperty("visibility");
+    if (o2 && o2.getValue() === 1)
+      return;
+    let l2;
+    switch (e2.type) {
+      case 0:
+        return;
+      case 1:
+        if (i2 !== "opaque" && t2.renderPass !== "translucent")
+          return;
+        l2 = "vtlFill";
+        break;
+      case 2:
+        if (i2 !== "translucent")
+          return;
+        l2 = "vtlLine";
+        break;
+      case 4:
+        if (i2 !== "symbol")
+          return;
+        l2 = "vtlCircle";
+        break;
+      case 3:
+        if (i2 !== "symbol")
+          return;
+        l2 = "vtlSymbol";
+    }
+    if (s2 = e2.type === 3 ? s2.filter((e3) => e3.decluttered) : s2.filter((e3) => e3.neededForCoverage), l2 !== "vtlSymbol") {
+      const r3 = t2.displayLevel;
+      if (s2.length === 0 || e2.minzoom !== void 0 && e2.minzoom >= r3 + u || e2.maxzoom !== void 0 && e2.maxzoom < r3 - u)
+        return;
+    }
+    const n2 = e2.uid;
+    t2.styleLayerUID = n2, t2.styleLayer = e2;
+    for (const a2 of s2)
+      if (a2.layerData.has(n2)) {
+        r2.renderObjects(t2, s2, l2);
+        break;
+      }
+  }
+  _renderBackgroundLayers(t2, s2) {
+    const { context: r2, displayLevel: d2, painter: h2, state: c2 } = t2, y2 = this._styleRepository;
+    let u2 = false;
+    for (const e2 of s2)
+      if (p(y2.getLayerById(e2), d2)) {
+        u2 = true;
+        break;
+      }
+    if (!u2)
+      return;
+    const m2 = this._tileInfoView.getTileCoverage(t2.state, 0, "smallest"), { spans: f2, lodInfo: _ } = m2, { level: b } = _, g2 = i$3(), T = [];
+    if (this._renderPasses) {
+      const s3 = this._renderPasses[0];
+      r$4(this._clippingInfos) && (s3.brushes[0].prepareState(t2, this._clippingInfos[0]), s3.brushes[0].drawMany(t2, this._clippingInfos));
+    }
+    const v = this._backgroundTiles;
+    let C, F = 0;
+    for (const { row: e2, colFrom: l2, colTo: a2 } of f2)
+      for (let t3 = l2; t3 <= a2; t3++) {
+        if (F < v.length)
+          C = v[F], C.key.set(b, e2, _.normalizeCol(t3), _.getWorldForColumn(t3)), this._tileInfoView.getTileBounds(g2, C.key, false), C.bounds = g2, C.coords[0] = g2[0], C.coords[1] = g2[3];
+        else {
+          const s3 = new e$5(b, e2, _.normalizeCol(t3), _.getWorldForColumn(t3));
+          C = new r$5(s3, this._tileInfoView.getTileBounds(i$3(), s3), [512, 512], [4096, 4096]), v.push(C);
+        }
+        C.setTransform(c2, this._tileInfoView.getTileResolution(C.key)), T.push(C), F++;
+      }
+    r2.setStencilWriteMask(0), r2.setColorMask(true, true, true, true), r2.setStencilOp(7680, 7680, 7681), r2.setStencilFunction(514, 0, 255);
+    let w2 = true;
+    t2.drawPhase === I.HITTEST && (w2 = false), r2.setStencilTestEnabled(w2);
+    for (const e2 of s2) {
+      const s3 = y2.getLayerById(e2);
+      p(s3, d2) && (t2.styleLayerUID = s3.uid, t2.styleLayer = s3, h2.renderObjects(t2, T, "vtlBackground"));
+    }
+    l$4.pool.release(m2);
+  }
+}
+class t extends h$4 {
+  constructor() {
+    super(...arguments), this._fullCacheLodInfos = null, this._levelByScale = {};
+  }
+  getTileParentId(e2) {
+    const s2 = e$5.pool.acquire(e2), t2 = s2.level === 0 ? null : e$5.getId(s2.level - 1, s2.row >> 1, s2.col >> 1, s2.world);
+    return e$5.pool.release(s2), t2;
+  }
+  getTileCoverage(e2, l2, s2) {
+    const t2 = super.getTileCoverage(e2, l2, s2);
+    if (!t2)
+      return t2;
+    const o2 = 1 << t2.lodInfo.level;
+    return t2.spans = t2.spans.filter((e3) => e3.row >= 0 && e3.row < o2), t2;
+  }
+  scaleToLevel(e2) {
+    if (this._fullCacheLodInfos || this._initializeFullCacheLODs(this._lodInfos), this._levelByScale[e2])
+      return this._levelByScale[e2];
+    {
+      const l2 = this._fullCacheLodInfos;
+      if (e2 > l2[0].scale)
+        return l2[0].level;
+      let s2, t2;
+      for (let o2 = 0; o2 < l2.length - 1; o2++)
+        if (t2 = l2[o2 + 1], e2 > t2.scale)
+          return s2 = l2[o2], s2.level + (s2.scale - e2) / (s2.scale - t2.scale);
+      return l2[l2.length - 1].level;
+    }
+  }
+  _initializeFullCacheLODs(l2) {
+    let s2;
+    if (l2[0].level === 0)
+      s2 = l2.map((e2) => ({ level: e2.level, resolution: e2.resolution, scale: e2.scale }));
+    else {
+      const l3 = this.tileInfo.size[0], t2 = this.tileInfo.spatialReference;
+      s2 = x.create({ size: l3, spatialReference: t2 }).lods.map((e2) => ({ level: e2.level, resolution: e2.resolution, scale: e2.scale }));
+    }
+    for (let e2 = 0; e2 < s2.length; e2++)
+      this._levelByScale[s2[e2].scale] = s2[e2].level;
+    this._fullCacheLodInfos = s2;
+  }
+}
+const w = n$8.getLogger("esri.views.2d.layers.VectorTileLayerView2D");
+let Q = class extends l$5(d$1) {
+  constructor() {
+    super(...arguments), this._styleChanges = [], this._handles = new u$2(), this._fetchQueue = null, this._parseQueue = null, this._isTileHandlerReady = false, this.fading = false;
+  }
+  initialize() {
+    const e2 = this.layer.tileInfo;
+    if (!(e2 && e2.spatialReference).equals(this.view.spatialReference))
+      return void this.addResolvingPromise(Promise.reject(new s$7("layerview:spatial-reference-incompatible", "The spatial reference of this layer does not meet the requirements of the view", { layer: this.layer })));
+    const { style: t$12, spriteUrl: i2, glyphsUrl: s2 } = this.layer.currentStyleInfo;
+    this._styleRepository = new a$4(t$12, { spriteUrl: i2, glyphsUrl: s2 }), this._tileInfoView = new t(this.layer.tileInfo, this.layer.fullExtent), this._vectorTileContainer = new m(this._tileInfoView), this._tileHandler = new f(this.layer, this._styleRepository, window.devicePixelRatio || 1), this.container.addChild(this._vectorTileContainer), this.handles.add([this._vectorTileContainer.on("fade-start", () => {
+      this.fading = true, this.notifyChange("updating"), this.requestUpdate();
+    }), this._vectorTileContainer.on("fade-complete", () => {
+      this.fading = false, this.notifyChange("updating"), this.requestUpdate();
+    })]);
+  }
+  destroy() {
+    var e2;
+    this._stop(), this.container.removeAllChildren(), this._vectorTileContainer && (this._vectorTileContainer.destroy(), this._vectorTileContainer = null), (e2 = this._tileHandler) == null || e2.destroy(), this._tileHandler = null;
+  }
+  hitTest(e2, t2) {
+    return __async(this, null, function* () {
+      if (this.suspended || !this._tileHandlerPromise)
+        return null;
+      yield this._tileHandlerPromise;
+      const i2 = yield this._vectorTileContainer.hitTest(e2, t2);
+      if (!i2 || i2.length === 0)
+        return null;
+      const s2 = i2[0] - 1, r2 = this._styleRepository, a2 = r2.getStyleLayerByUID(s2);
+      if (!a2)
+        return null;
+      const l2 = r2.getStyleLayerIndex(a2.id), n2 = new n$9({ attributes: { layerId: l2, layerName: a2.id, layerUID: s2 } });
+      return n2.layer = this.layer, n2.sourceLayer = this.layer, n2;
+    });
+  }
+  update(e2) {
+    if (this._tileHandlerPromise && this._isTileHandlerReady)
+      return e2.pixelRatio !== this._tileHandler.devicePixelRatio ? (this._start(), void (this._tileHandler.devicePixelRatio = e2.pixelRatio)) : void (this._styleChanges.length > 0 ? this._tileHandlerPromise = this._applyStyleChanges() : (this._fetchQueue.pause(), this._parseQueue.pause(), this._fetchQueue.state = e2.state, this._parseQueue.state = e2.state, this._tileManager.update(e2) || this.requestUpdate(), this._parseQueue.resume(), this._fetchQueue.resume()));
+  }
+  attach() {
+    this._start(), this._handles.add([this.layer.on("paint-change", (e2) => {
+      if (e2.isDataDriven)
+        this._styleChanges.push({ type: 0, data: e2 }), this.notifyChange("updating"), this.requestUpdate();
+      else {
+        const t2 = this._styleRepository, i2 = t2.getLayerById(e2.layerName);
+        if (!i2)
+          return;
+        const s2 = i2.type === 3;
+        t2.setPaintProperties(e2.layerName, e2.paint), s2 && this._vectorTileContainer.restartDeclutter(), this._vectorTileContainer.requestRender();
+      }
+    }), this.layer.on("layout-change", (e2) => {
+      const i2 = this._styleRepository, s2 = i2.getLayerById(e2.layer);
+      if (!s2)
+        return;
+      const r2 = m$2(s2.layout, e2.layout);
+      if (!t$4(r2)) {
+        if (a$5(r2, "visibility") && H(r2) === 1)
+          return i2.setLayoutProperties(e2.layer, e2.layout), s2.type === 3 && this._vectorTileContainer.restartDeclutter(), void this._vectorTileContainer.requestRender();
+        this._styleChanges.push({ type: 1, data: e2 }), this.notifyChange("updating"), this.requestUpdate();
+      }
+    }), this.layer.on("style-layer-visibility-change", (e2) => {
+      const t2 = this._styleRepository, i2 = t2.getLayerById(e2.layer);
+      i2 && (t2.setStyleLayerVisibility(e2.layer, e2.visibility), i2.type === 3 && this._vectorTileContainer.restartDeclutter(), this._vectorTileContainer.requestRender());
+    }), this.layer.on("style-layer-change", (e2) => {
+      this._styleChanges.push({ type: 2, data: e2 }), this.notifyChange("updating"), this.requestUpdate();
+    }), this.layer.on("delete-style-layer", (e2) => {
+      this._styleChanges.push({ type: 3, data: e2 }), this.notifyChange("updating"), this.requestUpdate();
+    }), this.layer.on("load-style", () => this._loadStyle())]);
+  }
+  detach() {
+    this._stop(), this._handles.removeAll();
+  }
+  moveStart() {
+    this.requestUpdate();
+  }
+  viewChange() {
+    this.requestUpdate();
+  }
+  moveEnd() {
+    this.requestUpdate();
+  }
+  canResume() {
+    let e2 = super.canResume();
+    const t2 = this.layer;
+    if (e2 && t2.currentStyleInfo) {
+      const i2 = this.view.scale, s2 = t2.currentStyleInfo;
+      if (s2 && s2.layerDefinition) {
+        const t3 = s2.layerDefinition;
+        t3.minScale && t3.minScale < i2 && (e2 = false), t3.maxScale && t3.maxScale > i2 && (e2 = false);
+      }
+    }
+    return e2;
+  }
+  isUpdating() {
+    const e2 = this._vectorTileContainer.children;
+    return !this._isTileHandlerReady || !this._fetchQueue || !this._parseQueue || this._fetchQueue.updating || this._parseQueue.updating || e2.length > 0 && e2.filter((e3) => e3.invalidating).length > 0 || this.fading;
+  }
+  acquireTile(e2) {
+    const t2 = this._createVectorTile(e2);
+    return this._tileHandlerPromise.then(() => {
+      this._fetchQueue.push(t2.key).then((e3) => this._parseQueue.push({ key: t2.key, data: e3 })).then((e3) => {
+        t2.once("attach", () => this.requestUpdate()), e3 && (t2.setData(e3.tileData), this.requestUpdate(), this.notifyChange("updating"));
+      }).catch((e3) => {
+        this.notifyChange("updating"), g(e3) || w.error(e3);
+      });
+    }), t2;
+  }
+  releaseTile(e2) {
+    const t2 = e2.key.id;
+    this._fetchQueue.abort(t2), this._parseQueue.abort(t2), this.requestUpdate();
+  }
+  _start() {
+    if (this._stop(), this._tileManager = new a({ acquireTile: (e3) => this.acquireTile(e3), releaseTile: (e3) => this.releaseTile(e3), tileInfoView: this._tileInfoView }, this._vectorTileContainer), !this.layer.currentStyleInfo)
+      return;
+    const e2 = new AbortController(), t2 = this._tileHandler.start({ signal: e2.signal }).then(() => {
+      this._fetchQueue = new p$3({ tileInfoView: this._tileInfoView, process: (e3, t3) => this._getTileData(e3, t3), concurrency: 15 }), this._parseQueue = new p$3({ tileInfoView: this._tileInfoView, process: (e3, t3) => this._parseTileData(e3, t3), concurrency: 8 }), this.requestUpdate(), this._isTileHandlerReady = true;
+    });
+    this._tileHandler.spriteMosaic.then((e3) => {
+      this._vectorTileContainer.setStyleResources(e3, this._tileHandler.glyphMosaic, this._styleRepository), this.requestUpdate();
+    }), this._tileHandlerAbortController = e2, this._tileHandlerPromise = t2;
+  }
+  _stop() {
+    if (!this._tileHandlerAbortController || !this._vectorTileContainer)
+      return;
+    const e2 = this._tileHandlerAbortController;
+    e2 && e2.abort(), this._tileHandlerPromise = null, this._isTileHandlerReady = false, this._fetchQueue && (this._fetchQueue.destroy(), this._fetchQueue = null), this._parseQueue && (this._parseQueue.destroy(), this._parseQueue = null), this._tileManager && (this._tileManager.destroy(), this._tileManager = null), this._vectorTileContainer.removeAllChildren();
+  }
+  _getTileData(e2, t2) {
+    return __async(this, null, function* () {
+      const i2 = yield this._tileHandler.fetchTileData(e2, t2);
+      return this.notifyChange("updating"), i2;
+    });
+  }
+  _parseTileData(e2, t2) {
+    return __async(this, null, function* () {
+      return this._tileHandler.parseTileData(e2, t2);
+    });
+  }
+  _applyStyleChanges() {
+    return __async(this, null, function* () {
+      this._isTileHandlerReady = false, this._fetchQueue.pause(), this._parseQueue.pause(), this._fetchQueue.clear(), this._parseQueue.clear(), this._tileManager.clearCache();
+      const e2 = this._styleChanges;
+      try {
+        yield this._tileHandler.updateStyle(e2);
+      } catch (l2) {
+        w.error("error applying vector-tiles style update", l2.message), this._fetchQueue.resume(), this._parseQueue.resume(), this._isTileHandlerReady = true;
+      }
+      const t2 = this._styleRepository, i2 = [];
+      e2.forEach((e3) => {
+        if (e3.type !== 3)
+          return;
+        const s3 = e3.data, r3 = t2.getLayerById(s3.layerName);
+        r3 && i2.push(r3.uid);
+      });
+      const s2 = [];
+      let r2;
+      e2.forEach((e3) => {
+        const i3 = e3.type, a3 = e3.data;
+        switch (i3) {
+          case 0:
+            t2.setPaintProperties(a3.layerName, a3.paint), r2 = a3.layerName;
+            break;
+          case 1:
+            t2.setLayoutProperties(a3.layerName, a3.layout), r2 = a3.layerName;
+            break;
+          case 3:
+            return void t2.deleteStyleLayer(a3.layerName);
+          case 2:
+            t2.setStyleLayer(a3.layer, a3.index), r2 = a3.layer.id;
+        }
+        const l2 = t2.getLayerById(r2);
+        l2 && s2.push(l2.uid);
+      });
+      const a2 = this._vectorTileContainer.children;
+      if (i2.length > 0) {
+        this._vectorTileContainer.deleteStyleLayers(i2);
+        for (const e3 of a2)
+          e3.deleteLayerData(i2);
+      }
+      if (this._fetchQueue.resume(), this._parseQueue.resume(), s2.length > 0) {
+        const e3 = [];
+        for (const t3 of a2) {
+          const i3 = this._fetchQueue.push(t3.key).then((e4) => this._parseQueue.push({ key: t3.key, data: e4, styleLayerUIDs: s2 })).then((e4) => t3.setData(e4.tileData));
+          e3.push(i3);
+        }
+        yield Promise.all(e3);
+      }
+      this._styleChanges = [], this._isTileHandlerReady = true, this.notifyChange("updating"), this.requestUpdate();
+    });
+  }
+  _loadStyle() {
+    return __async(this, null, function* () {
+      const { style: e2, spriteUrl: t2, glyphsUrl: i2 } = this.layer.currentStyleInfo;
+      this._isTileHandlerReady = false, this._fetchQueue.pause(), this._parseQueue.pause(), this._fetchQueue.clear(), this._parseQueue.clear(), this.notifyChange("updating"), this._styleRepository = new a$4(e2, { spriteUrl: t2, glyphsUrl: i2 }), this._vectorTileContainer.destroy(), this._tileManager.clear(), this._tileHandlerAbortController.abort(), this._tileHandlerAbortController = h$5();
+      const { signal: s2 } = this._tileHandlerAbortController;
+      try {
+        this._tileHandlerPromise = this._tileHandler.setStyle(this._styleRepository, e2), yield this._tileHandlerPromise;
+      } catch (a2) {
+        if (!g(a2))
+          throw a2;
+      }
+      if (s2.aborted)
+        return this._fetchQueue.resume(), this._parseQueue.resume(), this._isTileHandlerReady = true, this.notifyChange("updating"), void this.requestUpdate();
+      const r2 = yield this._tileHandler.spriteMosaic;
+      this._vectorTileContainer.setStyleResources(r2, this._tileHandler.glyphMosaic, this._styleRepository), this._fetchQueue.resume(), this._parseQueue.resume(), this._isTileHandlerReady = true, this.notifyChange("updating"), this.requestUpdate();
+    });
+  }
+  _createVectorTile(e2) {
+    const t2 = this._tileInfoView.getTileBounds(i$3(), e2);
+    return new d(e2, this._styleRepository, t2, [512, 512]);
+  }
+};
+function H(e2) {
+  if (t$4(e2))
+    return 0;
+  switch (e2.type) {
+    case "partial":
+      return Object.keys(e2.diff).length;
+    case "complete":
+      return Math.max(Object.keys(e2.oldValue).length, Object.keys(e2.newValue).length);
+    case "collection":
+      return Object.keys(e2.added).length + Object.keys(e2.changed).length + Object.keys(e2.removed).length;
+  }
+}
+e$7([y$1()], Q.prototype, "_fetchQueue", void 0), e$7([y$1()], Q.prototype, "_parseQueue", void 0), e$7([y$1()], Q.prototype, "_isTileHandlerReady", void 0), e$7([y$1()], Q.prototype, "suspended", void 0), e$7([y$1()], Q.prototype, "fading", void 0), e$7([y$1()], Q.prototype, "updating", void 0), Q = e$7([i$4("esri.views.2d.layers.VectorTileLayerView2D")], Q);
+var R = Q;
+export default R;

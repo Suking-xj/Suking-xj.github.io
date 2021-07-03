@@ -1,1 +1,101 @@
-import{b6 as t,cd as e,ae as i,af as o,ag as a,ac as r,eH as s,b7 as n,cr as p,eP as h,ei as d}from"./vendor.74d5941c.js";import{_ as l}from"./Bitmap.0855f65e.js";const c=Math.PI/180;function m(t,e){const i=e.rotation*c,o=Math.abs(Math.cos(i)),a=Math.abs(Math.sin(i)),[r,s]=e.size;return t[0]=Math.round(s*a+r*o),t[1]=Math.round(s*o+r*a),t}const u=t(),g=[0,0],x=new e(0,0,0,0),f=2048,y=2048,M=!1,v=!1,_=!1;let R=class extends r{constructor(t){super(t),this._imagePromise=null,this.hidpi=_,this.imageMaxWidth=f,this.imageMaxHeight=y,this.imageRotationSupported=M,this.imageNormalizationSupported=v,this.update=s((async(t,e)=>{const i=t.state,o=n(i.spatialReference),a=this.hidpi?t.pixelRatio:1;if(!t.stationary||this.destroyed)return null;this.imageRotationSupported?(g[0]=i.size[0],g[1]=i.size[1]):m(g,i);const r=Math.floor(g[0]*a)>this.imageMaxWidth||Math.floor(g[1]*a)>this.imageMaxHeight,s=o&&(i.extent.xmin<o.valid[0]||i.extent.xmax>o.valid[1]),p=!this.imageNormalizationSupported&&s,h=!r&&!p,d=this.imageRotationSupported?i.rotation:0;if(h)this._imagePromise=this._singleExport(i,g,d,a,e);else{let t=Math.min(this.imageMaxWidth,this.imageMaxHeight);p&&(t=Math.min(i.worldScreenWidth,t)),this._imagePromise=this._tiledExport(i,t,d,a,e)}return this._imagePromise.then((async t=>{if(this._imagePromise=null,!this.destroyed){for(const e of this.container.children)t.includes(e)||e.fadeOut().then((()=>{e.remove()}));for(const e of t)this.container.addChild(e),e.fadeIn()}})).catch((t=>{throw this._imagePromise=null,t}))}),5e3)}destroy(){}get updating(){return null!==this._imagePromise}updateExports(t){for(const e of this.container.children){if(!e.visible||!e.stage)return;t(e)?console.error("ExportStrategy.updateExports doesn't support promise yet"):(e.invalidateTexture(),e.requestRender())}}_export(t,e,i,o,a,r){return Promise.resolve().then((()=>this.fetchSource(t,Math.floor(e*a),Math.floor(i*a),{rotation:o,pixelRatio:a,signal:r}))).then((i=>{const r=new l(i,"additive");return r.x=t.xmin,r.y=t.ymax,r.resolution=t.width/e,r.rotation=o,r.pixelRatio=a,r}))}_singleExport(t,e,i,o,a){!function(t,e,i,o){const[a,r]=e,[s,n]=o,p=.5*i;t[0]=a-p*s,t[1]=r-p*n,t[2]=a+p*s,t[3]=r+p*n}(u,t.center,t.resolution,e);const r=new p(u[0],u[1],u[2],u[3],t.spatialReference);return this._export(r,e[0],e[1],i,o,a).then((t=>[t]))}_tiledExport(t,e,i,o,a){const r=h.create({size:e,spatialReference:t.spatialReference,scales:[t.scale]}),s=new d(r),n=s.getTileCoverage(t);if(!n)return null;const l=[];return n.forEach(((r,n,h,d)=>{x.set(r,n,h,d),s.getTileBounds(u,x);const c=new p(u[0],u[1],u[2],u[3],t.spatialReference);l.push(this._export(c,e,e,i,o,a))})),Promise.all(l)}};i([o()],R.prototype,"_imagePromise",void 0),i([o()],R.prototype,"container",void 0),i([o()],R.prototype,"fetchSource",void 0),i([o()],R.prototype,"hidpi",void 0),i([o()],R.prototype,"imageMaxWidth",void 0),i([o()],R.prototype,"imageMaxHeight",void 0),i([o()],R.prototype,"imageRotationSupported",void 0),i([o()],R.prototype,"imageNormalizationSupported",void 0),i([o()],R.prototype,"requestUpdate",void 0),i([o()],R.prototype,"updating",null),R=i([a("esri.views.2d.layers.support.ExportStrategy")],R);var P=R;export{P as S};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { b6 as i, cd as e, ae as e$1, af as y$1, ag as i$1, ac as u$2, eH as z, b7 as S$1, cr as M, eP as x$1, ei as h } from "./vendor.74d5941c.js";
+import { _ } from "./Bitmap.0855f65e.js";
+const t = Math.PI / 180;
+function n(n2) {
+  return n2 * t;
+}
+function r(t2, o) {
+  const r2 = n(o.rotation), u2 = Math.abs(Math.cos(r2)), a = Math.abs(Math.sin(r2)), [s, c] = o.size;
+  return t2[0] = Math.round(c * a + s * u2), t2[1] = Math.round(c * u2 + s * a), t2;
+}
+function u$1(t2, n2, o, r2) {
+  const [u2, a] = n2, [s, c] = r2, i2 = 0.5 * o;
+  return t2[0] = u2 - i2 * s, t2[1] = a - i2 * c, t2[2] = u2 + i2 * s, t2[3] = a + i2 * c, t2;
+}
+const u = i(), g = [0, 0], f = new e(0, 0, 0, 0), x = { container: null, fetchSource: null, requestUpdate: null, imageMaxWidth: 2048, imageMaxHeight: 2048, imageRotationSupported: false, imageNormalizationSupported: false, hidpi: false };
+let y = class extends u$2 {
+  constructor(t2) {
+    super(t2), this._imagePromise = null, this.hidpi = x.hidpi, this.imageMaxWidth = x.imageMaxWidth, this.imageMaxHeight = x.imageMaxHeight, this.imageRotationSupported = x.imageRotationSupported, this.imageNormalizationSupported = x.imageNormalizationSupported, this.update = z((t3, e2) => __async(this, null, function* () {
+      const i2 = t3.state, o = S$1(i2.spatialReference), r$1 = this.hidpi ? t3.pixelRatio : 1;
+      if (!t3.stationary || this.destroyed)
+        return null;
+      this.imageRotationSupported ? (g[0] = i2.size[0], g[1] = i2.size[1]) : r(g, i2);
+      const a = Math.floor(g[0] * r$1) > this.imageMaxWidth || Math.floor(g[1] * r$1) > this.imageMaxHeight, p = o && (i2.extent.xmin < o.valid[0] || i2.extent.xmax > o.valid[1]), n2 = !this.imageNormalizationSupported && p, m = !a && !n2, l = this.imageRotationSupported ? i2.rotation : 0;
+      if (m)
+        this._imagePromise = this._singleExport(i2, g, l, r$1, e2);
+      else {
+        let t4 = Math.min(this.imageMaxWidth, this.imageMaxHeight);
+        n2 && (t4 = Math.min(i2.worldScreenWidth, t4)), this._imagePromise = this._tiledExport(i2, t4, l, r$1, e2);
+      }
+      return this._imagePromise.then((t4) => __async(this, null, function* () {
+        if (this._imagePromise = null, !this.destroyed) {
+          for (const e3 of this.container.children)
+            t4.includes(e3) || e3.fadeOut().then(() => {
+              e3.remove();
+            });
+          for (const e3 of t4)
+            this.container.addChild(e3), e3.fadeIn();
+        }
+      })).catch((t4) => {
+        throw this._imagePromise = null, t4;
+      });
+    }), 5e3);
+  }
+  destroy() {
+  }
+  get updating() {
+    return this._imagePromise !== null;
+  }
+  updateExports(t2) {
+    for (const e2 of this.container.children) {
+      if (!e2.visible || !e2.stage)
+        return;
+      t2(e2) ? console.error("ExportStrategy.updateExports doesn't support promise yet") : (e2.invalidateTexture(), e2.requestRender());
+    }
+  }
+  _export(t2, e2, i2, o, r2, s) {
+    return Promise.resolve().then(() => this.fetchSource(t2, Math.floor(e2 * r2), Math.floor(i2 * r2), { rotation: o, pixelRatio: r2, signal: s })).then((i3) => {
+      const s2 = new _(i3, "additive");
+      return s2.x = t2.xmin, s2.y = t2.ymax, s2.resolution = t2.width / e2, s2.rotation = o, s2.pixelRatio = r2, s2;
+    });
+  }
+  _singleExport(t2, e2, i2, o, r2) {
+    u$1(u, t2.center, t2.resolution, e2);
+    const s = new M(u[0], u[1], u[2], u[3], t2.spatialReference);
+    return this._export(s, e2[0], e2[1], i2, o, r2).then((t3) => [t3]);
+  }
+  _tiledExport(t2, e2, i2, o, r2) {
+    const s = x$1.create({ size: e2, spatialReference: t2.spatialReference, scales: [t2.scale] }), p = new h(s), m = p.getTileCoverage(t2);
+    if (!m)
+      return null;
+    const h$1 = [];
+    return m.forEach((s2, n2, m2, l) => {
+      f.set(s2, n2, m2, l), p.getTileBounds(u, f);
+      const d = new M(u[0], u[1], u[2], u[3], t2.spatialReference);
+      h$1.push(this._export(d, e2, e2, i2, o, r2));
+    }), Promise.all(h$1);
+  }
+};
+e$1([y$1()], y.prototype, "_imagePromise", void 0), e$1([y$1()], y.prototype, "container", void 0), e$1([y$1()], y.prototype, "fetchSource", void 0), e$1([y$1()], y.prototype, "hidpi", void 0), e$1([y$1()], y.prototype, "imageMaxWidth", void 0), e$1([y$1()], y.prototype, "imageMaxHeight", void 0), e$1([y$1()], y.prototype, "imageRotationSupported", void 0), e$1([y$1()], y.prototype, "imageNormalizationSupported", void 0), e$1([y$1()], y.prototype, "requestUpdate", void 0), e$1([y$1()], y.prototype, "updating", null), y = e$1([i$1("esri.views.2d.layers.support.ExportStrategy")], y);
+var S = y;
+export { S };

@@ -1,1 +1,207 @@
-var e=Object.defineProperty,t=Object.defineProperties,r=Object.getOwnPropertyDescriptors,i=Object.getOwnPropertySymbols,o=Object.prototype.hasOwnProperty,s=Object.prototype.propertyIsEnumerable,n=(t,r,i)=>r in t?e(t,r,{enumerable:!0,configurable:!0,writable:!0,value:i}):t[r]=i,a=(e,t)=>{for(var r in t||(t={}))o.call(t,r)&&n(e,r,t[r]);if(i)for(var r of i(t))s.call(t,r)&&n(e,r,t[r]);return e};import{ae as l,af as d,ag as p,dA as u,gV as y,eS as c,bT as f,ic as h,gl as v,id as g,gk as m,gj as b,a4 as w,dX as I,dY as S,dZ as x,gS as P,d_ as j,e1 as C,cE as T,e6 as F,d7 as R,a5 as O,dl as q,gX as B,ie as E,aa as N,ee as L,aj as V,g_ as _,M as A,dQ as D,h7 as $,hj as k,c4 as K,g$ as M}from"./vendor.74d5941c.js";import{R as G}from"./SceneService.00767b42.js";import"./resourceUtils.a485eb9e.js";let U=class extends u{constructor(e){super(e),this.field=null,this.type=null}clone(){return console.warn(".clone() is not implemented for "+this.declaredClass),null}};l([d({type:String,json:{write:{enabled:!0,isRequired:!0}}})],U.prototype,"field",void 0),l([d({readOnly:!0,nonNullable:!0,json:{read:!1}})],U.prototype,"type",void 0),U=l([p("esri.layers.pointCloudFilters.PointCloudFilter")],U);var X,z=U;let Q=X=class extends z{constructor(e){super(e),this.requiredClearBits=null,this.requiredSetBits=null,this.type="bitfield"}clone(){return new X({field:this.field,requiredClearBits:f(this.requiredClearBits),requiredSetBits:f(this.requiredSetBits)})}};l([d({type:[y],json:{write:{enabled:!0,overridePolicy(){return{enabled:!0,isRequired:!this.requiredSetBits}}}}})],Q.prototype,"requiredClearBits",void 0),l([d({type:[y],json:{write:{enabled:!0,overridePolicy(){return{enabled:!0,isRequired:!this.requiredClearBits}}}}})],Q.prototype,"requiredSetBits",void 0),l([c({pointCloudBitfieldFilter:"bitfield"})],Q.prototype,"type",void 0),Q=X=l([p("esri.layers.pointCloudFilters.PointCloudBitfieldFilter")],Q);var Y,Z=Q;let H=Y=class extends z{constructor(e){super(e),this.includedReturns=[],this.type="return"}clone(){return new Y({field:this.field,includedReturns:f(this.includedReturns)})}};l([d({type:[["firstOfMany","last","lastOfMany","single"]],json:{write:{enabled:!0,isRequired:!0}}})],H.prototype,"includedReturns",void 0),l([c({pointCloudReturnFilter:"return"})],H.prototype,"type",void 0),H=Y=l([p("esri.layers.pointCloudFilters.PointCloudReturnFilter")],H);var J,W=H;let ee=J=class extends z{constructor(e){super(e),this.mode="exclude",this.type="value",this.values=[]}clone(){return new J({field:this.field,mode:this.mode,values:f(this.values)})}};l([d({type:["exclude","include"],json:{write:{enabled:!0,isRequired:!0}}})],ee.prototype,"mode",void 0),l([c({pointCloudValueFilter:"value"})],ee.prototype,"type",void 0),l([d({type:[Number],json:{write:{enabled:!0,isRequired:!0}}})],ee.prototype,"values",void 0),ee=J=l([p("esri.layers.pointCloudFilters.PointCloudValueFilter")],ee);const te={key:"type",base:z,typeMap:{value:ee,bitfield:Z,return:W}},re={key:"type",base:h,typeMap:{"point-cloud-class-breaks":v,"point-cloud-rgb":g,"point-cloud-stretch":m,"point-cloud-unique-value":b},errorContext:"renderer"},ie=w.getLogger("esri.layers.PointCloudLayer"),oe=M();let se=class extends(G(I(S(x(P(j(C))))))){constructor(...e){super(...e),this.operationalLayerType="PointCloudLayer",this.popupEnabled=!0,this.popupTemplate=null,this.opacity=1,this.filters=[],this.fields=null,this.outFields=null,this.path=null,this.legendEnabled=!0,this.renderer=null,this.type="point-cloud"}normalizeCtorArgs(e,t){return"string"==typeof e?a({url:e},t):e}get defaultPopupTemplate(){return this.attributeStorageInfo?this.createPopupTemplate():null}get fieldsIndex(){return new T(this.fields)}getFieldDomain(e){const t=this.fieldsIndex.get(e);return t&&t.domain?t.domain:null}readServiceFields(e,t,r){return Array.isArray(e)?e.map((e=>{const t=new F;return"FieldTypeInteger"===e.type&&((e=f(e)).type="esriFieldTypeInteger"),t.read(e,r),t})):Array.isArray(t.attributeStorageInfo)?t.attributeStorageInfo.map((e=>new F({name:e.name,type:"ELEVATION"===e.name?"double":"integer"}))):null}set elevationInfo(e){this._set("elevationInfo",e),this._validateElevationInfo()}writeRenderer(e,t,r,i){R("layerDefinition.drawingInfo.renderer",e.write(null,i),t)}load(e){const t=O(e)?e.signal:null,r=this.loadFromPortal({supportedTypes:["Scene Service"]},e).catch(q).then((()=>this._fetchService(t)));return this.addResolvingPromise(r),Promise.resolve(this)}createPopupTemplate(e){const t=B(this,e);return this.formatPopupTemplateReturnsField(t),this.formatPopupTemplateRGBField(t),t}formatPopupTemplateReturnsField(e){const t=this.fieldsIndex.get("RETURNS");if(!t)return;const r=e.fieldInfos.find((e=>e.fieldName===t.name));if(!r)return;const i=new E({name:"pcl-returns-decoded",title:t.alias||t.name,expression:`\n        var returnValue = $feature.${t.name};\n        return (returnValue % 16) + " / " + Floor(returnValue / 16);\n      `});e.expressionInfos=[...e.expressionInfos||[],i],r.fieldName="expression/pcl-returns-decoded"}formatPopupTemplateRGBField(e){const t=this.fieldsIndex.get("RGB");if(!t)return;const r=e.fieldInfos.find((e=>e.fieldName===t.name));if(!r)return;const i=new E({name:"pcl-rgb-decoded",title:t.alias||t.name,expression:`\n        var rgb = $feature.${t.name};\n        var red = Floor(rgb / 65536, 0);\n        var green = Floor((rgb - (red * 65536)) / 256,0);\n        var blue = rgb - (red * 65536) - (green * 256);\n\n        return "rgb(" + red + "," + green + "," + blue + ")";\n      `});e.expressionInfos=[...e.expressionInfos||[],i],r.fieldName="expression/pcl-rgb-decoded"}async queryCachedStatistics(e,t){if(await this.load(t),!this.attributeStorageInfo)throw new N("scenelayer:no-cached-statistics","Cached statistics are not available for this layer");const r=this.fieldsIndex.get(e);if(!r)throw new N("pointcloudlayer:field-unexisting",`Field '${e}' does not exist on the layer`);for(const i of this.attributeStorageInfo)if(i.name===r.name){const e=L(this.parsedUrl.path,`./statistics/${i.key}`);return V(e,{query:{f:"json"},responseType:"json",signal:t?t.signal:null}).then((e=>e.data))}throw new N("pointcloudlayer:no-cached-statistics","Cached statistics for this attribute are not available")}async saveAs(e,i){return this._debouncedSaveOperations(1,(o=a({},i),t(o,r({getTypeKeywords:()=>this._getTypeKeywords(),portalItemLayerType:"point-cloud"}))),e);var o}async save(){const e={getTypeKeywords:()=>this._getTypeKeywords(),portalItemLayerType:"point-cloud"};return this._debouncedSaveOperations(0,e)}validateLayer(e){if(e.layerType&&"PointCloud"!==e.layerType)throw new N("pointcloudlayer:layer-type-not-supported","PointCloudLayer does not support this layer type",{layerType:e.layerType});if(isNaN(this.version.major)||isNaN(this.version.minor))throw new N("layer:service-version-not-supported","Service version is not supported.",{serviceVersion:this.version.versionString,supportedVersions:"1.x-2.x"});if(this.version.major>2)throw new N("layer:service-version-too-new","Service version is too new.",{serviceVersion:this.version.versionString,supportedVersions:"1.x-2.x"})}hasCachedStatistics(e){return null!=this.attributeStorageInfo&&this.attributeStorageInfo.some((t=>t.name===e))}_getTypeKeywords(){return["PointCloud"]}_validateElevationInfo(){const e=this.elevationInfo;e&&("absolute-height"!==e.mode&&ie.warn(".elevationInfo=","Point cloud layers only support absolute-height elevation mode"),e.featureExpressionInfo&&"0"!==e.featureExpressionInfo.expression&&ie.warn(".elevationInfo=","Point cloud layers do not support featureExpressionInfo"))}};l([d({type:["PointCloudLayer"]})],se.prototype,"operationalLayerType",void 0),l([d(_)],se.prototype,"popupEnabled",void 0),l([d({type:A,json:{name:"popupInfo",write:!0}})],se.prototype,"popupTemplate",void 0),l([d({readOnly:!0,json:{read:!1}})],se.prototype,"defaultPopupTemplate",null),l([d({readOnly:!0,json:{write:!1,read:!1,origins:{"web-document":{write:!1,read:!1}}}})],se.prototype,"opacity",void 0),l([d({type:["show","hide"]})],se.prototype,"listMode",void 0),l([d({types:[te],json:{origins:{service:{read:{source:"filters"}}},name:"layerDefinition.filters",write:!0}})],se.prototype,"filters",void 0),l([d({type:[F]})],se.prototype,"fields",void 0),l([d({readOnly:!0})],se.prototype,"fieldsIndex",null),l([D("service","fields",["fields","attributeStorageInfo"])],se.prototype,"readServiceFields",null),l([d(oe.outFields)],se.prototype,"outFields",void 0),l([d({readOnly:!0})],se.prototype,"attributeStorageInfo",void 0),l([d($)],se.prototype,"elevationInfo",null),l([d({type:String,json:{origins:{"web-scene":{read:!0,write:!0},"portal-item":{read:!0,write:!0}},read:!1}})],se.prototype,"path",void 0),l([d(k)],se.prototype,"legendEnabled",void 0),l([d({types:re,json:{origins:{service:{read:{source:"drawingInfo.renderer"}}},name:"layerDefinition.drawingInfo.renderer",write:{target:{"layerDefinition.drawingInfo.renderer":{types:re},"layerDefinition.drawingInfo.transparency":{type:Number}}}}})],se.prototype,"renderer",void 0),l([K("renderer")],se.prototype,"writeRenderer",null),l([d({json:{read:!1},readOnly:!0})],se.prototype,"type",void 0),se=l([p("esri.layers.PointCloudLayer")],se);var ne=se;export default ne;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b2) => {
+  for (var prop in b2 || (b2 = {}))
+    if (__hasOwnProp.call(b2, prop))
+      __defNormalProp(a2, prop, b2[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b2)) {
+      if (__propIsEnum.call(b2, prop))
+        __defNormalProp(a2, prop, b2[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b2) => __defProps(a2, __getOwnPropDescs(b2));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { ae as e$1, af as y, ag as i$1, dA as a, gV as N$1, eS as r, bT as y$1, ic as a$1, gl as c, id as n$1, gk as c$1, gj as a$2, a4 as n$2, dX as p$4, dY as l$1, dZ as u$3, gS as s, d_ as l$2, e1 as b, cE as e$2, e6 as y$2, d7 as o, a5 as r$1, dl as w, gX as a$3, ie as i$2, aa as s$1, ee as D, aj as U, g_ as c$2, M, dQ as e$3, h7 as m, hj as d$1, c4 as o$1, g$ as l$3 } from "./vendor.74d5941c.js";
+import { R as R$1 } from "./SceneService.00767b42.js";
+import "./resourceUtils.a485eb9e.js";
+let t = class extends a {
+  constructor(r2) {
+    super(r2), this.field = null, this.type = null;
+  }
+  clone() {
+    return console.warn(".clone() is not implemented for " + this.declaredClass), null;
+  }
+};
+e$1([y({ type: String, json: { write: { enabled: true, isRequired: true } } })], t.prototype, "field", void 0), e$1([y({ readOnly: true, nonNullable: true, json: { read: false } })], t.prototype, "type", void 0), t = e$1([i$1("esri.layers.pointCloudFilters.PointCloudFilter")], t);
+var p$3 = t;
+var p$2;
+let d = p$2 = class extends p$3 {
+  constructor(r2) {
+    super(r2), this.requiredClearBits = null, this.requiredSetBits = null, this.type = "bitfield";
+  }
+  clone() {
+    return new p$2({ field: this.field, requiredClearBits: y$1(this.requiredClearBits), requiredSetBits: y$1(this.requiredSetBits) });
+  }
+};
+e$1([y({ type: [N$1], json: { write: { enabled: true, overridePolicy() {
+  return { enabled: true, isRequired: !this.requiredSetBits };
+} } } })], d.prototype, "requiredClearBits", void 0), e$1([y({ type: [N$1], json: { write: { enabled: true, overridePolicy() {
+  return { enabled: true, isRequired: !this.requiredClearBits };
+} } } })], d.prototype, "requiredSetBits", void 0), e$1([r({ pointCloudBitfieldFilter: "bitfield" })], d.prototype, "type", void 0), d = p$2 = e$1([i$1("esri.layers.pointCloudFilters.PointCloudBitfieldFilter")], d);
+var u$2 = d;
+var p$1;
+let u$1 = p$1 = class extends p$3 {
+  constructor(r2) {
+    super(r2), this.includedReturns = [], this.type = "return";
+  }
+  clone() {
+    return new p$1({ field: this.field, includedReturns: y$1(this.includedReturns) });
+  }
+};
+e$1([y({ type: [["firstOfMany", "last", "lastOfMany", "single"]], json: { write: { enabled: true, isRequired: true } } })], u$1.prototype, "includedReturns", void 0), e$1([r({ pointCloudReturnFilter: "return" })], u$1.prototype, "type", void 0), u$1 = p$1 = e$1([i$1("esri.layers.pointCloudFilters.PointCloudReturnFilter")], u$1);
+var n = u$1;
+var p;
+let u = p = class extends p$3 {
+  constructor(e2) {
+    super(e2), this.mode = "exclude", this.type = "value", this.values = [];
+  }
+  clone() {
+    return new p({ field: this.field, mode: this.mode, values: y$1(this.values) });
+  }
+};
+e$1([y({ type: ["exclude", "include"], json: { write: { enabled: true, isRequired: true } } })], u.prototype, "mode", void 0), e$1([r({ pointCloudValueFilter: "value" })], u.prototype, "type", void 0), e$1([y({ type: [Number], json: { write: { enabled: true, isRequired: true } } })], u.prototype, "values", void 0), u = p = e$1([i$1("esri.layers.pointCloudFilters.PointCloudValueFilter")], u);
+var l = u;
+const e = { key: "type", base: p$3, typeMap: { value: l, bitfield: u$2, return: n } };
+const i = { key: "type", base: a$1, typeMap: { "point-cloud-class-breaks": c, "point-cloud-rgb": n$1, "point-cloud-stretch": c$1, "point-cloud-unique-value": a$2 }, errorContext: "renderer" };
+const N = n$2.getLogger("esri.layers.PointCloudLayer"), O = l$3();
+let R = class extends R$1(p$4(l$1(u$3(s(l$2(b)))))) {
+  constructor(...e2) {
+    super(...e2), this.operationalLayerType = "PointCloudLayer", this.popupEnabled = true, this.popupTemplate = null, this.opacity = 1, this.filters = [], this.fields = null, this.outFields = null, this.path = null, this.legendEnabled = true, this.renderer = null, this.type = "point-cloud";
+  }
+  normalizeCtorArgs(e2, r2) {
+    return typeof e2 == "string" ? __spreadValues({ url: e2 }, r2) : e2;
+  }
+  get defaultPopupTemplate() {
+    return this.attributeStorageInfo ? this.createPopupTemplate() : null;
+  }
+  get fieldsIndex() {
+    return new e$2(this.fields);
+  }
+  getFieldDomain(e2) {
+    const r2 = this.fieldsIndex.get(e2);
+    return r2 && r2.domain ? r2.domain : null;
+  }
+  readServiceFields(e2, t2, o2) {
+    return Array.isArray(e2) ? e2.map((e3) => {
+      const t3 = new y$2();
+      return e3.type === "FieldTypeInteger" && ((e3 = y$1(e3)).type = "esriFieldTypeInteger"), t3.read(e3, o2), t3;
+    }) : Array.isArray(t2.attributeStorageInfo) ? t2.attributeStorageInfo.map((e3) => new y$2({ name: e3.name, type: e3.name === "ELEVATION" ? "double" : "integer" })) : null;
+  }
+  set elevationInfo(e2) {
+    this._set("elevationInfo", e2), this._validateElevationInfo();
+  }
+  writeRenderer(e2, r2, o$12, i2) {
+    o("layerDefinition.drawingInfo.renderer", e2.write(null, i2), r2);
+  }
+  load(e2) {
+    const r2 = r$1(e2) ? e2.signal : null, t2 = this.loadFromPortal({ supportedTypes: ["Scene Service"] }, e2).catch(w).then(() => this._fetchService(r2));
+    return this.addResolvingPromise(t2), Promise.resolve(this);
+  }
+  createPopupTemplate(e2) {
+    const r2 = a$3(this, e2);
+    return this.formatPopupTemplateReturnsField(r2), this.formatPopupTemplateRGBField(r2), r2;
+  }
+  formatPopupTemplateReturnsField(e2) {
+    const r2 = this.fieldsIndex.get("RETURNS");
+    if (!r2)
+      return;
+    const t2 = e2.fieldInfos.find((e3) => e3.fieldName === r2.name);
+    if (!t2)
+      return;
+    const o2 = new i$2({ name: "pcl-returns-decoded", title: r2.alias || r2.name, expression: `
+        var returnValue = $feature.${r2.name};
+        return (returnValue % 16) + " / " + Floor(returnValue / 16);
+      ` });
+    e2.expressionInfos = [...e2.expressionInfos || [], o2], t2.fieldName = "expression/pcl-returns-decoded";
+  }
+  formatPopupTemplateRGBField(e2) {
+    const r2 = this.fieldsIndex.get("RGB");
+    if (!r2)
+      return;
+    const t2 = e2.fieldInfos.find((e3) => e3.fieldName === r2.name);
+    if (!t2)
+      return;
+    const o2 = new i$2({ name: "pcl-rgb-decoded", title: r2.alias || r2.name, expression: `
+        var rgb = $feature.${r2.name};
+        var red = Floor(rgb / 65536, 0);
+        var green = Floor((rgb - (red * 65536)) / 256,0);
+        var blue = rgb - (red * 65536) - (green * 256);
+
+        return "rgb(" + red + "," + green + "," + blue + ")";
+      ` });
+    e2.expressionInfos = [...e2.expressionInfos || [], o2], t2.fieldName = "expression/pcl-rgb-decoded";
+  }
+  queryCachedStatistics(e2, r2) {
+    return __async(this, null, function* () {
+      if (yield this.load(r2), !this.attributeStorageInfo)
+        throw new s$1("scenelayer:no-cached-statistics", "Cached statistics are not available for this layer");
+      const t2 = this.fieldsIndex.get(e2);
+      if (!t2)
+        throw new s$1("pointcloudlayer:field-unexisting", `Field '${e2}' does not exist on the layer`);
+      for (const o2 of this.attributeStorageInfo)
+        if (o2.name === t2.name) {
+          const e3 = D(this.parsedUrl.path, `./statistics/${o2.key}`);
+          return U(e3, { query: { f: "json" }, responseType: "json", signal: r2 ? r2.signal : null }).then((e4) => e4.data);
+        }
+      throw new s$1("pointcloudlayer:no-cached-statistics", "Cached statistics for this attribute are not available");
+    });
+  }
+  saveAs(e2, r2) {
+    return __async(this, null, function* () {
+      return this._debouncedSaveOperations(1, __spreadProps(__spreadValues({}, r2), { getTypeKeywords: () => this._getTypeKeywords(), portalItemLayerType: "point-cloud" }), e2);
+    });
+  }
+  save() {
+    return __async(this, null, function* () {
+      const e2 = { getTypeKeywords: () => this._getTypeKeywords(), portalItemLayerType: "point-cloud" };
+      return this._debouncedSaveOperations(0, e2);
+    });
+  }
+  validateLayer(e2) {
+    if (e2.layerType && e2.layerType !== "PointCloud")
+      throw new s$1("pointcloudlayer:layer-type-not-supported", "PointCloudLayer does not support this layer type", { layerType: e2.layerType });
+    if (isNaN(this.version.major) || isNaN(this.version.minor))
+      throw new s$1("layer:service-version-not-supported", "Service version is not supported.", { serviceVersion: this.version.versionString, supportedVersions: "1.x-2.x" });
+    if (this.version.major > 2)
+      throw new s$1("layer:service-version-too-new", "Service version is too new.", { serviceVersion: this.version.versionString, supportedVersions: "1.x-2.x" });
+  }
+  hasCachedStatistics(e2) {
+    return this.attributeStorageInfo != null && this.attributeStorageInfo.some((r2) => r2.name === e2);
+  }
+  _getTypeKeywords() {
+    return ["PointCloud"];
+  }
+  _validateElevationInfo() {
+    const e2 = this.elevationInfo;
+    e2 && (e2.mode !== "absolute-height" && N.warn(".elevationInfo=", "Point cloud layers only support absolute-height elevation mode"), e2.featureExpressionInfo && e2.featureExpressionInfo.expression !== "0" && N.warn(".elevationInfo=", "Point cloud layers do not support featureExpressionInfo"));
+  }
+};
+e$1([y({ type: ["PointCloudLayer"] })], R.prototype, "operationalLayerType", void 0), e$1([y(c$2)], R.prototype, "popupEnabled", void 0), e$1([y({ type: M, json: { name: "popupInfo", write: true } })], R.prototype, "popupTemplate", void 0), e$1([y({ readOnly: true, json: { read: false } })], R.prototype, "defaultPopupTemplate", null), e$1([y({ readOnly: true, json: { write: false, read: false, origins: { "web-document": { write: false, read: false } } } })], R.prototype, "opacity", void 0), e$1([y({ type: ["show", "hide"] })], R.prototype, "listMode", void 0), e$1([y({ types: [e], json: { origins: { service: { read: { source: "filters" } } }, name: "layerDefinition.filters", write: true } })], R.prototype, "filters", void 0), e$1([y({ type: [y$2] })], R.prototype, "fields", void 0), e$1([y({ readOnly: true })], R.prototype, "fieldsIndex", null), e$1([e$3("service", "fields", ["fields", "attributeStorageInfo"])], R.prototype, "readServiceFields", null), e$1([y(O.outFields)], R.prototype, "outFields", void 0), e$1([y({ readOnly: true })], R.prototype, "attributeStorageInfo", void 0), e$1([y(m)], R.prototype, "elevationInfo", null), e$1([y({ type: String, json: { origins: { "web-scene": { read: true, write: true }, "portal-item": { read: true, write: true } }, read: false } })], R.prototype, "path", void 0), e$1([y(d$1)], R.prototype, "legendEnabled", void 0), e$1([y({ types: i, json: { origins: { service: { read: { source: "drawingInfo.renderer" } } }, name: "layerDefinition.drawingInfo.renderer", write: { target: { "layerDefinition.drawingInfo.renderer": { types: i }, "layerDefinition.drawingInfo.transparency": { type: Number } } } } })], R.prototype, "renderer", void 0), e$1([o$1("renderer")], R.prototype, "writeRenderer", null), e$1([y({ json: { read: false }, readOnly: true })], R.prototype, "type", void 0), R = e$1([i$1("esri.layers.PointCloudLayer")], R);
+var _ = R;
+export default _;

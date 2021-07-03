@@ -1,1 +1,435 @@
-import{t}from"./ShaderCompiler.b19da10d.js";import{a0 as e}from"./vendor.74d5941c.js";import{B as i}from"./renderState.cca58848.js";import{n as s}from"./FramebufferObject.18518335.js";class r{constructor(t){this._programCacheByTemplate=new Map,this._rctx=t}dispose(){this._programCacheByTemplate.forEach((t=>{t.programs.forEach((t=>{t.dispose()}))})),this._programCacheByTemplate=null}getProgram(e,i){return this._programCacheByTemplate.has(e)||this.addProgramTemplate(e,(i=>t(this._rctx,e,i))),this.getProgramTemplateInstance(e,i)}addProgramTemplate(t,e){this._programCacheByTemplate.set(t,{constructor:e,programs:new Map})}getProgramTemplateInstance(t,e){const i=this._programCacheByTemplate.get(t);if(i){const t=e?JSON.stringify(e):"default";if(!i.programs.has(t)){const s=i.constructor(e);i.programs.set(t,s)}return i.programs.get(t)}return null}}class n{constructor(){for(this._current=new Array,this._max=new Array,this._allocations=new Map;this._current.length<6;)this._current.push(0),this._max.push(0)}resetMax(){for(this._max.length=0;this._max.length<this._current.length;)this._max.push(0)}increment(t,e){const i=++this._current[t];this._max[t]=Math.max(i,this._max[t])}decrement(t,e){--this._current[t]}get max(){return this._max}get current(){return this._current}printResourceCount(){if(console.log("Live objects:"),console.log(`Textures: ${this._current[0]}`),console.log(`Buffers: ${this._current[1]}`),console.log(`VAOs: ${this._current[2]}`),console.log(`Programs: ${this._current[3]}`),console.log(`Framebuffers: ${this._current[4]}`),console.log(`Renderbuffers: ${this._current[5]}`),this._allocations.size>0){console.log(`${this._allocations.size} live object allocations:`);const t=new Map;this._allocations.forEach((e=>{var i;t.set(e,(null!=(i=t.get(e))?i:0)+1)})),t.forEach(((t,e)=>console.log(t," : ",e)))}}}class a{constructor(t,e,i,s,r,n,a,l){this.createQuery=t,this.resultAvailable=e,this.getResult=i,this.disjoint=s,this.beginTimeElapsed=r,this.endTimeElapsed=n,this.createTimestamp=a,this.timestampBits=l}}function l(t,e){if(e.disjointTimerQuery)return null;let i=t.getExtension("EXT_disjoint_timer_query_webgl2");return i&&s(t)?new a((()=>t.createQuery()),(e=>t.getQueryParameter(e,t.QUERY_RESULT_AVAILABLE)),(e=>t.getQueryParameter(e,t.QUERY_RESULT)),(()=>t.getParameter(i.GPU_DISJOINT_EXT)),(e=>t.beginQuery(i.TIME_ELAPSED_EXT,e)),(()=>t.endQuery(i.TIME_ELAPSED_EXT)),(t=>i.queryCounterEXT(t,i.TIMESTAMP_EXT)),(()=>t.getQuery(i.TIMESTAMP_EXT,i.QUERY_COUNTER_BITS_EXT))):(i=t.getExtension("EXT_disjoint_timer_query"),i?new a((()=>i.createQueryEXT()),(t=>i.getQueryObjectEXT(t,i.QUERY_RESULT_AVAILABLE_EXT)),(t=>i.getQueryObjectEXT(t,i.QUERY_RESULT_EXT)),(()=>t.getParameter(i.GPU_DISJOINT_EXT)),(t=>i.beginQueryEXT(i.TIME_ELAPSED_EXT,t)),(()=>i.endQueryEXT(i.TIME_ELAPSED_EXT)),(t=>i.queryCounterEXT(t,i.TIMESTAMP_EXT)),(()=>i.getQueryEXT(i.TIMESTAMP_EXT,i.QUERY_COUNTER_BITS_EXT))):null)}function o(t,e){const i=e&&e.disabledExtensions||{},r=e&&e.debugWebGLExtensions||{};let n,a,o,_,c,u,d,E,f,g,b,T=null,S=null,p=null,F=null;return{get drawBuffers(){return b||(b=function(t,e){if(e.disjointTimerQuery)return null;if(s(t))return{drawBuffers:t.drawBuffers.bind(t),MAX_DRAW_BUFFERS:t.MAX_DRAW_BUFFERS,MAX_COLOR_ATTACHMENTS:t.MAX_COLOR_ATTACHMENTS};if(e.drawBuffers)return null;const i=t.getExtension("WEBGL_draw_buffers");return i?{drawBuffers:i.drawBuffersWEBGL.bind(i),MAX_DRAW_BUFFERS:i.MAX_DRAW_BUFFERS_WEBGL,MAX_COLOR_ATTACHMENTS:i.MAX_COLOR_ATTACHMENTS_WEBGL}:null}(t,i)),b},get instancing(){return n||(n=function(t){if(s(t))return{drawArraysInstanced:t.drawArraysInstanced.bind(t),drawElementsInstanced:t.drawElementsInstanced.bind(t),vertexAttribDivisor:t.vertexAttribDivisor.bind(t)};const e=t.getExtension("ANGLE_instanced_arrays");return e?{drawArraysInstanced:e.drawArraysInstancedANGLE.bind(e),drawElementsInstanced:e.drawElementsInstancedANGLE.bind(e),vertexAttribDivisor:e.vertexAttribDivisorANGLE.bind(e)}:null}(t)),n},get vao(){return a||(a=function(t,e){if(s(t))return{createVertexArray:t.createVertexArray.bind(t),deleteVertexArray:t.deleteVertexArray.bind(t),bindVertexArray:t.bindVertexArray.bind(t)};if(e.vao)return null;const i=t.getExtension("OES_vertex_array_object")||t.getExtension("MOZ_OES_vertex_array_object")||t.getExtension("WEBKIT_OES_vertex_array_object");return i?{createVertexArray:i.createVertexArrayOES.bind(i),deleteVertexArray:i.deleteVertexArrayOES.bind(i),bindVertexArray:i.bindVertexArrayOES.bind(i)}:null}(t,i)),a},get compressedTextureETC(){return o||(o=function(t,e){if(e.compressedTextureETC)return null;const i=t.getExtension("WEBGL_compressed_texture_etc");return i?{COMPRESSED_R11_EAC:i.COMPRESSED_R11_EAC,COMPRESSED_SIGNED_R11_EAC:i.COMPRESSED_SIGNED_R11_EAC,COMPRESSED_RG11_EAC:i.COMPRESSED_RG11_EAC,COMPRESSED_SIGNED_RG11_EAC:i.COMPRESSED_SIGNED_RG11_EAC,COMPRESSED_RGB8_ETC2:i.COMPRESSED_RGB8_ETC2,COMPRESSED_SRGB8_ETC2:i.COMPRESSED_SRGB8_ETC2,COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:i.COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2,COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:i.COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2,COMPRESSED_RGBA8_ETC2_EAC:i.COMPRESSED_RGBA8_ETC2_EAC,COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:i.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC}:null}(t,i)),o},get compressedTextureS3TC(){return _||(_=function(t,e){if(e.compressedTextureS3TC)return null;const i=t.getExtension("WEBGL_compressed_texture_s3tc");return i?{COMPRESSED_RGB_S3TC_DXT1:i.COMPRESSED_RGB_S3TC_DXT1_EXT,COMPRESSED_RGBA_S3TC_DXT1:i.COMPRESSED_RGBA_S3TC_DXT1_EXT,COMPRESSED_RGBA_S3TC_DXT3:i.COMPRESSED_RGBA_S3TC_DXT3_EXT,COMPRESSED_RGBA_S3TC_DXT5:i.COMPRESSED_RGBA_S3TC_DXT5_EXT}:null}(t,i)),_},get textureFilterAnisotropic(){return c||(c=function(t,e){if(e.textureFilterAnisotropic)return null;const i=t.getExtension("EXT_texture_filter_anisotropic")||t.getExtension("MOZ_EXT_texture_filter_anisotropic")||t.getExtension("WEBKIT_EXT_texture_filter_anisotropic");return i?{MAX_TEXTURE_MAX_ANISOTROPY:i.MAX_TEXTURE_MAX_ANISOTROPY_EXT,TEXTURE_MAX_ANISOTROPY:i.TEXTURE_MAX_ANISOTROPY_EXT}:null}(t,i)),c},get disjointTimerQuery(){return u||(u=l(t,i)),u},get textureFloat(){return d||(d=function(t,e){if(s(t))return{textureFloat:!0,textureFloatLinear:!e.textureFloatLinear&&!!t.getExtension("OES_texture_float_linear"),textureHalfFloat:!0,textureHalfFloatLinear:!e.textureHalfFloatLinear&&!!t.getExtension("OES_texture_half_float_linear"),HALF_FLOAT:t.HALF_FLOAT};if(t instanceof WebGLRenderingContext){const i=!e.textureHalfFloat&&t.getExtension("OES_texture_half_float");return{textureFloat:!e.textureFloat&&!!t.getExtension("OES_texture_float"),textureFloatLinear:!e.textureFloatLinear&&!!t.getExtension("OES_texture_float_linear"),textureHalfFloat:!!i,textureHalfFloatLinear:!e.textureHalfFloatLinear&&!!t.getExtension("OES_texture_half_float_linear"),HALF_FLOAT:i?i.HALF_FLOAT_OES:void 0}}return null}(t,i)),d},get colorBufferFloat(){return E||(E=function(t,e){if(s(t)){const i=!e.colorBufferFloat&&t.getExtension("EXT_color_buffer_half_float"),s=!e.colorBufferFloat&&t.getExtension("EXT_color_buffer_float"),r=!e.colorBufferFloat&&t.getExtension("EXT_float_blend");return i||s||r?{textureFloat:!!s,textureHalfFloat:!!i,R16F:t.R16F,RG16F:t.RG16F,RGBA16F:t.RGBA16F,R32F:t.R32F,RG32F:t.RG32F,RGBA32F:t.RGBA32F,R11F_G11F_B10F:t.R11F_G11F_B10F,RGB16F:t.RGB16F}:null}if(t instanceof WebGLRenderingContext){const i=!e.colorBufferFloat&&t.getExtension("EXT_color_buffer_half_float"),s=!e.colorBufferFloat&&t.getExtension("WEBGL_color_buffer_float"),r=!e.colorBufferFloat&&t.getExtension("EXT_float_blend");return i||s||r?{textureFloat:!!s,textureHalfFloat:!!i,RGBA16F:i?i.RGBA16F_EXT:void 0,RGB16F:i?i.RGB16F_EXT:void 0,RGBA32F:s?s.RGBA32F_EXT:void 0}:null}return null}(t,i)),E},get blendMinMax(){return f||(f=function(t,e){if(s(t))return{MIN:t.MIN,MAX:t.MAX};if(e.blendMinMax)return null;{const e=t.getExtension("EXT_blend_minmax");return e?{MIN:e.MIN_EXT,MAX:e.MAX_EXT}:null}}(t,i)),f},get depthTexture(){return null===T&&(T=h(t,i,"depthTexture",!0,["WEBGL_depth_texture","MOZ_WEBGL_depth_texture","WEBKIT_WEBGL_depth_texture"])),T},get standardDerivatives(){return null===S&&(S=h(t,i,"standardDerivatives",!0,["OES_standard_derivatives"])),S},get shaderTextureLOD(){return null===p&&(p=h(t,i,"shaderTextureLOD",!0,["EXT_shader_texture_lod"])),p},get fragDepth(){return null===F&&(F=h(t,i,"fragDepth",!0,["EXT_frag_depth"])),F},get loseContext(){return g||(g=function(t,e){const i=e.loseContext&&t.getExtension("WEBGL_lose_context");return i?{loseRenderingContext:()=>i.loseContext()}:null}(t,r)),g},enable(t){return this[t]}}}function h(t,e,i,r,n){if(r&&s(t))return!0;if(e[i])return!1;for(const s of n)if(t.getExtension(s))return!0;return!1}class _{constructor(t,e){this.gl=null,this.instanceCounter=new n,this._blendEnabled=!1,this._blendColorState={r:0,g:0,b:0,a:0},this._blendFunctionState={srcRGB:1,dstRGB:0,srcAlpha:1,dstAlpha:0},this._blendEquationState={mode:32774,modeAlpha:32774},this._colorMaskState={r:!0,g:!0,b:!0,a:!0},this._polygonCullingEnabled=!1,this._cullFace=1029,this._frontFace=2305,this._scissorTestEnabled=!1,this._scissorRect={x:0,y:0,width:0,height:0},this._depthTestEnabled=!1,this._depthFunction=513,this._clearDepth=1,this._depthWriteEnabled=!0,this._depthRange={zNear:0,zFar:1},this._viewport=null,this._stencilTestEnabled=!1,this._polygonOffsetFillEnabled=!1,this._polygonOffset=[0,0],this._stencilFunction={face:1032,func:519,ref:0,mask:1},this._clearStencil=0,this._stencilWriteMask=1,this._stencilOperation={face:1032,fail:7680,zFail:7680,zPass:7680},this._clearColor={r:0,g:0,b:0,a:0},this._activeShaderProgram=null,this._activeVertexBuffer=null,this._activeIndexBuffer=null,this._activeFramebuffer=null,this._activeRenderbuffer=null,this._activeTextureUnit=0,this._textureUnitMap=[],this._numOfDrawCalls=0,this._numOfTriangles=0,this.contextVersion=s(t)?"webgl2":"webgl",this.gl=t,t instanceof WebGLRenderingContext&&this.gl.getExtension("OES_element_index_uint"),this._capabilities=o(t,e);const r=this.gl.getParameter(this.gl.VIEWPORT);this._viewport={x:r[0],y:r[1],width:r[2],height:r[3]},this._stateTracker=new i({setBlending:t=>{if(t){this.setBlendingEnabled(!0),this.setBlendEquationSeparate(t.opRgb,t.opAlpha),this.setBlendFunctionSeparate(t.srcRgb,t.dstRgb,t.srcAlpha,t.dstAlpha);const e=t.color;this.setBlendColor(e.r,e.g,e.b,e.a)}else this.setBlendingEnabled(!1)},setCulling:t=>{t?(this.setFaceCullingEnabled(!0),this.setCullFace(t.face),this.setFrontFace(t.mode)):this.setFaceCullingEnabled(!1)},setPolygonOffset:t=>{t?(this.setPolygonOffsetFillEnabled(!0),this.setPolygonOffset(t.factor,t.units)):this.setPolygonOffsetFillEnabled(!1)},setDepthTest:t=>{t?(this.setDepthTestEnabled(!0),this.setDepthFunction(t.func)):this.setDepthTestEnabled(!1)},setStencilTest:t=>{if(t){this.setStencilTestEnabled(!0);const e=t.function;this.setStencilFunction(e.func,e.ref,e.mask);const i=t.operation;this.setStencilOp(i.fail,i.zFail,i.zPass)}else this.setStencilTestEnabled(!1)},setDepthWrite:t=>{t?(this.setDepthWriteEnabled(!0),this.setDepthRange(t.zNear,t.zFar)):this.setDepthWriteEnabled(!1)},setColorWrite:t=>{t?this.setColorMask(t.r,t.g,t.b,t.a):this.setColorMask(!1,!1,!1,!1)},setStencilWrite:t=>{t?this.setStencilWriteMask(t.mask):this.setStencilWriteMask(0)}}),this.enforceState()}isWebGL2Context(){return"webgl2"===this.contextVersion}get contextAttributes(){return this.gl.getContextAttributes()}get parameters(){if(!this._parameters){const t=this.capabilities.textureFilterAnisotropic;this._parameters={versionString:this.gl.getParameter(this.gl.VERSION),maxVertexTextureImageUnits:this.gl.getParameter(this.gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS),maxVertexAttributes:this.gl.getParameter(this.gl.MAX_VERTEX_ATTRIBS),maxMaxAnisotropy:t?this.gl.getParameter(t.MAX_TEXTURE_MAX_ANISOTROPY):void 0,maxTextureImageUnits:this.gl.getParameter(this.gl.MAX_TEXTURE_IMAGE_UNITS),maxTextureSize:this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE)}}return this._parameters}dispose(){this.bindVAO(null),this.unbindBuffer(34962),this.unbindBuffer(34963),this._textureUnitMap=[],this.gl=null,this._capabilities=null}setPipelineState(t){this._stateTracker.setPipeline(t)}setBlendingEnabled(t){this._blendEnabled!==t&&(!0===t?this.gl.enable(this.gl.BLEND):this.gl.disable(this.gl.BLEND),this._blendEnabled=t,this._stateTracker.invalidateBlending())}setBlendColor(t,e,i,s){t===this._blendColorState.r&&e===this._blendColorState.g&&i===this._blendColorState.b&&s===this._blendColorState.a||(this.gl.blendColor(t,e,i,s),this._blendColorState.r=t,this._blendColorState.g=e,this._blendColorState.b=i,this._blendColorState.a=s,this._stateTracker.invalidateBlending())}setBlendFunction(t,e){t===this._blendFunctionState.srcRGB&&e===this._blendFunctionState.dstRGB||(this.gl.blendFunc(t,e),this._blendFunctionState.srcRGB=t,this._blendFunctionState.srcAlpha=t,this._blendFunctionState.dstRGB=e,this._blendFunctionState.dstAlpha=e,this._stateTracker.invalidateBlending())}setBlendFunctionSeparate(t,e,i,s){this._blendFunctionState.srcRGB===t&&this._blendFunctionState.srcAlpha===i&&this._blendFunctionState.dstRGB===e&&this._blendFunctionState.dstAlpha===s||(this.gl.blendFuncSeparate(t,e,i,s),this._blendFunctionState.srcRGB=t,this._blendFunctionState.srcAlpha=i,this._blendFunctionState.dstRGB=e,this._blendFunctionState.dstAlpha=s,this._stateTracker.invalidateBlending())}setBlendEquation(t){this._blendEquationState.mode!==t&&(this.gl.blendEquation(t),this._blendEquationState.mode=t,this._blendEquationState.modeAlpha=t,this._stateTracker.invalidateBlending())}setBlendEquationSeparate(t,e){this._blendEquationState.mode===t&&this._blendEquationState.modeAlpha===e||(this.gl.blendEquationSeparate(t,e),this._blendEquationState.mode=t,this._blendEquationState.modeAlpha=e,this._stateTracker.invalidateBlending())}setColorMask(t,e,i,s){this._colorMaskState.r===t&&this._colorMaskState.g===e&&this._colorMaskState.b===i&&this._colorMaskState.a===s||(this.gl.colorMask(t,e,i,s),this._colorMaskState.r=t,this._colorMaskState.g=e,this._colorMaskState.b=i,this._colorMaskState.a=s,this._stateTracker.invalidateColorWrite())}setClearColor(t,e,i,s){this._clearColor.r===t&&this._clearColor.g===e&&this._clearColor.b===i&&this._clearColor.a===s||(this.gl.clearColor(t,e,i,s),this._clearColor.r=t,this._clearColor.g=e,this._clearColor.b=i,this._clearColor.a=s)}setFaceCullingEnabled(t){this._polygonCullingEnabled!==t&&(!0===t?this.gl.enable(this.gl.CULL_FACE):this.gl.disable(this.gl.CULL_FACE),this._polygonCullingEnabled=t,this._stateTracker.invalidateCulling())}setPolygonOffsetFillEnabled(t){this._polygonOffsetFillEnabled!==t&&(!0===t?this.gl.enable(this.gl.POLYGON_OFFSET_FILL):this.gl.disable(this.gl.POLYGON_OFFSET_FILL),this._polygonOffsetFillEnabled=t,this._stateTracker.invalidatePolygonOffset())}setPolygonOffset(t,e){this._polygonOffset[0]===t&&this._polygonOffset[1]===e||(this._polygonOffset[0]=t,this._polygonOffset[1]=e,this.gl.polygonOffset(t,e),this._stateTracker.invalidatePolygonOffset())}setCullFace(t){this._cullFace!==t&&(this.gl.cullFace(t),this._cullFace=t,this._stateTracker.invalidateCulling())}setFrontFace(t){this._frontFace!==t&&(this.gl.frontFace(t),this._frontFace=t,this._stateTracker.invalidateCulling())}setScissorTestEnabled(t){this._scissorTestEnabled!==t&&(!0===t?this.gl.enable(this.gl.SCISSOR_TEST):this.gl.disable(this.gl.SCISSOR_TEST),this._scissorTestEnabled=t)}setScissorRect(t,e,i,s){this._scissorRect.x===t&&this._scissorRect.y===e&&this._scissorRect.width===i&&this._scissorRect.height===s||(this.gl.scissor(t,e,i,s),this._scissorRect.x=t,this._scissorRect.y=e,this._scissorRect.width=i,this._scissorRect.height=s)}setDepthTestEnabled(t){this._depthTestEnabled!==t&&(!0===t?this.gl.enable(this.gl.DEPTH_TEST):this.gl.disable(this.gl.DEPTH_TEST),this._depthTestEnabled=t,this._stateTracker.invalidateDepthTest())}setClearDepth(t){this._clearDepth!==t&&(this.gl.clearDepth(t),this._clearDepth=t)}setDepthFunction(t){this._depthFunction!==t&&(this.gl.depthFunc(t),this._depthFunction=t,this._stateTracker.invalidateDepthTest())}setDepthWriteEnabled(t){this._depthWriteEnabled!==t&&(this.gl.depthMask(t),this._depthWriteEnabled=t,this._stateTracker.invalidateDepthWrite())}setDepthRange(t,e){this._depthRange.zNear===t&&this._depthRange.zFar===e||(this.gl.depthRange(t,e),this._depthRange.zNear=t,this._depthRange.zFar=e,this._stateTracker.invalidateDepthWrite())}setStencilTestEnabled(t){this._stencilTestEnabled!==t&&(!0===t?this.gl.enable(this.gl.STENCIL_TEST):this.gl.disable(this.gl.STENCIL_TEST),this._stencilTestEnabled=t,this._stateTracker.invalidateStencilTest())}setClearStencil(t){t!==this._clearStencil&&(this.gl.clearStencil(t),this._clearStencil=t)}setStencilFunction(t,e,i){this._stencilFunction.func===t&&this._stencilFunction.ref===e&&this._stencilFunction.mask===i||(this.gl.stencilFunc(t,e,i),this._stencilFunction.face=1032,this._stencilFunction.func=t,this._stencilFunction.ref=e,this._stencilFunction.mask=i,this._stateTracker.invalidateStencilTest())}setStencilFunctionSeparate(t,e,i,s){this._stencilFunction.face===t&&this._stencilFunction.func===e&&this._stencilFunction.ref===i&&this._stencilFunction.mask===s||(this.gl.stencilFuncSeparate(t,e,i,s),this._stencilFunction.face=t,this._stencilFunction.func=e,this._stencilFunction.ref=i,this._stencilFunction.mask=s,this._stateTracker.invalidateStencilTest())}setStencilWriteMask(t){this._stencilWriteMask!==t&&(this.gl.stencilMask(t),this._stencilWriteMask=t,this._stateTracker.invalidateStencilWrite())}setStencilOp(t,e,i){this._stencilOperation.fail===t&&this._stencilOperation.zFail===e&&this._stencilOperation.zPass===i||(this.gl.stencilOp(t,e,i),this._stencilOperation.face=1032,this._stencilOperation.fail=t,this._stencilOperation.zFail=e,this._stencilOperation.zPass=i,this._stateTracker.invalidateStencilTest())}setStencilOpSeparate(t,e,i,s){this._stencilOperation.face===t&&this._stencilOperation.fail===e&&this._stencilOperation.zFail===i&&this._stencilOperation.zPass===s||(this.gl.stencilOpSeparate(t,e,i,s),this._stencilOperation.face=t,this._stencilOperation.face=t,this._stencilOperation.fail=e,this._stencilOperation.zFail=i,this._stencilOperation.zPass=s,this._stateTracker.invalidateStencilTest())}setActiveTexture(t){const e=this._activeTextureUnit;return t>=0&&t!==this._activeTextureUnit&&(this.gl.activeTexture(33984+t),this._activeTextureUnit=t),e}clear(t){t&&this.gl.clear(t)}clearSafe(t,e=255){t&&(16384&t&&this.setColorMask(!0,!0,!0,!0),256&t&&this.setDepthWriteEnabled(!0),1024&t&&this.setStencilWriteMask(e),this.gl.clear(t))}drawArrays(t,e,i){this.gl.drawArrays(t,e,i)}drawElements(t,e,i,s){5123!==i?5125===i&&this.gl.drawElements(t,e,i,s):this.gl.drawElements(t,e,i,s)}logIno(){}get capabilities(){return this._capabilities}setViewport(t,e,i,s){const r=this._viewport;r.x===t&&r.y===e&&r.width===i&&r.height===s||(r.x=t,r.y=e,r.width=i,r.height=s,this.gl.viewport(t,e,i,s))}getViewport(){return{x:this._viewport.x,y:this._viewport.y,width:this._viewport.width,height:this._viewport.height}}bindProgram(t){if(!t)return this.gl.useProgram(null),void(this._activeShaderProgram=null);this._activeShaderProgram!==t&&(t.initialize(),this.gl.useProgram(t.glName),this._activeShaderProgram=t)}bindTexture(t,e){(e>=this.parameters.maxTextureImageUnits||e<0)&&console.error("Input texture unit is out of range of available units!");const i=this._textureUnitMap[e];if(this.setActiveTexture(e),null==t||null==t.glName)return null!=i&&this.gl.bindTexture(i.descriptor.target,null),void(this._textureUnitMap[e]=null);i!==t?(this.gl.bindTexture(t.descriptor.target,t.glName),t.applyChanges(),this._textureUnitMap[e]=t):t.applyChanges()}unbindTextureAllUnits(t){for(let e=0;e<this.parameters.maxTextureImageUnits;e++)this._textureUnitMap[e]===t&&this.bindTexture(null,e)}bindFramebuffer(t){if(e(t))return this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,null),void(this._activeFramebuffer=null);this._activeFramebuffer!==t&&(t.initializeAndBind(),this._activeFramebuffer=t)}bindBuffer(t){t&&(34962===t.bufferType?this._activeVertexBuffer=c(this.gl,t,t.bufferType,this._activeVertexBuffer):this._activeIndexBuffer=c(this.gl,t,t.bufferType,this._activeIndexBuffer))}bindRenderbuffer(t){const e=this.gl;t||(e.bindRenderbuffer(e.RENDERBUFFER,null),this._activeRenderbuffer=null),this._activeRenderbuffer!==t&&(e.bindRenderbuffer(e.RENDERBUFFER,t.glName),this._activeRenderbuffer=t)}unbindBuffer(t){34962===t?this._activeVertexBuffer=c(this.gl,null,t,this._activeVertexBuffer):this._activeIndexBuffer=c(this.gl,null,t,this._activeIndexBuffer)}bindVAO(t){t?this._activeVertexArrayObject&&this._activeVertexArrayObject===t||(t.bind(),this._activeVertexArrayObject=t):this._activeVertexArrayObject&&(this._activeVertexArrayObject.unbind(),this._activeVertexArrayObject=null)}getBoundTexture(t){return this._textureUnitMap[t]}getBoundFramebufferObject(){return this._activeFramebuffer}getBoundVAO(){return this._activeVertexArrayObject}resetState(){this.bindProgram(null),this.bindVAO(null),this.bindFramebuffer(null),this.unbindBuffer(34962),this.unbindBuffer(34963);for(let t=0;t<this.parameters.maxTextureImageUnits;t++)this.bindTexture(null,t);this.setBlendingEnabled(!1),this.setBlendFunction(1,0),this.setBlendEquation(32774),this.setBlendColor(0,0,0,0),this.setFaceCullingEnabled(!1),this.setCullFace(1029),this.setFrontFace(2305),this.setPolygonOffsetFillEnabled(!1),this.setPolygonOffset(0,0),this.setScissorTestEnabled(!1),this.setScissorRect(0,0,this.gl.canvas.width,this.gl.canvas.height),this.setDepthTestEnabled(!1),this.setDepthFunction(513),this.setDepthRange(0,1),this.setStencilTestEnabled(!1),this.setStencilFunction(519,0,0),this.setStencilOp(7680,7680,7680),this.setClearColor(0,0,0,0),this.setClearDepth(1),this.setClearStencil(0),this.setColorMask(!0,!0,!0,!0),this.setStencilWriteMask(4294967295),this.setDepthWriteEnabled(!0),this.setViewport(0,0,this.gl.canvas.width,this.gl.canvas.height)}enforceState(){const t=this.gl,e=this.capabilities.vao;e&&e.bindVertexArray(null);for(let i=0;i<this.parameters.maxVertexAttributes;i++)t.disableVertexAttribArray(i);if(this._activeVertexBuffer?t.bindBuffer(this._activeVertexBuffer.bufferType,this._activeVertexBuffer.glName):t.bindBuffer(34962,null),this._activeIndexBuffer?t.bindBuffer(this._activeIndexBuffer.bufferType,this._activeIndexBuffer.glName):t.bindBuffer(34963,null),e&&this._activeVertexArrayObject){const t=this._activeVertexArrayObject;this._activeVertexArrayObject&&(this._activeVertexArrayObject.unbind(),this._activeVertexArrayObject=null),this.bindVAO(t)}t.bindFramebuffer(t.FRAMEBUFFER,this._activeFramebuffer?this._activeFramebuffer.glName:null),t.useProgram(this._activeShaderProgram?this._activeShaderProgram.glName:null),t.blendColor(this._blendColorState.r,this._blendColorState.g,this._blendColorState.b,this._blendColorState.a),t.bindRenderbuffer(t.RENDERBUFFER,this._activeRenderbuffer?this._activeRenderbuffer.glName:null),!0===this._blendEnabled?t.enable(this.gl.BLEND):t.disable(this.gl.BLEND),t.blendEquationSeparate(this._blendEquationState.mode,this._blendEquationState.modeAlpha),t.blendFuncSeparate(this._blendFunctionState.srcRGB,this._blendFunctionState.dstRGB,this._blendFunctionState.srcAlpha,this._blendFunctionState.dstAlpha),t.clearColor(this._clearColor.r,this._clearColor.g,this._clearColor.b,this._clearColor.a),t.clearDepth(this._clearDepth),t.clearStencil(this._clearStencil),t.colorMask(this._colorMaskState.r,this._colorMaskState.g,this._colorMaskState.b,this._colorMaskState.a),t.cullFace(this._cullFace),t.depthFunc(this._depthFunction),t.depthRange(this._depthRange.zNear,this._depthRange.zFar),!0===this._depthTestEnabled?t.enable(t.DEPTH_TEST):t.disable(t.DEPTH_TEST),t.depthMask(this._depthWriteEnabled),t.frontFace(this._frontFace),t.lineWidth(1),!0===this._polygonCullingEnabled?t.enable(t.CULL_FACE):t.disable(t.CULL_FACE),t.polygonOffset(this._polygonOffset[0],this._polygonOffset[1]),!0===this._polygonOffsetFillEnabled?t.enable(t.POLYGON_OFFSET_FILL):t.disable(t.POLYGON_OFFSET_FILL),t.scissor(this._scissorRect.x,this._scissorRect.y,this._scissorRect.width,this._scissorRect.height),!0===this._scissorTestEnabled?t.enable(t.SCISSOR_TEST):t.disable(t.SCISSOR_TEST),t.stencilFunc(this._stencilFunction.func,this._stencilFunction.ref,this._stencilFunction.mask),t.stencilOpSeparate(this._stencilOperation.face,this._stencilOperation.fail,this._stencilOperation.zFail,this._stencilOperation.zPass),!0===this._stencilTestEnabled?t.enable(t.STENCIL_TEST):t.disable(t.STENCIL_TEST),t.stencilMask(this._stencilWriteMask);for(let i=0;i<this.parameters.maxTextureImageUnits;i++){t.activeTexture(33984+i),t.bindTexture(3553,null);const e=this._textureUnitMap[i];e&&t.bindTexture(e.descriptor.target,e.glName)}t.activeTexture(33984+this._activeTextureUnit),t.viewport(this._viewport.x,this._viewport.y,this._viewport.width,this._viewport.height)}}function c(t,e,i,s){return e?s!==e&&t.bindBuffer(i,e.glName):t.bindBuffer(i,null),e}export{l as a,_ as l,r as t};
+import { t as t$3 } from "./ShaderCompiler.b19da10d.js";
+import { a0 as t$4 } from "./vendor.74d5941c.js";
+import { B } from "./renderState.cca58848.js";
+import { n } from "./FramebufferObject.18518335.js";
+class t$2 {
+  constructor(r2) {
+    this._programCacheByTemplate = new Map(), this._rctx = r2;
+  }
+  dispose() {
+    this._programCacheByTemplate.forEach((r2) => {
+      r2.programs.forEach((r3) => {
+        r3.dispose();
+      });
+    }), this._programCacheByTemplate = null;
+  }
+  getProgram(t2, a2) {
+    return this._programCacheByTemplate.has(t2) || this.addProgramTemplate(t2, (a3) => t$3(this._rctx, t2, a3)), this.getProgramTemplateInstance(t2, a2);
+  }
+  addProgramTemplate(r2, t2) {
+    this._programCacheByTemplate.set(r2, { constructor: t2, programs: new Map() });
+  }
+  getProgramTemplateInstance(r2, t2) {
+    const a2 = this._programCacheByTemplate.get(r2);
+    if (a2) {
+      const r3 = t2 ? JSON.stringify(t2) : "default";
+      if (!a2.programs.has(r3)) {
+        const e2 = a2.constructor(t2);
+        a2.programs.set(r3, e2);
+      }
+      return a2.programs.get(r3);
+    }
+    return null;
+  }
+}
+const o$1 = 33984;
+class t$1 {
+  constructor() {
+    for (this._current = new Array(), this._max = new Array(), this._allocations = new Map(); this._current.length < 6; )
+      this._current.push(0), this._max.push(0);
+  }
+  resetMax() {
+    for (this._max.length = 0; this._max.length < this._current.length; )
+      this._max.push(0);
+  }
+  increment(t2, e2) {
+    const s = ++this._current[t2];
+    this._max[t2] = Math.max(s, this._max[t2]);
+  }
+  decrement(t2, e2) {
+    --this._current[t2];
+  }
+  get max() {
+    return this._max;
+  }
+  get current() {
+    return this._current;
+  }
+  printResourceCount() {
+    if (console.log("Live objects:"), console.log(`Textures: ${this._current[0]}`), console.log(`Buffers: ${this._current[1]}`), console.log(`VAOs: ${this._current[2]}`), console.log(`Programs: ${this._current[3]}`), console.log(`Framebuffers: ${this._current[4]}`), console.log(`Renderbuffers: ${this._current[5]}`), this._allocations.size > 0) {
+      console.log(`${this._allocations.size} live object allocations:`);
+      const t2 = new Map();
+      this._allocations.forEach((e2) => {
+        var s;
+        t2.set(e2, ((s = t2.get(e2)) != null ? s : 0) + 1);
+      }), t2.forEach((t3, e2) => console.log(t3, " : ", e2));
+    }
+  }
+}
+class E {
+  constructor(e2, E2, t2, T, r2, _, i2, u2) {
+    this.createQuery = e2, this.resultAvailable = E2, this.getResult = t2, this.disjoint = T, this.beginTimeElapsed = r2, this.endTimeElapsed = _, this.createTimestamp = i2, this.timestampBits = u2;
+  }
+}
+function t(t2, T) {
+  if (T.disjointTimerQuery)
+    return null;
+  let r2 = t2.getExtension("EXT_disjoint_timer_query_webgl2");
+  return r2 && n(t2) ? new E(() => t2.createQuery(), (e2) => t2.getQueryParameter(e2, t2.QUERY_RESULT_AVAILABLE), (e2) => t2.getQueryParameter(e2, t2.QUERY_RESULT), () => t2.getParameter(r2.GPU_DISJOINT_EXT), (e2) => t2.beginQuery(r2.TIME_ELAPSED_EXT, e2), () => t2.endQuery(r2.TIME_ELAPSED_EXT), (e2) => r2.queryCounterEXT(e2, r2.TIMESTAMP_EXT), () => t2.getQuery(r2.TIMESTAMP_EXT, r2.QUERY_COUNTER_BITS_EXT)) : (r2 = t2.getExtension("EXT_disjoint_timer_query"), r2 ? new E(() => r2.createQueryEXT(), (e2) => r2.getQueryObjectEXT(e2, r2.QUERY_RESULT_AVAILABLE_EXT), (e2) => r2.getQueryObjectEXT(e2, r2.QUERY_RESULT_EXT), () => t2.getParameter(r2.GPU_DISJOINT_EXT), (e2) => r2.beginQueryEXT(r2.TIME_ELAPSED_EXT, e2), () => r2.endQueryEXT(r2.TIME_ELAPSED_EXT), (e2) => r2.queryCounterEXT(e2, r2.TIMESTAMP_EXT), () => r2.getQueryEXT(r2.TIMESTAMP_EXT, r2.QUERY_COUNTER_BITS_EXT)) : null);
+}
+function A(A2, _) {
+  if (_.disjointTimerQuery)
+    return null;
+  if (n(A2))
+    return { drawBuffers: A2.drawBuffers.bind(A2), MAX_DRAW_BUFFERS: A2.MAX_DRAW_BUFFERS, MAX_COLOR_ATTACHMENTS: A2.MAX_COLOR_ATTACHMENTS };
+  if (_.drawBuffers)
+    return null;
+  const e2 = A2.getExtension("WEBGL_draw_buffers");
+  return e2 ? { drawBuffers: e2.drawBuffersWEBGL.bind(e2), MAX_DRAW_BUFFERS: e2.MAX_DRAW_BUFFERS_WEBGL, MAX_COLOR_ATTACHMENTS: e2.MAX_COLOR_ATTACHMENTS_WEBGL } : null;
+}
+function r$2(r2) {
+  if (n(r2))
+    return { drawArraysInstanced: r2.drawArraysInstanced.bind(r2), drawElementsInstanced: r2.drawElementsInstanced.bind(r2), vertexAttribDivisor: r2.vertexAttribDivisor.bind(r2) };
+  const t2 = r2.getExtension("ANGLE_instanced_arrays");
+  return t2 ? { drawArraysInstanced: t2.drawArraysInstancedANGLE.bind(t2), drawElementsInstanced: t2.drawElementsInstancedANGLE.bind(t2), vertexAttribDivisor: t2.vertexAttribDivisorANGLE.bind(t2) } : null;
+}
+function e(e2, t2) {
+  const n2 = t2.loseContext && e2.getExtension("WEBGL_lose_context");
+  return n2 ? { loseRenderingContext: () => n2.loseContext() } : null;
+}
+function r$1(r2, t2) {
+  if (n(r2))
+    return { createVertexArray: r2.createVertexArray.bind(r2), deleteVertexArray: r2.deleteVertexArray.bind(r2), bindVertexArray: r2.bindVertexArray.bind(r2) };
+  if (t2.vao)
+    return null;
+  const n$1 = r2.getExtension("OES_vertex_array_object") || r2.getExtension("MOZ_OES_vertex_array_object") || r2.getExtension("WEBKIT_OES_vertex_array_object");
+  return n$1 ? { createVertexArray: n$1.createVertexArrayOES.bind(n$1), deleteVertexArray: n$1.deleteVertexArrayOES.bind(n$1), bindVertexArray: n$1.bindVertexArrayOES.bind(n$1) } : null;
+}
+function o(t$12, o2) {
+  const T = o2 && o2.disabledExtensions || {}, s = o2 && o2.debugWebGLExtensions || {};
+  let x, C, A$1, F, G, O, B2, D, M, c, X, d = null, g = null, P = null, L = null;
+  return { get drawBuffers() {
+    return X || (X = A(t$12, T)), X;
+  }, get instancing() {
+    return x || (x = r$2(t$12)), x;
+  }, get vao() {
+    return C || (C = r$1(t$12, T)), C;
+  }, get compressedTextureETC() {
+    return A$1 || (A$1 = l$1(t$12, T)), A$1;
+  }, get compressedTextureS3TC() {
+    return F || (F = u(t$12, T)), F;
+  }, get textureFilterAnisotropic() {
+    return G || (G = a(t$12, T)), G;
+  }, get disjointTimerQuery() {
+    return O || (O = t(t$12, T)), O;
+  }, get textureFloat() {
+    return B2 || (B2 = R(t$12, T)), B2;
+  }, get colorBufferFloat() {
+    return D || (D = f(t$12, T)), D;
+  }, get blendMinMax() {
+    return M || (M = i(t$12, T)), M;
+  }, get depthTexture() {
+    return d === null && (d = S(t$12, T, "depthTexture", true, ["WEBGL_depth_texture", "MOZ_WEBGL_depth_texture", "WEBKIT_WEBGL_depth_texture"])), d;
+  }, get standardDerivatives() {
+    return g === null && (g = S(t$12, T, "standardDerivatives", true, ["OES_standard_derivatives"])), g;
+  }, get shaderTextureLOD() {
+    return P === null && (P = S(t$12, T, "shaderTextureLOD", true, ["EXT_shader_texture_lod"])), P;
+  }, get fragDepth() {
+    return L === null && (L = S(t$12, T, "fragDepth", true, ["EXT_frag_depth"])), L;
+  }, get loseContext() {
+    return c || (c = e(t$12, s)), c;
+  }, enable(t2) {
+    return this[t2];
+  } };
+}
+function l$1(t2, e2) {
+  if (e2.compressedTextureETC)
+    return null;
+  const r2 = t2.getExtension("WEBGL_compressed_texture_etc");
+  return r2 ? { COMPRESSED_R11_EAC: r2.COMPRESSED_R11_EAC, COMPRESSED_SIGNED_R11_EAC: r2.COMPRESSED_SIGNED_R11_EAC, COMPRESSED_RG11_EAC: r2.COMPRESSED_RG11_EAC, COMPRESSED_SIGNED_RG11_EAC: r2.COMPRESSED_SIGNED_RG11_EAC, COMPRESSED_RGB8_ETC2: r2.COMPRESSED_RGB8_ETC2, COMPRESSED_SRGB8_ETC2: r2.COMPRESSED_SRGB8_ETC2, COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2: r2.COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2, COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: r2.COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2, COMPRESSED_RGBA8_ETC2_EAC: r2.COMPRESSED_RGBA8_ETC2_EAC, COMPRESSED_SRGB8_ALPHA8_ETC2_EAC: r2.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC } : null;
+}
+function u(t2, e2) {
+  if (e2.compressedTextureS3TC)
+    return null;
+  const r2 = t2.getExtension("WEBGL_compressed_texture_s3tc");
+  return r2 ? { COMPRESSED_RGB_S3TC_DXT1: r2.COMPRESSED_RGB_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT1: r2.COMPRESSED_RGBA_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT3: r2.COMPRESSED_RGBA_S3TC_DXT3_EXT, COMPRESSED_RGBA_S3TC_DXT5: r2.COMPRESSED_RGBA_S3TC_DXT5_EXT } : null;
+}
+function i(e2, r2) {
+  if (n(e2))
+    return { MIN: e2.MIN, MAX: e2.MAX };
+  if (r2.blendMinMax)
+    return null;
+  {
+    const t2 = e2.getExtension("EXT_blend_minmax");
+    return t2 ? { MIN: t2.MIN_EXT, MAX: t2.MAX_EXT } : null;
+  }
+}
+function a(t2, e2) {
+  if (e2.textureFilterAnisotropic)
+    return null;
+  const r2 = t2.getExtension("EXT_texture_filter_anisotropic") || t2.getExtension("MOZ_EXT_texture_filter_anisotropic") || t2.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+  return r2 ? { MAX_TEXTURE_MAX_ANISOTROPY: r2.MAX_TEXTURE_MAX_ANISOTROPY_EXT, TEXTURE_MAX_ANISOTROPY: r2.TEXTURE_MAX_ANISOTROPY_EXT } : null;
+}
+function R(e2, r2) {
+  if (n(e2))
+    return { textureFloat: true, textureFloatLinear: !r2.textureFloatLinear && !!e2.getExtension("OES_texture_float_linear"), textureHalfFloat: true, textureHalfFloatLinear: !r2.textureHalfFloatLinear && !!e2.getExtension("OES_texture_half_float_linear"), HALF_FLOAT: e2.HALF_FLOAT };
+  if (e2 instanceof WebGLRenderingContext) {
+    const t2 = !r2.textureHalfFloat && e2.getExtension("OES_texture_half_float");
+    return { textureFloat: !r2.textureFloat && !!e2.getExtension("OES_texture_float"), textureFloatLinear: !r2.textureFloatLinear && !!e2.getExtension("OES_texture_float_linear"), textureHalfFloat: !!t2, textureHalfFloatLinear: !r2.textureHalfFloatLinear && !!e2.getExtension("OES_texture_half_float_linear"), HALF_FLOAT: t2 ? t2.HALF_FLOAT_OES : void 0 };
+  }
+  return null;
+}
+function f(e2, r2) {
+  if (n(e2)) {
+    const t2 = !r2.colorBufferFloat && e2.getExtension("EXT_color_buffer_half_float"), _ = !r2.colorBufferFloat && e2.getExtension("EXT_color_buffer_float"), n2 = !r2.colorBufferFloat && e2.getExtension("EXT_float_blend");
+    return t2 || _ || n2 ? { textureFloat: !!_, textureHalfFloat: !!t2, R16F: e2.R16F, RG16F: e2.RG16F, RGBA16F: e2.RGBA16F, R32F: e2.R32F, RG32F: e2.RG32F, RGBA32F: e2.RGBA32F, R11F_G11F_B10F: e2.R11F_G11F_B10F, RGB16F: e2.RGB16F } : null;
+  }
+  if (e2 instanceof WebGLRenderingContext) {
+    const t2 = !r2.colorBufferFloat && e2.getExtension("EXT_color_buffer_half_float"), _ = !r2.colorBufferFloat && e2.getExtension("WEBGL_color_buffer_float"), n2 = !r2.colorBufferFloat && e2.getExtension("EXT_float_blend");
+    return t2 || _ || n2 ? { textureFloat: !!_, textureHalfFloat: !!t2, RGBA16F: t2 ? t2.RGBA16F_EXT : void 0, RGB16F: t2 ? t2.RGB16F_EXT : void 0, RGBA32F: _ ? _.RGBA32F_EXT : void 0 } : null;
+  }
+  return null;
+}
+function S(e2, r2, _, n$1, E2) {
+  if (n$1 && n(e2))
+    return true;
+  if (r2[_])
+    return false;
+  for (const t2 of E2)
+    if (e2.getExtension(t2))
+      return true;
+  return false;
+}
+class l {
+  constructor(t2, s) {
+    this.gl = null, this.instanceCounter = new t$1(), this._blendEnabled = false, this._blendColorState = { r: 0, g: 0, b: 0, a: 0 }, this._blendFunctionState = { srcRGB: 1, dstRGB: 0, srcAlpha: 1, dstAlpha: 0 }, this._blendEquationState = { mode: 32774, modeAlpha: 32774 }, this._colorMaskState = { r: true, g: true, b: true, a: true }, this._polygonCullingEnabled = false, this._cullFace = 1029, this._frontFace = 2305, this._scissorTestEnabled = false, this._scissorRect = { x: 0, y: 0, width: 0, height: 0 }, this._depthTestEnabled = false, this._depthFunction = 513, this._clearDepth = 1, this._depthWriteEnabled = true, this._depthRange = { zNear: 0, zFar: 1 }, this._viewport = null, this._stencilTestEnabled = false, this._polygonOffsetFillEnabled = false, this._polygonOffset = [0, 0], this._stencilFunction = { face: 1032, func: 519, ref: 0, mask: 1 }, this._clearStencil = 0, this._stencilWriteMask = 1, this._stencilOperation = { face: 1032, fail: 7680, zFail: 7680, zPass: 7680 }, this._clearColor = { r: 0, g: 0, b: 0, a: 0 }, this._activeShaderProgram = null, this._activeVertexBuffer = null, this._activeIndexBuffer = null, this._activeFramebuffer = null, this._activeRenderbuffer = null, this._activeTextureUnit = 0, this._textureUnitMap = [], this._numOfDrawCalls = 0, this._numOfTriangles = 0, this.contextVersion = n(t2) ? "webgl2" : "webgl", this.gl = t2, t2 instanceof WebGLRenderingContext && this.gl.getExtension("OES_element_index_uint"), this._capabilities = o(t2, s);
+    const l2 = this.gl.getParameter(this.gl.VIEWPORT);
+    this._viewport = { x: l2[0], y: l2[1], width: l2[2], height: l2[3] }, this._stateTracker = new B({ setBlending: (t3) => {
+      if (t3) {
+        this.setBlendingEnabled(true), this.setBlendEquationSeparate(t3.opRgb, t3.opAlpha), this.setBlendFunctionSeparate(t3.srcRgb, t3.dstRgb, t3.srcAlpha, t3.dstAlpha);
+        const e2 = t3.color;
+        this.setBlendColor(e2.r, e2.g, e2.b, e2.a);
+      } else
+        this.setBlendingEnabled(false);
+    }, setCulling: (t3) => {
+      t3 ? (this.setFaceCullingEnabled(true), this.setCullFace(t3.face), this.setFrontFace(t3.mode)) : this.setFaceCullingEnabled(false);
+    }, setPolygonOffset: (t3) => {
+      t3 ? (this.setPolygonOffsetFillEnabled(true), this.setPolygonOffset(t3.factor, t3.units)) : this.setPolygonOffsetFillEnabled(false);
+    }, setDepthTest: (t3) => {
+      t3 ? (this.setDepthTestEnabled(true), this.setDepthFunction(t3.func)) : this.setDepthTestEnabled(false);
+    }, setStencilTest: (t3) => {
+      if (t3) {
+        this.setStencilTestEnabled(true);
+        const e2 = t3.function;
+        this.setStencilFunction(e2.func, e2.ref, e2.mask);
+        const i2 = t3.operation;
+        this.setStencilOp(i2.fail, i2.zFail, i2.zPass);
+      } else
+        this.setStencilTestEnabled(false);
+    }, setDepthWrite: (t3) => {
+      t3 ? (this.setDepthWriteEnabled(true), this.setDepthRange(t3.zNear, t3.zFar)) : this.setDepthWriteEnabled(false);
+    }, setColorWrite: (t3) => {
+      t3 ? this.setColorMask(t3.r, t3.g, t3.b, t3.a) : this.setColorMask(false, false, false, false);
+    }, setStencilWrite: (t3) => {
+      t3 ? this.setStencilWriteMask(t3.mask) : this.setStencilWriteMask(0);
+    } }), this.enforceState();
+  }
+  isWebGL2Context() {
+    return this.contextVersion === "webgl2";
+  }
+  get contextAttributes() {
+    return this.gl.getContextAttributes();
+  }
+  get parameters() {
+    if (!this._parameters) {
+      const t2 = this.capabilities.textureFilterAnisotropic;
+      this._parameters = { versionString: this.gl.getParameter(this.gl.VERSION), maxVertexTextureImageUnits: this.gl.getParameter(this.gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS), maxVertexAttributes: this.gl.getParameter(this.gl.MAX_VERTEX_ATTRIBS), maxMaxAnisotropy: t2 ? this.gl.getParameter(t2.MAX_TEXTURE_MAX_ANISOTROPY) : void 0, maxTextureImageUnits: this.gl.getParameter(this.gl.MAX_TEXTURE_IMAGE_UNITS), maxTextureSize: this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE) };
+    }
+    return this._parameters;
+  }
+  dispose() {
+    this.bindVAO(null), this.unbindBuffer(34962), this.unbindBuffer(34963), this._textureUnitMap = [], this.gl = null, this._capabilities = null;
+  }
+  setPipelineState(t2) {
+    this._stateTracker.setPipeline(t2);
+  }
+  setBlendingEnabled(t2) {
+    this._blendEnabled !== t2 && (t2 === true ? this.gl.enable(this.gl.BLEND) : this.gl.disable(this.gl.BLEND), this._blendEnabled = t2, this._stateTracker.invalidateBlending());
+  }
+  setBlendColor(t2, e2, i2, s) {
+    t2 === this._blendColorState.r && e2 === this._blendColorState.g && i2 === this._blendColorState.b && s === this._blendColorState.a || (this.gl.blendColor(t2, e2, i2, s), this._blendColorState.r = t2, this._blendColorState.g = e2, this._blendColorState.b = i2, this._blendColorState.a = s, this._stateTracker.invalidateBlending());
+  }
+  setBlendFunction(t2, e2) {
+    t2 === this._blendFunctionState.srcRGB && e2 === this._blendFunctionState.dstRGB || (this.gl.blendFunc(t2, e2), this._blendFunctionState.srcRGB = t2, this._blendFunctionState.srcAlpha = t2, this._blendFunctionState.dstRGB = e2, this._blendFunctionState.dstAlpha = e2, this._stateTracker.invalidateBlending());
+  }
+  setBlendFunctionSeparate(t2, e2, i2, s) {
+    this._blendFunctionState.srcRGB === t2 && this._blendFunctionState.srcAlpha === i2 && this._blendFunctionState.dstRGB === e2 && this._blendFunctionState.dstAlpha === s || (this.gl.blendFuncSeparate(t2, e2, i2, s), this._blendFunctionState.srcRGB = t2, this._blendFunctionState.srcAlpha = i2, this._blendFunctionState.dstRGB = e2, this._blendFunctionState.dstAlpha = s, this._stateTracker.invalidateBlending());
+  }
+  setBlendEquation(t2) {
+    this._blendEquationState.mode !== t2 && (this.gl.blendEquation(t2), this._blendEquationState.mode = t2, this._blendEquationState.modeAlpha = t2, this._stateTracker.invalidateBlending());
+  }
+  setBlendEquationSeparate(t2, e2) {
+    this._blendEquationState.mode === t2 && this._blendEquationState.modeAlpha === e2 || (this.gl.blendEquationSeparate(t2, e2), this._blendEquationState.mode = t2, this._blendEquationState.modeAlpha = e2, this._stateTracker.invalidateBlending());
+  }
+  setColorMask(t2, e2, i2, s) {
+    this._colorMaskState.r === t2 && this._colorMaskState.g === e2 && this._colorMaskState.b === i2 && this._colorMaskState.a === s || (this.gl.colorMask(t2, e2, i2, s), this._colorMaskState.r = t2, this._colorMaskState.g = e2, this._colorMaskState.b = i2, this._colorMaskState.a = s, this._stateTracker.invalidateColorWrite());
+  }
+  setClearColor(t2, e2, i2, s) {
+    this._clearColor.r === t2 && this._clearColor.g === e2 && this._clearColor.b === i2 && this._clearColor.a === s || (this.gl.clearColor(t2, e2, i2, s), this._clearColor.r = t2, this._clearColor.g = e2, this._clearColor.b = i2, this._clearColor.a = s);
+  }
+  setFaceCullingEnabled(t2) {
+    this._polygonCullingEnabled !== t2 && (t2 === true ? this.gl.enable(this.gl.CULL_FACE) : this.gl.disable(this.gl.CULL_FACE), this._polygonCullingEnabled = t2, this._stateTracker.invalidateCulling());
+  }
+  setPolygonOffsetFillEnabled(t2) {
+    this._polygonOffsetFillEnabled !== t2 && (t2 === true ? this.gl.enable(this.gl.POLYGON_OFFSET_FILL) : this.gl.disable(this.gl.POLYGON_OFFSET_FILL), this._polygonOffsetFillEnabled = t2, this._stateTracker.invalidatePolygonOffset());
+  }
+  setPolygonOffset(t2, e2) {
+    this._polygonOffset[0] === t2 && this._polygonOffset[1] === e2 || (this._polygonOffset[0] = t2, this._polygonOffset[1] = e2, this.gl.polygonOffset(t2, e2), this._stateTracker.invalidatePolygonOffset());
+  }
+  setCullFace(t2) {
+    this._cullFace !== t2 && (this.gl.cullFace(t2), this._cullFace = t2, this._stateTracker.invalidateCulling());
+  }
+  setFrontFace(t2) {
+    this._frontFace !== t2 && (this.gl.frontFace(t2), this._frontFace = t2, this._stateTracker.invalidateCulling());
+  }
+  setScissorTestEnabled(t2) {
+    this._scissorTestEnabled !== t2 && (t2 === true ? this.gl.enable(this.gl.SCISSOR_TEST) : this.gl.disable(this.gl.SCISSOR_TEST), this._scissorTestEnabled = t2);
+  }
+  setScissorRect(t2, e2, i2, s) {
+    this._scissorRect.x === t2 && this._scissorRect.y === e2 && this._scissorRect.width === i2 && this._scissorRect.height === s || (this.gl.scissor(t2, e2, i2, s), this._scissorRect.x = t2, this._scissorRect.y = e2, this._scissorRect.width = i2, this._scissorRect.height = s);
+  }
+  setDepthTestEnabled(t2) {
+    this._depthTestEnabled !== t2 && (t2 === true ? this.gl.enable(this.gl.DEPTH_TEST) : this.gl.disable(this.gl.DEPTH_TEST), this._depthTestEnabled = t2, this._stateTracker.invalidateDepthTest());
+  }
+  setClearDepth(t2) {
+    this._clearDepth !== t2 && (this.gl.clearDepth(t2), this._clearDepth = t2);
+  }
+  setDepthFunction(t2) {
+    this._depthFunction !== t2 && (this.gl.depthFunc(t2), this._depthFunction = t2, this._stateTracker.invalidateDepthTest());
+  }
+  setDepthWriteEnabled(t2) {
+    this._depthWriteEnabled !== t2 && (this.gl.depthMask(t2), this._depthWriteEnabled = t2, this._stateTracker.invalidateDepthWrite());
+  }
+  setDepthRange(t2, e2) {
+    this._depthRange.zNear === t2 && this._depthRange.zFar === e2 || (this.gl.depthRange(t2, e2), this._depthRange.zNear = t2, this._depthRange.zFar = e2, this._stateTracker.invalidateDepthWrite());
+  }
+  setStencilTestEnabled(t2) {
+    this._stencilTestEnabled !== t2 && (t2 === true ? this.gl.enable(this.gl.STENCIL_TEST) : this.gl.disable(this.gl.STENCIL_TEST), this._stencilTestEnabled = t2, this._stateTracker.invalidateStencilTest());
+  }
+  setClearStencil(t2) {
+    t2 !== this._clearStencil && (this.gl.clearStencil(t2), this._clearStencil = t2);
+  }
+  setStencilFunction(t2, e2, i2) {
+    this._stencilFunction.func === t2 && this._stencilFunction.ref === e2 && this._stencilFunction.mask === i2 || (this.gl.stencilFunc(t2, e2, i2), this._stencilFunction.face = 1032, this._stencilFunction.func = t2, this._stencilFunction.ref = e2, this._stencilFunction.mask = i2, this._stateTracker.invalidateStencilTest());
+  }
+  setStencilFunctionSeparate(t2, e2, i2, s) {
+    this._stencilFunction.face === t2 && this._stencilFunction.func === e2 && this._stencilFunction.ref === i2 && this._stencilFunction.mask === s || (this.gl.stencilFuncSeparate(t2, e2, i2, s), this._stencilFunction.face = t2, this._stencilFunction.func = e2, this._stencilFunction.ref = i2, this._stencilFunction.mask = s, this._stateTracker.invalidateStencilTest());
+  }
+  setStencilWriteMask(t2) {
+    this._stencilWriteMask !== t2 && (this.gl.stencilMask(t2), this._stencilWriteMask = t2, this._stateTracker.invalidateStencilWrite());
+  }
+  setStencilOp(t2, e2, i2) {
+    this._stencilOperation.fail === t2 && this._stencilOperation.zFail === e2 && this._stencilOperation.zPass === i2 || (this.gl.stencilOp(t2, e2, i2), this._stencilOperation.face = 1032, this._stencilOperation.fail = t2, this._stencilOperation.zFail = e2, this._stencilOperation.zPass = i2, this._stateTracker.invalidateStencilTest());
+  }
+  setStencilOpSeparate(t2, e2, i2, s) {
+    this._stencilOperation.face === t2 && this._stencilOperation.fail === e2 && this._stencilOperation.zFail === i2 && this._stencilOperation.zPass === s || (this.gl.stencilOpSeparate(t2, e2, i2, s), this._stencilOperation.face = t2, this._stencilOperation.face = t2, this._stencilOperation.fail = e2, this._stencilOperation.zFail = i2, this._stencilOperation.zPass = s, this._stateTracker.invalidateStencilTest());
+  }
+  setActiveTexture(t2) {
+    const e2 = this._activeTextureUnit;
+    return t2 >= 0 && t2 !== this._activeTextureUnit && (this.gl.activeTexture(o$1 + t2), this._activeTextureUnit = t2), e2;
+  }
+  clear(t2) {
+    t2 && this.gl.clear(t2);
+  }
+  clearSafe(t2, e2 = 255) {
+    t2 && (16384 & t2 && this.setColorMask(true, true, true, true), 256 & t2 && this.setDepthWriteEnabled(true), 1024 & t2 && this.setStencilWriteMask(e2), this.gl.clear(t2));
+  }
+  drawArrays(t2, e2, i2) {
+    this.gl.drawArrays(t2, e2, i2);
+  }
+  drawElements(t2, e2, i2, s) {
+    i2 !== 5123 ? i2 === 5125 && this.gl.drawElements(t2, e2, i2, s) : this.gl.drawElements(t2, e2, i2, s);
+  }
+  logIno() {
+  }
+  get capabilities() {
+    return this._capabilities;
+  }
+  setViewport(t2, e2, i2, s) {
+    const a2 = this._viewport;
+    a2.x === t2 && a2.y === e2 && a2.width === i2 && a2.height === s || (a2.x = t2, a2.y = e2, a2.width = i2, a2.height = s, this.gl.viewport(t2, e2, i2, s));
+  }
+  getViewport() {
+    return { x: this._viewport.x, y: this._viewport.y, width: this._viewport.width, height: this._viewport.height };
+  }
+  bindProgram(t2) {
+    if (!t2)
+      return this.gl.useProgram(null), void (this._activeShaderProgram = null);
+    this._activeShaderProgram !== t2 && (t2.initialize(), this.gl.useProgram(t2.glName), this._activeShaderProgram = t2);
+  }
+  bindTexture(t2, e2) {
+    (e2 >= this.parameters.maxTextureImageUnits || e2 < 0) && console.error("Input texture unit is out of range of available units!");
+    const i2 = this._textureUnitMap[e2];
+    if (this.setActiveTexture(e2), t2 == null || t2.glName == null)
+      return i2 != null && this.gl.bindTexture(i2.descriptor.target, null), void (this._textureUnitMap[e2] = null);
+    i2 !== t2 ? (this.gl.bindTexture(t2.descriptor.target, t2.glName), t2.applyChanges(), this._textureUnitMap[e2] = t2) : t2.applyChanges();
+  }
+  unbindTextureAllUnits(t2) {
+    for (let e2 = 0; e2 < this.parameters.maxTextureImageUnits; e2++)
+      this._textureUnitMap[e2] === t2 && this.bindTexture(null, e2);
+  }
+  bindFramebuffer(e2) {
+    if (t$4(e2))
+      return this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null), void (this._activeFramebuffer = null);
+    this._activeFramebuffer !== e2 && (e2.initializeAndBind(), this._activeFramebuffer = e2);
+  }
+  bindBuffer(t2) {
+    t2 && (t2.bufferType === 34962 ? this._activeVertexBuffer = r(this.gl, t2, t2.bufferType, this._activeVertexBuffer) : this._activeIndexBuffer = r(this.gl, t2, t2.bufferType, this._activeIndexBuffer));
+  }
+  bindRenderbuffer(t2) {
+    const e2 = this.gl;
+    t2 || (e2.bindRenderbuffer(e2.RENDERBUFFER, null), this._activeRenderbuffer = null), this._activeRenderbuffer !== t2 && (e2.bindRenderbuffer(e2.RENDERBUFFER, t2.glName), this._activeRenderbuffer = t2);
+  }
+  unbindBuffer(t2) {
+    t2 === 34962 ? this._activeVertexBuffer = r(this.gl, null, t2, this._activeVertexBuffer) : this._activeIndexBuffer = r(this.gl, null, t2, this._activeIndexBuffer);
+  }
+  bindVAO(t2) {
+    t2 ? this._activeVertexArrayObject && this._activeVertexArrayObject === t2 || (t2.bind(), this._activeVertexArrayObject = t2) : this._activeVertexArrayObject && (this._activeVertexArrayObject.unbind(), this._activeVertexArrayObject = null);
+  }
+  getBoundTexture(t2) {
+    return this._textureUnitMap[t2];
+  }
+  getBoundFramebufferObject() {
+    return this._activeFramebuffer;
+  }
+  getBoundVAO() {
+    return this._activeVertexArrayObject;
+  }
+  resetState() {
+    this.bindProgram(null), this.bindVAO(null), this.bindFramebuffer(null), this.unbindBuffer(34962), this.unbindBuffer(34963);
+    for (let t2 = 0; t2 < this.parameters.maxTextureImageUnits; t2++)
+      this.bindTexture(null, t2);
+    this.setBlendingEnabled(false), this.setBlendFunction(1, 0), this.setBlendEquation(32774), this.setBlendColor(0, 0, 0, 0), this.setFaceCullingEnabled(false), this.setCullFace(1029), this.setFrontFace(2305), this.setPolygonOffsetFillEnabled(false), this.setPolygonOffset(0, 0), this.setScissorTestEnabled(false), this.setScissorRect(0, 0, this.gl.canvas.width, this.gl.canvas.height), this.setDepthTestEnabled(false), this.setDepthFunction(513), this.setDepthRange(0, 1), this.setStencilTestEnabled(false), this.setStencilFunction(519, 0, 0), this.setStencilOp(7680, 7680, 7680), this.setClearColor(0, 0, 0, 0), this.setClearDepth(1), this.setClearStencil(0), this.setColorMask(true, true, true, true), this.setStencilWriteMask(4294967295), this.setDepthWriteEnabled(true), this.setViewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+  }
+  enforceState() {
+    const t2 = this.gl, e2 = this.capabilities.vao;
+    e2 && e2.bindVertexArray(null);
+    for (let i2 = 0; i2 < this.parameters.maxVertexAttributes; i2++)
+      t2.disableVertexAttribArray(i2);
+    if (this._activeVertexBuffer ? t2.bindBuffer(this._activeVertexBuffer.bufferType, this._activeVertexBuffer.glName) : t2.bindBuffer(34962, null), this._activeIndexBuffer ? t2.bindBuffer(this._activeIndexBuffer.bufferType, this._activeIndexBuffer.glName) : t2.bindBuffer(34963, null), e2 && this._activeVertexArrayObject) {
+      const t3 = this._activeVertexArrayObject;
+      this._activeVertexArrayObject && (this._activeVertexArrayObject.unbind(), this._activeVertexArrayObject = null), this.bindVAO(t3);
+    }
+    t2.bindFramebuffer(t2.FRAMEBUFFER, this._activeFramebuffer ? this._activeFramebuffer.glName : null), t2.useProgram(this._activeShaderProgram ? this._activeShaderProgram.glName : null), t2.blendColor(this._blendColorState.r, this._blendColorState.g, this._blendColorState.b, this._blendColorState.a), t2.bindRenderbuffer(t2.RENDERBUFFER, this._activeRenderbuffer ? this._activeRenderbuffer.glName : null), this._blendEnabled === true ? t2.enable(this.gl.BLEND) : t2.disable(this.gl.BLEND), t2.blendEquationSeparate(this._blendEquationState.mode, this._blendEquationState.modeAlpha), t2.blendFuncSeparate(this._blendFunctionState.srcRGB, this._blendFunctionState.dstRGB, this._blendFunctionState.srcAlpha, this._blendFunctionState.dstAlpha), t2.clearColor(this._clearColor.r, this._clearColor.g, this._clearColor.b, this._clearColor.a), t2.clearDepth(this._clearDepth), t2.clearStencil(this._clearStencil), t2.colorMask(this._colorMaskState.r, this._colorMaskState.g, this._colorMaskState.b, this._colorMaskState.a), t2.cullFace(this._cullFace), t2.depthFunc(this._depthFunction), t2.depthRange(this._depthRange.zNear, this._depthRange.zFar), this._depthTestEnabled === true ? t2.enable(t2.DEPTH_TEST) : t2.disable(t2.DEPTH_TEST), t2.depthMask(this._depthWriteEnabled), t2.frontFace(this._frontFace), t2.lineWidth(1), this._polygonCullingEnabled === true ? t2.enable(t2.CULL_FACE) : t2.disable(t2.CULL_FACE), t2.polygonOffset(this._polygonOffset[0], this._polygonOffset[1]), this._polygonOffsetFillEnabled === true ? t2.enable(t2.POLYGON_OFFSET_FILL) : t2.disable(t2.POLYGON_OFFSET_FILL), t2.scissor(this._scissorRect.x, this._scissorRect.y, this._scissorRect.width, this._scissorRect.height), this._scissorTestEnabled === true ? t2.enable(t2.SCISSOR_TEST) : t2.disable(t2.SCISSOR_TEST), t2.stencilFunc(this._stencilFunction.func, this._stencilFunction.ref, this._stencilFunction.mask), t2.stencilOpSeparate(this._stencilOperation.face, this._stencilOperation.fail, this._stencilOperation.zFail, this._stencilOperation.zPass), this._stencilTestEnabled === true ? t2.enable(t2.STENCIL_TEST) : t2.disable(t2.STENCIL_TEST), t2.stencilMask(this._stencilWriteMask);
+    for (let i2 = 0; i2 < this.parameters.maxTextureImageUnits; i2++) {
+      t2.activeTexture(o$1 + i2), t2.bindTexture(3553, null);
+      const e3 = this._textureUnitMap[i2];
+      e3 && t2.bindTexture(e3.descriptor.target, e3.glName);
+    }
+    t2.activeTexture(o$1 + this._activeTextureUnit), t2.viewport(this._viewport.x, this._viewport.y, this._viewport.width, this._viewport.height);
+  }
+}
+function r(t2, e2, i2, s) {
+  return e2 ? s !== e2 && t2.bindBuffer(i2, e2.glName) : t2.bindBuffer(i2, null), e2;
+}
+export { t as a, l, t$2 as t };

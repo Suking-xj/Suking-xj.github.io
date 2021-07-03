@@ -1,1 +1,1621 @@
-import{cs as e,cO as t,ak as r,ao as i,a5 as s,an as n}from"./vendor.74d5941c.js";import{f as a,t as l,n as o,b as c,r as h,h as x,c as u,d,e as f,P as y,g as _,a as g}from"./StyleRepository.bb6fee73.js";import{o as p,a as m,s as V}from"./earcut.0e5467f0.js";import{t as I,i as B,e as b,u as w,b as M,a as P,n as k,f as v}from"./TurboLine.ecd76861.js";import{t as L}from"./Rect.b51904ac.js";import{C as A}from"./BidiEngine.9b392b22.js";import"./vec4f32.6de15d07.js";import"./definitions.6737c10c.js";import"./GeometryUtils.9c8423f5.js";import"./_commonjsHelpers.f2a458db.js";var N,D;function T(e){return 746===e||747===e||!(e<4352)&&(e>=12704&&e<=12735||e>=12544&&e<=12591||e>=65072&&e<=65103&&!(e>=65097&&e<=65103)||e>=63744&&e<=64255||e>=13056&&e<=13311||e>=11904&&e<=12031||e>=12736&&e<=12783||e>=12288&&e<=12351&&!(e>=12296&&e<=12305||e>=12308&&e<=12319||12336===e)||e>=13312&&e<=19903||e>=19968&&e<=40959||e>=12800&&e<=13055||e>=12592&&e<=12687||e>=43360&&e<=43391||e>=55216&&e<=55295||e>=4352&&e<=4607||e>=44032&&e<=55215||e>=12352&&e<=12447||e>=12272&&e<=12287||e>=12688&&e<=12703||e>=12032&&e<=12255||e>=12784&&e<=12799||e>=12448&&e<=12543&&12540!==e||e>=65280&&e<=65519&&!(65288===e||65289===e||65293===e||e>=65306&&e<=65310||65339===e||65341===e||65343===e||e>=65371&&e<=65503||65507===e||e>=65512&&e<=65519)||e>=65104&&e<=65135&&!(e>=65112&&e<=65118||e>=65123&&e<=65126)||e>=5120&&e<=5759||e>=6320&&e<=6399||e>=65040&&e<=65055||e>=19904&&e<=19967||e>=40960&&e<=42127||e>=42128&&e<=42191)}function C(e){switch(e){case 10:case 32:case 38:case 40:case 41:case 43:case 45:case 47:case 173:case 183:case 8203:case 8208:case 8211:case 8231:return!0}return!1}function S(e){switch(e){case 9:case 10:case 11:case 12:case 13:case 32:return!0}return!1}(D=N||(N={}))[D.INITIALIZED=0]="INITIALIZED",D[D.NO_DATA=1]="NO_DATA",D[D.READY=2]="READY",D[D.MODIFIED=3]="MODIFIED",D[D.INVALID=4]="INVALID";const E=24;class z{constructor(e,t,r,i,s,n,a){this._glyphItems=e,this._maxWidth=t,this._lineHeight=r,this._letterSpacing=i,this._hAnchor=s,this._vAnchor=n,this._justify=a}getShaping(e,t,r){const i=this._letterSpacing,s=this._lineHeight,n=this._justify,a=this._maxWidth,l=[];let o=0,c=0;const h=e.length;for(let m=0;m<h;m++){const t=e.charCodeAt(m),s=r&&T(t);let n;for(const e of this._glyphItems)if(n=e[t],n)break;l.push({codePoint:t,x:o,y:c,vertical:s,glyphMosaicItem:n}),n&&(o+=n.metrics.advance+i)}let x=o;a>0&&(x=o/Math.max(1,Math.ceil(o/a)));const u=e.indexOf("​")>=0,d=[];for(let m=0;m<h-1;m++){const e=l[m].codePoint,t=!((f=e)<11904)&&(f>=12704&&f<=12735||f>=12544&&f<=12591||f>=65072&&f<=65103||f>=63744&&f<=64255||f>=13056&&f<=13311||f>=11904&&f<=12031||f>=12736&&f<=12783||f>=12288&&f<=12351||f>=13312&&f<=19903||f>=19968&&f<=40959||f>=12800&&f<=13055||f>=65280&&f<=65519||f>=12352&&f<=12447||f>=12272&&f<=12287||f>=12032&&f<=12255||f>=12784&&f<=12799||f>=12448&&f<=12543||f>=65040&&f<=65055||f>=42128&&f<=42191||f>=40960&&f<=42127);if(C(e)||t){let r=0;if(10===e)r-=1e4;else if(t&&u)r+=150;else{40!==e&&65288!==e||(r+=50);const t=l[m+1].codePoint;41!==t&&65289!==t||(r+=50)}d.push(this._buildBreak(m+1,l[m].x,x,d,r,!1))}}var f;const y=this._optimalBreaks(this._buildBreak(h,o,x,d,0,!0));let _=0;const g=t?-s:s;let p=0;for(let m=0;m<y.length;m++){const e=y[m];let t=p;for(;t<e&&S(l[t].codePoint);)l[t].glyphMosaicItem=null,++t;let r=e-1;for(;r>t&&S(l[r].codePoint);)l[r].glyphMosaicItem=null,--r;if(t<=r){const e=l[t].x;for(let s=t;s<=r;s++)l[s].x-=e,l[s].y=c;let i=l[r].x;l[r].glyphMosaicItem&&(i+=l[r].glyphMosaicItem.metrics.advance),_=Math.max(i,_),n&&this._applyJustification(l,t,r)}p=e,c+=g}if(l.length>0){const e=y.length-1,r=(n-this._hAnchor)*_;let i=(-this._vAnchor*(e+1)+.5)*s;t&&e&&(i+=e*s);for(const t of l)t.x+=r,t.y+=i}return l.filter((e=>e.glyphMosaicItem))}static getTextBox(e,t){if(!e.length)return null;let r=1/0,i=1/0,s=0,n=0;for(const a of e){const e=a.glyphMosaicItem.metrics.advance,l=a.x,o=a.y-17,c=l+e,h=o+t;r=Math.min(r,l),s=Math.max(s,c),i=Math.min(i,o),n=Math.max(n,h)}return{x:r,y:i,width:s-r,height:n-i}}static getBox(e){if(!e.length)return null;let t=1/0,r=1/0,i=0,s=0;for(const n of e){const{height:e,left:a,top:l,width:o}=n.glyphMosaicItem.metrics,c=n.x,h=n.y-(e-Math.abs(l)),x=c+o+a,u=h+e;t=Math.min(t,c),i=Math.max(i,x),r=Math.min(r,h),s=Math.max(s,u)}return{x:t,y:r,width:i-t,height:s-r}}static addDecoration(e,t){const r=e.length;if(0===r)return;let i=e[0].x+e[0].glyphMosaicItem.metrics.left,s=e[0].y;for(let a=1;a<r;a++){const r=e[a];if(r.y!==s){const n=e[a-1].x+e[a-1].glyphMosaicItem.metrics.left+e[a-1].glyphMosaicItem.metrics.width;e.push({codePoint:0,x:i,y:s+t-3,vertical:!1,glyphMosaicItem:{sdf:!0,rect:new L(4,0,4,8),metrics:{width:n-i,height:8,left:0,top:0,advance:0},page:0,code:0}}),s=r.y,i=r.x+r.glyphMosaicItem.metrics.left}}const n=e[r-1].x+e[r-1].glyphMosaicItem.metrics.left+e[r-1].glyphMosaicItem.metrics.width;e.push({codePoint:0,x:i,y:s+t-3,vertical:!1,glyphMosaicItem:{sdf:!0,rect:new L(4,0,4,8),metrics:{width:n-i,height:8,left:0,top:0,advance:0},page:0,code:0}})}_breakScore(e,t,r,i){const s=(e-t)*(e-t);return i?e<t?s/2:2*s:s+Math.abs(r)*r}_buildBreak(e,t,r,i,s,n){let a=null,l=this._breakScore(t,r,s,n);for(const o of i){const e=t-o.x,i=this._breakScore(e,r,s,n)+o.score;i<=l&&(a=o,l=i)}return{index:e,x:t,score:l,previousBreak:a}}_optimalBreaks(e){return e?this._optimalBreaks(e.previousBreak).concat(e.index):[]}_applyJustification(e,t,r){const i=e[r],s=i.vertical?E:i.glyphMosaicItem?i.glyphMosaicItem.metrics.advance:0,n=(i.x+s)*this._justify;for(let a=t;a<=r;a++)e[a].x-=n}}class F{constructor(e,t,r=0,i=-1,s=.5){this.x=e,this.y=t,this.angle=r,this.segment=i,this.minzoom=s}}class U{constructor(e,t,r,i,s,n=.5,a=o){this.anchor=e,this.labelAngle=t,this.glyphAngle=r,this.page=i,this.alternateVerticalGlyph=s,this.minzoom=n,this.maxzoom=a}}class O{constructor(e,t,r,i,s,n,a,l,o,c,h,x){this.tl=e,this.tr=t,this.bl=r,this.br=i,this.mosaicRect=s,this.labelAngle=n,this.minAngle=a,this.maxAngle=l,this.anchor=o,this.minzoom=c,this.maxzoom=h,this.page=x}}class R{constructor(e){this.shapes=e}}class G{getIconPlacement(e,t,r){const i=new I(e.x,e.y),s=0===r.rotationAlignment,n=r.keepUpright;let o=r.rotate*a;s&&(o+=e.angle);const c=new R([]);return r.allowOverlap&&r.ignorePlacement||!p||(c.iconColliders=[]),this._addIconPlacement(c,i,t,r,o),s&&n&&this._addIconPlacement(c,i,t,r,o+l),c}_addIconPlacement(e,t,r,i,s){const n=r.pixelRatio,a=r.width/n,l=r.height/n,c=i.offset;let h=c[0],x=c[1];switch(i.anchor){case 0:h-=a/2,x-=l/2;break;case 1:x-=l/2;break;case 2:h-=a,x-=l/2;break;case 3:h-=a/2;break;case 4:h-=a/2,x-=l;break;case 5:break;case 7:x-=l;break;case 6:h-=a;break;case 8:h-=a,x-=l}const u=r.rect,d=2/n,f=h-d,y=x-d,_=f+u.width/n,g=y+u.height/n,m=new I(f,y),V=new I(_,g),B=new I(f,g),b=new I(_,y);if(0!==s){const e=Math.cos(s),t=Math.sin(s);m.rotate(e,t),V.rotate(e,t),B.rotate(e,t),b.rotate(e,t)}const w=new O(m,b,B,V,u,s,0,256,t,.5,o,0);if(e.shapes.push(w),(!i.allowOverlap||!i.ignorePlacement)&&p){const r=i.size,n=i.padding,c={xTile:t.x,yTile:t.y,dxPixels:h*r-n,dyPixels:x*r-n,hard:!i.optional,partIndex:0,width:a*r+2*n,height:l*r+2*n,angle:s,minLod:.5,maxLod:o};e.iconColliders.push(c)}}getTextPlacement(e,t,r,i){const s=new I(e.x,e.y),n=i.rotate*a,c=0===i.rotationAlignment,h=i.keepUpright,x=i.padding;let u=.5;const d=c?e.angle:0,f=e.segment>=0&&c,y=i.allowOverlap&&i.ignorePlacement?null:[],_=[],g=!f;let p=Number.POSITIVE_INFINITY,m=Number.NEGATIVE_INFINITY,V=p,B=m;const b=(f||c)&&h,w=i.size/E;let M=!1;for(const a of t)if(a.vertical){M=!0;break}let P,k=0,v=0;if(!f&&M){const e=z.getTextBox(t,i.lineHeight*E);switch(i.anchor){case 1:k=e.height/2,v=-e.width/2;break;case 2:k=-e.height/2,v=e.width/2;break;case 3:k=e.height/2,v=e.width/2;break;case 4:k=-e.height/2,v=-e.width/2;break;case 5:k=e.height;break;case 7:v=-e.width;break;case 6:v=e.width;break;case 8:k=-e.height}}k+=i.offset[0]*E,v+=i.offset[1]*E;for(const a of t){const t=a.glyphMosaicItem;if(!t||t.rect.isEmpty)continue;const L=t.rect,A=t.metrics,N=t.page;if(y&&g){if(void 0!==P&&P!==a.y){let t,r,s,a;M?(t=-B+k,r=p+v,s=B-V,a=m-p):(t=p+k,r=V+v,s=m-p,a=B-V);const l={xTile:e.x,yTile:e.y,dxPixels:t*w-x,dyPixels:r*w-x,hard:!i.optional,partIndex:1,width:s*w+2*x,height:a*w+2*x,angle:n,minLod:.5,maxLod:o};y.push(l),p=Number.POSITIVE_INFINITY,m=Number.NEGATIVE_INFINITY,V=p,B=m}P=a.y}const D=[];if(f){const i=.5*t.metrics.width,s=(a.x+A.left-4+i)*w*8;if(u=this._placeGlyph(e,u,s,r,e.segment,1,a.vertical,N,D),h&&(u=this._placeGlyph(e,u,s,r,e.segment,-1,a.vertical,N,D)),u>=2)break}else D.push(new U(s,d,d,N,!1)),c&&h&&D.push(new U(s,d+l,d+l,N,!1));const T=a.x+A.left,C=a.y-17-A.top,S=T+A.width,E=C+A.height;let z,F,R,G,j,q,K,H;if(!f&&M)if(a.vertical){const e=(T+S)/2-A.height/2,t=(C+E)/2+A.width/2;z=new I(-t-4+k,e-4+v),F=new I(z.x+L.width,z.y+L.height),R=new I(z.x,F.y),G=new I(F.x,z.y)}else z=new I(4-C+k,T-4+v),F=new I(z.x-L.height,z.y+L.width),R=new I(F.x,z.y),G=new I(z.x,F.y);else z=new I(T-4+k,C-4+v),F=new I(z.x+L.width,z.y+L.height),R=new I(z.x,F.y),G=new I(F.x,z.y);for(const r of D){let t,s,l,o;if(r.alternateVerticalGlyph){if(!j){const e=(C+E)/2+v;j=new I((T+S)/2+k-A.height/2-4,e+A.width/2+4),q=new I(j.x+L.height,j.y-L.width),K=new I(q.x,j.y),H=new I(j.x,q.y)}t=j,s=K,l=H,o=q}else t=z,s=R,l=G,o=F;const c=C,h=E,u=r.glyphAngle+n;if(0!==u){const e=Math.cos(u),r=Math.sin(u);t=t.clone(),s=s.clone(),l=l.clone(),o=o.clone(),t.rotate(e,r),o.rotate(e,r),s.rotate(e,r),l.rotate(e,r)}let d=0,P=256;if(f&&M?a.vertical?r.alternateVerticalGlyph?(d=32,P=96):(d=224,P=32):(d=224,P=96):(d=192,P=64),_.push(new O(t,l,s,o,L,r.labelAngle,d,P,r.anchor,r.minzoom,r.maxzoom,r.page)),y&&(!b||this._legible(r.labelAngle)))if(g)T<p&&(p=T),c<V&&(V=c),S>m&&(m=S),h>B&&(B=h);else if(r.minzoom<2){const t={xTile:e.x,yTile:e.y,dxPixels:(T+k)*w-x,dyPixels:(c+k)*w-x,hard:!i.optional,partIndex:1,width:(S-T)*w+2*x,height:(h-c)*w+2*x,angle:u,minLod:r.minzoom,maxLod:r.maxzoom};y.push(t)}}}if(u>=2)return null;if(y&&g){let t,r,s,a;M?(t=-B+k,r=p+v,s=B-V,a=m-p):(t=p+k,r=V+v,s=m-p,a=B-V);const l={xTile:e.x,yTile:e.y,dxPixels:t*w-x,dyPixels:r*w-x,hard:!i.optional,partIndex:1,width:s*w+2*x,height:a*w+2*x,angle:n,minLod:.5,maxLod:o};y.push(l)}const L=new R(_);return y&&y.length>0&&(L.textColliders=y),L}_legible(e){const t=x(e);return t<65||t>=193}_placeGlyph(e,t,r,i,s,n,a,x,u){let d=n;const f=d<0?c(e.angle+l,h):e.angle;let y=0;r<0&&(d*=-1,r*=-1,y=l),d>0&&++s;let _=new I(e.x,e.y),g=i[s],p=o;if(i.length<=s)return p;for(;;){const e=g.x-_.x,n=g.y-_.y,l=Math.sqrt(e*e+n*n),o=Math.max(r/l,t),m=e/l,V=n/l,I=c(Math.atan2(V,m)+y,h);if(u.push(new U(_,f,I,x,!1,o,p)),a&&u.push(new U(_,f,I,x,!0,o,p)),o<=t)return o;_=g.clone();do{if(s+=d,i.length<=s||s<0)return o;g=i[s]}while(_.isEqual(g));let B=g.x-_.x,b=g.y-_.y;const w=Math.sqrt(B*B+b*b);B*=l/w,b*=l/w,_.x-=B,_.y-=b,p=o}}}class j{constructor(e,t){this.values={};const r=t.keys,i=t.values;for(;e.next();)switch(e.tag()){case 1:this.id=e.getUInt64();break;case 2:{const t=e.getMessage(),s=this.values;for(;!t.empty();){const e=t.getUInt32(),n=t.getUInt32();s[r[e]]=i[n]}t.release();break}case 3:this.type=e.getUInt32();break;case 4:this._pbfGeometry=e.getMessage();break;default:e.skip()}}getGeometry(e){if(void 0!==this._geometry)return this._geometry;if(!this._pbfGeometry)return null;const t=this._pbfGeometry;let r,i;this._pbfGeometry=null,e?e.reset(this.type):r=[];let s,n=1,a=0,l=0,o=0;for(;!t.empty();){if(0===a){const e=t.getUInt32();n=7&e,a=e>>3}switch(a--,n){case 1:l+=t.getSInt32(),o+=t.getSInt32(),e?e.moveTo(l,o):(i&&r.push(i),i=[],i.push(new I(l,o)));break;case 2:l+=t.getSInt32(),o+=t.getSInt32(),e?e.lineTo(l,o):i.push(new I(l,o));break;case 7:e?e.close():i&&!i[0].equals(l,o)&&i.push(i[0].clone());break;default:throw t.release(),new Error("Invalid path operation")}}return e?s=e.result():(i&&r.push(i),s=r),t.release(),this._geometry=s,s}}class q extends u{constructor(){super(12)}add(e,t,r){const i=this.array;i.push(e),i.push(t),i.push(r)}}class K{constructor(e){for(this.extent=4096,this.keys=[],this.values=[],this._pbfLayer=e.clone();e.next();)switch(e.tag()){case 1:this.name=e.getString();break;case 3:this.keys.push(e.getString());break;case 4:this.values.push(e.processMessage(K._parseValue));break;case 5:this.extent=e.getUInt32();break;default:e.skip()}}getData(){return this._pbfLayer}static _parseValue(e){for(;e.next();)switch(e.tag()){case 1:return e.getString();case 2:return e.getFloat();case 3:return e.getDouble();case 4:return e.getInt64();case 5:return e.getUInt64();case 6:return e.getSInt64();case 7:return e.getBool();default:e.skip()}return null}}class H extends u{constructor(e){super(e)}add(e,t,r,i,s,n,a,l){const o=this.array;let c=u.i1616to32(e,t);o.push(c);c=u.i8888to32(Math.round(31*r),Math.round(31*i),Math.round(31*s),Math.round(31*n)),o.push(c),c=u.i1616to32(a,0),o.push(c),l&&o.push(...l)}}class Y extends u{constructor(e){super(e)}add(e,t,r){const i=this.array;i.push(u.i1616to32(e,t)),r&&i.push(...r)}}class W extends u{constructor(e){super(e)}add(e,t,r,i,s,n,a){const l=this.array,o=this.index;let c=u.i1616to32(e,t);l.push(c);return c=u.i8888to32(Math.round(15*r),Math.round(15*i),s,n),l.push(c),a&&l.push(...a),o}}class Z extends u{constructor(e){super(e)}add(e,t,r,i,s,n,a,l,o,c,h,d){const f=this.array;let y=u.i1616to32(e,t);f.push(y),y=u.i1616to32(Math.round(8*r),Math.round(8*i)),f.push(y),y=u.i8888to32(s/4,n/4,l,o),f.push(y),y=u.i8888to32(0,x(a),10*c,Math.min(10*h,255)),f.push(y),d&&f.push(...d)}}class J extends u{constructor(e){super(e)}add(e,t,r,i,s){const n=this.array,a=u.i1616to32(2*e+r,2*t+i);n.push(a),s&&n.push(...s)}}class Q{constructor(e,t){this.layerExtent=4096,this._features=[],this.layer=e,this.zoom=t,this._filter=e.getFeatureFilter()}pushFeature(e){this._filter&&!this._filter.filter(e,this.zoom)||this._features.push(e)}hasFeatures(){return this._features.length>0}}class X extends Q{constructor(e,t,r,i){super(e,t),this.type=4,this._circleVertexBuffer=r,this._circleIndexBuffer=i}get circleIndexStart(){return this._circleIndexStart}get circleIndexCount(){return this._circleIndexCount}processFeatures(e){const t=this._circleVertexBuffer,r=this._circleIndexBuffer;this._circleIndexStart=3*r.index,this._circleIndexCount=0;const i=this.layer,s=this.zoom;e&&e.setExtent(this.layerExtent);for(const n of this._features){const a=n.getGeometry(e);if(!a)continue;const l=i.circleMaterial.encodeAttributes(n,s,i);for(const e of a)if(e)for(const i of e){const e=t.index;t.add(i.x,i.y,0,0,l),t.add(i.x,i.y,0,1,l),t.add(i.x,i.y,1,0,l),t.add(i.x,i.y,1,1,l),r.add(e+0,e+1,e+2),r.add(e+1,e+2,e+3),this._circleIndexCount+=6}}}serialize(){let e=6;e+=this.layerUIDs.length,e+=this._circleVertexBuffer.array.length,e+=this._circleIndexBuffer.array.length;const t=new Uint32Array(e),r=new Int32Array(t.buffer);let i=0;t[i++]=this.type,t[i++]=this.layerUIDs.length;for(let s=0;s<this.layerUIDs.length;s++)t[i++]=this.layerUIDs[s];t[i++]=this._circleIndexStart,t[i++]=this._circleIndexCount,t[i++]=this._circleVertexBuffer.array.length;for(let s=0;s<this._circleVertexBuffer.array.length;s++)r[i++]=this._circleVertexBuffer.array[s];t[i++]=this._circleIndexBuffer.array.length;for(let s=0;s<this._circleIndexBuffer.array.length;s++)t[i++]=this._circleIndexBuffer.array[s];return t.buffer}}const $=new B;class ee extends Q{constructor(e,t,r,i,s,n){super(e,t),this.type=1,this._fillVertexBuffer=r,this._fillIndexBuffer=i,this._outlineVertexBuffer=s,this._outlineIndexBuffer=n}get fillIndexStart(){return this._fillIndexStart}get fillIndexCount(){return this._fillIndexCount}get outlineIndexStart(){return this._outlineIndexStart}get outlineIndexCount(){return this._outlineIndexCount}processFeatures(e){this._fillIndexStart=3*this._fillIndexBuffer.index,this._fillIndexCount=0,this._outlineIndexStart=3*this._outlineIndexBuffer.index,this._outlineIndexCount=0;const t=this.layer,r=this.zoom;e&&e.setExtent(this.layerExtent);let i=void 0===t.getPaintValue("fill-pattern",r)&&t.getPaintValue("fill-antialias",r);if(t.outlineUsesFillColor){if(i&&!t.hasDataDrivenOpacity){const e=t.getPaintValue("fill-opacity",r),s=t.getPaintValue("fill-opacity",r+1);e<1&&s<1&&(i=!1)}if(i&&!t.hasDataDrivenColor){const e=t.getPaintValue("fill-color",r),s=t.getPaintValue("fill-color",r+1);e[3]<1&&s[3]<1&&(i=!1)}}const{fillMaterial:s,outlineMaterial:n,hasDataDrivenFill:a,hasDataDrivenOutline:l}=t;for(const o of this._features){const c=a?s.encodeAttributes(o,r,t):null,h=i&&l?n.encodeAttributes(o,r,t):null,x=o.getGeometry(e),u=null==e?void 0:e.validateTessellation;this._processFeature(x,i,t.outlineUsesFillColor,c,h,u)}}serialize(){let e=10;e+=this.layerUIDs.length,e+=this._fillVertexBuffer.array.length,e+=this._fillIndexBuffer.array.length,e+=this._outlineVertexBuffer.array.length,e+=this._outlineIndexBuffer.array.length;const t=new Uint32Array(e),r=new Int32Array(t.buffer);let i=0;t[i++]=this.type,t[i++]=this.layerUIDs.length;for(let s=0;s<this.layerUIDs.length;s++)t[i++]=this.layerUIDs[s];t[i++]=this._fillIndexStart,t[i++]=this._fillIndexCount,t[i++]=this._outlineIndexStart,t[i++]=this._outlineIndexCount,t[i++]=this._fillVertexBuffer.array.length;for(let s=0;s<this._fillVertexBuffer.array.length;s++)r[i++]=this._fillVertexBuffer.array[s];t[i++]=this._fillIndexBuffer.array.length;for(let s=0;s<this._fillIndexBuffer.array.length;s++)t[i++]=this._fillIndexBuffer.array[s];t[i++]=this._outlineVertexBuffer.array.length;for(let s=0;s<this._outlineVertexBuffer.array.length;s++)r[i++]=this._outlineVertexBuffer.array[s];t[i++]=this._outlineIndexBuffer.array.length;for(let s=0;s<this._outlineIndexBuffer.array.length;s++)t[i++]=this._outlineIndexBuffer.array[s];return t.buffer}_processFeature(e,t,r,i,s,n){if(!e)return;const a=e.length,l=!s||0===s.length;if(t&&(!r||l))for(let c=0;c<a;c++)this._processOutline(e[c],s);let o;for(let c=0;c<a;c++){const t=ee._area(e[c]);t>128?(void 0!==o&&this._processFill(e,o,i,n),o=[c]):t<-128&&void 0!==o&&o.push(c)}void 0!==o&&this._processFill(e,o,i,n)}_processOutline(e,t){const r=this._outlineVertexBuffer,i=this._outlineIndexBuffer,s=i.index;let n,a,l;const o=new I(0,0),c=new I(0,0),h=new I(0,0);let x=-1,u=-1,d=-1,f=-1,y=-1,_=!1;let g=e.length;if(g<2)return;const p=e[0];let m=e[g-1];for(;g&&m.isEqual(p);)--g,m=e[g-1];if(!(g-0<2)){for(let s=0;s<g;++s){0===s?(n=e[g-1],a=e[0],l=e[1],o.assignSub(a,n),o.normalize(),o.rightPerpendicular()):(n=a,a=l,l=s!==g-1?e[s+1]:e[0],o.assign(c));const p=this._isClipEdge(n,a);-1===f&&(_=p),c.assignSub(l,a),c.normalize(),c.rightPerpendicular();const m=o.x*c.y-o.y*c.x;h.assignAdd(o,c),h.normalize();const V=-h.x*-o.x+-h.y*-o.y;let I=Math.abs(0!==V?1/V:1);I>8&&(I=8),m>=0?(d=r.add(a.x,a.y,o.x,o.y,0,1,t),-1===f&&(f=d),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d),u=r.add(a.x,a.y,I*-h.x,I*-h.y,0,-1,t),-1===y&&(y=u),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d),x=u,u=d,d=r.add(a.x,a.y,h.x,h.y,0,1,t),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d),u=r.add(a.x,a.y,c.x,c.y,0,1,t),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d)):(d=r.add(a.x,a.y,I*h.x,I*h.y,0,1,t),-1===f&&(f=d),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d),u=r.add(a.x,a.y,-o.x,-o.y,0,-1,t),-1===y&&(y=u),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d),x=u,u=d,d=r.add(a.x,a.y,-h.x,-h.y,0,-1,t),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d),x=r.add(a.x,a.y,-c.x,-c.y,0,-1,t),x>=0&&u>=0&&d>=0&&!p&&i.add(x,u,d))}x>=0&&u>=0&&f>=0&&!_&&i.add(x,u,f),x>=0&&f>=0&&y>=0&&!_&&i.add(x,y,f),this._outlineIndexCount+=3*(i.index-s)}}_processFill(t,r,i,s){let n;r.length>1&&(n=[]);let a=0;for(const e of r)0!==a&&n.push(a),a+=t[e].length;const l=2*a,o=e.acquire();for(const e of r){const r=t[e],i=r.length;for(let e=0;e<i;++e)o.push(r[e].x,r[e].y)}const c=m(o,n,2);if(s&&V(o,n,2,c)>0){const e=[],s=[];if(function(e,t,r,i){let s,n;$.beginPolygon(e,t);for(const a of i){const e=r[a];if(!(e.length<3)){$.beginContour();for(let t=0;t<e.length;++t){s=e[t].x,n=e[t].y;const r=[s,n,0];$.addVertex(r,r)}$.endContour()}}$.endPolygon()}(e,s,t,r),s.length>0){const t=this._fillVertexBuffer.index;let r=0;for(;r<e.length;)this._fillVertexBuffer.add(e[r++],e[r++],i);let n=0;for(;n<s.length;)this._fillIndexBuffer.add(t+s[n+0],t+s[n+1],t+s[n+2]),n+=3;this._fillIndexCount+=s.length}}else{const e=c.length;if(e>0){const t=this._fillVertexBuffer.index;let r=0;for(;r<l;)this._fillVertexBuffer.add(o[r++],o[r++],i);let s=0;for(;s<e;)this._fillIndexBuffer.add(t+c[s++],t+c[s++],t+c[s++]);this._fillIndexCount+=e}}e.release(o)}_isClipEdge(e,t){return e.x===t.x?e.x<=-64||e.x>=4160:e.y===t.y&&(e.y<=-64||e.y>=4160)}static _area(e){let t=0;const r=e.length-1;for(let i=0;i<r;i++)t+=(e[i].x-e[i+1].x)*(e[i].y+e[i+1].y);return t+=(e[r].x-e[0].x)*(e[r].y+e[0].y),.5*t}}const te=1/3.8;class re extends Q{constructor(e,t,r,i){super(e,t),this.type=2,this._tessellationOptions={},this.tessellationProperties={_lineVertexBuffer:null,_lineIndexBuffer:null,_hasPattern:null,_ddValues:null,_capType:null,_joinType:null,_miterLimitCosine:null,_roundLimitCosine:null},this.tessellationProperties._lineVertexBuffer=r,this.tessellationProperties._lineIndexBuffer=i,this.tessellationProperties._hasPattern=e.getPaintValue("line-pattern",this.zoom)||e.getPaintValue("line-dasharray",this.zoom).length>0,this._isThinLine=e.isThinLine,this._isThinLine?this._tessellationCallbacks={vertex:ie(this.tessellationProperties),bridge:se(this.tessellationProperties)}:this._tessellationCallbacks={vertex:ne(this.tessellationProperties),bridge:ae(this.tessellationProperties)}}get lineIndexStart(){return this._lineIndexStart}get lineIndexCount(){return this._lineIndexCount}processFeatures(e){this._lineIndexStart=3*this.tessellationProperties._lineIndexBuffer.index,this._lineIndexCount=0;const t=this.layer,r=this.zoom;e&&e.setExtent(this.layerExtent);for(const i of this._features){const s=t.hasDataDrivenLine?t.lineMaterial.encodeAttributes(i,r,t):null;this.tessellationProperties._capType=t.getLayoutValue("line-cap",r,i),this.tessellationProperties._joinType=t.getLayoutValue("line-join",r,i),this.tessellationProperties._miterLimitCosine=w(t.getLayoutValue("line-miter-limit",r,i)),this.tessellationProperties._roundLimitCosine=w(t.getLayoutValue("line-round-limit",r,i));const n=i.getGeometry(e);this._processFeature(n,s)}M()}serialize(){let e=6;e+=this.layerUIDs.length,e+=this.tessellationProperties._lineVertexBuffer.array.length,e+=this.tessellationProperties._lineIndexBuffer.array.length;const t=new Uint32Array(e),r=new Int32Array(t.buffer);let i=0;t[i++]=this.type,t[i++]=this.layerUIDs.length;for(let s=0;s<this.layerUIDs.length;s++)t[i++]=this.layerUIDs[s];t[i++]=this._lineIndexStart,t[i++]=this._lineIndexCount,t[i++]=this.tessellationProperties._lineVertexBuffer.array.length;for(let s=0;s<this.tessellationProperties._lineVertexBuffer.array.length;s++)r[i++]=this.tessellationProperties._lineVertexBuffer.array[s];t[i++]=this.tessellationProperties._lineIndexBuffer.array.length;for(let s=0;s<this.tessellationProperties._lineIndexBuffer.array.length;s++)t[i++]=this.tessellationProperties._lineIndexBuffer.array[s];return t.buffer}_processFeature(e,t){if(!e)return;const r=e.length;for(let i=0;i<r;i++)this._processGeometry(e[i],t)}_processGeometry(e,t){if(e.length<2)return;let r,i,s=e[0],n=1;for(;n<e.length;)r=e[n].x-s.x,i=e[n].y-s.y,r*r+i*i<1e-6?e.splice(n,1):(s=e[n],++n);if(e.length<2)return;const a=3*this.tessellationProperties._lineIndexBuffer.index;this._tessellationOptions.trackDistance=this.tessellationProperties._hasPattern,this._tessellationOptions.initialDistance=0,this._tessellationOptions.thin=this._isThinLine,this._tessellationOptions.wrapDistance=65535,this._tessellationOptions.outerBisectorAutoSplitThreshold=te,this._tessellationOptions.enableOuterBisectorSplit=this.tessellationProperties._hasPattern,this._tessellationOptions.innerBisectorAutoSplitThreshold=te,this._tessellationOptions.enableInnerBisectorSplit=this.tessellationProperties._hasPattern,this.tessellationProperties._ddValues=t,P(e,this._tessellationOptions,this._tessellationCallbacks),this._lineIndexCount+=3*this.tessellationProperties._lineIndexBuffer.index-a}}const ie=e=>t=>{t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.prevNormal.x,t.prevNormal.y,0,-1,t.distance,e._ddValues),t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.prevNormal.x,-t.prevNormal.y,0,1,t.distance,e._ddValues),t.exit0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.nextNormal.x,t.nextNormal.y,0,-1,t.distance,e._ddValues),t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.nextNormal.x,-t.nextNormal.y,0,1,t.distance,e._ddValues)},se=e=>t=>{e._lineIndexBuffer.add(t.leftExit0,t.rightEntry0,t.leftExit2),e._lineIndexBuffer.add(t.rightEntry0,t.rightEntry2,t.leftExit2)},ne=e=>t=>{const r=2===e._joinType?e._miterLimitCosine:e._roundLimitCosine,i=t.isCap&&0!==e._capType;let s,n=!1;if(t.cosine>.97?(t.exit0=t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.bisector.x/t.cosine,t.bisector.y/t.cosine,0,-1,t.distance,e._ddValues),t.exit2=t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.bisector.x/t.cosine,-t.bisector.y/t.cosine,0,1,t.distance,e._ddValues)):t.cosine<1-.97?(t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.prevNormal.x,t.prevNormal.y,0,-1,t.distance,e._ddValues),t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.prevNormal.x,-t.prevNormal.y,0,1,t.distance,e._ddValues),t.exit0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.nextNormal.x,t.nextNormal.y,0,-1,t.distance,e._ddValues),t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.nextNormal.x,-t.nextNormal.y,0,1,t.distance,e._ddValues)):t.canSplit?(b(),t.sign>0?(t.splitInner?(t.exit0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.leftInner.x,t.leftInner.y,0,-1,t.distance,e._ddValues),t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.rightInner.x,t.rightInner.y,0,-1,t.distance,e._ddValues)):(t.exit0=t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.bisector.x/t.cosine,t.bisector.y/t.cosine,0,-1,t.distance,e._ddValues)),t.cosine<r?(n=!t.isCap,t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.prevNormal.x,-t.prevNormal.y,0,1,t.distance,e._ddValues),t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.nextNormal.x,-t.nextNormal.y,0,1,t.distance,e._ddValues)):t.splitOuter?(n=n||t.gapOuter,t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.leftOuter.x,-t.leftOuter.y,0,1,t.distance,e._ddValues),t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.rightOuter.x,-t.rightOuter.y,0,1,t.distance,e._ddValues)):(t.entry2=t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.bisector.x/t.cosine,-t.bisector.y/t.cosine,0,1,t.distance,e._ddValues))):(t.splitInner?(t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.leftInner.x,-t.leftInner.y,0,1,t.distance,e._ddValues),t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.rightInner.x,-t.rightInner.y,0,1,t.distance,e._ddValues)):(t.exit2=t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.bisector.x/t.cosine,-t.bisector.y/t.cosine,0,1,t.distance,e._ddValues)),t.cosine<r?(n=!t.isCap,t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.prevNormal.x,t.prevNormal.y,0,-1,t.distance,e._ddValues),t.exit0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.nextNormal.x,t.nextNormal.y,0,-1,t.distance,e._ddValues)):t.splitOuter?(n=n||t.gapOuter,t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.leftOuter.x,t.leftOuter.y,0,-1,t.distance,e._ddValues),t.exit0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.rightOuter.x,t.rightOuter.y,0,-1,t.distance,e._ddValues)):(t.exit0=t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.bisector.x/t.cosine,t.bisector.y/t.cosine,0,-1,t.distance,e._ddValues)))):t.sign>0?(t.exit0=t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.bisector.x/t.cosine,t.bisector.y/t.cosine,0,-1,t.distance,e._ddValues),t.cosine<r?(n=!t.isCap,t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.prevNormal.x,-t.prevNormal.y,0,1,t.distance,e._ddValues),t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.nextNormal.x,-t.nextNormal.y,0,1,t.distance,e._ddValues)):(t.entry2=t.exit2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.bisector.x/t.cosine,-t.bisector.y/t.cosine,0,1,t.distance,e._ddValues))):(t.exit2=t.entry2=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.bisector.x/t.cosine,-t.bisector.y/t.cosine,0,1,t.distance,e._ddValues),t.cosine<r?(n=!t.isCap,t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.prevNormal.x,t.prevNormal.y,0,-1,t.distance,e._ddValues),t.exit0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.nextNormal.x,t.nextNormal.y,0,-1,t.distance,e._ddValues)):(t.exit0=t.entry0=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.bisector.x/t.cosine,t.bisector.y/t.cosine,0,-1,t.distance,e._ddValues))),t.canSplit&&(t.splitInner||t.splitOuter)||n||i?(s=t.entry1=t.exit1=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,0,0,0,0,t.distance,e._ddValues)):s=t.entry1=t.exit1=null,n&&1!==e._joinType)e._lineIndexBuffer.add(s,t.sign>0?t.exit2:t.entry0,t.sign>0?t.entry2:t.exit0);else if(i&&1===e._capType||n&&1===e._joinType){let r,i,n,a,l,o;if(t.isCap){const e=Math.PI;l=Math.ceil(e/.8),o=e/l,t.isFirstVertex?(r=t.prevNormal.x,i=t.prevNormal.y,n=t.entry0,a=t.entry2):t.isLastVertex&&(r=-t.nextNormal.x,i=-t.nextNormal.y,n=t.exit2,a=t.exit0)}else{const e=2*Math.acos(t.cosine);l=Math.ceil(e/.8),o=e/l,r=t.sign>0?-t.prevNormal.x:t.nextNormal.x,i=t.sign>0?-t.prevNormal.y:t.nextNormal.y,n=t.sign>0?t.entry2:t.exit0,a=t.sign>0?t.exit2:t.entry0}const c=Math.cos(o),h=Math.sin(o),x=h*r+c*i;let u,d;r=c*r-h*i,i=x;for(let f=0;f<l;++f){if(u=d,f<l-1)if(t.isCap){const s=t.isFirstVertex?-1:1;d=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,r,i,s,0,t.distance,e._ddValues)}else d=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,r,i,0,t.sign,t.distance,e._ddValues);e._lineIndexBuffer.add(0===f?n:u,s,f===l-1?a:d);const o=h*r+c*i;r=c*r-h*i,i=o}}else if(i&&2===e._capType){const r=t.isFirstVertex?1:-1;let i,n;e._hasPattern?(i=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.prevNormal.x-r*t.inbound.x,t.prevNormal.y-r*t.inbound.y,-r,-1,t.distance,e._ddValues),n=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.prevNormal.x-r*t.inbound.x,-t.prevNormal.y-r*t.inbound.y,-r,1,t.distance,e._ddValues)):(i=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,t.prevNormal.x-r*t.inbound.x,t.prevNormal.y-r*t.inbound.y,0,-1,t.distance,e._ddValues),n=e._lineVertexBuffer.index,e._lineVertexBuffer.add(t.currentVertex.x,t.currentVertex.y,-t.prevNormal.x-r*t.inbound.x,-t.prevNormal.y-r*t.inbound.y,0,1,t.distance,e._ddValues)),r>0?(e._lineIndexBuffer.add(s,t.entry2,n),e._lineIndexBuffer.add(s,n,i),e._lineIndexBuffer.add(s,i,t.entry0)):(e._lineIndexBuffer.add(s,n,t.exit2),e._lineIndexBuffer.add(s,i,n),e._lineIndexBuffer.add(s,t.exit0,i))}},ae=e=>t=>{e._lineIndexBuffer.add(t.leftExit0,t.rightEntry0,null!=t.leftExit1?t.leftExit1:t.leftExit2),e._lineIndexBuffer.add(t.rightEntry0,null!=t.rightEntry1?t.rightEntry1:t.rightEntry2,null!=t.leftExit1?t.leftExit1:t.leftExit2),null!=t.leftExit1&&null!=t.rightEntry1?(e._lineIndexBuffer.add(t.leftExit1,t.rightEntry1,t.leftExit2),e._lineIndexBuffer.add(t.rightEntry1,t.rightEntry2,t.leftExit2)):null!=t.leftExit1?e._lineIndexBuffer.add(t.leftExit1,t.rightEntry2,t.leftExit2):null!=t.rightEntry1&&e._lineIndexBuffer.add(t.rightEntry1,t.rightEntry2,t.leftExit2)};function le(e,t){return e.iconMosaicItem&&t.iconMosaicItem?e.iconMosaicItem.page===t.iconMosaicItem.page?0:e.iconMosaicItem.page-t.iconMosaicItem.page:e.iconMosaicItem&&!t.iconMosaicItem?1:!e.iconMosaicItem&&t.iconMosaicItem?-1:0}class oe extends Q{constructor(e,t,r,i,s,n,a,l){super(e,t),this.type=3,this._markerMap=new Map,this._glyphMap=new Map,this._glyphBufferDataStorage=new Map,this._isIconSDF=!1,this._iconVertexBuffer=r,this._iconIndexBuffer=i,this._textVertexBuffer=s,this._textIndexBuffer=n,this._placementEngine=a,this._workerTileHandler=l}get markerPageMap(){return this._markerMap}get glyphsPageMap(){return this._glyphMap}get symbolInstances(){return this._symbolInstances}getResources(e,r,i){const s=this.layer,n=this.zoom;e&&e.setExtent(this.layerExtent);const a=s.getLayoutProperty("icon-image"),l=s.getLayoutProperty("text-field");let o=s.getLayoutProperty("text-transform"),c=s.getLayoutProperty("text-font");const h=[];let x,u,d,f;a&&!a.isDataDriven&&(x=a.getValue(n)),l&&!l.isDataDriven&&(u=l.getValue(n)),o&&o.isDataDriven||(d=s.getLayoutValue("text-transform",n),o=null),c&&c.isDataDriven||(f=s.getLayoutValue("text-font",n),c=null);for(const y of this._features){const _=y.getGeometry(e);if(!_||0===_.length)continue;let g,p;a&&(g=a.isDataDriven?a.getValue(n,y):this._replaceKeys(x,y.values),g&&r.add(g));let m=!1;if(l&&(p=l.isDataDriven?l.getValue(n,y):this._replaceKeys(u,y.values),p)){switch(p=p.replace(/\\n/g,"\n"),o&&(d=o.getValue(n,y)),d){case 2:p=p.toLowerCase();break;case 1:p=p.toUpperCase()}if(oe._bidiEngine.hasBidiChar(p)){let e;e="rtl"===oe._bidiEngine.checkContextual(p)?"IDNNN":"ICNNN",p=oe._bidiEngine.bidiTransform(p,e,"VLYSN"),m=!0}const e=p.length;if(e>0){c&&(f=c.getValue(n,y));for(const t of f){let r=i[t];r||(r=i[t]=new Set);for(let t=0;t<e;t++){const e=p.charCodeAt(t);r.add(e)}}}}if(!g&&!p)continue;const V=s.getLayoutValue("symbol-sort-key",n,y),I={feature:y,sprite:g,label:p,rtl:m,geometry:_,hash:(p?t(p):0)^(g?t(g):0),priority:V,textFont:f};h.push(I)}this._symbolFeatures=h}processFeatures(e){e&&e.setExtent(this.layerExtent);const t=this.layer,r=this.zoom,i=t.getLayoutValue("symbol-placement",r),s=0!==i,n=8*t.getLayoutValue("symbol-spacing",r),l=t.getLayoutProperty("icon-image"),o=t.getLayoutProperty("text-field"),c=l?new d(t,r,s):null,h=o?new f(t,r,s):null,x=this._workerTileHandler;let u;l&&(u=x.getSpriteItems()),this._iconIndexStart=3*this._iconIndexBuffer.index,this._textIndexStart=3*this._textIndexBuffer.index,this._iconIndexCount=0,this._textIndexCount=0,this._markerMap.clear(),this._glyphMap.clear();const y=[];let _=1;h&&h.size&&(_=h.size/E);const g=h?h.maxAngle*a:0,p=h?8*h.size:0;for(const a of this._symbolFeatures){let e,t;c&&u&&a.sprite&&(e=u[a.sprite],e&&e.sdf&&(this._isIconSDF=!0)),e&&c.update(r,a.feature);let l=0;const o=a.label;if(o){h.update(r,a.feature);const e=s?h.keepUpright:h.writingMode&&h.writingMode.indexOf(1)>=0;let i=.5;switch(h.anchor){case 5:case 1:case 7:i=0;break;case 6:case 2:case 8:i=1}let n=.5;switch(h.anchor){case 5:case 3:case 6:n=0;break;case 7:case 4:case 8:n=1}let c=.5;switch(h.justify){case 0:c=i;break;case 1:c=0;break;case 3:c=1}const u=h.letterSpacing*E,d=s?0:h.maxWidth*E,f=h.lineHeight*E,y=a.textFont.map((e=>x.getGlyphItems(e)));if(t=new z(y,d,f,u,i,n,c).getShaping(o,a.rtl,e),t&&t.length>0){let e=1e30,r=-1e30;for(const i of t)e=Math.min(e,i.x),r=Math.max(r,i.x);l=(r-e+48)*_*8}}for(let r of a.geometry){const o=[];if(1===i){if(t&&t.length>0&&h&&h.size){const e=8*h.size*(2+Math.min(2,4*Math.abs(h.offset[1])));r=oe._smoothVertices(r,e)}oe._pushAnchors(o,r,n,l)}else 2===i?oe._pushCenterAnchor(o,r):3===a.feature.type?oe._pushCentroid(o,r):o.push(new F(r[0].x,r[0].y));for(const i of o){if(i.x<0||i.x>4096||i.y<0||i.y>4096)continue;if(s&&l>0&&0===h.rotationAlignment&&!oe._honorsTextMaxAngle(r,i,l,g,p))continue;const n={shaping:t,line:r,iconMosaicItem:e,anchor:i,symbolFeature:a,textColliders:[],iconColliders:[],textVertexRanges:[],iconVertexRanges:[]};y.push(n),this._processFeature(n,c,h)}}}y.sort(le),this._addPlacedGlyphs(),this._symbolInstances=y}serialize(){let e=11;e+=this.layerUIDs.length,e+=3*this.markerPageMap.size,e+=3*this.glyphsPageMap.size,e+=oe.symbolsSerializationLength(this._symbolInstances),e+=this._iconVertexBuffer.array.length,e+=this._iconIndexBuffer.array.length,e+=this._textVertexBuffer.array.length,e+=this._textIndexBuffer.array.length;const t=new Uint32Array(e),r=new Int32Array(t.buffer),i=new Float32Array(t.buffer);let s=0;t[s++]=this.type,t[s++]=this.layerUIDs.length;for(let n=0;n<this.layerUIDs.length;n++)t[s++]=this.layerUIDs[n];t[s++]=this._isIconSDF?1:0,t[s++]=this.markerPageMap.size;for(const[n,[a,l]]of this.markerPageMap)t[s++]=n,t[s++]=a,t[s++]=l;t[s++]=this.glyphsPageMap.size;for(const[n,[a,l]]of this.glyphsPageMap)t[s++]=n,t[s++]=a,t[s++]=l;t[s++]=this._iconVertexBuffer.index/4,t[s++]=this._textVertexBuffer.index/4,s=oe.serializeSymbols(t,r,i,s,this._symbolInstances),t[s++]=this._iconVertexBuffer.array.length;for(let n=0;n<this._iconVertexBuffer.array.length;n++)r[s++]=this._iconVertexBuffer.array[n];t[s++]=this._iconIndexBuffer.array.length;for(let n=0;n<this._iconIndexBuffer.array.length;n++)t[s++]=this._iconIndexBuffer.array[n];t[s++]=this._textVertexBuffer.array.length;for(let n=0;n<this._textVertexBuffer.array.length;n++)r[s++]=this._textVertexBuffer.array[n];t[s++]=this._textIndexBuffer.array.length;for(let n=0;n<this._textIndexBuffer.array.length;n++)t[s++]=this._textIndexBuffer.array[n];return t.buffer}static symbolsSerializationLength(e){let t=0;t+=1;for(const r of e||[]){t+=4,t+=1;for(const e of r.textColliders)t+=10;for(const e of r.iconColliders)t+=10;t+=1,t+=2*r.textVertexRanges.length,t+=1,t+=2*r.iconVertexRanges.length}return t}static serializeSymbols(e,t,r,i,s){s=s||[],t[i++]=s.length;for(const n of s){t[i++]=n.anchor.x,t[i++]=n.anchor.y,t[i++]=n.symbolFeature.hash,t[i++]=n.symbolFeature.priority,t[i++]=n.textColliders.length+n.iconColliders.length;for(const e of n.textColliders)t[i++]=e.xTile,t[i++]=e.yTile,t[i++]=e.dxPixels,t[i++]=e.dyPixels,t[i++]=e.hard?1:0,t[i++]=e.partIndex,r[i++]=e.minLod,r[i++]=e.maxLod,t[i++]=e.width,t[i++]=e.height;for(const e of n.iconColliders)t[i++]=e.xTile,t[i++]=e.yTile,t[i++]=e.dxPixels,t[i++]=e.dyPixels,t[i++]=e.hard?1:0,t[i++]=e.partIndex,r[i++]=e.minLod,r[i++]=e.maxLod,t[i++]=e.width,t[i++]=e.height;t[i++]=n.textVertexRanges.length;for(const[e,r]of n.textVertexRanges)t[i++]=e,t[i++]=r;t[i++]=n.iconVertexRanges.length;for(const[e,r]of n.iconVertexRanges)t[i++]=e,t[i++]=r}return i}_replaceKeys(e,t){return e.replace(/{([^{}]+)}/g,(function(e,r){return r in t?t[r]:""}))}_processFeature(e,t,r){const{line:i,iconMosaicItem:s,shaping:n,anchor:a}=e,l=this.zoom,o=this.layer,c=!!s;let h=!0;c&&(h=t.optional||!s);const x=n&&n.length>0;let u,d,f=!0;if(x&&(f=r.optional),c&&(u=this._placementEngine.getIconPlacement(a,s,t)),(u||h)&&(x&&(d=this._placementEngine.getTextPlacement(a,n,i,r)),d||f)){if(u&&d||(f||h?f||d?h||u||(d=null):u=null:(u=null,d=null)),d){const t=o.hasDataDrivenText?o.textMaterial.encodeAttributes(e.symbolFeature.feature,l,o):null;if(this._storePlacedGlyphs(e,d.shapes,l,r.rotationAlignment,t),d.textColliders){e.textColliders=d.textColliders;for(const e of d.textColliders){e.minLod=Math.max(l+y(e.minLod),0),e.maxLod=Math.min(l+y(e.maxLod),25);const t=e.angle;if(t){const r=Math.cos(t),i=Math.sin(t),s=e.dxPixels*r-e.dyPixels*i,n=e.dxPixels*i+e.dyPixels*r,a=(e.dxPixels+e.width)*r-e.dyPixels*i,l=(e.dxPixels+e.width)*i+e.dyPixels*r,o=e.dxPixels*r-(e.dyPixels+e.height)*i,c=e.dxPixels*i+(e.dyPixels+e.height)*r,h=(e.dxPixels+e.width)*r-(e.dyPixels+e.height)*i,x=(e.dxPixels+e.width)*i+(e.dyPixels+e.height)*r,u=Math.min(s,a,o,h),d=Math.max(s,a,o,h),f=Math.min(n,l,c,x),y=Math.max(n,l,c,x);e.dxPixels=u,e.dyPixels=f,e.width=d-u,e.height=y-f}}}}if(u){const r=o.hasDataDrivenIcon?o.iconMaterial.encodeAttributes(e.symbolFeature.feature,l,o):null;if(this._addPlacedIcons(e,u.shapes,l,s.page,1===t.rotationAlignment,r),u.iconColliders){e.iconColliders=u.iconColliders;for(const e of u.iconColliders){e.minLod=Math.max(l+y(e.minLod),0),e.maxLod=Math.min(l+y(e.maxLod),25);const t=e.angle;if(t){const r=Math.cos(t),i=Math.sin(t),s=e.dxPixels*r-e.dyPixels*i,n=e.dxPixels*i+e.dyPixels*r,a=(e.dxPixels+e.width)*r-e.dyPixels*i,l=(e.dxPixels+e.width)*i+e.dyPixels*r,o=e.dxPixels*r-(e.dyPixels+e.height)*i,c=e.dxPixels*i+(e.dyPixels+e.height)*r,h=(e.dxPixels+e.width)*r-(e.dyPixels+e.height)*i,x=(e.dxPixels+e.width)*i+(e.dyPixels+e.height)*r,u=Math.min(s,a,o,h),d=Math.max(s,a,o,h),f=Math.min(n,l,c,x),y=Math.max(n,l,c,x);e.dxPixels=u,e.dyPixels=f,e.width=d-u,e.height=y-f}}}}}}_addPlacedIcons(e,t,r,i,s,n){const a=Math.max(r-1,0),l=this._iconVertexBuffer,o=this._iconIndexBuffer,c=this._markerMap;for(const h of t){const t=s?0:Math.max(r+y(h.minzoom),a),x=s?25:Math.min(r+y(h.maxzoom),25);if(x<=t)continue;const u=h.tl,d=h.tr,f=h.bl,_=h.br,g=h.mosaicRect,p=h.labelAngle,m=h.minAngle,V=h.maxAngle,I=h.anchor,B=l.index,b=g.x,w=g.y,M=b+g.width,P=w+g.height,k=l.index;l.add(I.x,I.y,u.x,u.y,b,w,p,m,V,t,x,n),l.add(I.x,I.y,d.x,d.y,M,w,p,m,V,t,x,n),l.add(I.x,I.y,f.x,f.y,b,P,p,m,V,t,x,n),l.add(I.x,I.y,_.x,_.y,M,P,p,m,V,t,x,n),e.iconVertexRanges.length>0&&e.iconVertexRanges[0][0]+e.iconVertexRanges[0][1]===k?e.iconVertexRanges[0][1]+=4:e.iconVertexRanges.push([k,4]),o.add(B+0,B+1,B+2),o.add(B+1,B+2,B+3),c.has(i)?c.get(i)[1]+=6:c.set(i,[this._iconIndexStart+this._iconIndexCount,6]),this._iconIndexCount+=6}}_addPlacedGlyphs(){const e=this._textVertexBuffer,t=this._textIndexBuffer,r=this._glyphMap;for(const[i,s]of this._glyphBufferDataStorage)for(const n of s){const s=e.index,a=n.symbolInstance,l=n.ddAttributes,o=e.index;e.add(n.glyphAnchor[0],n.glyphAnchor[1],n.tl[0],n.tl[1],n.xmin,n.ymin,n.labelAngle,n.minAngle,n.maxAngle,n.minLod,n.maxLod,l),e.add(n.glyphAnchor[0],n.glyphAnchor[1],n.tr[0],n.tr[1],n.xmax,n.ymin,n.labelAngle,n.minAngle,n.maxAngle,n.minLod,n.maxLod,l),e.add(n.glyphAnchor[0],n.glyphAnchor[1],n.bl[0],n.bl[1],n.xmin,n.ymax,n.labelAngle,n.minAngle,n.maxAngle,n.minLod,n.maxLod,l),e.add(n.glyphAnchor[0],n.glyphAnchor[1],n.br[0],n.br[1],n.xmax,n.ymax,n.labelAngle,n.minAngle,n.maxAngle,n.minLod,n.maxLod,l),a.textVertexRanges.length>0&&a.textVertexRanges[0][0]+a.textVertexRanges[0][1]===o?a.textVertexRanges[0][1]+=4:a.textVertexRanges.push([o,4]),t.add(s+0,s+1,s+2),t.add(s+1,s+2,s+3),r.has(i)?r.get(i)[1]+=6:r.set(i,[this._textIndexStart+this._textIndexCount,6]),this._textIndexCount+=6}this._glyphBufferDataStorage.clear()}_storePlacedGlyphs(e,t,r,i,s){const n=Math.max(r-1,0),a=1===i;let l,o,c,h,x,u,d,f,_,g,p;for(const m of t)l=a?0:Math.max(r+y(m.minzoom),n),o=a?25:Math.min(r+y(m.maxzoom),25),o<=l||(c=m.tl,h=m.tr,x=m.bl,u=m.br,d=m.labelAngle,f=m.minAngle,_=m.maxAngle,g=m.anchor,p=m.mosaicRect,this._glyphBufferDataStorage.has(m.page)||this._glyphBufferDataStorage.set(m.page,[]),this._glyphBufferDataStorage.get(m.page).push({glyphAnchor:[g.x,g.y],tl:[c.x,c.y],tr:[h.x,h.y],bl:[x.x,x.y],br:[u.x,u.y],xmin:p.x,ymin:p.y,xmax:p.x+p.width,ymax:p.y+p.height,labelAngle:d,minAngle:f,maxAngle:_,minLod:l,maxLod:o,placementLod:n,symbolInstance:e,ddAttributes:s}))}static _pushAnchors(e,t,r,i){r+=i;let s=0;const n=t.length-1;for(let x=0;x<n;x++)s+=I.distance(t[x],t[x+1]);let a=i||r;if(a*=.5,s<=a)return;const l=a/s;let o=0,c=-(r=s/Math.max(Math.round(s/r),1))/2;const h=t.length-1;for(let x=0;x<h;x++){const i=t[x],s=t[x+1],n=s.x-i.x,a=s.y-i.y,h=Math.sqrt(n*n+a*a);let u;for(;c+r<o+h;){c+=r;const t=(c-o)/h,d=_(i.x,s.x,t),f=_(i.y,s.y,t);void 0===u&&(u=Math.atan2(a,n)),e.push(new F(d,f,u,x,l))}o+=h}}static _pushCenterAnchor(e,t){let r=0;const i=t.length-1;for(let l=0;l<i;l++)r+=I.distance(t[l],t[l+1]);const s=r/2;let n=0;const a=t.length-1;for(let l=0;l<a;l++){const r=t[l],i=t[l+1],a=i.x-r.x,o=i.y-r.y,c=Math.sqrt(a*a+o*o);if(s<n+c){const t=(s-n)/c,h=_(r.x,i.x,t),x=_(r.y,i.y,t),u=Math.atan2(o,a);return void e.push(new F(h,x,u,l,0))}n+=c}}static _deviation(e,t,r){const i=(t.x-e.x)*(r.x-t.x)+(t.y-e.y)*(r.y-t.y),s=(t.x-e.x)*(r.y-t.y)-(t.y-e.y)*(r.x-t.x);return Math.atan2(s,i)}static _honorsTextMaxAngle(e,t,r,i,s){let n=0;const a=r/2;let l=new I(t.x,t.y),o=t.segment+1;for(;n>-a;){if(--o,o<0)return!1;n-=I.distance(e[o],l),l=e[o]}n+=I.distance(e[o],e[o+1]);const c=[];let h=0;const x=e.length;for(;n<a;){const t=e[o];let r,a=o;do{if(++a,a===x)return!1;r=e[a]}while(r.isEqual(t));let l,u=a;do{if(++u,u===x)return!1;l=e[u]}while(l.isEqual(r));const d=this._deviation(t,r,l);for(c.push({deviation:d,distToAnchor:n}),h+=d;n-c[0].distToAnchor>s;)h-=c.shift().deviation;if(Math.abs(h)>i)return!1;n+=I.distance(r,l),o=a}return!0}static _smoothVertices(e,t){if(t<=0)return e;let r=e.length;if(r<3)return e;const i=[];let s=0,n=0;i.push(0);for(let f=1;f<r;f++){const t=I.distance(e[f],e[f-1]);t>0&&(s+=t,i.push(s),n++,n!==f&&(e[n]=e[f]))}if(r=n+1,r<3)return e;t=Math.min(t,.2*s);const a=e[0].x,l=e[0].y,o=e[r-1].x,c=e[r-1].y,h=I.sub(e[0],e[1]);h.normalize(),e[0].x+=t*h.x,e[0].y+=t*h.y,h.assignSub(e[r-1],e[r-2]),h.normalize(),e[r-1].x+=t*h.x,e[r-1].y+=t*h.y,i[0]-=t,i[r-1]+=t;const x=[];x.push(new I(a,l));const u=1e-6,d=.5*t;for(let f=1;f<r-1;f++){let s=0,n=0,a=0;for(let r=f-1;r>=0;r--){const l=d+i[r+1]-i[f];if(l<0)break;const o=i[r+1]-i[r],c=i[f]-i[r]<d?1:l/o;if(c<u)break;const h=c*c,x=c*l-.5*h*o,y=c*o/t,_=e[r+1],g=e[r].x-_.x,p=e[r].y-_.y;s+=y/x*(_.x*c*l+.5*h*(l*g-o*_.x)-h*c*o*g/3),n+=y/x*(_.y*c*l+.5*h*(l*p-o*_.y)-h*c*o*p/3),a+=y}for(let l=f+1;l<r;l++){const r=d-i[l-1]+i[f];if(r<0)break;const o=i[l]-i[l-1],c=i[l]-i[f]<d?1:r/o;if(c<u)break;const h=c*c,x=c*r-.5*h*o,y=c*o/t,_=e[l-1],g=e[l].x-_.x,p=e[l].y-_.y;s+=y/x*(_.x*c*r+.5*h*(r*g-o*_.x)-h*c*o*g/3),n+=y/x*(_.y*c*r+.5*h*(r*p-o*_.y)-h*c*o*p/3),a+=y}x.push(new I(s/a,n/a))}return x.push(new I(o,c)),e[0].x=a,e[0].y=l,e[r-1].x=o,e[r-1].y=c,x}static _pushCentroid(e,t){const r=4096,i=4096,s=t.length-1;let n=0,a=0,l=0,o=t[0].x,c=t[0].y;o>r&&(o=r),o<0&&(o=0),c>i&&(c=i),c<0&&(c=0);for(let h=1;h<s;h++){let e=t[h].x,s=t[h].y,x=t[h+1].x,u=t[h+1].y;e>r&&(e=r),e<0&&(e=0),s>i&&(s=i),s<0&&(s=0),x>r&&(x=r),x<0&&(x=0),u>i&&(u=i),u<0&&(u=0);const d=(e-o)*(u-c)-(x-o)*(s-c);n+=d*(o+e+x),a+=d*(c+s+u),l+=d}n/=3*l,a/=3*l,isNaN(n)||isNaN(a)||e.push(new F(n,a))}}oe._bidiEngine=new A;class ce{constructor(e,t,i,s,n){if(this._pbfTiles={},this._tileClippers={},this._client=i,this._tile=t,n){this._styleLayerUIDs=new Set;for(const e of n)this._styleLayerUIDs.add(e)}this._styleRepository=s,this._layers=this._styleRepository.layers;const[a,l,o]=t.tileKey.split("/").map(parseFloat);this._level=a;const c=Math.max(8,Math.round(1*this._level)-8);for(const h of Object.keys(e)){const t=e[h];if(this._pbfTiles[h]=new r(new Uint8Array(t.protobuff),new DataView(t.protobuff)),t.refKey){const[e]=t.refKey.split("/").map(parseFloat),r=a-e;if(r>0){const e=(1<<r)-1,t=l&e,i=o&e;this._tileClippers[h]=new k(r,t,i,8,c)}}this._tileClippers[h]||(this._tileClippers[h]=new v)}}_canParseStyleLayer(e){return!this._styleLayerUIDs||this._styleLayerUIDs.has(e)}async parse(e){const t=this._initialize(e),{returnedBuckets:r}=t;this._processLayers(t),this._linkReferences(t),this._filterFeatures(t);const i=new Set,s={};for(const a of r)3===a.type&&a.getResources(a.tileClipper,i,s);if(this._tile.status===N.INVALID)return Promise.resolve([]);const n=this._fetchResources(i,s,e);return Promise.all(n).then((()=>this._processFeatures(t.returnedBuckets)))}_initialize(e){return{signal:e&&e.signal,sourceNameToTileData:this._parseTileData(this._pbfTiles),layers:this._layers,zoom:this._level,sourceNameToTileClipper:this._tileClippers,sourceNameToUniqueSourceLayerBuckets:{},sourceNameToUniqueSourceLayers:{},returnedBuckets:[],layerIdToBucket:{},referencerUIDToReferencedId:new Map}}_processLayers(e){const{sourceNameToTileData:t,layers:r,zoom:i,sourceNameToTileClipper:s,sourceNameToUniqueSourceLayerBuckets:n,sourceNameToUniqueSourceLayers:a,returnedBuckets:l,layerIdToBucket:o,referencerUIDToReferencedId:c}=e;for(let h=r.length-1;h>=0;h--){const e=r[h];if(!this._canParseStyleLayer(e.uid)||e.minzoom&&i<Math.floor(e.minzoom)||e.maxzoom&&i>=e.maxzoom||0===e.type)continue;if(!t[e.source]||!s[e.source])continue;const x=t[e.source],u=s[e.source],d=e.sourceLayer,f=x[d];if(f){let t=a[e.source];if(t||(t=a[e.source]=new Set),t.add(e.sourceLayer),e.refLayerId)c.set(e.uid,e.refLayerId);else{const t=this._createBucket(e);if(t){t.layerUIDs=[e.uid],t.layerExtent=f.extent,t.tileClipper=u;let r=n[e.source];r||(r=n[e.source]={});let i=r[d];i||(i=r[d]=[]),i.push(t),l.push(t),o[e.id.toLowerCase()]=t}}}}}_linkReferences(e){const{layerIdToBucket:t,referencerUIDToReferencedId:r}=e;r.forEach(((e,r)=>{e=e.toLowerCase(),t[e]&&t[e].layerUIDs.push(r)}))}_filterFeatures(e){const{signal:t,sourceNameToTileData:r,sourceNameToUniqueSourceLayerBuckets:s,sourceNameToUniqueSourceLayers:n}=e,a=10*this._level,l=10*(this._level+1),o=[],c=[];for(const i of Object.keys(n))n[i].forEach((e=>{o.push(e),c.push(i)}));for(let h=0;h<o.length;h++){const e=c[h],n=o[h];if(!r[e]||!s[e])continue;const x=r[e][n],u=s[e][n];if(!u||0===u.length)continue;if(i(t))return;const d=x.getData();for(;d.nextTag(2);){const e=d.getMessage(),t=new j(e,x);e.release();const r=t.values;if(r){const e=r._minzoom;if(e&&e>=l)continue;const t=r._maxzoom;if(t&&t<=a)continue}for(const i of u)i.pushFeature(t)}}}_fetchResources(e,t,r){const i=[],s=this._tile.getWorkerTileHandler();let n,a;e.size>0&&(n=s.fetchSprites(e,this._client,r),i.push(n));for(const l in t){const e=t[l];e.size>0&&(a=s.fetchGlyphs(this._tile.tileKey,l,e,this._client,r),i.push(a))}return i}_processFeatures(e){const t=e.filter((e=>e.hasFeatures()||this._canParseStyleLayer(e.layer.uid)));for(const r of t)r.processFeatures(r.tileClipper);return t}_parseTileData(e){const t={};for(const r of Object.keys(e)){const i=e[r],s={};for(;i.next();)switch(i.tag()){case 3:{const e=i.getMessage(),t=new K(e);e.release(),s[t.name]=t;break}default:i.skip()}t[r]=s}return t}_createBucket(e){switch(e.type){case 0:return null;case 1:return this._createFillBucket(e);case 2:return this._createLineBucket(e);case 4:return this._createCircleBucket(e);case 3:return this._createSymbolBucket(e)}}_createFillBucket(e){return new ee(e,this._level,new Y(e.fillMaterial.getStride()),new q,new W(e.outlineMaterial.getStride()),new q)}_createLineBucket(e){return new re(e,this._level,new H(e.lineMaterial.getStride()),new q)}_createCircleBucket(e){return new X(e,this._level,new J(e.circleMaterial.getStride()),new q)}_createSymbolBucket(e){const t=this._tile;return new oe(e,this._level,new Z(e.iconMaterial.getStride()),new q,new Z(e.textMaterial.getStride()),new q,t.placementEngine,t.getWorkerTileHandler())}}class he{constructor(e,t,r,i){this.status=N.INITIALIZED,this.placementEngine=new G,this.tileKey=e,this.refKeys=t,this._workerTileHandler=r,this._styleRepository=i}release(){this.tileKey="",this.refKeys=null,this.status=N.INITIALIZED,this._workerTileHandler=null}async parse(e,t,r){const i=r&&r.signal;if(s(i)){const e=()=>{i.removeEventListener("abort",e),this.status=N.INVALID};i.addEventListener("abort",e)}let a;try{a=await this._parse(e,r)}catch(o){if(n(o))throw o;return{result:[],transferList:[]}}this.status=N.READY;const l=[];for(const s of a){const e=s.serialize();l.push(e)}return{result:l,transferList:l.length<=t&&l}}setObsolete(){this.status=N.INVALID}getLayers(){return this._workerTileHandler.getLayers()}getWorkerTileHandler(){return this._workerTileHandler}async _parse(e,t){const r=e.sourceName2DataAndRefKey;return 0===Object.keys(r).length?[]:(this.status=N.MODIFIED,new ce(r,this,t.client,this._styleRepository,e.styleLayerUIDs).parse(t))}}export default class{constructor(){this._spriteInfo={},this._glyphInfo={}}reset(){return this._spriteInfo={},this._glyphInfo={},Promise.resolve()}getLayers(){var e;return null==(e=this._styleRepository)?void 0:e.layers}async createTileAndParse(e,t){const{key:r}=e,i={};for(const n of Object.keys(e.sourceName2DataAndRefKey)){const t=e.sourceName2DataAndRefKey[n];i[n]=t.refKey}const s=new he(r,i,this,this._styleRepository);try{return await s.parse(e,this._vectorTileLayerMaxBuffers,t)}catch(a){if(s.setObsolete(),s.release(),!n(a))throw a;return null}}updateStyle(e){if(!e||0===e.length||!this._styleRepository)return;const t=this._styleRepository;for(const r of e){const e=r.type,i=r.data;switch(e){case 0:t.setPaintProperties(i.layerName,i.paint);break;case 1:t.setLayoutProperties(i.layerName,i.layout);break;case 3:t.deleteStyleLayer(i.layerName);break;case 2:t.setStyleLayer(i.layer,i.index)}}}setStyle(e){this._styleRepository=new g(e.style),this._spriteInfo={},this._glyphInfo={},this._vectorTileLayerMaxBuffers=e.vectorTileLayerMaxBuffers}fetchSprites(e,t,r){const i=[],s=this._spriteInfo;return e.forEach((e=>{void 0===s[e]&&i.push(e)})),0===i.length?Promise.resolve():t.invoke("getSprites",i,{signal:r&&r.signal}).then((e=>{for(const t in e){const r=e[t];s[t]=r}}))}getSpriteItems(){return this._spriteInfo}fetchGlyphs(e,t,r,i,s){const n=[];let a=this._glyphInfo[t];return a?r.forEach((e=>{a[e]||n.push(e)})):(a=this._glyphInfo[t]=[],r.forEach((e=>n.push(e)))),0===n.length?Promise.resolve():i.invoke("getGlyphs",{tileID:e,font:t,codePoints:n},s).then((e=>{for(let t=0;t<e.length;t++)e[t]&&(a[t]=e[t])}))}getGlyphItems(e){return this._glyphInfo[e]}}
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { cs as o$4, cO as c$2, ak as n$3, ao as b$2, a5 as r$5, an as g$1 } from "./vendor.74d5941c.js";
+import { f as f$4, t as t$5, n as n$1, b as a$4, r as r$3, h as h$2, c as t$6, d as d$3, e as f$5, P, g as b$1, a as a$5 } from "./StyleRepository.bb6fee73.js";
+import { o as o$3, a as e$2, s as s$3 } from "./earcut.0e5467f0.js";
+import { t as t$4, i, e as n$2, u as u$3, b as i$1, a as r$4, n as n$4, f as e$3 } from "./TurboLine.ecd76861.js";
+import { t as t$3 } from "./Rect.b51904ac.js";
+import { C } from "./BidiEngine.9b392b22.js";
+import "./vec4f32.6de15d07.js";
+import "./definitions.6737c10c.js";
+import "./GeometryUtils.9c8423f5.js";
+import "./_commonjsHelpers.f2a458db.js";
+var I;
+!function(I2) {
+  I2[I2.INITIALIZED = 0] = "INITIALIZED", I2[I2.NO_DATA = 1] = "NO_DATA", I2[I2.READY = 2] = "READY", I2[I2.MODIFIED = 3] = "MODIFIED", I2[I2.INVALID = 4] = "INVALID";
+}(I || (I = {}));
+function e$1(e2) {
+  return e2 === 746 || e2 === 747 || !(e2 < 4352) && (e2 >= 12704 && e2 <= 12735 || (e2 >= 12544 && e2 <= 12591 || (e2 >= 65072 && e2 <= 65103 && !(e2 >= 65097 && e2 <= 65103) || (e2 >= 63744 && e2 <= 64255 || (e2 >= 13056 && e2 <= 13311 || (e2 >= 11904 && e2 <= 12031 || (e2 >= 12736 && e2 <= 12783 || (e2 >= 12288 && e2 <= 12351 && !(e2 >= 12296 && e2 <= 12305 || e2 >= 12308 && e2 <= 12319 || e2 === 12336) || (e2 >= 13312 && e2 <= 19903 || (e2 >= 19968 && e2 <= 40959 || (e2 >= 12800 && e2 <= 13055 || (e2 >= 12592 && e2 <= 12687 || (e2 >= 43360 && e2 <= 43391 || (e2 >= 55216 && e2 <= 55295 || (e2 >= 4352 && e2 <= 4607 || (e2 >= 44032 && e2 <= 55215 || (e2 >= 12352 && e2 <= 12447 || (e2 >= 12272 && e2 <= 12287 || (e2 >= 12688 && e2 <= 12703 || (e2 >= 12032 && e2 <= 12255 || (e2 >= 12784 && e2 <= 12799 || (e2 >= 12448 && e2 <= 12543 && e2 !== 12540 || (e2 >= 65280 && e2 <= 65519 && !(e2 === 65288 || e2 === 65289 || e2 === 65293 || e2 >= 65306 && e2 <= 65310 || e2 === 65339 || e2 === 65341 || e2 === 65343 || e2 >= 65371 && e2 <= 65503 || e2 === 65507 || e2 >= 65512 && e2 <= 65519) || (e2 >= 65104 && e2 <= 65135 && !(e2 >= 65112 && e2 <= 65118 || e2 >= 65123 && e2 <= 65126) || (e2 >= 5120 && e2 <= 5759 || (e2 >= 6320 && e2 <= 6399 || (e2 >= 65040 && e2 <= 65055 || (e2 >= 19904 && e2 <= 19967 || (e2 >= 40960 && e2 <= 42127 || e2 >= 42128 && e2 <= 42191)))))))))))))))))))))))))))));
+}
+function c$1(e2) {
+  return !(e2 < 11904) && (e2 >= 12704 && e2 <= 12735 || (e2 >= 12544 && e2 <= 12591 || (e2 >= 65072 && e2 <= 65103 || (e2 >= 63744 && e2 <= 64255 || (e2 >= 13056 && e2 <= 13311 || (e2 >= 11904 && e2 <= 12031 || (e2 >= 12736 && e2 <= 12783 || (e2 >= 12288 && e2 <= 12351 || (e2 >= 13312 && e2 <= 19903 || (e2 >= 19968 && e2 <= 40959 || (e2 >= 12800 && e2 <= 13055 || (e2 >= 65280 && e2 <= 65519 || (e2 >= 12352 && e2 <= 12447 || (e2 >= 12272 && e2 <= 12287 || (e2 >= 12032 && e2 <= 12255 || (e2 >= 12784 && e2 <= 12799 || (e2 >= 12448 && e2 <= 12543 || (e2 >= 65040 && e2 <= 65055 || (e2 >= 42128 && e2 <= 42191 || e2 >= 40960 && e2 <= 42127)))))))))))))))))));
+}
+function s$2(e2) {
+  switch (e2) {
+    case 10:
+    case 32:
+    case 38:
+    case 40:
+    case 41:
+    case 43:
+    case 45:
+    case 47:
+    case 173:
+    case 183:
+    case 8203:
+    case 8208:
+    case 8211:
+    case 8231:
+      return true;
+  }
+  return false;
+}
+function a$3(e2) {
+  switch (e2) {
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 32:
+      return true;
+  }
+  return false;
+}
+const c = 24, h$1 = 17;
+class a$2 {
+  constructor(t2, e2, i2, s2, o2, c2, h2) {
+    this._glyphItems = t2, this._maxWidth = e2, this._lineHeight = i2, this._letterSpacing = s2, this._hAnchor = o2, this._vAnchor = c2, this._justify = h2;
+  }
+  getShaping(t2, c2, h2) {
+    const a2 = this._letterSpacing, l2 = this._lineHeight, r2 = this._justify, n2 = this._maxWidth, m2 = [];
+    let f2 = 0, p2 = 0;
+    const g2 = t2.length;
+    for (let e2 = 0; e2 < g2; e2++) {
+      const i2 = t2.charCodeAt(e2), s2 = h2 && e$1(i2);
+      let c3;
+      for (const t3 of this._glyphItems)
+        if (c3 = t3[i2], c3)
+          break;
+      m2.push({ codePoint: i2, x: f2, y: p2, vertical: s2, glyphMosaicItem: c3 }), c3 && (f2 += c3.metrics.advance + a2);
+    }
+    let y2 = f2;
+    if (n2 > 0) {
+      y2 = f2 / Math.max(1, Math.ceil(f2 / n2));
+    }
+    const d2 = t2.indexOf("\u200B") >= 0, x2 = [];
+    for (let i2 = 0; i2 < g2 - 1; i2++) {
+      const t3 = m2[i2].codePoint, o2 = c$1(t3);
+      if (s$2(t3) || o2) {
+        let e2 = 0;
+        if (t3 === 10)
+          e2 -= 1e4;
+        else if (o2 && d2)
+          e2 += 150;
+        else {
+          t3 !== 40 && t3 !== 65288 || (e2 += 50);
+          const s2 = m2[i2 + 1].codePoint;
+          s2 !== 41 && s2 !== 65289 || (e2 += 50);
+        }
+        x2.push(this._buildBreak(i2 + 1, m2[i2].x, y2, x2, e2, false));
+      }
+    }
+    const M = this._optimalBreaks(this._buildBreak(g2, f2, y2, x2, 0, true));
+    let u2 = 0;
+    const _ = c2 ? -l2 : l2;
+    let I2 = 0;
+    for (let e2 = 0; e2 < M.length; e2++) {
+      const t3 = M[e2];
+      let s2 = I2;
+      for (; s2 < t3 && a$3(m2[s2].codePoint); )
+        m2[s2].glyphMosaicItem = null, ++s2;
+      let o2 = t3 - 1;
+      for (; o2 > s2 && a$3(m2[o2].codePoint); )
+        m2[o2].glyphMosaicItem = null, --o2;
+      if (s2 <= o2) {
+        const t4 = m2[s2].x;
+        for (let i2 = s2; i2 <= o2; i2++)
+          m2[i2].x -= t4, m2[i2].y = p2;
+        let e3 = m2[o2].x;
+        m2[o2].glyphMosaicItem && (e3 += m2[o2].glyphMosaicItem.metrics.advance), u2 = Math.max(e3, u2), r2 && this._applyJustification(m2, s2, o2);
+      }
+      I2 = t3, p2 += _;
+    }
+    if (m2.length > 0) {
+      const t3 = M.length - 1, e2 = (r2 - this._hAnchor) * u2;
+      let i2 = (-this._vAnchor * (t3 + 1) + 0.5) * l2;
+      c2 && t3 && (i2 += t3 * l2);
+      for (const s2 of m2)
+        s2.x += e2, s2.y += i2;
+    }
+    return m2.filter((t3) => t3.glyphMosaicItem);
+  }
+  static getTextBox(t2, e2) {
+    if (!t2.length)
+      return null;
+    let i2 = 1 / 0, s2 = 1 / 0, o2 = 0, c2 = 0;
+    for (const a2 of t2) {
+      const t3 = a2.glyphMosaicItem.metrics.advance, l2 = a2.x, r2 = a2.y - h$1, n2 = l2 + t3, m2 = r2 + e2;
+      i2 = Math.min(i2, l2), o2 = Math.max(o2, n2), s2 = Math.min(s2, r2), c2 = Math.max(c2, m2);
+    }
+    return { x: i2, y: s2, width: o2 - i2, height: c2 - s2 };
+  }
+  static getBox(t2) {
+    if (!t2.length)
+      return null;
+    let e2 = 1 / 0, i2 = 1 / 0, s2 = 0, o2 = 0;
+    for (const c2 of t2) {
+      const { height: t3, left: h2, top: a2, width: l2 } = c2.glyphMosaicItem.metrics, r2 = c2.x, n2 = c2.y - (t3 - Math.abs(a2)), m2 = r2 + l2 + h2, f2 = n2 + t3;
+      e2 = Math.min(e2, r2), s2 = Math.max(s2, m2), i2 = Math.min(i2, n2), o2 = Math.max(o2, f2);
+    }
+    return { x: e2, y: i2, width: s2 - e2, height: o2 - i2 };
+  }
+  static addDecoration(e2, i2) {
+    const s2 = e2.length;
+    if (s2 === 0)
+      return;
+    const o2 = 3;
+    let c2 = e2[0].x + e2[0].glyphMosaicItem.metrics.left, h2 = e2[0].y;
+    for (let l2 = 1; l2 < s2; l2++) {
+      const s3 = e2[l2];
+      if (s3.y !== h2) {
+        const a3 = e2[l2 - 1].x + e2[l2 - 1].glyphMosaicItem.metrics.left + e2[l2 - 1].glyphMosaicItem.metrics.width;
+        e2.push({ codePoint: 0, x: c2, y: h2 + i2 - o2, vertical: false, glyphMosaicItem: { sdf: true, rect: new t$3(4, 0, 4, 8), metrics: { width: a3 - c2, height: 2 + 2 * o2, left: 0, top: 0, advance: 0 }, page: 0, code: 0 } }), h2 = s3.y, c2 = s3.x + s3.glyphMosaicItem.metrics.left;
+      }
+    }
+    const a2 = e2[s2 - 1].x + e2[s2 - 1].glyphMosaicItem.metrics.left + e2[s2 - 1].glyphMosaicItem.metrics.width;
+    e2.push({ codePoint: 0, x: c2, y: h2 + i2 - o2, vertical: false, glyphMosaicItem: { sdf: true, rect: new t$3(4, 0, 4, 8), metrics: { width: a2 - c2, height: 2 + 2 * o2, left: 0, top: 0, advance: 0 }, page: 0, code: 0 } });
+  }
+  _breakScore(t2, e2, i2, s2) {
+    const o2 = (t2 - e2) * (t2 - e2);
+    return s2 ? t2 < e2 ? o2 / 2 : 2 * o2 : o2 + Math.abs(i2) * i2;
+  }
+  _buildBreak(t2, e2, i2, s2, o2, c2) {
+    let h2 = null, a2 = this._breakScore(e2, i2, o2, c2);
+    for (const l2 of s2) {
+      const t3 = e2 - l2.x, s3 = this._breakScore(t3, i2, o2, c2) + l2.score;
+      s3 <= a2 && (h2 = l2, a2 = s3);
+    }
+    return { index: t2, x: e2, score: a2, previousBreak: h2 };
+  }
+  _optimalBreaks(t2) {
+    return t2 ? this._optimalBreaks(t2.previousBreak).concat(t2.index) : [];
+  }
+  _applyJustification(t2, e2, i2) {
+    const s2 = t2[i2], o2 = s2.vertical ? c : s2.glyphMosaicItem ? s2.glyphMosaicItem.metrics.advance : 0, h2 = (s2.x + o2) * this._justify;
+    for (let c2 = e2; c2 <= i2; c2++)
+      t2[c2].x -= h2;
+  }
+}
+const g = 4096, x$1 = 8, d$2 = 0.5, w = 2;
+class p {
+  constructor(e2, t2, i2 = 0, n2 = -1, s2 = d$2) {
+    this.x = e2, this.y = t2, this.angle = i2, this.segment = n2, this.minzoom = s2;
+  }
+}
+class y$1 {
+  constructor(e2, t2, n2, s2, a2, o2 = d$2, l2 = n$1) {
+    this.anchor = e2, this.labelAngle = t2, this.glyphAngle = n2, this.page = s2, this.alternateVerticalGlyph = a2, this.minzoom = o2, this.maxzoom = l2;
+  }
+}
+class f$3 {
+  constructor(e2, t2, i2, n2, s2, a2, o2, l2, h2, r2, c2, g2) {
+    this.tl = e2, this.tr = t2, this.bl = i2, this.br = n2, this.mosaicRect = s2, this.labelAngle = a2, this.minAngle = o2, this.maxAngle = l2, this.anchor = h2, this.minzoom = r2, this.maxzoom = c2, this.page = g2;
+  }
+}
+class b {
+  constructor(e2) {
+    this.shapes = e2;
+  }
+}
+class u$2 {
+  getIconPlacement(i2, n2, s2) {
+    const a2 = new t$4(i2.x, i2.y), h2 = s2.rotationAlignment === 0, r2 = s2.keepUpright;
+    let c2 = s2.rotate * f$4;
+    h2 && (c2 += i2.angle);
+    const g2 = new b([]);
+    return s2.allowOverlap && s2.ignorePlacement || !o$3 || (g2.iconColliders = []), this._addIconPlacement(g2, a2, n2, s2, c2), h2 && r2 && this._addIconPlacement(g2, a2, n2, s2, c2 + t$5), g2;
+  }
+  _addIconPlacement(e2, t2, n2, s2, a2) {
+    const h2 = n2.pixelRatio, r2 = n2.width / h2, c2 = n2.height / h2, g2 = s2.offset;
+    let m2 = g2[0], x2 = g2[1];
+    switch (s2.anchor) {
+      case 0:
+        m2 -= r2 / 2, x2 -= c2 / 2;
+        break;
+      case 1:
+        x2 -= c2 / 2;
+        break;
+      case 2:
+        m2 -= r2, x2 -= c2 / 2;
+        break;
+      case 3:
+        m2 -= r2 / 2;
+        break;
+      case 4:
+        m2 -= r2 / 2, x2 -= c2;
+        break;
+      case 5:
+        break;
+      case 7:
+        x2 -= c2;
+        break;
+      case 6:
+        m2 -= r2;
+        break;
+      case 8:
+        m2 -= r2, x2 -= c2;
+    }
+    const w2 = n2.rect, p2 = 2 / h2, y2 = m2 - p2, b2 = x2 - p2, u2 = y2 + w2.width / h2, I2 = b2 + w2.height / h2, k2 = new t$4(y2, b2), T = new t$4(u2, I2), P2 = new t$4(y2, I2), N = new t$4(u2, b2);
+    if (a2 !== 0) {
+      const e3 = Math.cos(a2), t3 = Math.sin(a2);
+      k2.rotate(e3, t3), T.rotate(e3, t3), P2.rotate(e3, t3), N.rotate(e3, t3);
+    }
+    const z = new f$3(k2, N, P2, T, w2, a2, 0, 256, t2, d$2, n$1, 0);
+    if (e2.shapes.push(z), (!s2.allowOverlap || !s2.ignorePlacement) && o$3) {
+      const n3 = s2.size, o2 = s2.padding, l2 = { xTile: t2.x, yTile: t2.y, dxPixels: m2 * n3 - o2, dyPixels: x2 * n3 - o2, hard: !s2.optional, partIndex: 0, width: r2 * n3 + 2 * o2, height: c2 * n3 + 2 * o2, angle: a2, minLod: d$2, maxLod: n$1 };
+      e2.iconColliders.push(l2);
+    }
+  }
+  getTextPlacement(n2, s2, a2, o2) {
+    const g2 = new t$4(n2.x, n2.y), m2 = o2.rotate * f$4, p2 = o2.rotationAlignment === 0, u2 = o2.keepUpright, I2 = o2.padding;
+    let k2 = d$2;
+    const T = !p2 ? 0 : n2.angle, P2 = n2.segment >= 0 && p2, N = o2.allowOverlap && o2.ignorePlacement ? null : [], z = [], A = 4, _ = !P2;
+    let G = Number.POSITIVE_INFINITY, v = Number.NEGATIVE_INFINITY, M = G, E = v;
+    const L = (P2 || p2) && u2, V2 = o2.size / c;
+    let O = false;
+    for (const e2 of s2)
+      if (e2.vertical) {
+        O = true;
+        break;
+      }
+    let j, F = 0, Y = 0;
+    if (!P2 && O) {
+      const e2 = a$2.getTextBox(s2, o2.lineHeight * c);
+      switch (o2.anchor) {
+        case 1:
+          F = e2.height / 2, Y = -e2.width / 2;
+          break;
+        case 2:
+          F = -e2.height / 2, Y = e2.width / 2;
+          break;
+        case 3:
+          F = e2.height / 2, Y = e2.width / 2;
+          break;
+        case 4:
+          F = -e2.height / 2, Y = -e2.width / 2;
+          break;
+        case 5:
+          F = e2.height;
+          break;
+        case 7:
+          Y = -e2.width;
+          break;
+        case 6:
+          Y = e2.width;
+          break;
+        case 8:
+          F = -e2.height;
+      }
+    }
+    F += o2.offset[0] * c, Y += o2.offset[1] * c;
+    for (const e2 of s2) {
+      const s3 = e2.glyphMosaicItem;
+      if (!s3 || s3.rect.isEmpty)
+        continue;
+      const h2 = s3.rect, r2 = s3.metrics, b2 = s3.page;
+      if (N && _) {
+        if (j !== void 0 && j !== e2.y) {
+          let e3, t2, s4, a3;
+          O ? (e3 = -E + F, t2 = G + Y, s4 = E - M, a3 = v - G) : (e3 = G + F, t2 = M + Y, s4 = v - G, a3 = E - M);
+          const l2 = { xTile: n2.x, yTile: n2.y, dxPixels: e3 * V2 - I2, dyPixels: t2 * V2 - I2, hard: !o2.optional, partIndex: 1, width: s4 * V2 + 2 * I2, height: a3 * V2 + 2 * I2, angle: m2, minLod: d$2, maxLod: n$1 };
+          N.push(l2), G = Number.POSITIVE_INFINITY, v = Number.NEGATIVE_INFINITY, M = G, E = v;
+        }
+        j = e2.y;
+      }
+      const q2 = [];
+      if (P2) {
+        const t2 = 0.5 * s3.metrics.width, i2 = (e2.x + r2.left - A + t2) * V2 * x$1;
+        if (k2 = this._placeGlyph(n2, k2, i2, a2, n2.segment, 1, e2.vertical, b2, q2), u2 && (k2 = this._placeGlyph(n2, k2, i2, a2, n2.segment, -1, e2.vertical, b2, q2)), k2 >= w)
+          break;
+      } else
+        q2.push(new y$1(g2, T, T, b2, false)), p2 && u2 && q2.push(new y$1(g2, T + t$5, T + t$5, b2, false));
+      const C2 = e2.x + r2.left, S = e2.y - h$1 - r2.top, U = C2 + r2.width, R = S + r2.height;
+      let B, H, D, J, K, Q, W, X;
+      if (!P2 && O)
+        if (e2.vertical) {
+          const e3 = (C2 + U) / 2 - r2.height / 2, t2 = (S + R) / 2 + r2.width / 2;
+          B = new t$4(-t2 - A + F, e3 - A + Y), H = new t$4(B.x + h2.width, B.y + h2.height), D = new t$4(B.x, H.y), J = new t$4(H.x, B.y);
+        } else
+          B = new t$4(-S + A + F, C2 - A + Y), H = new t$4(B.x - h2.height, B.y + h2.width), D = new t$4(H.x, B.y), J = new t$4(B.x, H.y);
+      else
+        B = new t$4(C2 - A + F, S - A + Y), H = new t$4(B.x + h2.width, B.y + h2.height), D = new t$4(B.x, H.y), J = new t$4(H.x, B.y);
+      for (const t2 of q2) {
+        let i2, s4, a3, c2;
+        if (t2.alternateVerticalGlyph) {
+          if (!K) {
+            const e3 = (S + R) / 2 + Y;
+            K = new t$4((C2 + U) / 2 + F - r2.height / 2 - A, e3 + r2.width / 2 + A), Q = new t$4(K.x + h2.height, K.y - h2.width), W = new t$4(Q.x, K.y), X = new t$4(K.x, Q.y);
+          }
+          i2 = K, s4 = W, a3 = X, c2 = Q;
+        } else
+          i2 = B, s4 = D, a3 = J, c2 = H;
+        const g3 = S, x2 = R, d2 = t2.glyphAngle + m2;
+        if (d2 !== 0) {
+          const e3 = Math.cos(d2), t3 = Math.sin(d2);
+          i2 = i2.clone(), s4 = s4.clone(), a3 = a3.clone(), c2 = c2.clone(), i2.rotate(e3, t3), c2.rotate(e3, t3), s4.rotate(e3, t3), a3.rotate(e3, t3);
+        }
+        let p3 = 0, y2 = 256;
+        if (P2 && O ? e2.vertical ? t2.alternateVerticalGlyph ? (p3 = 32, y2 = 96) : (p3 = 224, y2 = 32) : (p3 = 224, y2 = 96) : (p3 = 192, y2 = 64), z.push(new f$3(i2, a3, s4, c2, h2, t2.labelAngle, p3, y2, t2.anchor, t2.minzoom, t2.maxzoom, t2.page)), N && (!L || this._legible(t2.labelAngle))) {
+          if (_)
+            C2 < G && (G = C2), g3 < M && (M = g3), U > v && (v = U), x2 > E && (E = x2);
+          else if (t2.minzoom < w) {
+            const e3 = { xTile: n2.x, yTile: n2.y, dxPixels: (C2 + F) * V2 - I2, dyPixels: (g3 + F) * V2 - I2, hard: !o2.optional, partIndex: 1, width: (U - C2) * V2 + 2 * I2, height: (x2 - g3) * V2 + 2 * I2, angle: d2, minLod: t2.minzoom, maxLod: t2.maxzoom };
+            N.push(e3);
+          }
+        }
+      }
+    }
+    if (k2 >= w)
+      return null;
+    if (N && _) {
+      let e2, t2, s3, a3;
+      O ? (e2 = -E + F, t2 = G + Y, s3 = E - M, a3 = v - G) : (e2 = G + F, t2 = M + Y, s3 = v - G, a3 = E - M);
+      const l2 = { xTile: n2.x, yTile: n2.y, dxPixels: e2 * V2 - I2, dyPixels: t2 * V2 - I2, hard: !o2.optional, partIndex: 1, width: s3 * V2 + 2 * I2, height: a3 * V2 + 2 * I2, angle: m2, minLod: d$2, maxLod: n$1 };
+      N.push(l2);
+    }
+    const q = new b(z);
+    return N && N.length > 0 && (q.textColliders = N), q;
+  }
+  _legible(e2) {
+    const t2 = h$2(e2);
+    return t2 < 65 || t2 >= 193;
+  }
+  _placeGlyph(e2, n2, o2, h2, r2, c2, g2, m2, x2) {
+    let d2 = c2;
+    const w2 = d2 < 0 ? a$4(e2.angle + t$5, r$3) : e2.angle;
+    let p2 = 0;
+    o2 < 0 && (d2 *= -1, o2 *= -1, p2 = t$5), d2 > 0 && ++r2;
+    let f2 = new t$4(e2.x, e2.y), b2 = h2[r2], u2 = n$1;
+    if (h2.length <= r2)
+      return u2;
+    for (; ; ) {
+      const e3 = b2.x - f2.x, t2 = b2.y - f2.y, i2 = Math.sqrt(e3 * e3 + t2 * t2), l2 = Math.max(o2 / i2, n2), c3 = e3 / i2, I2 = t2 / i2, k2 = a$4(Math.atan2(I2, c3) + p2, r$3);
+      if (x2.push(new y$1(f2, w2, k2, m2, false, l2, u2)), g2 && x2.push(new y$1(f2, w2, k2, m2, true, l2, u2)), l2 <= n2)
+        return l2;
+      f2 = b2.clone();
+      do {
+        if (r2 += d2, h2.length <= r2 || r2 < 0)
+          return l2;
+        b2 = h2[r2];
+      } while (f2.isEqual(b2));
+      let T = b2.x - f2.x, P2 = b2.y - f2.y;
+      const N = Math.sqrt(T * T + P2 * P2);
+      T *= i2 / N, P2 *= i2 / N, f2.x -= T, f2.y -= P2, u2 = l2;
+    }
+  }
+}
+class t$2 {
+  constructor(e2, t2) {
+    this.values = {};
+    const s2 = t2.keys, r2 = t2.values;
+    for (; e2.next(); )
+      switch (e2.tag()) {
+        case 1:
+          this.id = e2.getUInt64();
+          break;
+        case 2: {
+          const t3 = e2.getMessage(), o2 = this.values;
+          for (; !t3.empty(); ) {
+            const e3 = t3.getUInt32(), a2 = t3.getUInt32();
+            o2[s2[e3]] = r2[a2];
+          }
+          t3.release();
+          break;
+        }
+        case 3:
+          this.type = e2.getUInt32();
+          break;
+        case 4:
+          this._pbfGeometry = e2.getMessage();
+          break;
+        default:
+          e2.skip();
+      }
+  }
+  getGeometry(t2) {
+    if (this._geometry !== void 0)
+      return this._geometry;
+    if (!this._pbfGeometry)
+      return null;
+    const s2 = this._pbfGeometry;
+    let r2, o2;
+    this._pbfGeometry = null, t2 ? t2.reset(this.type) : r2 = [];
+    let a2, n2 = 1, i2 = 0, l2 = 0, h2 = 0;
+    for (; !s2.empty(); ) {
+      if (i2 === 0) {
+        const e2 = s2.getUInt32();
+        n2 = 7 & e2, i2 = e2 >> 3;
+      }
+      switch (i2--, n2) {
+        case 1:
+          l2 += s2.getSInt32(), h2 += s2.getSInt32(), t2 ? t2.moveTo(l2, h2) : (o2 && r2.push(o2), o2 = [], o2.push(new t$4(l2, h2)));
+          break;
+        case 2:
+          l2 += s2.getSInt32(), h2 += s2.getSInt32(), t2 ? t2.lineTo(l2, h2) : o2.push(new t$4(l2, h2));
+          break;
+        case 7:
+          t2 ? t2.close() : o2 && !o2[0].equals(l2, h2) && o2.push(o2[0].clone());
+          break;
+        default:
+          throw s2.release(), new Error("Invalid path operation");
+      }
+    }
+    return t2 ? a2 = t2.result() : (o2 && r2.push(o2), a2 = r2), s2.release(), this._geometry = a2, a2;
+  }
+}
+class r$2 extends t$6 {
+  constructor() {
+    super(12);
+  }
+  add(s2, r2, t2) {
+    const e2 = this.array;
+    e2.push(s2), e2.push(r2), e2.push(t2);
+  }
+}
+class e {
+  constructor(t2) {
+    for (this.extent = 4096, this.keys = [], this.values = [], this._pbfLayer = t2.clone(); t2.next(); )
+      switch (t2.tag()) {
+        case 1:
+          this.name = t2.getString();
+          break;
+        case 3:
+          this.keys.push(t2.getString());
+          break;
+        case 4:
+          this.values.push(t2.processMessage(e._parseValue));
+          break;
+        case 5:
+          this.extent = t2.getUInt32();
+          break;
+        default:
+          t2.skip();
+      }
+  }
+  getData() {
+    return this._pbfLayer;
+  }
+  static _parseValue(e2) {
+    for (; e2.next(); )
+      switch (e2.tag()) {
+        case 1:
+          return e2.getString();
+        case 2:
+          return e2.getFloat();
+        case 3:
+          return e2.getDouble();
+        case 4:
+          return e2.getInt64();
+        case 5:
+          return e2.getUInt64();
+        case 6:
+          return e2.getSInt64();
+        case 7:
+          return e2.getBool();
+        default:
+          e2.skip();
+      }
+    return null;
+  }
+}
+class o$2 extends t$6 {
+  constructor(s2) {
+    super(s2);
+  }
+  add(t2, o2, r2, u2, h2, a2, n2, e2) {
+    const d2 = this.array;
+    let p2 = t$6.i1616to32(t2, o2);
+    d2.push(p2);
+    const c2 = 31;
+    p2 = t$6.i8888to32(Math.round(c2 * r2), Math.round(c2 * u2), Math.round(c2 * h2), Math.round(c2 * a2)), d2.push(p2), p2 = t$6.i1616to32(n2, 0), d2.push(p2), e2 && d2.push(...e2);
+  }
+}
+class r$1 extends t$6 {
+  constructor(s2) {
+    super(s2);
+  }
+  add(t2, o2, r2) {
+    const u2 = this.array;
+    u2.push(t$6.i1616to32(t2, o2)), r2 && u2.push(...r2);
+  }
+}
+class u$1 extends t$6 {
+  constructor(s2) {
+    super(s2);
+  }
+  add(t2, o2, r2, u2, h2, a2, n2) {
+    const e2 = this.array, d2 = this.index;
+    let p2 = t$6.i1616to32(t2, o2);
+    e2.push(p2);
+    const c2 = 15;
+    return p2 = t$6.i8888to32(Math.round(c2 * r2), Math.round(c2 * u2), h2, a2), e2.push(p2), n2 && e2.push(...n2), d2;
+  }
+}
+class h extends t$6 {
+  constructor(s2) {
+    super(s2);
+  }
+  add(o2, r2, u2, h2, a2, n2, e2, d2, p2, c2, i2, M) {
+    const l2 = this.array;
+    let m2 = t$6.i1616to32(o2, r2);
+    l2.push(m2), m2 = t$6.i1616to32(Math.round(8 * u2), Math.round(8 * h2)), l2.push(m2), m2 = t$6.i8888to32(a2 / 4, n2 / 4, d2, p2), l2.push(m2), m2 = t$6.i8888to32(0, h$2(e2), 10 * c2, Math.min(10 * i2, 255)), l2.push(m2), M && l2.push(...M);
+  }
+}
+class a$1 extends t$6 {
+  constructor(s2) {
+    super(s2);
+  }
+  add(t2, o2, r2, u2, h2) {
+    const a2 = this.array, n2 = t$6.i1616to32(2 * t2 + r2, 2 * o2 + u2);
+    a2.push(n2), h2 && a2.push(...h2);
+  }
+}
+class t$1 {
+  constructor(t2, e2) {
+    this.layerExtent = 4096, this._features = [], this.layer = t2, this.zoom = e2, this._filter = t2.getFeatureFilter();
+  }
+  pushFeature(t2) {
+    this._filter && !this._filter.filter(t2, this.zoom) || this._features.push(t2);
+  }
+  hasFeatures() {
+    return this._features.length > 0;
+  }
+}
+class t extends t$1 {
+  constructor(e2, t2, r2, i2) {
+    super(e2, t2), this.type = 4, this._circleVertexBuffer = r2, this._circleIndexBuffer = i2;
+  }
+  get circleIndexStart() {
+    return this._circleIndexStart;
+  }
+  get circleIndexCount() {
+    return this._circleIndexCount;
+  }
+  processFeatures(e2) {
+    const t2 = this._circleVertexBuffer, r2 = this._circleIndexBuffer;
+    this._circleIndexStart = 3 * r2.index, this._circleIndexCount = 0;
+    const i2 = this.layer, c2 = this.zoom;
+    e2 && e2.setExtent(this.layerExtent);
+    for (const s2 of this._features) {
+      const n2 = s2.getGeometry(e2);
+      if (!n2)
+        continue;
+      const l2 = i2.circleMaterial.encodeAttributes(s2, c2, i2);
+      for (const e3 of n2)
+        if (e3)
+          for (const i3 of e3) {
+            const e4 = t2.index;
+            t2.add(i3.x, i3.y, 0, 0, l2), t2.add(i3.x, i3.y, 0, 1, l2), t2.add(i3.x, i3.y, 1, 0, l2), t2.add(i3.x, i3.y, 1, 1, l2), r2.add(e4 + 0, e4 + 1, e4 + 2), r2.add(e4 + 1, e4 + 2, e4 + 3), this._circleIndexCount += 6;
+          }
+    }
+  }
+  serialize() {
+    let e2 = 6;
+    e2 += this.layerUIDs.length, e2 += this._circleVertexBuffer.array.length, e2 += this._circleIndexBuffer.array.length;
+    const t2 = new Uint32Array(e2), r2 = new Int32Array(t2.buffer);
+    let i2 = 0;
+    t2[i2++] = this.type, t2[i2++] = this.layerUIDs.length;
+    for (let c2 = 0; c2 < this.layerUIDs.length; c2++)
+      t2[i2++] = this.layerUIDs[c2];
+    t2[i2++] = this._circleIndexStart, t2[i2++] = this._circleIndexCount, t2[i2++] = this._circleVertexBuffer.array.length;
+    for (let c2 = 0; c2 < this._circleVertexBuffer.array.length; c2++)
+      r2[i2++] = this._circleVertexBuffer.array[c2];
+    t2[i2++] = this._circleIndexBuffer.array.length;
+    for (let c2 = 0; c2 < this._circleIndexBuffer.array.length; c2++)
+      t2[i2++] = this._circleIndexBuffer.array[c2];
+    return t2.buffer;
+  }
+}
+const s$1 = new i();
+class o$1 extends t$1 {
+  constructor(e2, t2, l2, i2, r2, n2) {
+    super(e2, t2), this.type = 1, this._fillVertexBuffer = l2, this._fillIndexBuffer = i2, this._outlineVertexBuffer = r2, this._outlineIndexBuffer = n2;
+  }
+  get fillIndexStart() {
+    return this._fillIndexStart;
+  }
+  get fillIndexCount() {
+    return this._fillIndexCount;
+  }
+  get outlineIndexStart() {
+    return this._outlineIndexStart;
+  }
+  get outlineIndexCount() {
+    return this._outlineIndexCount;
+  }
+  processFeatures(e2) {
+    this._fillIndexStart = 3 * this._fillIndexBuffer.index, this._fillIndexCount = 0, this._outlineIndexStart = 3 * this._outlineIndexBuffer.index, this._outlineIndexCount = 0;
+    const t2 = this.layer, l2 = this.zoom;
+    e2 && e2.setExtent(this.layerExtent);
+    let i2 = t2.getPaintValue("fill-pattern", l2) === void 0 && t2.getPaintValue("fill-antialias", l2);
+    if (t2.outlineUsesFillColor) {
+      if (i2 && !t2.hasDataDrivenOpacity) {
+        const e3 = t2.getPaintValue("fill-opacity", l2), r3 = t2.getPaintValue("fill-opacity", l2 + 1);
+        e3 < 1 && r3 < 1 && (i2 = false);
+      }
+      if (i2 && !t2.hasDataDrivenColor) {
+        const e3 = t2.getPaintValue("fill-color", l2), r3 = t2.getPaintValue("fill-color", l2 + 1);
+        e3[3] < 1 && r3[3] < 1 && (i2 = false);
+      }
+    }
+    const { fillMaterial: r2, outlineMaterial: n2, hasDataDrivenFill: s2, hasDataDrivenOutline: o2 } = t2;
+    for (const f2 of this._features) {
+      const a2 = s2 ? r2.encodeAttributes(f2, l2, t2) : null, u2 = i2 && o2 ? n2.encodeAttributes(f2, l2, t2) : null, d2 = f2.getGeometry(e2), h2 = e2 == null ? void 0 : e2.validateTessellation;
+      this._processFeature(d2, i2, t2.outlineUsesFillColor, a2, u2, h2);
+    }
+  }
+  serialize() {
+    let e2 = 10;
+    e2 += this.layerUIDs.length, e2 += this._fillVertexBuffer.array.length, e2 += this._fillIndexBuffer.array.length, e2 += this._outlineVertexBuffer.array.length, e2 += this._outlineIndexBuffer.array.length;
+    const t2 = new Uint32Array(e2), l2 = new Int32Array(t2.buffer);
+    let i2 = 0;
+    t2[i2++] = this.type, t2[i2++] = this.layerUIDs.length;
+    for (let r2 = 0; r2 < this.layerUIDs.length; r2++)
+      t2[i2++] = this.layerUIDs[r2];
+    t2[i2++] = this._fillIndexStart, t2[i2++] = this._fillIndexCount, t2[i2++] = this._outlineIndexStart, t2[i2++] = this._outlineIndexCount, t2[i2++] = this._fillVertexBuffer.array.length;
+    for (let r2 = 0; r2 < this._fillVertexBuffer.array.length; r2++)
+      l2[i2++] = this._fillVertexBuffer.array[r2];
+    t2[i2++] = this._fillIndexBuffer.array.length;
+    for (let r2 = 0; r2 < this._fillIndexBuffer.array.length; r2++)
+      t2[i2++] = this._fillIndexBuffer.array[r2];
+    t2[i2++] = this._outlineVertexBuffer.array.length;
+    for (let r2 = 0; r2 < this._outlineVertexBuffer.array.length; r2++)
+      l2[i2++] = this._outlineVertexBuffer.array[r2];
+    t2[i2++] = this._outlineIndexBuffer.array.length;
+    for (let r2 = 0; r2 < this._outlineIndexBuffer.array.length; r2++)
+      t2[i2++] = this._outlineIndexBuffer.array[r2];
+    return t2.buffer;
+  }
+  _processFeature(e2, t2, l2, i2, r2, n2) {
+    if (!e2)
+      return;
+    const s2 = e2.length, f2 = !r2 || r2.length === 0;
+    if (t2 && (!l2 || f2))
+      for (let o2 = 0; o2 < s2; o2++)
+        this._processOutline(e2[o2], r2);
+    const a2 = 128;
+    let u2;
+    for (let d2 = 0; d2 < s2; d2++) {
+      const t3 = o$1._area(e2[d2]);
+      t3 > a2 ? (u2 !== void 0 && this._processFill(e2, u2, i2, n2), u2 = [d2]) : t3 < -a2 && u2 !== void 0 && u2.push(d2);
+    }
+    u2 !== void 0 && this._processFill(e2, u2, i2, n2);
+  }
+  _processOutline(e2, t2) {
+    const l2 = this._outlineVertexBuffer, r2 = this._outlineIndexBuffer, n2 = r2.index;
+    let s2, o2, f2;
+    const a2 = new t$4(0, 0), u2 = new t$4(0, 0), d2 = new t$4(0, 0);
+    let h2 = -1, x2 = -1, y2 = -1, c2 = -1, _ = -1, g2 = false;
+    const I2 = 0;
+    let B = e2.length;
+    if (B < 2)
+      return;
+    const p2 = e2[I2];
+    let V2 = e2[B - 1];
+    for (; B && V2.isEqual(p2); )
+      --B, V2 = e2[B - 1];
+    if (!(B - I2 < 2)) {
+      for (let i2 = I2; i2 < B; ++i2) {
+        i2 === I2 ? (s2 = e2[B - 1], o2 = e2[I2], f2 = e2[I2 + 1], a2.assignSub(o2, s2), a2.normalize(), a2.rightPerpendicular()) : (s2 = o2, o2 = f2, f2 = i2 !== B - 1 ? e2[i2 + 1] : e2[I2], a2.assign(u2));
+        const n3 = this._isClipEdge(s2, o2);
+        c2 === -1 && (g2 = n3), u2.assignSub(f2, o2), u2.normalize(), u2.rightPerpendicular();
+        const p3 = a2.x * u2.y - a2.y * u2.x;
+        d2.assignAdd(a2, u2), d2.normalize();
+        const V3 = -d2.x * -a2.x + -d2.y * -a2.y;
+        let C2 = Math.abs(V3 !== 0 ? 1 / V3 : 1);
+        C2 > 8 && (C2 = 8), p3 >= 0 ? (y2 = l2.add(o2.x, o2.y, a2.x, a2.y, 0, 1, t2), c2 === -1 && (c2 = y2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2), x2 = l2.add(o2.x, o2.y, C2 * -d2.x, C2 * -d2.y, 0, -1, t2), _ === -1 && (_ = x2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2), h2 = x2, x2 = y2, y2 = l2.add(o2.x, o2.y, d2.x, d2.y, 0, 1, t2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2), x2 = l2.add(o2.x, o2.y, u2.x, u2.y, 0, 1, t2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2)) : (y2 = l2.add(o2.x, o2.y, C2 * d2.x, C2 * d2.y, 0, 1, t2), c2 === -1 && (c2 = y2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2), x2 = l2.add(o2.x, o2.y, -a2.x, -a2.y, 0, -1, t2), _ === -1 && (_ = x2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2), h2 = x2, x2 = y2, y2 = l2.add(o2.x, o2.y, -d2.x, -d2.y, 0, -1, t2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2), h2 = l2.add(o2.x, o2.y, -u2.x, -u2.y, 0, -1, t2), h2 >= 0 && x2 >= 0 && y2 >= 0 && !n3 && r2.add(h2, x2, y2));
+      }
+      h2 >= 0 && x2 >= 0 && c2 >= 0 && !g2 && r2.add(h2, x2, c2), h2 >= 0 && c2 >= 0 && _ >= 0 && !g2 && r2.add(h2, _, c2), this._outlineIndexCount += 3 * (r2.index - n2);
+    }
+  }
+  _processFill(i2, r2, n2, s2) {
+    let o2;
+    r2.length > 1 && (o2 = []);
+    let a2 = 0;
+    for (const e2 of r2)
+      a2 !== 0 && o2.push(a2), a2 += i2[e2].length;
+    const u2 = 2 * a2, d2 = o$4.acquire();
+    for (const e2 of r2) {
+      const t2 = i2[e2], l2 = t2.length;
+      for (let e3 = 0; e3 < l2; ++e3)
+        d2.push(t2[e3].x, t2[e3].y);
+    }
+    const h2 = e$2(d2, o2, 2);
+    if (s2 && s$3(d2, o2, 2, h2) > 0) {
+      const e2 = [], t2 = [];
+      if (f$2(e2, t2, i2, r2), t2.length > 0) {
+        const l2 = this._fillVertexBuffer.index;
+        let i3 = 0;
+        for (; i3 < e2.length; )
+          this._fillVertexBuffer.add(e2[i3++], e2[i3++], n2);
+        let r3 = 0;
+        for (; r3 < t2.length; )
+          this._fillIndexBuffer.add(l2 + t2[r3 + 0], l2 + t2[r3 + 1], l2 + t2[r3 + 2]), r3 += 3;
+        this._fillIndexCount += t2.length;
+      }
+    } else {
+      const e2 = h2.length;
+      if (e2 > 0) {
+        const t2 = this._fillVertexBuffer.index;
+        let l2 = 0;
+        for (; l2 < u2; )
+          this._fillVertexBuffer.add(d2[l2++], d2[l2++], n2);
+        let i3 = 0;
+        for (; i3 < e2; )
+          this._fillIndexBuffer.add(t2 + h2[i3++], t2 + h2[i3++], t2 + h2[i3++]);
+        this._fillIndexCount += e2;
+      }
+    }
+    o$4.release(d2);
+  }
+  _isClipEdge(e2, t2) {
+    return e2.x === t2.x ? e2.x <= -64 || e2.x >= 4160 : e2.y === t2.y && (e2.y <= -64 || e2.y >= 4160);
+  }
+  static _area(e2) {
+    let t2 = 0;
+    const l2 = e2.length - 1;
+    for (let i2 = 0; i2 < l2; i2++)
+      t2 += (e2[i2].x - e2[i2 + 1].x) * (e2[i2].y + e2[i2 + 1].y);
+    return t2 += (e2[l2].x - e2[0].x) * (e2[l2].y + e2[0].y), 0.5 * t2;
+  }
+}
+function f$2(e2, t2, l2, i2) {
+  let r2, n2;
+  s$1.beginPolygon(e2, t2);
+  for (const o2 of i2) {
+    const e3 = l2[o2];
+    if (!(e3.length < 3)) {
+      s$1.beginContour();
+      for (let t3 = 0; t3 < e3.length; ++t3) {
+        r2 = e3[t3].x, n2 = e3[t3].y;
+        const l3 = [r2, n2, 0];
+        s$1.addVertex(l3, l3);
+      }
+      s$1.endContour();
+    }
+  }
+  s$1.endPolygon();
+}
+const l = 65535, s = 1 / 3.8, x = 0.97, d$1 = 0.8;
+class a extends t$1 {
+  constructor(e2, t2, r2, n2) {
+    super(e2, t2), this.type = 2, this._tessellationOptions = {}, this.tessellationProperties = { _lineVertexBuffer: null, _lineIndexBuffer: null, _hasPattern: null, _ddValues: null, _capType: null, _joinType: null, _miterLimitCosine: null, _roundLimitCosine: null }, this.tessellationProperties._lineVertexBuffer = r2, this.tessellationProperties._lineIndexBuffer = n2, this.tessellationProperties._hasPattern = e2.getPaintValue("line-pattern", this.zoom) || e2.getPaintValue("line-dasharray", this.zoom).length > 0, this._isThinLine = e2.isThinLine, this._isThinLine ? this._tessellationCallbacks = { vertex: u(this.tessellationProperties), bridge: f$1(this.tessellationProperties) } : this._tessellationCallbacks = { vertex: o(this.tessellationProperties), bridge: V(this.tessellationProperties) };
+  }
+  get lineIndexStart() {
+    return this._lineIndexStart;
+  }
+  get lineIndexCount() {
+    return this._lineIndexCount;
+  }
+  processFeatures(t2) {
+    this._lineIndexStart = 3 * this.tessellationProperties._lineIndexBuffer.index, this._lineIndexCount = 0;
+    const n2 = this.layer, i2 = this.zoom;
+    t2 && t2.setExtent(this.layerExtent);
+    for (const r2 of this._features) {
+      const l2 = n2.hasDataDrivenLine ? n2.lineMaterial.encodeAttributes(r2, i2, n2) : null;
+      this.tessellationProperties._capType = n2.getLayoutValue("line-cap", i2, r2), this.tessellationProperties._joinType = n2.getLayoutValue("line-join", i2, r2), this.tessellationProperties._miterLimitCosine = u$3(n2.getLayoutValue("line-miter-limit", i2, r2)), this.tessellationProperties._roundLimitCosine = u$3(n2.getLayoutValue("line-round-limit", i2, r2));
+      const s2 = r2.getGeometry(t2);
+      this._processFeature(s2, l2);
+    }
+    i$1();
+  }
+  serialize() {
+    let e2 = 6;
+    e2 += this.layerUIDs.length, e2 += this.tessellationProperties._lineVertexBuffer.array.length, e2 += this.tessellationProperties._lineIndexBuffer.array.length;
+    const t2 = new Uint32Array(e2), r2 = new Int32Array(t2.buffer);
+    let n2 = 0;
+    t2[n2++] = this.type, t2[n2++] = this.layerUIDs.length;
+    for (let i2 = 0; i2 < this.layerUIDs.length; i2++)
+      t2[n2++] = this.layerUIDs[i2];
+    t2[n2++] = this._lineIndexStart, t2[n2++] = this._lineIndexCount, t2[n2++] = this.tessellationProperties._lineVertexBuffer.array.length;
+    for (let i2 = 0; i2 < this.tessellationProperties._lineVertexBuffer.array.length; i2++)
+      r2[n2++] = this.tessellationProperties._lineVertexBuffer.array[i2];
+    t2[n2++] = this.tessellationProperties._lineIndexBuffer.array.length;
+    for (let i2 = 0; i2 < this.tessellationProperties._lineIndexBuffer.array.length; i2++)
+      t2[n2++] = this.tessellationProperties._lineIndexBuffer.array[i2];
+    return t2.buffer;
+  }
+  _processFeature(e2, t2) {
+    if (!e2)
+      return;
+    const r2 = e2.length;
+    for (let n2 = 0; n2 < r2; n2++)
+      this._processGeometry(e2[n2], t2);
+  }
+  _processGeometry(e2, t2) {
+    if (e2.length < 2)
+      return;
+    const r2 = 1e-3;
+    let i2, x2, d2 = e2[0], a2 = 1;
+    for (; a2 < e2.length; )
+      i2 = e2[a2].x - d2.x, x2 = e2[a2].y - d2.y, i2 * i2 + x2 * x2 < r2 * r2 ? e2.splice(a2, 1) : (d2 = e2[a2], ++a2);
+    if (e2.length < 2)
+      return;
+    const u2 = 3 * this.tessellationProperties._lineIndexBuffer.index;
+    this._tessellationOptions.trackDistance = this.tessellationProperties._hasPattern, this._tessellationOptions.initialDistance = 0, this._tessellationOptions.thin = this._isThinLine, this._tessellationOptions.wrapDistance = l, this._tessellationOptions.outerBisectorAutoSplitThreshold = s, this._tessellationOptions.enableOuterBisectorSplit = this.tessellationProperties._hasPattern, this._tessellationOptions.innerBisectorAutoSplitThreshold = s, this._tessellationOptions.enableInnerBisectorSplit = this.tessellationProperties._hasPattern, this.tessellationProperties._ddValues = t2, r$4(e2, this._tessellationOptions, this._tessellationCallbacks), this._lineIndexCount += 3 * this.tessellationProperties._lineIndexBuffer.index - u2;
+  }
+}
+const u = (e2) => (t2) => {
+  t2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(t2.currentVertex.x, t2.currentVertex.y, t2.prevNormal.x, t2.prevNormal.y, 0, -1, t2.distance, e2._ddValues), t2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(t2.currentVertex.x, t2.currentVertex.y, -t2.prevNormal.x, -t2.prevNormal.y, 0, 1, t2.distance, e2._ddValues), t2.exit0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(t2.currentVertex.x, t2.currentVertex.y, t2.nextNormal.x, t2.nextNormal.y, 0, -1, t2.distance, e2._ddValues), t2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(t2.currentVertex.x, t2.currentVertex.y, -t2.nextNormal.x, -t2.nextNormal.y, 0, 1, t2.distance, e2._ddValues);
+}, f$1 = (e2) => (t2) => {
+  e2._lineIndexBuffer.add(t2.leftExit0, t2.rightEntry0, t2.leftExit2), e2._lineIndexBuffer.add(t2.rightEntry0, t2.rightEntry2, t2.leftExit2);
+}, o = (e2) => (r2) => {
+  const n2 = e2._joinType === 2 ? e2._miterLimitCosine : e2._roundLimitCosine, i2 = r2.isCap && e2._capType !== 0;
+  let l2 = false;
+  r2.cosine > x ? (r2.exit0 = r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.bisector.x / r2.cosine, r2.bisector.y / r2.cosine, 0, -1, r2.distance, e2._ddValues), r2.exit2 = r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.bisector.x / r2.cosine, -r2.bisector.y / r2.cosine, 0, 1, r2.distance, e2._ddValues)) : r2.cosine < 1 - x ? (r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.prevNormal.x, r2.prevNormal.y, 0, -1, r2.distance, e2._ddValues), r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.prevNormal.x, -r2.prevNormal.y, 0, 1, r2.distance, e2._ddValues), r2.exit0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.nextNormal.x, r2.nextNormal.y, 0, -1, r2.distance, e2._ddValues), r2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.nextNormal.x, -r2.nextNormal.y, 0, 1, r2.distance, e2._ddValues)) : r2.canSplit ? (n$2(), r2.sign > 0 ? (r2.splitInner ? (r2.exit0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.leftInner.x, r2.leftInner.y, 0, -1, r2.distance, e2._ddValues), r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.rightInner.x, r2.rightInner.y, 0, -1, r2.distance, e2._ddValues)) : (r2.exit0 = r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.bisector.x / r2.cosine, r2.bisector.y / r2.cosine, 0, -1, r2.distance, e2._ddValues)), r2.cosine < n2 ? (l2 = !r2.isCap, r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.prevNormal.x, -r2.prevNormal.y, 0, 1, r2.distance, e2._ddValues), r2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.nextNormal.x, -r2.nextNormal.y, 0, 1, r2.distance, e2._ddValues)) : r2.splitOuter ? (l2 = l2 || r2.gapOuter, r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.leftOuter.x, -r2.leftOuter.y, 0, 1, r2.distance, e2._ddValues), r2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.rightOuter.x, -r2.rightOuter.y, 0, 1, r2.distance, e2._ddValues)) : (r2.entry2 = r2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.bisector.x / r2.cosine, -r2.bisector.y / r2.cosine, 0, 1, r2.distance, e2._ddValues))) : (r2.splitInner ? (r2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.leftInner.x, -r2.leftInner.y, 0, 1, r2.distance, e2._ddValues), r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.rightInner.x, -r2.rightInner.y, 0, 1, r2.distance, e2._ddValues)) : (r2.exit2 = r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.bisector.x / r2.cosine, -r2.bisector.y / r2.cosine, 0, 1, r2.distance, e2._ddValues)), r2.cosine < n2 ? (l2 = !r2.isCap, r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.prevNormal.x, r2.prevNormal.y, 0, -1, r2.distance, e2._ddValues), r2.exit0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.nextNormal.x, r2.nextNormal.y, 0, -1, r2.distance, e2._ddValues)) : r2.splitOuter ? (l2 = l2 || r2.gapOuter, r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.leftOuter.x, r2.leftOuter.y, 0, -1, r2.distance, e2._ddValues), r2.exit0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.rightOuter.x, r2.rightOuter.y, 0, -1, r2.distance, e2._ddValues)) : (r2.exit0 = r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.bisector.x / r2.cosine, r2.bisector.y / r2.cosine, 0, -1, r2.distance, e2._ddValues)))) : r2.sign > 0 ? (r2.exit0 = r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.bisector.x / r2.cosine, r2.bisector.y / r2.cosine, 0, -1, r2.distance, e2._ddValues), r2.cosine < n2 ? (l2 = !r2.isCap, r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.prevNormal.x, -r2.prevNormal.y, 0, 1, r2.distance, e2._ddValues), r2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.nextNormal.x, -r2.nextNormal.y, 0, 1, r2.distance, e2._ddValues)) : (r2.entry2 = r2.exit2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.bisector.x / r2.cosine, -r2.bisector.y / r2.cosine, 0, 1, r2.distance, e2._ddValues))) : (r2.exit2 = r2.entry2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.bisector.x / r2.cosine, -r2.bisector.y / r2.cosine, 0, 1, r2.distance, e2._ddValues), r2.cosine < n2 ? (l2 = !r2.isCap, r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.prevNormal.x, r2.prevNormal.y, 0, -1, r2.distance, e2._ddValues), r2.exit0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.nextNormal.x, r2.nextNormal.y, 0, -1, r2.distance, e2._ddValues)) : (r2.exit0 = r2.entry0 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.bisector.x / r2.cosine, r2.bisector.y / r2.cosine, 0, -1, r2.distance, e2._ddValues)));
+  let s2;
+  if (r2.canSplit && (r2.splitInner || r2.splitOuter) || l2 || i2 ? (s2 = r2.entry1 = r2.exit1 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, 0, 0, 0, 0, r2.distance, e2._ddValues)) : s2 = r2.entry1 = r2.exit1 = null, l2 && e2._joinType !== 1)
+    e2._lineIndexBuffer.add(s2, r2.sign > 0 ? r2.exit2 : r2.entry0, r2.sign > 0 ? r2.entry2 : r2.exit0);
+  else if (i2 && e2._capType === 1 || l2 && e2._joinType === 1) {
+    let t2, n3, i3, l3, x2, a2;
+    if (r2.isCap) {
+      const e3 = Math.PI;
+      x2 = Math.ceil(e3 / d$1), a2 = e3 / x2, r2.isFirstVertex ? (t2 = r2.prevNormal.x, n3 = r2.prevNormal.y, i3 = r2.entry0, l3 = r2.entry2) : r2.isLastVertex && (t2 = -r2.nextNormal.x, n3 = -r2.nextNormal.y, i3 = r2.exit2, l3 = r2.exit0);
+    } else {
+      const e3 = 2 * Math.acos(r2.cosine);
+      x2 = Math.ceil(e3 / d$1), a2 = e3 / x2, t2 = r2.sign > 0 ? -r2.prevNormal.x : r2.nextNormal.x, n3 = r2.sign > 0 ? -r2.prevNormal.y : r2.nextNormal.y, i3 = r2.sign > 0 ? r2.entry2 : r2.exit0, l3 = r2.sign > 0 ? r2.exit2 : r2.entry0;
+    }
+    const u2 = Math.cos(a2), f2 = Math.sin(a2), o2 = f2 * t2 + u2 * n3;
+    let V2, c2;
+    t2 = u2 * t2 - f2 * n3, n3 = o2;
+    for (let d2 = 0; d2 < x2; ++d2) {
+      if (V2 = c2, d2 < x2 - 1)
+        if (r2.isCap) {
+          const i4 = r2.isFirstVertex ? -1 : 1;
+          c2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, t2, n3, i4, 0, r2.distance, e2._ddValues);
+        } else
+          c2 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, t2, n3, 0, r2.sign, r2.distance, e2._ddValues);
+      e2._lineIndexBuffer.add(d2 === 0 ? i3 : V2, s2, d2 === x2 - 1 ? l3 : c2);
+      const a3 = f2 * t2 + u2 * n3;
+      t2 = u2 * t2 - f2 * n3, n3 = a3;
+    }
+  } else if (i2 && e2._capType === 2) {
+    const t2 = r2.isFirstVertex ? 1 : -1;
+    let n3, i3;
+    e2._hasPattern ? (n3 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.prevNormal.x - t2 * r2.inbound.x, r2.prevNormal.y - t2 * r2.inbound.y, -t2, -1, r2.distance, e2._ddValues), i3 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.prevNormal.x - t2 * r2.inbound.x, -r2.prevNormal.y - t2 * r2.inbound.y, -t2, 1, r2.distance, e2._ddValues)) : (n3 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, r2.prevNormal.x - t2 * r2.inbound.x, r2.prevNormal.y - t2 * r2.inbound.y, 0, -1, r2.distance, e2._ddValues), i3 = e2._lineVertexBuffer.index, e2._lineVertexBuffer.add(r2.currentVertex.x, r2.currentVertex.y, -r2.prevNormal.x - t2 * r2.inbound.x, -r2.prevNormal.y - t2 * r2.inbound.y, 0, 1, r2.distance, e2._ddValues)), t2 > 0 ? (e2._lineIndexBuffer.add(s2, r2.entry2, i3), e2._lineIndexBuffer.add(s2, i3, n3), e2._lineIndexBuffer.add(s2, n3, r2.entry0)) : (e2._lineIndexBuffer.add(s2, i3, r2.exit2), e2._lineIndexBuffer.add(s2, n3, i3), e2._lineIndexBuffer.add(s2, r2.exit0, n3));
+  }
+}, V = (e2) => (t2) => {
+  e2._lineIndexBuffer.add(t2.leftExit0, t2.rightEntry0, t2.leftExit1 != null ? t2.leftExit1 : t2.leftExit2), e2._lineIndexBuffer.add(t2.rightEntry0, t2.rightEntry1 != null ? t2.rightEntry1 : t2.rightEntry2, t2.leftExit1 != null ? t2.leftExit1 : t2.leftExit2), t2.leftExit1 != null && t2.rightEntry1 != null ? (e2._lineIndexBuffer.add(t2.leftExit1, t2.rightEntry1, t2.leftExit2), e2._lineIndexBuffer.add(t2.rightEntry1, t2.rightEntry2, t2.leftExit2)) : t2.leftExit1 != null ? e2._lineIndexBuffer.add(t2.leftExit1, t2.rightEntry2, t2.leftExit2) : t2.rightEntry1 != null && e2._lineIndexBuffer.add(t2.rightEntry1, t2.rightEntry2, t2.leftExit2);
+};
+const f = 10;
+function y(e2, t2) {
+  return e2.iconMosaicItem && t2.iconMosaicItem ? e2.iconMosaicItem.page === t2.iconMosaicItem.page ? 0 : e2.iconMosaicItem.page - t2.iconMosaicItem.page : e2.iconMosaicItem && !t2.iconMosaicItem ? 1 : !e2.iconMosaicItem && t2.iconMosaicItem ? -1 : 0;
+}
+class m extends t$1 {
+  constructor(e2, t2, n2, i2, s2, a2, o2, r2) {
+    super(e2, t2), this.type = 3, this._markerMap = new Map(), this._glyphMap = new Map(), this._glyphBufferDataStorage = new Map(), this._isIconSDF = false, this._iconVertexBuffer = n2, this._iconIndexBuffer = i2, this._textVertexBuffer = s2, this._textIndexBuffer = a2, this._placementEngine = o2, this._workerTileHandler = r2;
+  }
+  get markerPageMap() {
+    return this._markerMap;
+  }
+  get glyphsPageMap() {
+    return this._glyphMap;
+  }
+  get symbolInstances() {
+    return this._symbolInstances;
+  }
+  getResources(t2, n2, i2) {
+    const s2 = this.layer, a2 = this.zoom;
+    t2 && t2.setExtent(this.layerExtent);
+    const o2 = s2.getLayoutProperty("icon-image"), r2 = s2.getLayoutProperty("text-field");
+    let l2 = s2.getLayoutProperty("text-transform"), h2 = s2.getLayoutProperty("text-font");
+    const x2 = [];
+    let c2, d2, g2, f2;
+    o2 && !o2.isDataDriven && (c2 = o2.getValue(a2)), r2 && !r2.isDataDriven && (d2 = r2.getValue(a2)), l2 && l2.isDataDriven || (g2 = s2.getLayoutValue("text-transform", a2), l2 = null), h2 && h2.isDataDriven || (f2 = s2.getLayoutValue("text-font", a2), h2 = null);
+    for (const y2 of this._features) {
+      const u2 = y2.getGeometry(t2);
+      if (!u2 || u2.length === 0)
+        continue;
+      let p2, _;
+      o2 && (p2 = o2.isDataDriven ? o2.getValue(a2, y2) : this._replaceKeys(c2, y2.values), p2 && n2.add(p2));
+      let M = false;
+      if (r2 && (_ = r2.isDataDriven ? r2.getValue(a2, y2) : this._replaceKeys(d2, y2.values), _)) {
+        switch (_ = _.replace(/\\n/g, "\n"), l2 && (g2 = l2.getValue(a2, y2)), g2) {
+          case 2:
+            _ = _.toLowerCase();
+            break;
+          case 1:
+            _ = _.toUpperCase();
+        }
+        if (m._bidiEngine.hasBidiChar(_)) {
+          let e3;
+          e3 = m._bidiEngine.checkContextual(_) === "rtl" ? "IDNNN" : "ICNNN", _ = m._bidiEngine.bidiTransform(_, e3, "VLYSN"), M = true;
+        }
+        const e2 = _.length;
+        if (e2 > 0) {
+          h2 && (f2 = h2.getValue(a2, y2));
+          for (const t3 of f2) {
+            let n3 = i2[t3];
+            n3 || (n3 = i2[t3] = new Set());
+            for (let t4 = 0; t4 < e2; t4++) {
+              const e3 = _.charCodeAt(t4);
+              n3.add(e3);
+            }
+          }
+        }
+      }
+      if (!p2 && !_)
+        continue;
+      const b2 = s2.getLayoutValue("symbol-sort-key", a2, y2), P2 = { feature: y2, sprite: p2, label: _, rtl: M, geometry: u2, hash: (_ ? c$2(_) : 0) ^ (p2 ? c$2(p2) : 0), priority: b2, textFont: f2 };
+      x2.push(P2);
+    }
+    this._symbolFeatures = x2;
+  }
+  processFeatures(e2) {
+    e2 && e2.setExtent(this.layerExtent);
+    const t2 = this.layer, i2 = this.zoom, s2 = t2.getLayoutValue("symbol-placement", i2), r2 = s2 !== 0, g$12 = t2.getLayoutValue("symbol-spacing", i2) * x$1, f2 = t2.getLayoutProperty("icon-image"), u2 = t2.getLayoutProperty("text-field"), p$1 = f2 ? new d$3(t2, i2, r2) : null, _ = u2 ? new f$5(t2, i2, r2) : null, M = this._workerTileHandler;
+    let b2;
+    f2 && (b2 = M.getSpriteItems()), this._iconIndexStart = 3 * this._iconIndexBuffer.index, this._textIndexStart = 3 * this._textIndexBuffer.index, this._iconIndexCount = 0, this._textIndexCount = 0, this._markerMap.clear(), this._glyphMap.clear();
+    const P2 = [];
+    let I2 = 1;
+    _ && _.size && (I2 = _.size / c);
+    const A = _ ? _.maxAngle * f$4 : 0, V2 = _ ? _.size * x$1 : 0;
+    for (const n2 of this._symbolFeatures) {
+      let e3;
+      p$1 && b2 && n2.sprite && (e3 = b2[n2.sprite], e3 && e3.sdf && (this._isIconSDF = true));
+      let t3;
+      !!e3 && p$1.update(i2, n2.feature);
+      let a2 = 0;
+      const o2 = n2.label;
+      if (o2) {
+        _.update(i2, n2.feature);
+        const e4 = r2 ? _.keepUpright : _.writingMode && _.writingMode.indexOf(1) >= 0;
+        let s3 = 0.5;
+        switch (_.anchor) {
+          case 5:
+          case 1:
+          case 7:
+            s3 = 0;
+            break;
+          case 6:
+          case 2:
+          case 8:
+            s3 = 1;
+        }
+        let c$12 = 0.5;
+        switch (_.anchor) {
+          case 5:
+          case 3:
+          case 6:
+            c$12 = 0;
+            break;
+          case 7:
+          case 4:
+          case 8:
+            c$12 = 1;
+        }
+        let d2 = 0.5;
+        switch (_.justify) {
+          case 0:
+            d2 = s3;
+            break;
+          case 1:
+            d2 = 0;
+            break;
+          case 3:
+            d2 = 1;
+        }
+        const g2 = _.letterSpacing * c, f3 = r2 ? 0 : _.maxWidth * c, y2 = _.lineHeight * c, m2 = n2.textFont.map((e5) => M.getGlyphItems(e5));
+        if (t3 = new a$2(m2, f3, y2, g2, s3, c$12, d2).getShaping(o2, n2.rtl, e4), t3 && t3.length > 0) {
+          let e5 = 1e30, n3 = -1e30;
+          for (const i3 of t3)
+            e5 = Math.min(e5, i3.x), n3 = Math.max(n3, i3.x);
+          a2 = (n3 - e5 + 2 * c) * I2 * x$1;
+        }
+      }
+      for (let i3 of n2.geometry) {
+        const o3 = [];
+        if (s2 === 1) {
+          if (t3 && t3.length > 0 && _ && _.size) {
+            const e4 = _.size * x$1 * (2 + Math.min(2, 4 * Math.abs(_.offset[1])));
+            i3 = m._smoothVertices(i3, e4);
+          }
+          m._pushAnchors(o3, i3, g$12, a2);
+        } else
+          s2 === 2 ? m._pushCenterAnchor(o3, i3) : n2.feature.type === 3 ? m._pushCentroid(o3, i3) : o3.push(new p(i3[0].x, i3[0].y));
+        for (const s3 of o3) {
+          if (s3.x < 0 || s3.x > g || s3.y < 0 || s3.y > g)
+            continue;
+          if (r2 && a2 > 0 && _.rotationAlignment === 0 && !m._honorsTextMaxAngle(i3, s3, a2, A, V2))
+            continue;
+          const o4 = { shaping: t3, line: i3, iconMosaicItem: e3, anchor: s3, symbolFeature: n2, textColliders: [], iconColliders: [], textVertexRanges: [], iconVertexRanges: [] };
+          P2.push(o4), this._processFeature(o4, p$1, _);
+        }
+      }
+    }
+    P2.sort(y), this._addPlacedGlyphs(), this._symbolInstances = P2;
+  }
+  serialize() {
+    let e2 = 11;
+    e2 += this.layerUIDs.length, e2 += 3 * this.markerPageMap.size, e2 += 3 * this.glyphsPageMap.size, e2 += m.symbolsSerializationLength(this._symbolInstances), e2 += this._iconVertexBuffer.array.length, e2 += this._iconIndexBuffer.array.length, e2 += this._textVertexBuffer.array.length, e2 += this._textIndexBuffer.array.length;
+    const t2 = new Uint32Array(e2), n2 = new Int32Array(t2.buffer), i2 = new Float32Array(t2.buffer);
+    let s2 = 0;
+    t2[s2++] = this.type, t2[s2++] = this.layerUIDs.length;
+    for (let a2 = 0; a2 < this.layerUIDs.length; a2++)
+      t2[s2++] = this.layerUIDs[a2];
+    t2[s2++] = this._isIconSDF ? 1 : 0, t2[s2++] = this.markerPageMap.size;
+    for (const [a2, [o2, r2]] of this.markerPageMap)
+      t2[s2++] = a2, t2[s2++] = o2, t2[s2++] = r2;
+    t2[s2++] = this.glyphsPageMap.size;
+    for (const [a2, [o2, r2]] of this.glyphsPageMap)
+      t2[s2++] = a2, t2[s2++] = o2, t2[s2++] = r2;
+    t2[s2++] = this._iconVertexBuffer.index / 4, t2[s2++] = this._textVertexBuffer.index / 4, s2 = m.serializeSymbols(t2, n2, i2, s2, this._symbolInstances), t2[s2++] = this._iconVertexBuffer.array.length;
+    for (let a2 = 0; a2 < this._iconVertexBuffer.array.length; a2++)
+      n2[s2++] = this._iconVertexBuffer.array[a2];
+    t2[s2++] = this._iconIndexBuffer.array.length;
+    for (let a2 = 0; a2 < this._iconIndexBuffer.array.length; a2++)
+      t2[s2++] = this._iconIndexBuffer.array[a2];
+    t2[s2++] = this._textVertexBuffer.array.length;
+    for (let a2 = 0; a2 < this._textVertexBuffer.array.length; a2++)
+      n2[s2++] = this._textVertexBuffer.array[a2];
+    t2[s2++] = this._textIndexBuffer.array.length;
+    for (let a2 = 0; a2 < this._textIndexBuffer.array.length; a2++)
+      t2[s2++] = this._textIndexBuffer.array[a2];
+    return t2.buffer;
+  }
+  static symbolsSerializationLength(e2) {
+    let t2 = 0;
+    t2 += 1;
+    for (const n2 of e2 || []) {
+      t2 += 4, t2 += 1;
+      for (const e3 of n2.textColliders)
+        t2 += f;
+      for (const e3 of n2.iconColliders)
+        t2 += f;
+      t2 += 1, t2 += 2 * n2.textVertexRanges.length, t2 += 1, t2 += 2 * n2.iconVertexRanges.length;
+    }
+    return t2;
+  }
+  static serializeSymbols(e2, t2, n2, i2, s2) {
+    s2 = s2 || [], t2[i2++] = s2.length;
+    for (const a2 of s2) {
+      t2[i2++] = a2.anchor.x, t2[i2++] = a2.anchor.y, t2[i2++] = a2.symbolFeature.hash, t2[i2++] = a2.symbolFeature.priority, t2[i2++] = a2.textColliders.length + a2.iconColliders.length;
+      for (const e3 of a2.textColliders)
+        t2[i2++] = e3.xTile, t2[i2++] = e3.yTile, t2[i2++] = e3.dxPixels, t2[i2++] = e3.dyPixels, t2[i2++] = e3.hard ? 1 : 0, t2[i2++] = e3.partIndex, n2[i2++] = e3.minLod, n2[i2++] = e3.maxLod, t2[i2++] = e3.width, t2[i2++] = e3.height;
+      for (const e3 of a2.iconColliders)
+        t2[i2++] = e3.xTile, t2[i2++] = e3.yTile, t2[i2++] = e3.dxPixels, t2[i2++] = e3.dyPixels, t2[i2++] = e3.hard ? 1 : 0, t2[i2++] = e3.partIndex, n2[i2++] = e3.minLod, n2[i2++] = e3.maxLod, t2[i2++] = e3.width, t2[i2++] = e3.height;
+      t2[i2++] = a2.textVertexRanges.length;
+      for (const [e3, n3] of a2.textVertexRanges)
+        t2[i2++] = e3, t2[i2++] = n3;
+      t2[i2++] = a2.iconVertexRanges.length;
+      for (const [e3, n3] of a2.iconVertexRanges)
+        t2[i2++] = e3, t2[i2++] = n3;
+    }
+    return i2;
+  }
+  _replaceKeys(e2, t2) {
+    return e2.replace(/{([^{}]+)}/g, function(e3, n2) {
+      return n2 in t2 ? t2[n2] : "";
+    });
+  }
+  _processFeature(e2, t2, n2) {
+    const { line: s2, iconMosaicItem: a2, shaping: o2, anchor: r2 } = e2, l2 = this.zoom, h2 = this.layer, x2 = !!a2;
+    let c2 = true;
+    x2 && (c2 = t2.optional || !a2);
+    const d2 = o2 && o2.length > 0;
+    let g2, f2, y2 = true;
+    if (d2 && (y2 = n2.optional), x2 && (g2 = this._placementEngine.getIconPlacement(r2, a2, t2)), (g2 || c2) && (d2 && (f2 = this._placementEngine.getTextPlacement(r2, o2, s2, n2)), f2 || y2)) {
+      if (g2 && f2 || (y2 || c2 ? y2 || f2 ? c2 || g2 || (f2 = null) : g2 = null : (g2 = null, f2 = null)), f2) {
+        const t3 = h2.hasDataDrivenText ? h2.textMaterial.encodeAttributes(e2.symbolFeature.feature, l2, h2) : null;
+        if (this._storePlacedGlyphs(e2, f2.shapes, l2, n2.rotationAlignment, t3), f2.textColliders) {
+          e2.textColliders = f2.textColliders;
+          for (const e3 of f2.textColliders) {
+            e3.minLod = Math.max(l2 + P(e3.minLod), 0), e3.maxLod = Math.min(l2 + P(e3.maxLod), 25);
+            const t4 = e3.angle;
+            if (t4) {
+              const n3 = Math.cos(t4), i2 = Math.sin(t4), s3 = e3.dxPixels * n3 - e3.dyPixels * i2, a3 = e3.dxPixels * i2 + e3.dyPixels * n3, o3 = (e3.dxPixels + e3.width) * n3 - e3.dyPixels * i2, r3 = (e3.dxPixels + e3.width) * i2 + e3.dyPixels * n3, l3 = e3.dxPixels * n3 - (e3.dyPixels + e3.height) * i2, h3 = e3.dxPixels * i2 + (e3.dyPixels + e3.height) * n3, x3 = (e3.dxPixels + e3.width) * n3 - (e3.dyPixels + e3.height) * i2, c3 = (e3.dxPixels + e3.width) * i2 + (e3.dyPixels + e3.height) * n3, d3 = Math.min(s3, o3, l3, x3), g3 = Math.max(s3, o3, l3, x3), f3 = Math.min(a3, r3, h3, c3), y3 = Math.max(a3, r3, h3, c3);
+              e3.dxPixels = d3, e3.dyPixels = f3, e3.width = g3 - d3, e3.height = y3 - f3;
+            }
+          }
+        }
+      }
+      if (g2) {
+        const n3 = h2.hasDataDrivenIcon ? h2.iconMaterial.encodeAttributes(e2.symbolFeature.feature, l2, h2) : null;
+        if (this._addPlacedIcons(e2, g2.shapes, l2, a2.page, t2.rotationAlignment === 1, n3), g2.iconColliders) {
+          e2.iconColliders = g2.iconColliders;
+          for (const e3 of g2.iconColliders) {
+            e3.minLod = Math.max(l2 + P(e3.minLod), 0), e3.maxLod = Math.min(l2 + P(e3.maxLod), 25);
+            const t3 = e3.angle;
+            if (t3) {
+              const n4 = Math.cos(t3), i2 = Math.sin(t3), s3 = e3.dxPixels * n4 - e3.dyPixels * i2, a3 = e3.dxPixels * i2 + e3.dyPixels * n4, o3 = (e3.dxPixels + e3.width) * n4 - e3.dyPixels * i2, r3 = (e3.dxPixels + e3.width) * i2 + e3.dyPixels * n4, l3 = e3.dxPixels * n4 - (e3.dyPixels + e3.height) * i2, h3 = e3.dxPixels * i2 + (e3.dyPixels + e3.height) * n4, x3 = (e3.dxPixels + e3.width) * n4 - (e3.dyPixels + e3.height) * i2, c3 = (e3.dxPixels + e3.width) * i2 + (e3.dyPixels + e3.height) * n4, d3 = Math.min(s3, o3, l3, x3), g3 = Math.max(s3, o3, l3, x3), f3 = Math.min(a3, r3, h3, c3), y3 = Math.max(a3, r3, h3, c3);
+              e3.dxPixels = d3, e3.dyPixels = f3, e3.width = g3 - d3, e3.height = y3 - f3;
+            }
+          }
+        }
+      }
+    }
+  }
+  _addPlacedIcons(e2, t2, n2, s2, a2, o2) {
+    const r2 = Math.max(n2 - 1, 0), l2 = this._iconVertexBuffer, h2 = this._iconIndexBuffer, x2 = this._markerMap;
+    for (const c2 of t2) {
+      const t3 = a2 ? 0 : Math.max(n2 + P(c2.minzoom), r2), d2 = a2 ? 25 : Math.min(n2 + P(c2.maxzoom), 25);
+      if (d2 <= t3)
+        continue;
+      const g2 = c2.tl, f2 = c2.tr, y2 = c2.bl, m2 = c2.br, u2 = c2.mosaicRect, p2 = c2.labelAngle, _ = c2.minAngle, M = c2.maxAngle, b2 = c2.anchor, P$1 = l2.index, I2 = u2.x, A = u2.y, V2 = I2 + u2.width, w2 = A + u2.height, L = l2.index;
+      l2.add(b2.x, b2.y, g2.x, g2.y, I2, A, p2, _, M, t3, d2, o2), l2.add(b2.x, b2.y, f2.x, f2.y, V2, A, p2, _, M, t3, d2, o2), l2.add(b2.x, b2.y, y2.x, y2.y, I2, w2, p2, _, M, t3, d2, o2), l2.add(b2.x, b2.y, m2.x, m2.y, V2, w2, p2, _, M, t3, d2, o2), e2.iconVertexRanges.length > 0 && e2.iconVertexRanges[0][0] + e2.iconVertexRanges[0][1] === L ? e2.iconVertexRanges[0][1] += 4 : e2.iconVertexRanges.push([L, 4]), h2.add(P$1 + 0, P$1 + 1, P$1 + 2), h2.add(P$1 + 1, P$1 + 2, P$1 + 3), x2.has(s2) ? x2.get(s2)[1] += 6 : x2.set(s2, [this._iconIndexStart + this._iconIndexCount, 6]), this._iconIndexCount += 6;
+    }
+  }
+  _addPlacedGlyphs() {
+    const e2 = this._textVertexBuffer, t2 = this._textIndexBuffer, n2 = this._glyphMap;
+    for (const [i2, s2] of this._glyphBufferDataStorage)
+      for (const a2 of s2) {
+        const s3 = e2.index, o2 = a2.symbolInstance, r2 = a2.ddAttributes, l2 = e2.index;
+        e2.add(a2.glyphAnchor[0], a2.glyphAnchor[1], a2.tl[0], a2.tl[1], a2.xmin, a2.ymin, a2.labelAngle, a2.minAngle, a2.maxAngle, a2.minLod, a2.maxLod, r2), e2.add(a2.glyphAnchor[0], a2.glyphAnchor[1], a2.tr[0], a2.tr[1], a2.xmax, a2.ymin, a2.labelAngle, a2.minAngle, a2.maxAngle, a2.minLod, a2.maxLod, r2), e2.add(a2.glyphAnchor[0], a2.glyphAnchor[1], a2.bl[0], a2.bl[1], a2.xmin, a2.ymax, a2.labelAngle, a2.minAngle, a2.maxAngle, a2.minLod, a2.maxLod, r2), e2.add(a2.glyphAnchor[0], a2.glyphAnchor[1], a2.br[0], a2.br[1], a2.xmax, a2.ymax, a2.labelAngle, a2.minAngle, a2.maxAngle, a2.minLod, a2.maxLod, r2), o2.textVertexRanges.length > 0 && o2.textVertexRanges[0][0] + o2.textVertexRanges[0][1] === l2 ? o2.textVertexRanges[0][1] += 4 : o2.textVertexRanges.push([l2, 4]), t2.add(s3 + 0, s3 + 1, s3 + 2), t2.add(s3 + 1, s3 + 2, s3 + 3), n2.has(i2) ? n2.get(i2)[1] += 6 : n2.set(i2, [this._textIndexStart + this._textIndexCount, 6]), this._textIndexCount += 6;
+      }
+    this._glyphBufferDataStorage.clear();
+  }
+  _storePlacedGlyphs(e2, t2, n2, s2, a2) {
+    const o2 = Math.max(n2 - 1, 0), r2 = s2 === 1;
+    let l2, h2, x2, c2, d2, g2, f2, y2, m2, u2, p2;
+    for (const _ of t2) {
+      if (l2 = r2 ? 0 : Math.max(n2 + P(_.minzoom), o2), h2 = r2 ? 25 : Math.min(n2 + P(_.maxzoom), 25), h2 <= l2)
+        continue;
+      x2 = _.tl, c2 = _.tr, d2 = _.bl, g2 = _.br, f2 = _.labelAngle, y2 = _.minAngle, m2 = _.maxAngle, u2 = _.anchor, p2 = _.mosaicRect, this._glyphBufferDataStorage.has(_.page) || this._glyphBufferDataStorage.set(_.page, []);
+      this._glyphBufferDataStorage.get(_.page).push({ glyphAnchor: [u2.x, u2.y], tl: [x2.x, x2.y], tr: [c2.x, c2.y], bl: [d2.x, d2.y], br: [g2.x, g2.y], xmin: p2.x, ymin: p2.y, xmax: p2.x + p2.width, ymax: p2.y + p2.height, labelAngle: f2, minAngle: y2, maxAngle: m2, minLod: l2, maxLod: h2, placementLod: o2, symbolInstance: e2, ddAttributes: a2 });
+    }
+  }
+  static _pushAnchors(e2, t2, n2, i2) {
+    n2 += i2;
+    let a2 = 0;
+    const o2 = t2.length - 1;
+    for (let s2 = 0; s2 < o2; s2++)
+      a2 += t$4.distance(t2[s2], t2[s2 + 1]);
+    let l2 = i2 || n2;
+    if (l2 *= 0.5, a2 <= l2)
+      return;
+    const h2 = l2 / a2;
+    let x2 = 0, d2 = -(n2 = a2 / Math.max(Math.round(a2 / n2), 1)) / 2;
+    const g2 = t2.length - 1;
+    for (let r2 = 0; r2 < g2; r2++) {
+      const i3 = t2[r2], a3 = t2[r2 + 1], o3 = a3.x - i3.x, l3 = a3.y - i3.y, g3 = Math.sqrt(o3 * o3 + l3 * l3);
+      let f2;
+      for (; d2 + n2 < x2 + g3; ) {
+        d2 += n2;
+        const t3 = (d2 - x2) / g3, y2 = b$1(i3.x, a3.x, t3), m2 = b$1(i3.y, a3.y, t3);
+        f2 === void 0 && (f2 = Math.atan2(l3, o3)), e2.push(new p(y2, m2, f2, r2, h2));
+      }
+      x2 += g3;
+    }
+  }
+  static _pushCenterAnchor(e2, t2) {
+    let n2 = 0;
+    const i2 = t2.length - 1;
+    for (let s2 = 0; s2 < i2; s2++)
+      n2 += t$4.distance(t2[s2], t2[s2 + 1]);
+    const a2 = n2 / 2;
+    let o2 = 0;
+    const l2 = t2.length - 1;
+    for (let r2 = 0; r2 < l2; r2++) {
+      const n3 = t2[r2], i3 = t2[r2 + 1], l3 = i3.x - n3.x, h2 = i3.y - n3.y, x2 = Math.sqrt(l3 * l3 + h2 * h2);
+      if (a2 < o2 + x2) {
+        const t3 = (a2 - o2) / x2, d2 = b$1(n3.x, i3.x, t3), g2 = b$1(n3.y, i3.y, t3), f2 = Math.atan2(h2, l3);
+        return void e2.push(new p(d2, g2, f2, r2, 0));
+      }
+      o2 += x2;
+    }
+  }
+  static _deviation(e2, t2, n2) {
+    const i2 = (t2.x - e2.x) * (n2.x - t2.x) + (t2.y - e2.y) * (n2.y - t2.y), s2 = (t2.x - e2.x) * (n2.y - t2.y) - (t2.y - e2.y) * (n2.x - t2.x);
+    return Math.atan2(s2, i2);
+  }
+  static _honorsTextMaxAngle(e2, t2, n2, i2, s2) {
+    let a2 = 0;
+    const o2 = n2 / 2;
+    let l2 = new t$4(t2.x, t2.y), h2 = t2.segment + 1;
+    for (; a2 > -o2; ) {
+      if (--h2, h2 < 0)
+        return false;
+      a2 -= t$4.distance(e2[h2], l2), l2 = e2[h2];
+    }
+    a2 += t$4.distance(e2[h2], e2[h2 + 1]);
+    const x2 = [];
+    let c2 = 0;
+    const d2 = e2.length;
+    for (; a2 < o2; ) {
+      const t3 = e2[h2];
+      let n3, o3 = h2;
+      do {
+        if (++o3, o3 === d2)
+          return false;
+        n3 = e2[o3];
+      } while (n3.isEqual(t3));
+      let l3, g2 = o3;
+      do {
+        if (++g2, g2 === d2)
+          return false;
+        l3 = e2[g2];
+      } while (l3.isEqual(n3));
+      const f2 = this._deviation(t3, n3, l3);
+      for (x2.push({ deviation: f2, distToAnchor: a2 }), c2 += f2; a2 - x2[0].distToAnchor > s2; )
+        c2 -= x2.shift().deviation;
+      if (Math.abs(c2) > i2)
+        return false;
+      a2 += t$4.distance(n3, l3), h2 = o3;
+    }
+    return true;
+  }
+  static _smoothVertices(e2, t2) {
+    if (t2 <= 0)
+      return e2;
+    let n2 = e2.length;
+    if (n2 < 3)
+      return e2;
+    const i2 = [];
+    let s2 = 0, a2 = 0;
+    i2.push(0);
+    for (let y2 = 1; y2 < n2; y2++) {
+      const t3 = t$4.distance(e2[y2], e2[y2 - 1]);
+      t3 > 0 && (s2 += t3, i2.push(s2), a2++, a2 !== y2 && (e2[a2] = e2[y2]));
+    }
+    if (n2 = a2 + 1, n2 < 3)
+      return e2;
+    t2 = Math.min(t2, 0.2 * s2);
+    const o2 = e2[0].x, l2 = e2[0].y, h2 = e2[n2 - 1].x, x2 = e2[n2 - 1].y, c2 = t$4.sub(e2[0], e2[1]);
+    c2.normalize(), e2[0].x += t2 * c2.x, e2[0].y += t2 * c2.y, c2.assignSub(e2[n2 - 1], e2[n2 - 2]), c2.normalize(), e2[n2 - 1].x += t2 * c2.x, e2[n2 - 1].y += t2 * c2.y, i2[0] -= t2, i2[n2 - 1] += t2;
+    const d2 = [];
+    d2.push(new t$4(o2, l2));
+    const g2 = 1e-6, f2 = 0.5 * t2;
+    for (let y2 = 1; y2 < n2 - 1; y2++) {
+      let s3 = 0, a3 = 0, o3 = 0;
+      for (let n3 = y2 - 1; n3 >= 0; n3--) {
+        const r2 = f2 + i2[n3 + 1] - i2[y2];
+        if (r2 < 0)
+          break;
+        const l3 = i2[n3 + 1] - i2[n3], h3 = i2[y2] - i2[n3] < f2 ? 1 : r2 / l3;
+        if (h3 < g2)
+          break;
+        const x3 = h3 * h3, c3 = h3 * r2 - 0.5 * x3 * l3, d3 = h3 * l3 / t2, m2 = e2[n3 + 1], u2 = e2[n3].x - m2.x, p2 = e2[n3].y - m2.y;
+        s3 += d3 / c3 * (m2.x * h3 * r2 + 0.5 * x3 * (r2 * u2 - l3 * m2.x) - x3 * h3 * l3 * u2 / 3), a3 += d3 / c3 * (m2.y * h3 * r2 + 0.5 * x3 * (r2 * p2 - l3 * m2.y) - x3 * h3 * l3 * p2 / 3), o3 += d3;
+      }
+      for (let r2 = y2 + 1; r2 < n2; r2++) {
+        const n3 = f2 - i2[r2 - 1] + i2[y2];
+        if (n3 < 0)
+          break;
+        const l3 = i2[r2] - i2[r2 - 1], h3 = i2[r2] - i2[y2] < f2 ? 1 : n3 / l3;
+        if (h3 < g2)
+          break;
+        const x3 = h3 * h3, c3 = h3 * n3 - 0.5 * x3 * l3, d3 = h3 * l3 / t2, m2 = e2[r2 - 1], u2 = e2[r2].x - m2.x, p2 = e2[r2].y - m2.y;
+        s3 += d3 / c3 * (m2.x * h3 * n3 + 0.5 * x3 * (n3 * u2 - l3 * m2.x) - x3 * h3 * l3 * u2 / 3), a3 += d3 / c3 * (m2.y * h3 * n3 + 0.5 * x3 * (n3 * p2 - l3 * m2.y) - x3 * h3 * l3 * p2 / 3), o3 += d3;
+      }
+      d2.push(new t$4(s3 / o3, a3 / o3));
+    }
+    return d2.push(new t$4(h2, x2)), e2[0].x = o2, e2[0].y = l2, e2[n2 - 1].x = h2, e2[n2 - 1].y = x2, d2;
+  }
+  static _pushCentroid(e2, t2) {
+    const n2 = 0, i2 = 0, s2 = 4096, a2 = 4096, o2 = t2.length - 1;
+    let r2 = 0, l2 = 0, h2 = 0, x2 = t2[0].x, d2 = t2[0].y;
+    x2 > s2 && (x2 = s2), x2 < n2 && (x2 = n2), d2 > a2 && (d2 = a2), d2 < i2 && (d2 = i2);
+    for (let c2 = 1; c2 < o2; c2++) {
+      let e3 = t2[c2].x, o3 = t2[c2].y, g2 = t2[c2 + 1].x, f2 = t2[c2 + 1].y;
+      e3 > s2 && (e3 = s2), e3 < n2 && (e3 = n2), o3 > a2 && (o3 = a2), o3 < i2 && (o3 = i2), g2 > s2 && (g2 = s2), g2 < n2 && (g2 = n2), f2 > a2 && (f2 = a2), f2 < i2 && (f2 = i2);
+      const y2 = (e3 - x2) * (f2 - d2) - (g2 - x2) * (o3 - d2);
+      r2 += y2 * (x2 + e3 + g2), l2 += y2 * (d2 + o3 + f2), h2 += y2;
+    }
+    r2 /= 3 * h2, l2 /= 3 * h2, isNaN(r2) || isNaN(l2) || e2.push(new p(r2, l2));
+  }
+}
+m._bidiEngine = new C();
+const k = 1;
+class d {
+  constructor(e2, i2, o2, c2, n2) {
+    if (this._pbfTiles = {}, this._tileClippers = {}, this._client = o2, this._tile = i2, n2) {
+      this._styleLayerUIDs = new Set();
+      for (const e3 of n2)
+        this._styleLayerUIDs.add(e3);
+    }
+    this._styleRepository = c2, this._layers = this._styleRepository.layers;
+    const [a2, l2, u2] = i2.tileKey.split("/").map(parseFloat);
+    this._level = a2;
+    const f2 = Math.max(8, Math.round(k * this._level) - 8);
+    for (const p2 of Object.keys(e2)) {
+      const i3 = e2[p2];
+      this._pbfTiles[p2] = new n$3(new Uint8Array(i3.protobuff), new DataView(i3.protobuff));
+      if (i3.refKey) {
+        const [e3] = i3.refKey.split("/").map(parseFloat), t2 = a2 - e3;
+        if (t2 > 0) {
+          const e4 = (1 << t2) - 1, s2 = l2 & e4, i4 = u2 & e4;
+          this._tileClippers[p2] = new n$4(t2, s2, i4, 8, f2);
+        }
+      }
+      this._tileClippers[p2] || (this._tileClippers[p2] = new e$3());
+    }
+  }
+  _canParseStyleLayer(e2) {
+    return !this._styleLayerUIDs || this._styleLayerUIDs.has(e2);
+  }
+  parse(e2) {
+    return __async(this, null, function* () {
+      const t2 = this._initialize(e2), { returnedBuckets: r2 } = t2;
+      this._processLayers(t2), this._linkReferences(t2), this._filterFeatures(t2);
+      const s2 = new Set(), o2 = {};
+      for (const i2 of r2)
+        i2.type === 3 && i2.getResources(i2.tileClipper, s2, o2);
+      if (this._tile.status === I.INVALID)
+        return Promise.resolve([]);
+      const c2 = this._fetchResources(s2, o2, e2);
+      return Promise.all(c2).then(() => this._processFeatures(t2.returnedBuckets));
+    });
+  }
+  _initialize(e2) {
+    return { signal: e2 && e2.signal, sourceNameToTileData: this._parseTileData(this._pbfTiles), layers: this._layers, zoom: this._level, sourceNameToTileClipper: this._tileClippers, sourceNameToUniqueSourceLayerBuckets: {}, sourceNameToUniqueSourceLayers: {}, returnedBuckets: [], layerIdToBucket: {}, referencerUIDToReferencedId: new Map() };
+  }
+  _processLayers(e2) {
+    const { sourceNameToTileData: t2, layers: r2, zoom: s2, sourceNameToTileClipper: i2, sourceNameToUniqueSourceLayerBuckets: o2, sourceNameToUniqueSourceLayers: c2, returnedBuckets: n2, layerIdToBucket: a2, referencerUIDToReferencedId: l2 } = e2;
+    for (let u2 = r2.length - 1; u2 >= 0; u2--) {
+      const e3 = r2[u2];
+      if (!this._canParseStyleLayer(e3.uid) || e3.minzoom && s2 < Math.floor(e3.minzoom) || e3.maxzoom && s2 >= e3.maxzoom || e3.type === 0)
+        continue;
+      if (!t2[e3.source] || !i2[e3.source])
+        continue;
+      const f2 = t2[e3.source], p2 = i2[e3.source], h2 = e3.sourceLayer, m2 = f2[h2];
+      if (m2) {
+        let t3 = c2[e3.source];
+        if (t3 || (t3 = c2[e3.source] = new Set()), t3.add(e3.sourceLayer), e3.refLayerId)
+          l2.set(e3.uid, e3.refLayerId);
+        else {
+          const t4 = this._createBucket(e3);
+          if (t4) {
+            t4.layerUIDs = [e3.uid], t4.layerExtent = m2.extent, t4.tileClipper = p2;
+            let r3 = o2[e3.source];
+            r3 || (r3 = o2[e3.source] = {});
+            let s3 = r3[h2];
+            s3 || (s3 = r3[h2] = []), s3.push(t4), n2.push(t4), a2[e3.id.toLowerCase()] = t4;
+          }
+        }
+      }
+    }
+  }
+  _linkReferences(e2) {
+    const { layerIdToBucket: t2, referencerUIDToReferencedId: r2 } = e2;
+    r2.forEach((e3, r3) => {
+      e3 = e3.toLowerCase(), t2[e3] && t2[e3].layerUIDs.push(r3);
+    });
+  }
+  _filterFeatures(t2) {
+    const { signal: r2, sourceNameToTileData: s2, sourceNameToUniqueSourceLayerBuckets: i2, sourceNameToUniqueSourceLayers: c2 } = t2, n2 = 10 * this._level, a2 = 10 * (this._level + 1), l2 = [], u2 = [];
+    for (const e2 of Object.keys(c2)) {
+      c2[e2].forEach((t3) => {
+        l2.push(t3), u2.push(e2);
+      });
+    }
+    for (let f2 = 0; f2 < l2.length; f2++) {
+      const t3 = u2[f2], c3 = l2[f2];
+      if (!s2[t3] || !i2[t3])
+        continue;
+      const p2 = s2[t3][c3], h2 = i2[t3][c3];
+      if (!h2 || h2.length === 0)
+        continue;
+      if (b$2(r2))
+        return;
+      const m2 = p2.getData();
+      for (; m2.nextTag(2); ) {
+        const e2 = m2.getMessage(), t4 = new t$2(e2, p2);
+        e2.release();
+        const r3 = t4.values;
+        if (r3) {
+          const e3 = r3._minzoom;
+          if (e3 && e3 >= a2)
+            continue;
+          const t5 = r3._maxzoom;
+          if (t5 && t5 <= n2)
+            continue;
+        }
+        for (const s3 of h2)
+          s3.pushFeature(t4);
+      }
+    }
+  }
+  _fetchResources(e2, t2, r2) {
+    const s2 = [], i2 = this._tile.getWorkerTileHandler();
+    let o2, c2;
+    e2.size > 0 && (o2 = i2.fetchSprites(e2, this._client, r2), s2.push(o2));
+    for (const n2 in t2) {
+      const e3 = t2[n2];
+      e3.size > 0 && (c2 = i2.fetchGlyphs(this._tile.tileKey, n2, e3, this._client, r2), s2.push(c2));
+    }
+    return s2;
+  }
+  _processFeatures(e2) {
+    const t2 = e2.filter((e3) => e3.hasFeatures() || this._canParseStyleLayer(e3.layer.uid));
+    for (const r2 of t2)
+      r2.processFeatures(r2.tileClipper);
+    return t2;
+  }
+  _parseTileData(e$12) {
+    const t2 = {};
+    for (const r2 of Object.keys(e$12)) {
+      const s2 = e$12[r2], i2 = {};
+      for (; s2.next(); )
+        switch (s2.tag()) {
+          case 3: {
+            const e$13 = s2.getMessage(), t3 = new e(e$13);
+            e$13.release(), i2[t3.name] = t3;
+            break;
+          }
+          default:
+            s2.skip();
+        }
+      t2[r2] = i2;
+    }
+    return t2;
+  }
+  _createBucket(e2) {
+    switch (e2.type) {
+      case 0:
+        return null;
+      case 1:
+        return this._createFillBucket(e2);
+      case 2:
+        return this._createLineBucket(e2);
+      case 4:
+        return this._createCircleBucket(e2);
+      case 3:
+        return this._createSymbolBucket(e2);
+    }
+  }
+  _createFillBucket(e2) {
+    return new o$1(e2, this._level, new r$1(e2.fillMaterial.getStride()), new r$2(), new u$1(e2.outlineMaterial.getStride()), new r$2());
+  }
+  _createLineBucket(e2) {
+    return new a(e2, this._level, new o$2(e2.lineMaterial.getStride()), new r$2());
+  }
+  _createCircleBucket(e2) {
+    return new t(e2, this._level, new a$1(e2.circleMaterial.getStride()), new r$2());
+  }
+  _createSymbolBucket(e2) {
+    const t2 = this._tile;
+    return new m(e2, this._level, new h(e2.iconMaterial.getStride()), new r$2(), new h(e2.textMaterial.getStride()), new r$2(), t2.placementEngine, t2.getWorkerTileHandler());
+  }
+}
+class n {
+  constructor(e2, t2, i2, n2) {
+    this.status = I.INITIALIZED, this.placementEngine = new u$2(), this.tileKey = e2, this.refKeys = t2, this._workerTileHandler = i2, this._styleRepository = n2;
+  }
+  release() {
+    this.tileKey = "", this.refKeys = null, this.status = I.INITIALIZED, this._workerTileHandler = null;
+  }
+  parse(r2, i2, n2) {
+    return __async(this, null, function* () {
+      const a2 = n2 && n2.signal;
+      if (r$5(a2)) {
+        const e2 = () => {
+          a2.removeEventListener("abort", e2), this.status = I.INVALID;
+        };
+        a2.addEventListener("abort", e2);
+      }
+      let o2;
+      try {
+        o2 = yield this._parse(r2, n2);
+      } catch (h2) {
+        if (g$1(h2))
+          throw h2;
+        return { result: [], transferList: [] };
+      }
+      this.status = I.READY;
+      const l2 = [];
+      for (const e2 of o2) {
+        const t2 = e2.serialize();
+        l2.push(t2);
+      }
+      return { result: l2, transferList: l2.length <= i2 && l2 };
+    });
+  }
+  setObsolete() {
+    this.status = I.INVALID;
+  }
+  getLayers() {
+    return this._workerTileHandler.getLayers();
+  }
+  getWorkerTileHandler() {
+    return this._workerTileHandler;
+  }
+  _parse(e2, t2) {
+    return __async(this, null, function* () {
+      const r2 = e2.sourceName2DataAndRefKey;
+      if (Object.keys(r2).length === 0)
+        return [];
+      this.status = I.MODIFIED;
+      return new d(r2, this, t2.client, this._styleRepository, e2.styleLayerUIDs).parse(t2);
+    });
+  }
+}
+class r {
+  constructor() {
+    this._spriteInfo = {}, this._glyphInfo = {};
+  }
+  reset() {
+    return this._spriteInfo = {}, this._glyphInfo = {}, Promise.resolve();
+  }
+  getLayers() {
+    var e2;
+    return (e2 = this._styleRepository) == null ? void 0 : e2.layers;
+  }
+  createTileAndParse(t2, r2) {
+    return __async(this, null, function* () {
+      const { key: o2 } = t2, i2 = {};
+      for (const e2 of Object.keys(t2.sourceName2DataAndRefKey)) {
+        const s2 = t2.sourceName2DataAndRefKey[e2];
+        i2[e2] = s2.refKey;
+      }
+      const n$12 = new n(o2, i2, this, this._styleRepository);
+      try {
+        return yield n$12.parse(t2, this._vectorTileLayerMaxBuffers, r2);
+      } catch (l2) {
+        if (n$12.setObsolete(), n$12.release(), !g$1(l2))
+          throw l2;
+        return null;
+      }
+    });
+  }
+  updateStyle(e2) {
+    if (!e2 || e2.length === 0 || !this._styleRepository)
+      return;
+    const t2 = this._styleRepository;
+    for (const s2 of e2) {
+      const e3 = s2.type, r2 = s2.data;
+      switch (e3) {
+        case 0:
+          t2.setPaintProperties(r2.layerName, r2.paint);
+          break;
+        case 1:
+          t2.setLayoutProperties(r2.layerName, r2.layout);
+          break;
+        case 3:
+          t2.deleteStyleLayer(r2.layerName);
+          break;
+        case 2:
+          t2.setStyleLayer(r2.layer, r2.index);
+      }
+    }
+  }
+  setStyle(e2) {
+    this._styleRepository = new a$5(e2.style), this._spriteInfo = {}, this._glyphInfo = {}, this._vectorTileLayerMaxBuffers = e2.vectorTileLayerMaxBuffers;
+  }
+  fetchSprites(e2, t2, s2) {
+    const r2 = [], o2 = this._spriteInfo;
+    return e2.forEach((e3) => {
+      o2[e3] === void 0 && r2.push(e3);
+    }), r2.length === 0 ? Promise.resolve() : t2.invoke("getSprites", r2, { signal: s2 && s2.signal }).then((e3) => {
+      for (const t3 in e3) {
+        const s3 = e3[t3];
+        o2[t3] = s3;
+      }
+    });
+  }
+  getSpriteItems() {
+    return this._spriteInfo;
+  }
+  fetchGlyphs(e2, t2, s2, r2, o2) {
+    const i2 = [];
+    let n2 = this._glyphInfo[t2];
+    return n2 ? s2.forEach((e3) => {
+      n2[e3] || i2.push(e3);
+    }) : (n2 = this._glyphInfo[t2] = [], s2.forEach((e3) => i2.push(e3))), i2.length === 0 ? Promise.resolve() : r2.invoke("getGlyphs", { tileID: e2, font: t2, codePoints: i2 }, o2).then((e3) => {
+      for (let t3 = 0; t3 < e3.length; t3++)
+        e3[t3] && (n2[t3] = e3[t3]);
+    });
+  }
+  getGlyphItems(e2) {
+    return this._glyphInfo[e2];
+  }
+}
+export default r;

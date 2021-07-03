@@ -1,1 +1,220 @@
-var e=Object.defineProperty,t=Object.defineProperties,r=Object.getOwnPropertyDescriptors,s=Object.getOwnPropertySymbols,i=Object.prototype.hasOwnProperty,o=Object.prototype.propertyIsEnumerable,n=(t,r,s)=>r in t?e(t,r,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[r]=s;import{b6 as a,g3 as h,bF as l,e6 as u,cA as c,cy as d,g4 as p,g5 as f,g6 as y}from"./vendor.74d5941c.js";import{a as m}from"./aaBoundingBox.b76947f8.js";class g{constructor(e,t,r){this.uid=e,this.geometry=t,this.attributes=r,this.visible=!0,this.objectId=null,this.centroid=null}}class b{constructor(){this.exceededTransferLimit=!1,this.features=[],this.fields=[],this.hasM=!1,this.hasZ=!1,this.geometryType=null,this.objectIdFieldName=null,this.globalIdFieldName=null,this.geometryProperties=null,this.geohashFieldName=null,this.spatialReference=null,this.transform=null}}function P(e,t){return t}function C(e,t,r,s){switch(r){case 0:return A(e,t+s,0);case 1:return"lowerLeft"===e.originPosition?A(e,t+s,1):function({translate:e,scale:t},r,s){return e[s]-r*t[s]}(e,t+s,1)}}function v(e,t,r,s){switch(r){case 2:return A(e,t,2);default:return C(e,t,r,s)}}function G(e,t,r,s){switch(r){case 2:return A(e,t,3);default:return C(e,t,r,s)}}function w(e,t,r,s){switch(r){case 3:return A(e,t,3);default:return v(e,t,r,s)}}function A({translate:e,scale:t},r,s){return e[s]+r*t[s]}m(),a();class M{constructor(e){this.options=e,this.geometryTypes=["point","multipoint","polyline","polygon"],this.previousCoordinate=[0,0],this.transform=null,this.applyTransform=P,this.lengths=[],this.currentLengthIndex=0,this.toAddInCurrentPath=0,this.vertexDimension=0,this.coordinateBuffer=null,this.coordinateBufferPtr=0,this.AttributesConstructor=function(){}}createFeatureResult(){return new b}finishFeatureResult(e){if(this.options.applyTransform&&(e.transform=null),this.AttributesConstructor=function(){},this.coordinateBuffer=null,this.lengths.length=0,!e.hasZ)return;const t=h(e.geometryType,this.options.sourceSpatialReference,e.spatialReference);if(t)for(const r of e.features)t(r.geometry)}createSpatialReference(){return new l}addField(e,t){e.fields.push(u.fromJSON(t));const r=e.fields.map((e=>e.name));this.AttributesConstructor=function(){for(const e of r)this[e]=null}}addFeature(e,t){const r=this.options.maxStringAttributeLength?this.options.maxStringAttributeLength:0;if(r>0)for(const s in t.attributes){const e=t.attributes[s];"string"==typeof e&&e.length>r&&(t.attributes[s]="")}e.features.push(t)}addQueryGeometry(e,t){const{queryGeometry:r,queryGeometryType:s}=t,i=c(r.clone(),r,!1,!1,this.transform),o=d(i,s,!1,!1);let n=null;switch(s){case"esriGeometryPoint":n="point";break;case"esriGeometryPolygon":n="polygon";break;case"esriGeometryPolyline":n="polyline";break;case"esriGeometryMultipoint":n="multipoint"}o.type=n,e.queryGeometryType=s,e.queryGeometry=o}prepareFeatures(e){switch(this.transform=e.transform,this.options.applyTransform&&e.transform&&(this.applyTransform=this.deriveApplyTransform(e)),this.vertexDimension=2,e.hasZ&&this.vertexDimension++,e.hasM&&this.vertexDimension++,e.geometryType){case"point":this.addCoordinate=(e,t,r)=>this.addCoordinatePoint(e,t,r),this.createGeometry=e=>this.createPointGeometry(e);break;case"polygon":this.addCoordinate=(e,t,r)=>this.addCoordinatePolygon(e,t,r),this.createGeometry=e=>this.createPolygonGeometry(e);break;case"polyline":this.addCoordinate=(e,t,r)=>this.addCoordinatePolyline(e,t,r),this.createGeometry=e=>this.createPolylineGeometry(e);break;case"multipoint":this.addCoordinate=(e,t,r)=>this.addCoordinateMultipoint(e,t,r),this.createGeometry=e=>this.createMultipointGeometry(e);break;default:p(e.geometryType)}}createFeature(){return this.lengths.length=0,this.currentLengthIndex=0,this.previousCoordinate[0]=0,this.previousCoordinate[1]=0,new g(f(),null,new this.AttributesConstructor)}allocateCoordinates(){const e=this.lengths.reduce(((e,t)=>e+t),0);this.coordinateBuffer=new Float64Array(e*this.vertexDimension),this.coordinateBufferPtr=0}addLength(e,t,r){0===this.lengths.length&&(this.toAddInCurrentPath=t),this.lengths.push(t)}createPointGeometry(e){const t={type:"point",x:0,y:0,spatialReference:e.spatialReference,hasZ:!!e.hasZ,hasM:!!e.hasM};return t.hasZ&&(t.z=0),t.hasM&&(t.m=0),t}addCoordinatePoint(e,t,r){switch(t=this.applyTransform(this.transform,t,r,0),r){case 0:e.x=t;break;case 1:e.y=t;break;case 2:e.hasZ?e.z=t:e.m=t;break;case 3:e.m=t}}transformPathLikeValue(e,t){let r=0;return t<=1&&(r=this.previousCoordinate[t],this.previousCoordinate[t]+=e),this.applyTransform(this.transform,e,t,r)}addCoordinatePolyline(e,t,r){this.dehydratedAddPointsCoordinate(e.paths,t,r)}addCoordinatePolygon(e,t,r){this.dehydratedAddPointsCoordinate(e.rings,t,r)}addCoordinateMultipoint(e,t,r){0===r&&e.points.push([]);const s=this.transformPathLikeValue(t,r);e.points[e.points.length-1].push(s)}createPolygonGeometry(e){return{type:"polygon",rings:[[]],spatialReference:e.spatialReference,hasZ:!!e.hasZ,hasM:!!e.hasM}}createPolylineGeometry(e){return{type:"polyline",paths:[[]],spatialReference:e.spatialReference,hasZ:!!e.hasZ,hasM:!!e.hasM}}createMultipointGeometry(e){return{type:"multipoint",points:[],spatialReference:e.spatialReference,hasZ:!!e.hasZ,hasM:!!e.hasM}}dehydratedAddPointsCoordinate(e,t,r){0===r&&0==this.toAddInCurrentPath--&&(e.push([]),this.toAddInCurrentPath=this.lengths[++this.currentLengthIndex]-1,this.previousCoordinate[0]=0,this.previousCoordinate[1]=0);const s=this.transformPathLikeValue(t,r),i=e[e.length-1];0===r&&i.push(new Float64Array(this.coordinateBuffer.buffer,this.coordinateBufferPtr*Float64Array.BYTES_PER_ELEMENT,this.vertexDimension)),this.coordinateBuffer[this.coordinateBufferPtr++]=s}deriveApplyTransform(e){const{hasZ:t,hasM:r}=e;return t&&r?w:t?v:r?G:C}}class T{_parseFeatureQuery(e){const a=y(e.buffer,new M(e.options)),h=(l=((e,t)=>{for(var r in t||(t={}))i.call(t,r)&&n(e,r,t[r]);if(s)for(var r of s(t))o.call(t,r)&&n(e,r,t[r]);return e})({},a),u={spatialReference:a.spatialReference.toJSON(),fields:a.fields?a.fields.map((e=>e.toJSON())):void 0},t(l,r(u)));var l,u;return Promise.resolve(h)}}function R(){return new T}export default R;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+import { b6 as i, g3 as t$1, bF as k, e6 as y$1, cA as ae, cy as ee, g4 as n, g5 as e, g6 as t$2 } from "./vendor.74d5941c.js";
+import { a } from "./aaBoundingBox.b76947f8.js";
+class j {
+  constructor(e2, t2, s2) {
+    this.uid = e2, this.geometry = t2, this.attributes = s2, this.visible = true, this.objectId = null, this.centroid = null;
+  }
+}
+class N {
+  constructor() {
+    this.exceededTransferLimit = false, this.features = [], this.fields = [], this.hasM = false, this.hasZ = false, this.geometryType = null, this.objectIdFieldName = null, this.globalIdFieldName = null, this.geometryProperties = null, this.geohashFieldName = null, this.spatialReference = null, this.transform = null;
+  }
+}
+a();
+i();
+function u(t2, e2) {
+  return e2;
+}
+function l(t2, e2, r, s2) {
+  switch (r) {
+    case 0:
+      return f(t2, e2 + s2, 0);
+    case 1:
+      return t2.originPosition === "lowerLeft" ? f(t2, e2 + s2, 1) : y(t2, e2 + s2, 1);
+  }
+}
+function c(t2, e2, r, s2) {
+  switch (r) {
+    case 2:
+      return f(t2, e2, 2);
+    default:
+      return l(t2, e2, r, s2);
+  }
+}
+function d(t2, e2, r, s2) {
+  switch (r) {
+    case 2:
+      return f(t2, e2, 3);
+    default:
+      return l(t2, e2, r, s2);
+  }
+}
+function p(t2, e2, r, s2) {
+  switch (r) {
+    case 3:
+      return f(t2, e2, 3);
+    default:
+      return c(t2, e2, r, s2);
+  }
+}
+function f({ translate: t2, scale: e2 }, r, s2) {
+  return t2[s2] + r * e2[s2];
+}
+function y({ translate: t2, scale: e2 }, r, s2) {
+  return t2[s2] - r * e2[s2];
+}
+class m {
+  constructor(t2) {
+    this.options = t2, this.geometryTypes = ["point", "multipoint", "polyline", "polygon"], this.previousCoordinate = [0, 0], this.transform = null, this.applyTransform = u, this.lengths = [], this.currentLengthIndex = 0, this.toAddInCurrentPath = 0, this.vertexDimension = 0, this.coordinateBuffer = null, this.coordinateBufferPtr = 0, this.AttributesConstructor = function() {
+    };
+  }
+  createFeatureResult() {
+    return new N();
+  }
+  finishFeatureResult(t2) {
+    if (this.options.applyTransform && (t2.transform = null), this.AttributesConstructor = function() {
+    }, this.coordinateBuffer = null, this.lengths.length = 0, !t2.hasZ)
+      return;
+    const e2 = t$1(t2.geometryType, this.options.sourceSpatialReference, t2.spatialReference);
+    if (e2)
+      for (const r of t2.features)
+        e2(r.geometry);
+  }
+  createSpatialReference() {
+    return new k();
+  }
+  addField(t2, e2) {
+    t2.fields.push(y$1.fromJSON(e2));
+    const r = t2.fields.map((t3) => t3.name);
+    this.AttributesConstructor = function() {
+      for (const t3 of r)
+        this[t3] = null;
+    };
+  }
+  addFeature(t2, e2) {
+    const r = this.options.maxStringAttributeLength ? this.options.maxStringAttributeLength : 0;
+    if (r > 0)
+      for (const s2 in e2.attributes) {
+        const t3 = e2.attributes[s2];
+        typeof t3 == "string" && t3.length > r && (e2.attributes[s2] = "");
+      }
+    t2.features.push(e2);
+  }
+  addQueryGeometry(t2, e2) {
+    const { queryGeometry: r, queryGeometryType: s2 } = e2, n2 = ae(r.clone(), r, false, false, this.transform), a2 = ee(n2, s2, false, false);
+    let h = null;
+    switch (s2) {
+      case "esriGeometryPoint":
+        h = "point";
+        break;
+      case "esriGeometryPolygon":
+        h = "polygon";
+        break;
+      case "esriGeometryPolyline":
+        h = "polyline";
+        break;
+      case "esriGeometryMultipoint":
+        h = "multipoint";
+    }
+    a2.type = h, t2.queryGeometryType = s2, t2.queryGeometry = a2;
+  }
+  prepareFeatures(e2) {
+    switch (this.transform = e2.transform, this.options.applyTransform && e2.transform && (this.applyTransform = this.deriveApplyTransform(e2)), this.vertexDimension = 2, e2.hasZ && this.vertexDimension++, e2.hasM && this.vertexDimension++, e2.geometryType) {
+      case "point":
+        this.addCoordinate = (t2, e3, r) => this.addCoordinatePoint(t2, e3, r), this.createGeometry = (t2) => this.createPointGeometry(t2);
+        break;
+      case "polygon":
+        this.addCoordinate = (t2, e3, r) => this.addCoordinatePolygon(t2, e3, r), this.createGeometry = (t2) => this.createPolygonGeometry(t2);
+        break;
+      case "polyline":
+        this.addCoordinate = (t2, e3, r) => this.addCoordinatePolyline(t2, e3, r), this.createGeometry = (t2) => this.createPolylineGeometry(t2);
+        break;
+      case "multipoint":
+        this.addCoordinate = (t2, e3, r) => this.addCoordinateMultipoint(t2, e3, r), this.createGeometry = (t2) => this.createMultipointGeometry(t2);
+        break;
+      default:
+        n(e2.geometryType);
+    }
+  }
+  createFeature() {
+    return this.lengths.length = 0, this.currentLengthIndex = 0, this.previousCoordinate[0] = 0, this.previousCoordinate[1] = 0, new j(e(), null, new this.AttributesConstructor());
+  }
+  allocateCoordinates() {
+    const t2 = this.lengths.reduce((t3, e2) => t3 + e2, 0);
+    this.coordinateBuffer = new Float64Array(t2 * this.vertexDimension), this.coordinateBufferPtr = 0;
+  }
+  addLength(t2, e2, r) {
+    this.lengths.length === 0 && (this.toAddInCurrentPath = e2), this.lengths.push(e2);
+  }
+  createPointGeometry(t2) {
+    const e2 = { type: "point", x: 0, y: 0, spatialReference: t2.spatialReference, hasZ: !!t2.hasZ, hasM: !!t2.hasM };
+    return e2.hasZ && (e2.z = 0), e2.hasM && (e2.m = 0), e2;
+  }
+  addCoordinatePoint(t2, e2, r) {
+    switch (e2 = this.applyTransform(this.transform, e2, r, 0), r) {
+      case 0:
+        t2.x = e2;
+        break;
+      case 1:
+        t2.y = e2;
+        break;
+      case 2:
+        t2.hasZ ? t2.z = e2 : t2.m = e2;
+        break;
+      case 3:
+        t2.m = e2;
+    }
+  }
+  transformPathLikeValue(t2, e2) {
+    let r = 0;
+    return e2 <= 1 && (r = this.previousCoordinate[e2], this.previousCoordinate[e2] += t2), this.applyTransform(this.transform, t2, e2, r);
+  }
+  addCoordinatePolyline(t2, e2, r) {
+    this.dehydratedAddPointsCoordinate(t2.paths, e2, r);
+  }
+  addCoordinatePolygon(t2, e2, r) {
+    this.dehydratedAddPointsCoordinate(t2.rings, e2, r);
+  }
+  addCoordinateMultipoint(t2, e2, r) {
+    r === 0 && t2.points.push([]);
+    const s2 = this.transformPathLikeValue(e2, r);
+    t2.points[t2.points.length - 1].push(s2);
+  }
+  createPolygonGeometry(t2) {
+    return { type: "polygon", rings: [[]], spatialReference: t2.spatialReference, hasZ: !!t2.hasZ, hasM: !!t2.hasM };
+  }
+  createPolylineGeometry(t2) {
+    return { type: "polyline", paths: [[]], spatialReference: t2.spatialReference, hasZ: !!t2.hasZ, hasM: !!t2.hasM };
+  }
+  createMultipointGeometry(t2) {
+    return { type: "multipoint", points: [], spatialReference: t2.spatialReference, hasZ: !!t2.hasZ, hasM: !!t2.hasM };
+  }
+  dehydratedAddPointsCoordinate(t2, e2, r) {
+    r === 0 && this.toAddInCurrentPath-- == 0 && (t2.push([]), this.toAddInCurrentPath = this.lengths[++this.currentLengthIndex] - 1, this.previousCoordinate[0] = 0, this.previousCoordinate[1] = 0);
+    const s2 = this.transformPathLikeValue(e2, r), o = t2[t2.length - 1];
+    r === 0 && o.push(new Float64Array(this.coordinateBuffer.buffer, this.coordinateBufferPtr * Float64Array.BYTES_PER_ELEMENT, this.vertexDimension)), this.coordinateBuffer[this.coordinateBufferPtr++] = s2;
+  }
+  deriveApplyTransform(t2) {
+    const { hasZ: e2, hasM: r } = t2;
+    return e2 && r ? p : e2 ? c : r ? d : l;
+  }
+}
+class t {
+  _parseFeatureQuery(t2) {
+    const s2 = t$2(t2.buffer, new m(t2.options)), o = __spreadProps(__spreadValues({}, s2), { spatialReference: s2.spatialReference.toJSON(), fields: s2.fields ? s2.fields.map((e2) => e2.toJSON()) : void 0 });
+    return Promise.resolve(o);
+  }
+}
+function s() {
+  return new t();
+}
+export default s;

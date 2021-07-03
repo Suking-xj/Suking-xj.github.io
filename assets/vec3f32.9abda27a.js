@@ -1,1 +1,150 @@
-import{fV as t,fP as n,fQ as r,gp as e,fK as o,aP as a,aW as s,fW as c}from"./vendor.74d5941c.js";import{a as u,r as i,s as f,l,_ as h,j as M,x as _,q as m,g as p,D as q,E as A}from"./vec4.44fdb266.js";function I(){return[1,0,0,0,1,0,0,0,1]}function w(t,n){return new Float64Array(t,n,9)}function d(){return[0,0,0,1]}function y(t,n){return new Float64Array(t,n,4)}Object.freeze({__proto__:null,create:I,clone:function(t){return[t[0],t[1],t[2],t[3],t[4],t[5],t[6],t[7],t[8]]},fromValues:function(t,n,r,e,o,a,s,c,u){return[t,n,r,e,o,a,s,c,u]},createView:w});const P=[0,0,0,1];function b(t,n,r){r*=.5;const e=Math.sin(r);return t[0]=e*n[0],t[1]=e*n[1],t[2]=e*n[2],t[3]=Math.cos(r),t}function g(n,r){const e=2*Math.acos(r[3]),o=Math.sin(e/2);return o>t?(n[0]=r[0]/o,n[1]=r[1]/o,n[2]=r[2]/o):(n[0]=1,n[1]=0,n[2]=0),e}function j(t,n,r){const e=n[0],o=n[1],a=n[2],s=n[3],c=r[0],u=r[1],i=r[2],f=r[3];return t[0]=e*f+s*c+o*i-a*u,t[1]=o*f+s*u+a*c-e*i,t[2]=a*f+s*i+e*u-o*c,t[3]=s*f-e*c-o*u-a*i,t}function V(n,r,e,o){const a=r[0],s=r[1],c=r[2],u=r[3];let i,f,l,h,M,_=e[0],m=e[1],p=e[2],q=e[3];return f=a*_+s*m+c*p+u*q,f<0&&(f=-f,_=-_,m=-m,p=-p,q=-q),1-f>t?(i=Math.acos(f),l=Math.sin(i),h=Math.sin((1-o)*i)/l,M=Math.sin(o*i)/l):(h=1-o,M=o),n[0]=h*a+M*_,n[1]=h*s+M*m,n[2]=h*c+M*p,n[3]=h*u+M*q,n}function x(t,n){return t[0]=-n[0],t[1]=-n[1],t[2]=-n[2],t[3]=n[3],t}function z(t,n){const r=n[0]+n[4]+n[8];let e;if(r>0)e=Math.sqrt(r+1),t[3]=.5*e,e=.5/e,t[0]=(n[5]-n[7])*e,t[1]=(n[6]-n[2])*e,t[2]=(n[1]-n[3])*e;else{let r=0;n[4]>n[0]&&(r=1),n[8]>n[3*r+r]&&(r=2);const o=(r+1)%3,a=(r+2)%3;e=Math.sqrt(n[3*r+r]-n[3*o+o]-n[3*a+a]+1),t[r]=.5*e,e=.5/e,t[3]=(n[3*o+a]-n[3*a+o])*e,t[o]=(n[3*o+r]+n[3*r+o])*e,t[a]=(n[3*a+r]+n[3*r+a])*e}return t}Object.freeze({__proto__:null,create:d,clone:function(t){return[t[0],t[1],t[2],t[3]]},fromValues:function(t,n,r,e){return[t,n,r,e]},createView:y,IDENTITY:P});const E=u,F=i,O=f,T=j,N=l,Y=h,Z=M,v=_,U=v,W=m,X=W,D=p,L=q,S=A;const K=a(),Q=s(1,0,0),R=s(0,1,0);const k=[0,0,0,1],B=[0,0,0,1];const C=[1,0,0,0,1,0,0,0,1];function G(){return new Float32Array(3)}function H(t,n,r){const e=new Float32Array(3);return e[0]=t,e[1]=n,e[2]=r,e}function J(){return G()}function $(){return H(1,1,1)}function tt(){return H(1,0,0)}function nt(){return H(0,1,0)}function rt(){return H(0,0,1)}Object.freeze({__proto__:null,identity:function(t){return t[0]=0,t[1]=0,t[2]=0,t[3]=1,t},setAxisAngle:b,getAxisAngle:g,multiply:j,rotateX:function(t,n,r){r*=.5;const e=n[0],o=n[1],a=n[2],s=n[3],c=Math.sin(r),u=Math.cos(r);return t[0]=e*u+s*c,t[1]=o*u+a*c,t[2]=a*u-o*c,t[3]=s*u-e*c,t},rotateY:function(t,n,r){r*=.5;const e=n[0],o=n[1],a=n[2],s=n[3],c=Math.sin(r),u=Math.cos(r);return t[0]=e*u-a*c,t[1]=o*u+s*c,t[2]=a*u+e*c,t[3]=s*u-o*c,t},rotateZ:function(t,n,r){r*=.5;const e=n[0],o=n[1],a=n[2],s=n[3],c=Math.sin(r),u=Math.cos(r);return t[0]=e*u+o*c,t[1]=o*u-e*c,t[2]=a*u+s*c,t[3]=s*u-a*c,t},calculateW:function(t,n){const r=n[0],e=n[1],o=n[2];return t[0]=r,t[1]=e,t[2]=o,t[3]=Math.sqrt(Math.abs(1-r*r-e*e-o*o)),t},slerp:V,random:function(t){const n=c(),r=c(),e=c(),o=Math.sqrt(1-n),a=Math.sqrt(n);return t[0]=o*Math.sin(2*Math.PI*r),t[1]=o*Math.cos(2*Math.PI*r),t[2]=a*Math.sin(2*Math.PI*e),t[3]=a*Math.cos(2*Math.PI*e),t},invert:function(t,n){const r=n[0],e=n[1],o=n[2],a=n[3],s=r*r+e*e+o*o+a*a,c=s?1/s:0;return t[0]=-r*c,t[1]=-e*c,t[2]=-o*c,t[3]=a*c,t},conjugate:x,fromMat3:z,fromEuler:function(t,n,r,e){const o=.5*Math.PI/180;n*=o,r*=o,e*=o;const a=Math.sin(n),s=Math.cos(n),c=Math.sin(r),u=Math.cos(r),i=Math.sin(e),f=Math.cos(e);return t[0]=a*u*f-s*c*i,t[1]=s*c*f+a*u*i,t[2]=s*u*i-a*c*f,t[3]=s*u*f+a*c*i,t},str:function(t){return"quat("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")"},copy:E,set:F,add:O,mul:T,scale:N,dot:Y,lerp:Z,length:v,len:U,squaredLength:W,sqrLen:X,normalize:D,exactEquals:L,equals:S,rotationTo:function(t,a,s){const c=n(a,s);return c<-.999999?(r(K,Q,a),e(K)<1e-6&&r(K,R,a),o(K,K),b(t,K,Math.PI),t):c>.999999?(t[0]=0,t[1]=0,t[2]=0,t[3]=1,t):(r(K,a,s),t[0]=K[0],t[1]=K[1],t[2]=K[2],t[3]=1+c,D(t,t))},sqlerp:function(t,n,r,e,o,a){return V(k,n,o,a),V(B,r,e,a),V(t,k,B,2*a*(1-a)),t},setAxes:function(t,n,r,e){const o=C;return o[0]=r[0],o[3]=r[1],o[6]=r[2],o[1]=e[0],o[4]=e[1],o[7]=e[2],o[2]=-n[0],o[5]=-n[1],o[8]=-n[2],D(t,z(t,o))}});const et=J(),ot=$(),at=tt(),st=nt(),ct=rt();Object.freeze({__proto__:null,create:G,clone:function(t){const n=new Float32Array(3);return n[0]=t[0],n[1]=t[1],n[2]=t[2],n},fromValues:H,createView:function(t,n){return new Float32Array(t,n,3)},zeros:J,ones:$,unitX:tt,unitY:nt,unitZ:rt,ZEROS:et,ONES:ot,UNIT_X:at,UNIT_Y:st,UNIT_Z:ct});export{g as I,w as a,y as b,d as c,I as e,G as n,H as t,x as w};
+import { fV as a$2, fP as z$1, fQ as _$3, gp as Y$1, fK as j$1, aP as n$3, aW as t$3, fW as t$4 } from "./vendor.74d5941c.js";
+import { a as a$3, r as r$3, s as s$1, l as l$1, _ as _$2, j, x as x$1, q, g, D as D$1, E as E$1 } from "./vec4.44fdb266.js";
+function e$2() {
+  return [1, 0, 0, 0, 1, 0, 0, 0, 1];
+}
+function r$2(e2) {
+  return [e2[0], e2[1], e2[2], e2[3], e2[4], e2[5], e2[6], e2[7], e2[8]];
+}
+function n$2(e2, r2, n2, t2, a2, o2, u2, c2, f2) {
+  return [e2, r2, n2, t2, a2, o2, u2, c2, f2];
+}
+function t$2(e2, r2) {
+  return new Float64Array(e2, r2, 9);
+}
+Object.freeze({ __proto__: null, create: e$2, clone: r$2, fromValues: n$2, createView: t$2 });
+function e$1() {
+  return [0, 0, 0, 1];
+}
+function r$1(e2) {
+  return [e2[0], e2[1], e2[2], e2[3]];
+}
+function n$1(e2, r2, n2, t2) {
+  return [e2, r2, n2, t2];
+}
+function t$1(e2, r2) {
+  return new Float64Array(e2, r2, 4);
+}
+const a$1 = e$1();
+Object.freeze({ __proto__: null, create: e$1, clone: r$1, fromValues: n$1, createView: t$1, IDENTITY: a$1 });
+function x(t2) {
+  return t2[0] = 0, t2[1] = 0, t2[2] = 0, t2[3] = 1, t2;
+}
+function A(t2, s2, a2) {
+  a2 *= 0.5;
+  const n2 = Math.sin(a2);
+  return t2[0] = n2 * s2[0], t2[1] = n2 * s2[1], t2[2] = n2 * s2[2], t2[3] = Math.cos(a2), t2;
+}
+function I(t2, s2) {
+  const n2 = 2 * Math.acos(s2[3]), o2 = Math.sin(n2 / 2);
+  return o2 > a$2 ? (t2[0] = s2[0] / o2, t2[1] = s2[1] / o2, t2[2] = s2[2] / o2) : (t2[0] = 1, t2[1] = 0, t2[2] = 0), n2;
+}
+function P(t2, s2, a2) {
+  const n2 = s2[0], o2 = s2[1], r2 = s2[2], c2 = s2[3], e2 = a2[0], u2 = a2[1], i2 = a2[2], h = a2[3];
+  return t2[0] = n2 * h + c2 * e2 + o2 * i2 - r2 * u2, t2[1] = o2 * h + c2 * u2 + r2 * e2 - n2 * i2, t2[2] = r2 * h + c2 * i2 + n2 * u2 - o2 * e2, t2[3] = c2 * h - n2 * e2 - o2 * u2 - r2 * i2, t2;
+}
+function b(t2, s2, a2) {
+  a2 *= 0.5;
+  const n2 = s2[0], o2 = s2[1], r2 = s2[2], c2 = s2[3], e2 = Math.sin(a2), u2 = Math.cos(a2);
+  return t2[0] = n2 * u2 + c2 * e2, t2[1] = o2 * u2 + r2 * e2, t2[2] = r2 * u2 - o2 * e2, t2[3] = c2 * u2 - n2 * e2, t2;
+}
+function y(t2, s2, a2) {
+  a2 *= 0.5;
+  const n2 = s2[0], o2 = s2[1], r2 = s2[2], c2 = s2[3], e2 = Math.sin(a2), u2 = Math.cos(a2);
+  return t2[0] = n2 * u2 - r2 * e2, t2[1] = o2 * u2 + c2 * e2, t2[2] = r2 * u2 + n2 * e2, t2[3] = c2 * u2 - o2 * e2, t2;
+}
+function E(t2, s2, a2) {
+  a2 *= 0.5;
+  const n2 = s2[0], o2 = s2[1], r2 = s2[2], c2 = s2[3], e2 = Math.sin(a2), u2 = Math.cos(a2);
+  return t2[0] = n2 * u2 + o2 * e2, t2[1] = o2 * u2 - n2 * e2, t2[2] = r2 * u2 + c2 * e2, t2[3] = c2 * u2 - r2 * e2, t2;
+}
+function _$1(t2, s2) {
+  const a2 = s2[0], n2 = s2[1], o2 = s2[2];
+  return t2[0] = a2, t2[1] = n2, t2[2] = o2, t2[3] = Math.sqrt(Math.abs(1 - a2 * a2 - n2 * n2 - o2 * o2)), t2;
+}
+function z(t2, s2, n2, o2) {
+  const r2 = s2[0], c2 = s2[1], e2 = s2[2], u2 = s2[3];
+  let i2, h, M, f2, l2, m = n2[0], p = n2[1], q2 = n2[2], j2 = n2[3];
+  return h = r2 * m + c2 * p + e2 * q2 + u2 * j2, h < 0 && (h = -h, m = -m, p = -p, q2 = -q2, j2 = -j2), 1 - h > a$2 ? (i2 = Math.acos(h), M = Math.sin(i2), f2 = Math.sin((1 - o2) * i2) / M, l2 = Math.sin(o2 * i2) / M) : (f2 = 1 - o2, l2 = o2), t2[0] = f2 * r2 + l2 * m, t2[1] = f2 * c2 + l2 * p, t2[2] = f2 * e2 + l2 * q2, t2[3] = f2 * u2 + l2 * j2, t2;
+}
+function L(t2) {
+  const s2 = t$4(), a2 = t$4(), o2 = t$4(), r2 = Math.sqrt(1 - s2), c2 = Math.sqrt(s2);
+  return t2[0] = r2 * Math.sin(2 * Math.PI * a2), t2[1] = r2 * Math.cos(2 * Math.PI * a2), t2[2] = c2 * Math.sin(2 * Math.PI * o2), t2[3] = c2 * Math.cos(2 * Math.PI * o2), t2;
+}
+function k(t2, s2) {
+  const a2 = s2[0], n2 = s2[1], o2 = s2[2], r2 = s2[3], c2 = a2 * a2 + n2 * n2 + o2 * o2 + r2 * r2, e2 = c2 ? 1 / c2 : 0;
+  return t2[0] = -a2 * e2, t2[1] = -n2 * e2, t2[2] = -o2 * e2, t2[3] = r2 * e2, t2;
+}
+function w$1(t2, s2) {
+  return t2[0] = -s2[0], t2[1] = -s2[1], t2[2] = -s2[2], t2[3] = s2[3], t2;
+}
+function B(t2, s2) {
+  const a2 = s2[0] + s2[4] + s2[8];
+  let n2;
+  if (a2 > 0)
+    n2 = Math.sqrt(a2 + 1), t2[3] = 0.5 * n2, n2 = 0.5 / n2, t2[0] = (s2[5] - s2[7]) * n2, t2[1] = (s2[6] - s2[2]) * n2, t2[2] = (s2[1] - s2[3]) * n2;
+  else {
+    let a3 = 0;
+    s2[4] > s2[0] && (a3 = 1), s2[8] > s2[3 * a3 + a3] && (a3 = 2);
+    const o2 = (a3 + 1) % 3, r2 = (a3 + 2) % 3;
+    n2 = Math.sqrt(s2[3 * a3 + a3] - s2[3 * o2 + o2] - s2[3 * r2 + r2] + 1), t2[a3] = 0.5 * n2, n2 = 0.5 / n2, t2[3] = (s2[3 * o2 + r2] - s2[3 * r2 + o2]) * n2, t2[o2] = (s2[3 * o2 + a3] + s2[3 * a3 + o2]) * n2, t2[r2] = (s2[3 * r2 + a3] + s2[3 * a3 + r2]) * n2;
+  }
+  return t2;
+}
+function C(t2, s2, a2, n2) {
+  const o2 = 0.5 * Math.PI / 180;
+  s2 *= o2, a2 *= o2, n2 *= o2;
+  const r2 = Math.sin(s2), c2 = Math.cos(s2), e2 = Math.sin(a2), u2 = Math.cos(a2), i2 = Math.sin(n2), h = Math.cos(n2);
+  return t2[0] = r2 * u2 * h - c2 * e2 * i2, t2[1] = c2 * e2 * h + r2 * u2 * i2, t2[2] = c2 * u2 * i2 - r2 * e2 * h, t2[3] = c2 * u2 * h + r2 * e2 * i2, t2;
+}
+function D(t2) {
+  return "quat(" + t2[0] + ", " + t2[1] + ", " + t2[2] + ", " + t2[3] + ")";
+}
+const F = a$3, G = r$3, O = s$1, R = P, T = l$1, W = _$2, X = j, Y = x$1, Z = Y, H = q, J = H, K = g, N = D$1, Q = E$1;
+function S(t2, s2, a2) {
+  const n2 = z$1(s2, a2);
+  return n2 < -0.999999 ? (_$3(U, V, s2), Y$1(U) < 1e-6 && _$3(U, $, s2), j$1(U, U), A(t2, U, Math.PI), t2) : n2 > 0.999999 ? (t2[0] = 0, t2[1] = 0, t2[2] = 0, t2[3] = 1, t2) : (_$3(U, s2, a2), t2[0] = U[0], t2[1] = U[1], t2[2] = U[2], t2[3] = 1 + n2, K(t2, t2));
+}
+const U = n$3(), V = t$3(1, 0, 0), $ = t$3(0, 1, 0);
+function tt(t2, s2, a2, n2, o2, r2) {
+  return z(st, s2, o2, r2), z(at, a2, n2, r2), z(t2, st, at, 2 * r2 * (1 - r2)), t2;
+}
+const st = e$1(), at = e$1();
+function nt(t2, s2, a2, n2) {
+  const o2 = ot;
+  return o2[0] = a2[0], o2[3] = a2[1], o2[6] = a2[2], o2[1] = n2[0], o2[4] = n2[1], o2[7] = n2[2], o2[2] = -s2[0], o2[5] = -s2[1], o2[8] = -s2[2], K(t2, B(t2, o2));
+}
+const ot = e$2();
+Object.freeze({ __proto__: null, identity: x, setAxisAngle: A, getAxisAngle: I, multiply: P, rotateX: b, rotateY: y, rotateZ: E, calculateW: _$1, slerp: z, random: L, invert: k, conjugate: w$1, fromMat3: B, fromEuler: C, str: D, copy: F, set: G, add: O, mul: R, scale: T, dot: W, lerp: X, length: Y, len: Z, squaredLength: H, sqrLen: J, normalize: K, exactEquals: N, equals: Q, rotationTo: S, sqlerp: tt, setAxes: nt });
+function n() {
+  return new Float32Array(3);
+}
+function r(n2) {
+  const r2 = new Float32Array(3);
+  return r2[0] = n2[0], r2[1] = n2[1], r2[2] = n2[2], r2;
+}
+function t(n2, r2, t2) {
+  const a2 = new Float32Array(3);
+  return a2[0] = n2, a2[1] = r2, a2[2] = t2, a2;
+}
+function a(n2, r2) {
+  return new Float32Array(n2, r2, 3);
+}
+function e() {
+  return n();
+}
+function o() {
+  return t(1, 1, 1);
+}
+function u() {
+  return t(1, 0, 0);
+}
+function s() {
+  return t(0, 1, 0);
+}
+function c() {
+  return t(0, 0, 1);
+}
+const i = e(), f = o(), l = u(), _ = s(), w = c();
+Object.freeze({ __proto__: null, create: n, clone: r, fromValues: t, createView: a, zeros: e, ones: o, unitX: u, unitY: s, unitZ: c, ZEROS: i, ONES: f, UNIT_X: l, UNIT_Y: _, UNIT_Z: w });
+export { I, t$2 as a, t$1 as b, e$1 as c, e$2 as e, n, t, w$1 as w };

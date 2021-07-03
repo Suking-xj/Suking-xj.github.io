@@ -1,1 +1,859 @@
-var e,t=Object.defineProperty,i=Object.defineProperties,r=Object.getOwnPropertyDescriptors,s=Object.getOwnPropertySymbols,a=Object.prototype.hasOwnProperty,n=Object.prototype.propertyIsEnumerable,l=(e,i,r)=>i in e?t(e,i,{enumerable:!0,configurable:!0,writable:!0,value:r}):e[i]=r,o=(e,t)=>{for(var i in t||(t={}))a.call(t,i)&&l(e,i,t[i]);if(s)for(var i of s(t))n.call(t,i)&&l(e,i,t[i]);return e};import{ae as h,af as d,ag as u,d1 as c,c9 as p,c4 as f,es as y,cW as g,d5 as m,dA as _,ec as v,bT as w,a4 as b,et as R,aE as x,eu as F,ev as I,ew as S,a5 as E,ex as O,dd as P,ey as T,ez as q,eA as C,eB as U,eC as j,eD as k,aa as N,eE as V,eF as L,bN as A,bI as M,eG as H,dU as J,ah as G,cd as z,cu as D,eh as Q,eH as $,eI as B,an as W,aw as K,ay as Z,c_ as X,dR as Y,cr as ee,eJ as te,eK as ie,eL as re,ai as se,a0 as ae,bC as ne,eM as le}from"./vendor.74d5941c.js";import{N as oe}from"./definitions.6737c10c.js";import{l as he,d as de}from"./LayerView2D.06dde519.js";import{s as ue}from"./clickToleranceUtils.1b8c692d.js";import{a as ce}from"./drapedUtils.72df2b08.js";import{f as pe,u as fe,g as ye,h as ge,m as me,i as _e,k as ve}from"./schemaUtils.ab77d03d.js";import{u as we}from"./Container.d2c27c9d.js";import{d as be,i as Re}from"./popupUtils.017b06d1.js";import"./MD5.1ef35834.js";import"./Utils.3f1577e5.js";import"./FramebufferObject.18518335.js";import"./_commonjsHelpers.f2a458db.js";import"./MaterialKey.3bc4aaea.js";import"./visualVariablesUtils.cb58e4df.js";import"./CIMSymbolHelper.6546a069.js";import"./Rect.b51904ac.js";import"./BidiEngine.9b392b22.js";import"./mat4f32.a5cabe00.js";let xe=e=class extends c{constructor(){super(...arguments),this.isAggregate=!0}getEffectivePopupTemplate(e=!1){if(this.popupTemplate)return this.popupTemplate;const t=this.sourceLayer&&this.sourceLayer.featureReduction;return t&&"popupTemplate"in t&&t.popupEnabled?t.popupTemplate:null}getObjectId(){return this.objectId}clone(){return new e(o({objectId:this.objectId},this.cloneProperties()))}};h([d({type:Boolean})],xe.prototype,"isAggregate",void 0),h([d({type:Number,json:{read:!0}})],xe.prototype,"objectId",void 0),xe=e=h([u("esri.AggregateGraphic")],xe);var Fe,Ie=xe;const Se=new p({esriSpatialRelIntersects:"intersects",esriSpatialRelContains:"contains",esriSpatialRelCrosses:"crosses",esriSpatialRelDisjoint:"disjoint",esriSpatialRelEnvelopeIntersects:"envelope-intersects",esriSpatialRelIndexIntersects:"index-intersects",esriSpatialRelOverlaps:"overlaps",esriSpatialRelTouches:"touches",esriSpatialRelWithin:"within",esriSpatialRelRelation:"relation"}),Ee=new p({esriSRUnit_Meter:"meters",esriSRUnit_Kilometer:"kilometers",esriSRUnit_Foot:"feet",esriSRUnit_StatuteMile:"miles",esriSRUnit_NauticalMile:"nautical-miles",esriSRUnit_USNauticalMile:"us-nautical-miles"});let Oe=Fe=class extends _{constructor(e){super(e),this.where=null,this.geometry=null,this.spatialRelationship="intersects",this.hiddenIds=new Set,this.distance=void 0,this.objectIds=null,this.units=null,this.timeExtent=null,this.enabled=!1}writeWhere(e,t){t.where=e||"1=1"}enable(){this._set("enabled",!0)}createQuery(e={}){const{where:t,geometry:i,spatialRelationship:r,timeExtent:s,objectIds:a,units:n,distance:l}=this;return new v(o({geometry:w(i),objectIds:w(a),spatialRelationship:r,timeExtent:w(s),where:t,units:n,distance:l},e))}clone(){const{where:e,geometry:t,spatialRelationship:i,hiddenIds:r,timeExtent:s,objectIds:a,units:n,distance:l}=this,o=new Set;return r.forEach((e=>o.add(e))),new Fe({geometry:w(t),hiddenIds:o,objectIds:w(a),spatialRelationship:i,timeExtent:w(s),where:e,units:n,distance:l})}};h([d({type:String})],Oe.prototype,"where",void 0),h([f("where")],Oe.prototype,"writeWhere",null),h([d({types:y,json:{read:g,write:!0}})],Oe.prototype,"geometry",void 0),h([d({type:String,json:{read:{source:"spatialRel",reader:Se.read},write:{target:"spatialRel",writer:Se.write}}})],Oe.prototype,"spatialRelationship",void 0),h([d({json:{write:(e,t,i)=>t[i]=Array.from(e),read:e=>new Set(e)}})],Oe.prototype,"hiddenIds",void 0),h([d({type:Number,json:{write:{overridePolicy:e=>({enabled:e>0})}}})],Oe.prototype,"distance",void 0),h([d({type:[Number],json:{write:!0}})],Oe.prototype,"objectIds",void 0),h([d({type:String,json:{read:Ee.read,write:{writer:Ee.write,overridePolicy(e){return{enabled:e&&this.distance>0}}}}})],Oe.prototype,"units",void 0),h([d({type:m,json:{write:!0}})],Oe.prototype,"timeExtent",void 0),h([d({readOnly:!0})],Oe.prototype,"enabled",void 0),Oe=Fe=h([u("esri.views.layers.support.FeatureFilter")],Oe);var Pe,Te=Oe;let qe=Pe=class extends _{constructor(){super(...arguments),this.filter=null,this.includedEffect=null,this.excludedEffect=null,this.excludedLabelsVisible=!1}clone(){return new Pe({filter:this.filter&&this.filter.clone(),includedEffect:this.includedEffect,excludedEffect:this.excludedEffect,excludedLabelsVisible:this.excludedLabelsVisible})}};h([d({type:Te,json:{write:!0}})],qe.prototype,"filter",void 0),h([d({json:{write:!0}})],qe.prototype,"includedEffect",void 0),h([d({json:{write:!0}})],qe.prototype,"excludedEffect",void 0),h([d({type:Boolean,json:{write:!0}})],qe.prototype,"excludedLabelsVisible",void 0),qe=Pe=h([u("esri.views.layers.support.FeatureEffect")],qe);var Ce=qe;const Ue=b.getLogger("esri.views.layers.FeatureLayerView"),je=e=>{let t=class extends e{constructor(...e){super(...e),this._updatingRequiredFieldsPromise=null,this.effect=null,this.filter=null,this.timeExtent=null,this.layer=null,this.requiredFields=[],this.view=null}initialize(){x(this,["layer.renderer","layer.labelingInfo","layer.elevationInfo.featureExpressionInfo","layer.displayField","filter","effect","layer.timeInfo","layer.floorInfo","timeExtent"],(()=>this._handleRequiredFieldsChange()),!0),F(this,"view.floors","change",(()=>this._handleRequiredFieldsChange()))}get availableFields(){const{layer:e,layer:{fields:t},requiredFields:i}=this;return"outFields"in e&&e.outFields?I(t,[...S(t,e.outFields),...i]):I(t,i)}get maximumNumberOfFeatures(){return 0}set maximumNumberOfFeatures(e){Ue.error("#maximumNumberOfFeatures=","Setting maximum number of features is not supported")}get maximumNumberOfFeaturesExceeded(){return!1}highlight(e){throw new Error("missing implementation")}createQuery(){const e={outFields:["*"],returnGeometry:!0,outSpatialReference:this.view.spatialReference},t=E(this.filter)?this.filter.createQuery(e):new v(e);return E(this.timeExtent)&&(t.timeExtent=E(t.timeExtent)?t.timeExtent.intersection(this.timeExtent):this.timeExtent.clone()),t}queryFeatures(e,t){throw new Error("missing implementation")}queryObjectIds(e,t){throw new Error("missing implementation")}queryFeatureCount(e,t){throw new Error("missing implementation")}queryExtent(e,t){throw new Error("missing implementation")}_loadArcadeModules(e){if(e.get("expressionInfos.length"))return O()}_handleRequiredFieldsChange(){const e=this._updateRequiredFields();this._set("_updatingRequiredFieldsPromise",e),e.then((()=>{this._updatingRequiredFieldsPromise===e&&this._set("_updatingRequiredFieldsPromise",null)}))}async _updateRequiredFields(){if(!this.layer||!this.view)return;const e="3d"===this.view.type,{layer:t,layer:{fields:i,objectIdField:r,renderer:s,displayField:a}}=this,n=t.featureReduction,l=new Set,o=await P([s?s.collectRequiredFields(l,i):null,T(l,t),e?q(l,t):null,E(this.filter)?C(l,t,this.filter):null,this.effect?C(l,t,this.effect.filter):null,n?U(l,t,n):null]);t.timeInfo&&this.timeExtent&&j(l,t.fields,[t.timeInfo.startField,t.timeInfo.endField]),"feature"===t.type&&t.floorInfo&&j(l,t.fields,[t.floorInfo.floorField]);for(const d of o)d.error&&Ue.error(d.error);k(l,i,r),e&&a&&k(l,i,a);const h=Array.from(l).sort();this._set("requiredFields",h)}validateFetchPopupFeatures(e){const{layer:t,layer:{popupEnabled:i}}=this;return i?be(this.layer,e)?void 0:new N("featurelayerview:fetchPopupFeatures","Layer does not define a popup template",{layer:t}):new N("featurelayerview:fetchPopupFeatures","Popups are disabled",{layer:t})}async fetchClientPopupFeatures(e){const t=E(e)?e.clientGraphics:null;if(!t||0===t.length)return Promise.resolve([]);const i=[],r=[],{layer:s}=this,a=be(s,e);if(!E(a))return Promise.resolve([]);const n=await this._loadArcadeModules(a),l=n&&n.arcadeUtils.hasGeometryOperations(a),o=await this.createPopupQuery(e),h=S(s.fields,o.outFields);for(const d of t)l||!V(h,d)?r.push(d):i.push(d);return"stream"===s.type||0===r.length?Promise.resolve(i):(o.objectIds=r.map((e=>e.attributes[s.objectIdField])),s.queryFeatures(o).then((e=>i.concat(e.features))).catch((()=>r)))}async createPopupQuery(e){const t=this.layer,i=t.createQuery(),r=be(t,e),s=E(r)&&await this._loadArcadeModules(r),a=E(r)&&s&&s.arcadeUtils.hasGeometryOperations(r),n=!("point"!==t.geometryType&&!a);return i.returnGeometry=n,i.returnZ=n,i.returnM=n,i.outFields=await Re(this.layer,r),i.outSpatialReference=this.view.spatialReference,i}canResume(){return!(!super.canResume()||E(this.timeExtent)&&this.timeExtent.isEmpty)}};return h([d()],t.prototype,"_updatingRequiredFieldsPromise",void 0),h([d({readOnly:!0})],t.prototype,"availableFields",null),h([d({type:Ce})],t.prototype,"effect",void 0),h([d({type:Te})],t.prototype,"filter",void 0),h([d(R)],t.prototype,"timeExtent",void 0),h([d()],t.prototype,"layer",void 0),h([d({type:Number})],t.prototype,"maximumNumberOfFeatures",null),h([d({readOnly:!0,type:Boolean})],t.prototype,"maximumNumberOfFeaturesExceeded",null),h([d({readOnly:!0})],t.prototype,"requiredFields",void 0),h([d()],t.prototype,"suspended",void 0),h([d()],t.prototype,"view",void 0),t=h([u("esri.views.layers.FeatureLayerView")],t),t};let ke=class extends L{constructor(e){super(e),this._startupResolver=A(),this.isReady=!1}initialize(){this._controller=M(),this.addResolvingPromise(this._startWorker(this._controller.signal))}destroy(){this._controller.abort(),this._connection&&this._connection.close()}set tileRenderer(e){this.client.tileRenderer=e}get closed(){return this._connection.closed}async startup(e,t,i,r){await this.when();const s=this._controller.signal,a=function(e){return Array.isArray(e)}(i.source)?{transferList:i.source,signal:s}:void 0,n={service:i,config:t,tileInfo:e.tileInfo.toJSON(),tiles:r};await this._connection.invoke("startup",n,a),this._startupResolver.resolve(),this._set("isReady",!0)}async updateTiles(e){return await this._startupResolver.promise,H(this._connection.invoke("updateTiles",e))}async update(e){const t={config:e};return await this._startupResolver.promise,this._connection.invoke("update",t)}async applyUpdate(e){return await this._startupResolver.promise,this._connection.invoke("applyUpdate",e)}async setHighlight(e){return await this._startupResolver.promise,H(this._connection.invoke("controller.setHighlight",e))}async refresh(){return await this._startupResolver.promise,H(this._connection.invoke("controller.refresh"))}async queryFeatures(e,t){return await this._startupResolver.promise,this._connection.invoke("controller.queryFeatures",e.toJSON(),t)}async queryObjectIds(e,t){return await this._startupResolver.promise,this._connection.invoke("controller.queryObjectIds",e.toJSON(),t)}async queryFeatureCount(e,t){return await this._startupResolver.promise,this._connection.invoke("controller.queryFeatureCount",e.toJSON(),t)}async queryExtent(e,t){return this._connection.invoke("controller.queryExtent",e.toJSON(),t)}async queryLatestObservations(e,t){return await this._startupResolver.promise,this._connection.invoke("controller.queryLatestObservations",e.toJSON(),t)}async queryStatistics(e){return await this._startupResolver.promise,this._connection.invoke("controller.queryStatistics",e)}async getObjectId(e){return await this._startupResolver.promise,this._connection.invoke("controller.getObjectId",e)}async getDisplayId(e){return await this._startupResolver.promise,this._connection.invoke("controller.getDisplayId",e)}async getFeature(e){return await this._startupResolver.promise,this._connection.invoke("controller.getFeature",e)}async getAggregate(e){return await this._startupResolver.promise,this._connection.invoke("controller.getAggregate",e)}async getAggregateValueRanges(){return await this._startupResolver.promise,this._connection.invoke("controller.getAggregateValueRanges")}async mapValidDisplayIds(e){return await this._startupResolver.promise,this._connection.invoke("controller.mapValidDisplayIds",e)}async onEdits(e){await this._startupResolver.promise;const{addedFeatures:t,deletedFeatures:i,updatedFeatures:r}=e;return H(this._connection.invoke("controller.onEdits",{addedFeatures:t,deletedFeatures:i,updatedFeatures:r}))}async enableEvent(e,t){return await this._startupResolver.promise,H(this._connection.invoke("controller.enableEvent",{name:e,value:t}))}async _startWorker(e){try{this._connection=await J("Pipeline",{client:this.client,strategy:"dedicated",signal:e})}catch(t){G(t)}}};h([d()],ke.prototype,"isReady",void 0),h([d()],ke.prototype,"client",void 0),h([d()],ke.prototype,"tileRenderer",null),ke=h([u("esri.views.2d.layers.support.FeatureLayerProxy")],ke);var Ne=ke;class Ve{constructor(e){this._tiles=new Map,this.buffer=0,this.acquireTile=e.acquireTile,this.releaseTile=e.releaseTile,this.tileInfoView=e.tileInfoView,this.buffer=e.buffer}destroy(){}clear(){this._tiles.forEach((e=>this._releaseTile(e)))}tileKeys(){const e=[];return this._tiles.forEach(((t,i)=>e.push(i))),e}update(e){const t=this.tileInfoView.getTileCoverage(e.state,this.buffer,"closest"),{spans:i,lodInfo:r}=t,{level:s}=r,a=[],n=[],l=new Set,o=new Set;for(const{row:h,colFrom:d,colTo:u}of i)for(let e=d;e<=u;e++){const t=z.getId(s,h,r.normalizeCol(e),r.getWorldForColumn(e)),i=this._getOrAcquireTile(a,t);l.add(t),i.isReady?i.visible=!0:o.add(i.key)}return o.forEach((e=>this._addPlaceholders(l,e))),this._tiles.forEach((e=>{l.has(e.key.id)||(n.push(e.key.id),this._releaseTile(e))})),D.pool.release(t),{hasMissingTiles:o.size>0,added:a,removed:n}}_getOrAcquireTile(e,t){if(!this._tiles.has(t)){const i=this.acquireTile(new z(t));e.push(t),this._tiles.set(t,i),i.visible=!1}return this._tiles.get(t)}_getTile(e){return this._tiles.get(e)}_releaseTile(e){this._tiles.delete(e.key.id),this.releaseTile(e)}_addPlaceholders(e,t){const i=this._addPlaceholderChildren(e,t);Math.abs(1-i)<1e-6||this._addPlaceholderParent(e,t)||(this._getTile(t.id).visible=!0)}_addPlaceholderChildren(e,t){let i=0;return this._tiles.forEach((r=>{i+=this._addPlaceholderChild(e,r,t)})),i}_addPlaceholderChild(e,t,i){return t.key.level<=i.level||!t.hasData||!i.contains(t.key)?0:(t.visible=!0,e.add(t.key.id),1/(1<<2*(t.key.level-i.level)))}_addPlaceholderParent(e,t){let i=t.getParentKey(),r=0,s=null;for(;E(i);){if(e.has(i.id))return!0;const t=this._getTile(i.id);if(null!=t&&t.isReady)return t.visible=!0,e.add(t.key.id),!0;null!=t&&t.hasData&&t.patchCount>r&&(r=t.patchCount,s=t),i=i.getParentKey()}return!!s&&(s.visible=!0,e.add(s.key.id),!0)}}function Le(e){return e&&"openPorts"in e}const Ae=b.getLogger("esri.views.2d.layers.FeatureLayerView2D");let Me=class extends(je(Q(he(de)))){constructor(){super(...arguments),this._pipelineIsUpdating=!0,this._updatingPipelineConfig=!1,this._onGoingEdits=0,this._isRefreshing=!1,this._visibilityOverrides=new Set,this._effect=null,this._highlightIds=new Map,this._lastPixelBuffer=0,this.filter=null,this.effectLists={included:new we,excluded:new we},this.doRefresh=$((async()=>{this.isUpdating()&&await B(this,"updating"),this._set("_isRefreshing",!0),this._lockGPUUploads();try{await this._proxy.refresh()}catch(e){W(e)}this._unlockGPUUploads(),this._set("_isRefreshing",!1)})),this._doUpdate=$((async()=>{try{if(this.destroyed||!this._hasRequiredSupport(this.layer))return;this._set("_updatingPipelineConfig",!0),await B(this,"_isRefreshing");const{effect:t,filter:i}=this;await this._updateRequiredFields();const{renderer:r}=this._getEffectiveRenderer();this._set("_effectiveRenderer",r);const s="feature"===this.layer.type?this.layer.historicMoment:null,a="feature"===this.layer.type?this.layer.gdbVersion:null,n={renderer:this.layer.renderer,spatialReference:this.layer.spatialReference,timeExtent:this.layer.timeExtent,definitionExpression:this.layer.definitionExpression,featureReduction:this.layer.featureReduction,fields:this.layer.fields,geometryType:this.layer.geometryType,historicMoment:s,labelsVisible:this.layer.labelsVisible,labelingInfo:this.layer.labelingInfo,availableFields:this.availableFields,effect:this.effect,filter:this.filter,gdbVersion:a,pixelBuffer:0},l=pe(this.layer.geometryType),o=await fe(r,l,this.layer.featureReduction),h=this._createConfiguration(n,i,t);this._lastPixelBuffer=0===o?0:Math.max(o,this._lastPixelBuffer),h.schema.source.pixelBuffer=this._lastPixelBuffer;const d=this._createTileRendererHash(r);if(d!==this._tileRendererHash){await this._initTileRenderer(r);const e=this._serviceOptions;this.effects.forEach((e=>E(e)&&E(e.filter)&&e.filter.enable())),this.tileRenderer.onConfigUpdate(r);const t={added:this._tileStrategy.tileKeys(),removed:[]},i=this.layer;"stream"!==i.type&&Le(i.source)&&(e.source=await i.source.openPorts()),await this._proxy.startup(this.view.featuresTilingScheme,h,e,t),this.hasHighlight()&&await this._proxy.setHighlight(Array.from(this._highlightIds.keys())),await this._onceTilesUpdated(),this.tileRenderer.onConfigUpdate(r)}else{const t=await this._proxy.update(h);(t.mesh||t.targets.aggregate)&&this._lockGPUUploads();try{await this._proxy.applyUpdate(t)}catch(e){W(e)||Ae.error(e)}(t.mesh||t.targets.aggregate)&&this._unlockGPUUploads(),this.effects.forEach((e=>E(e)&&E(e.filter)&&e.filter.enable())),this.tileRenderer.onConfigUpdate(r),this._forceAttributeTextureUpload()}this._tileRendererHash=d,this.tileRenderer.invalidateLabels(),this.requestUpdate()}catch(e){}})),this._updateHighlight=$((async()=>this._proxy.setHighlight(Array.from(this._highlightIds.keys()))))}destroy(){var e,t;null==(e=this._proxy)||e.destroy(),K(this._updateClusterSizeTask,(e=>e.remove())),null==(t=this.tileRenderer)||t.destroy()}initialize(){this.addResolvingPromise(Promise.all([this._initProxy(),this._initServiceOptions()])),this.handles.add([this.on("valueRangesChanged",(e=>{this._set("_aggregateValueRanges",e.valueRanges)})),x(this,"effect",(e=>{this.effectLists.included.effect=null==e?void 0:e.includedEffect})),x(this,"effect",(e=>{this.effectLists.excluded.effect=null==e?void 0:e.excludedEffect}))])}async _initProxy(){if("stream"!==this.layer.type&&"ogc-feature"!==this.layer.type&&this.layer.isTable)throw new N("featurelayerview:table-not-supported","table feature layer can't be displayed",{layer:this.layer});this._proxy&&this._proxy.destroy();const e=this._createClientOptions();return this._set("_proxy",new Ne({client:e})),this._proxy.when()}async _initServiceOptions(){this._set("_serviceOptions",await this._createServiceOptions())}get labelsVisible(){return!this.suspended&&this.layer.labelingInfo&&this.layer.labelsVisible}get effect(){return Z(this._effect,null)}set effect(e){const t=this._effect;E(t)&&E(t.filter)&&t.filter.enabled&&E(e)&&E(e.filter)&&e.filter.enable(),this._effect=e,this.notifyChange("effect")}get effects(){return this.effect&&[this.effect]||[]}get queryMode(){return this._serviceOptions.type}get renderingConfigHash(){if(!this.layer)return null;const e=this.availableFields,t=this.layer,i=this.view.floors,{definitionExpression:r,renderer:s,labelingInfo:a}=t,n="feature"===t.type?t.gdbVersion:void 0,l="feature"===t.type&&t.historicMoment?t.historicMoment.getTime():void 0,{timeExtent:o}=this,h="stream"===t.type?`${JSON.stringify(t.geometryDefinition)}${t.definitionExpression}`:null,d=JSON.stringify(this.clips),u=t.featureReduction&&t.featureReduction.toJSON();return JSON.stringify({filterHash:E(this.filter)&&this.filter.toJSON(),effectHash:E(this.effect)&&this.effect.toJSON(),streamFilter:h,gdbVersion:n,definitionExpression:r,historicMoment:l,availableFields:e,renderer:s,labelingInfo:t.labelsVisible&&a,timeExtent:o,floors:i,clipsHash:d,featureReduction:u})}get hasEffects(){return this.effectLists.included.hasEffects||this.effectLists.excluded.hasEffects}highlight(e){let t;return e instanceof c?t=[e.getObjectId()]:"number"==typeof e||"string"==typeof e?t=[e]:X.isCollection(e)?t=e.map((e=>e&&e.getAttribute(this.layer.objectIdField))).toArray():Array.isArray(e)&&e.length>0&&(t="number"==typeof e[0]||"string"==typeof e[0]?e:e.map((e=>e&&e.getAttribute(this.layer.objectIdField)))),t&&t.length?(t=t.filter((e=>null!=e)),this._addHighlight(t),{remove:()=>this._removeHighlight(t)}):{remove:()=>{}}}hasHighlight(){return!!this._highlightIds.size}hitTest(e,t){return this._hitTest(e,t)}queryStatistics(){return this._proxy.queryStatistics()}queryFeatures(e,t){return this.queryFeaturesJSON(e,t).then((e=>{const t=Y.fromJSON(e);return t.features.forEach((e=>{e.layer=this.layer,e.sourceLayer=this.layer})),t}))}queryFeaturesJSON(e,t){return this._proxy.queryFeatures(this._cleanUpQuery(e),t)}queryObjectIds(e,t){return this._proxy.queryObjectIds(this._cleanUpQuery(e),t)}queryFeatureCount(e,t){return this._proxy.queryFeatureCount(this._cleanUpQuery(e),t)}queryExtent(e,t){return this._proxy.queryExtent(this._cleanUpQuery(e),t).then((e=>({count:e.count,extent:ee.fromJSON(e.extent)})))}setVisibility(e,t){t?this._visibilityOverrides.delete(e):this._visibilityOverrides.add(e),this._update()}update(e){if(!this._tileStrategy||!this.tileRenderer)return;const{hasMissingTiles:t,added:i,removed:r}=this._tileStrategy.update(e);(i.length||r.length)&&this._proxy.updateTiles({added:i,removed:r}),t&&this.requestUpdate(),this.notifyChange("updating")}attach(){this.view.timeline.record(`${this.layer.title} (FeatureLayer) Attach`),this._tileStrategy=new Ve({acquireTile:e=>this._acquireTile(e),releaseTile:e=>this._releaseTile(e),tileInfoView:this.view.featuresTilingScheme,buffer:0}),this.handles.add(x(this,"renderingConfigHash",(()=>this._update())),"attach"),"stream"!==this.layer.type&&this.handles.add(this.layer.on("edits",(async e=>{this._set("_onGoingEdits",this._onGoingEdits+1);try{const t="globalIdField"in this.layer&&this.layer.globalIdField,i=e.deletedFeatures.some((e=>-1===e.objectId||!e.objectId)),r=t&&this.availableFields.includes(t);if(i&&!r)return void Ae.error(new N("mapview-apply-edits",`Editing the specified service requires the layer's globalIdField, ${t} to be included the layer's outFields for updates to be reflected on the map`));await this._proxy.onEdits(e)}catch(t){W(t)}this._set("_onGoingEdits",Math.max(0,this._onGoingEdits-1))})),"attach")}detach(){this.container.removeAllChildren(),this.handles.remove("attach"),this._updatingPipelineConfig=!1,this.tileRenderer&&(this.tileRenderer.uninstall(this.container),this.tileRenderer=null),this._tileStrategy&&(this._tileStrategy.destroy(),this._tileStrategy=null),this._tileRendererHash=null}moveStart(){this.requestUpdate()}viewChange(){this.requestUpdate()}moveEnd(){this.requestUpdate()}async fetchPopupFeatures(e,t){if(E(t)&&t.clientGraphics.length){const e=t.clientGraphics[0];if(e instanceof Ie)return[e]}const i=this.validateFetchPopupFeatures(t);if(i)throw i;if(E(t)&&0===t.clientGraphics.length)return[];const r=this.fetchClientPopupFeatures(t);if(!e)return r;const s=this._fetchServicePopupFeatures(e,t);return te([r,s]).then(ie)}async _fetchServicePopupFeatures(e,t){if("stream"===this.layer.type||"ogc-feature"===this.layer.type)return[];const i=await this.createPopupQuery(t),{layer:r}=this,{renderer:s}=r,a=E(t)?t.event:null,n=ue({renderer:s,event:a});i.geometry=this.createFetchPopupFeaturesQueryGeometry(e,n);const l=new Set,{objectIdField:o}=r,h=E(t)?t.clientGraphics:null;if(h)for(const d of h)l.add(d.attributes[o]);return r.queryFeatures(i).then((e=>e.features.filter((e=>!l.has(e.attributes[o])))))}createFetchPopupFeaturesQueryGeometry(e,t){return ce(e,t,this.view)}isUpdating(){return null!=this.layer.renderer&&(null!=this._updatingRequiredFieldsPromise||null==this.tileRenderer||!this._proxy||!this._proxy.isReady||this._pipelineIsUpdating||this._updatingPipelineConfig||this.tileRenderer.updating||this._onGoingEdits>0)}_createClientOptions(){return{setUpdating:e=>{this._set("_pipelineIsUpdating",e)},emitEvent:e=>{this.emit(e.name,e.event)}}}async _detectQueryMode(e){if("path"in e&&re(e.path)&&"feature"===this.layer.type&&"point"===this.layer.geometryType&&!this.layer.capabilities.operations.supportsEditing&&se("featurelayer-snapshot-enabled"))try{const e=await this.layer.queryFeatureCount();if(e<=se("featurelayer-snapshot-point-min-threshold"))return{mode:"snapshot",featureCount:e};const t=se("featurelayer-snapshot-point-max-threshold"),i=se("featurelayer-snapshot-point-coverage"),r=this.view.extent,s=this.layer.fullExtent,a=null==s?void 0:s.clone().intersection(r),n=(null==a?void 0:a.width)*(null==a?void 0:a.height),l=(null==s?void 0:s.width)*(null==s?void 0:s.height),o=0===l?0:n/l;if(e<=t&&o>=i)return{mode:"snapshot",featureCount:e}}catch(t){Ae.warn("mapview-feature-layer","Encountered an error when querying for featureCount",{error:t})}return{mode:"on-demand"}}async _createServiceOptions(){const e=this.layer;if("stream"===e.type)return null;const{capabilities:t,objectIdField:i}=e,r=e.fields.map((e=>e.toJSON())),s=e.fullExtent&&e.fullExtent.toJSON(),a=pe(e.geometryType),n=e.timeInfo&&e.timeInfo.toJSON()||null,l=e.spatialReference?e.spatialReference.toJSON():null,o="feature"===e.type?e.customParameters:null,h="feature"===e.type?e.globalIdField:null;let d;"ogc-feature"===e.type?d=e.source.getFeatureDefinition():Le(e.source)?d=await e.source.openPorts():e.parsedUrl&&(d=w(e.parsedUrl),"dynamicDataSource"in e&&e.dynamicDataSource&&(d.query={layer:JSON.stringify({source:e.dynamicDataSource})}));const{mode:u,featureCount:c}=await this._detectQueryMode(d);return{type:u,featureCount:c,globalIdField:h,maxRecordCount:t.query.maxRecordCount,tileMaxRecordCount:t.query.tileMaxRecordCount,capabilities:t,fields:r,fullExtent:s,geometryType:a,objectIdField:i,source:d,timeInfo:n,spatialReference:l,customParameters:o}}async _createMemoryServiceOptions(e){const t=await e.openPorts();return s=o({},this._createServiceOptions()),i(s,r({type:"memory",source:t}));var s}_cleanUpQuery(e){const t=v.from(e)||this.createQuery();return t.outSpatialReference||(t.outSpatialReference=this.view.spatialReference),t}_createUpdateClusterSizeTask(e,t){return this.watch("_aggregateValueRanges",(async i=>{this._updateClusterEffectiveRendererSizeVariable(e,t,i),this._updatingPipelineConfig||this.tileRenderer.onConfigUpdate(this._effectiveRenderer)}))}async _updateClusterEffectiveRendererSizeVariable(e,t,i){if(e.dynamicClusterSize&&"visualVariables"in e&&e.visualVariables){const r=ye(e.visualVariables);if(E(r)&&"cluster_count"===r.field){const s=e.visualVariables.indexOf(r);e.visualVariables[s]=ge(t,i);const a=e.clone();a.dynamicClusterSize=!0,this._set("_effectiveRenderer",a)}}}_getEffectiveRenderer(){const e=this.layer.renderer,t=this.layer.featureReduction;if(E(this._updateClusterSizeTask)&&(this._updateClusterSizeTask.remove(),this._updateClusterSizeTask=null),t&&"cluster"===t.type&&me(e)){const i=t,r=[],s=_e(r,e,i,this._aggregateValueRanges);return K(this._updateClusterSizeTask,(e=>e.remove())),this._updateClusterSizeTask=this._createUpdateClusterSizeTask(s,i),{renderer:s,aggregateFields:r,featureReduction:t}}return{renderer:e,aggregateFields:[],featureReduction:null}}_acquireTile(e){const t=this.tileRenderer.acquireTile(e);return t.once("attach",(()=>{this.requestUpdate()})),t}_releaseTile(e){this.tileRenderer.releaseTile(e)}async _initTileRenderer(e){const t=await async function(e,t){if(!e)return null;switch(e.type){case"class-breaks":case"simple":case"unique-value":case"dot-density":case"dictionary":return new((await import("./SymbolTileRenderer.7b6cd256.js")).default)(t);case"heatmap":return new((await import("./HeatmapTileRenderer.e497da71.js")).default)(t)}}(e,{layerView:this,tileInfoView:this.view.featuresTilingScheme,layer:this.layer});return this.tileRenderer&&(this._tileStrategy.clear(),this.tileRenderer.uninstall(this.container),this.tileRenderer.destroy(),this.tileRenderer=null),this.destroyed?null:(this._proxy.tileRenderer=t,this._set("tileRenderer",t),this.tileRenderer.install(this.container),this.tileRenderer.onConfigUpdate(e),this.requestUpdate(),this.tileRenderer)}_createTileRendererHash(e){return`${"heatmap"===e.type?"heatmap":"symbol"}.${"dot-density"===e.type}`}_createFeatureDataHash(e,t,i){const r=e.getAttributeHash(),s=JSON.stringify(t),a=E(i)&&JSON.stringify(i.filter),n=JSON.stringify(this.timeExtent);let l="";return this._visibilityOverrides.forEach((e=>l+=e)),`${r}.${s}.${a}.${n}.${l}`}get hasFilter(){const e=!!("floorInfo"in this.layer&&this.layer.floorInfo&&this.view.floors&&this.view.floors.length);return!!this.filter||e||!!this._visibilityOverrides.size||!!this.timeExtent}_injectOverrides(e){const t=E(e)?e.timeExtent:null,i=E(this.timeExtent)&&E(t)?this.timeExtent.intersection(t):this.timeExtent||t;let r=null;const s="floorInfo"in this.layer&&this.layer.floorInfo;if(s){const t=E(e)&&e.where;r=this._addFloorFilterClause(t)}if(!this._visibilityOverrides.size&&!i&&!s)return e;const a=E(e)&&e.clone()||new Te;return a.hiddenIds=this._visibilityOverrides,a.timeExtent=i,r&&(a.where=r),a}_addFloorFilterClause(e){const t=this.layer;let i=e||"";if("floorInfo"in t&&t.floorInfo){var r;let e=this.view.floors;if(!e||!e.length)return i;null!=(r=t.floorInfo.viewAllLevelIds)&&r.length&&(e=t.floorInfo.viewAllLevelIds);const s=e.filter((e=>""!==e)).map((e=>"'"+e+"'"));s.push("''");const a=t.floorInfo.floorField;let n="("+a+" IN ({ids}) OR "+a+" IS NULL)";if(n=n.replace("{ids}",s.join(", ")),E(i)&&i.includes(a)){let e=new RegExp("AND \\("+a+".*NULL\\)","g");i=i.replace(e,""),e=new RegExp("\\("+a+".*NULL\\)","g"),i=i.replace(e,""),i=i.replace(/\s+/g," ").trim()}i=""!==i?"("+i+") AND "+n:n}return""!==i?i:null}_createConfiguration(e,t,i){const r="feature"===this.layer.type&&this.layer.historicMoment?this.layer.historicMoment.getTime():void 0,s="feature"===this.layer.type?this.layer.gdbVersion:void 0,a=new Array(oe),n=this._injectOverrides(t);a[0]=E(n)?n.toJSON():null,a[1]=E(i)&&i.filter?i.filter.toJSON():null;const l=ve(e);if(ae(l))return null;const o=ne();return{definitionExpression:this.layer.definitionExpression,availableFields:this.availableFields,gdbVersion:s,historicMoment:r,devicePixelRatio:window.devicePixelRatio||1,filters:a,schema:l,supportsTextureFloat:o.supportsTextureFloat,maxTextureSize:o.maxTextureSize}}_hasRequiredSupport(e){var t;return!("dot-density"===(null==(t=e.renderer)?void 0:t.type)&&!ne().supportsTextureFloat&&(Ae.error(new N("webgl-missing-extension","Missing WebGL extension OES_Texture_Float which is required for DotDensity")),1))}_onceTilesUpdated(){return this.requestUpdate(),B(this,"_pipelineIsUpdating",!1)}_lockGPUUploads(){this.tileRenderer&&this.tileRenderer.lockGPUUploads()}_unlockGPUUploads(){this.tileRenderer&&this.tileRenderer.unlockGPUUploads()}_forceAttributeTextureUpload(){this.tileRenderer&&this.tileRenderer.forceAttributeTextureUpload()}_update(){this.view.timeline.begin(`${this.layer.title} (FeatureLayer) Initial Pipeline Config`);const e=this._doUpdate();this._updatingPromise=e;const t=()=>{e===this._updatingPromise&&this._set("_updatingPipelineConfig",!1),this.view&&this.view.timeline.end(`${this.layer.title} (FeatureLayer) Initial Pipeline Config`)};e.then(t).catch((e=>{W(e)||Ae.error(e),t()}))}_addHighlight(e){for(const t of e)if(this._highlightIds.has(t)){const e=this._highlightIds.get(t);this._highlightIds.set(t,e+1)}else this._highlightIds.set(t,1);this._updateHighlight().catch((e=>{W(e)||Ae.error(e)}))}_removeHighlight(e){for(const t of e)if(this._highlightIds.has(t)){const e=this._highlightIds.get(t)-1;0===e?this._highlightIds.delete(t):this._highlightIds.set(t,e)}this._updateHighlight().catch((e=>{W(e)||Ae.error(e)}))}_createHittestResult(e){return e.layer=this.layer,e.sourceLayer=this.layer,E(e.geometry)&&(e.geometry.spatialReference=this.view.spatialReference),e}async _hitTest(e,t){if(this.suspended||!this.tileRenderer)return null;const i=await this.tileRenderer.hitTest(e,t);if(0===i.length)return await le(1),null;const r=i[0];if(!(e=>(2147483648&e)>>>31==1)(r)){const e=await this._proxy.getFeature(r);return K(e,(e=>this._createHittestResult(c.fromJSON(e))))}const s=await this._proxy.getAggregate(r);if(ae(s))return null;if(E(s.referenceId)){const e=await this._proxy.getFeature(s.referenceId);return K(e,(e=>this._createHittestResult(c.fromJSON(e))))}return this._createHittestResult(Ie.fromJSON(s))}};h([d()],Me.prototype,"_serviceOptions",void 0),h([d()],Me.prototype,"_proxy",void 0),h([d()],Me.prototype,"_pipelineIsUpdating",void 0),h([d()],Me.prototype,"_updatingPipelineConfig",void 0),h([d()],Me.prototype,"_effectiveRenderer",void 0),h([d()],Me.prototype,"_aggregateValueRanges",void 0),h([d()],Me.prototype,"_onGoingEdits",void 0),h([d()],Me.prototype,"_isRefreshing",void 0),h([d()],Me.prototype,"labelsVisible",null),h([d({type:Te})],Me.prototype,"filter",void 0),h([d({type:Ce})],Me.prototype,"effect",null),h([d({readOnly:!0})],Me.prototype,"effects",null),h([d({readOnly:!0})],Me.prototype,"queryMode",null),h([d()],Me.prototype,"renderingConfigHash",null),h([d()],Me.prototype,"tileRenderer",void 0),h([d()],Me.prototype,"updating",void 0),Me=h([u("esri.views.2d.layers.FeatureLayerView2D")],Me);var He=Me;export default He;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { ae as e$1, af as y, ag as i$1, d1 as n, c9 as t, c4 as o, es as i$2, cW as p$2, d5 as d$1, dA as a, ec as R$1, bT as y$1, a4 as n$1, et as w, aE as d$2, eu as C, ev as y$2, ew as I, a5 as r, ex as a$1, dd as A, ey as U, ez as v, eA as L, eB as V, eC as g, eD as F, aa as s$2, eE as ce, eF as m$1, bN as B$1, bI as h$1, eG as y$3, dU as p$3, ah as j$1, cd as e$2, cu as l$3, eh as i$4, eH as z, eI as $$1, an as g$1, aw as A$1, ay as c$2, c_ as L$1, dR as g$2, cr as M, eJ as k, eK as M$1, eL as w$1, ai as t$1, a0 as t$2, bC as r$1, eM as C$1 } from "./vendor.74d5941c.js";
+import { N } from "./definitions.6737c10c.js";
+import { l as l$4, d as d$5 } from "./LayerView2D.06dde519.js";
+import { s as s$3 } from "./clickToleranceUtils.1b8c692d.js";
+import { a as a$2 } from "./drapedUtils.72df2b08.js";
+import { f as e$3, u as u$3, g as d$4, h as f, m as m$2, i as c$3, k as k$1 } from "./schemaUtils.ab77d03d.js";
+import { u as u$2 } from "./Container.d2c27c9d.js";
+import { d as d$3, i as i$3 } from "./popupUtils.017b06d1.js";
+import "./MD5.1ef35834.js";
+import "./Utils.3f1577e5.js";
+import "./FramebufferObject.18518335.js";
+import "./_commonjsHelpers.f2a458db.js";
+import "./MaterialKey.3bc4aaea.js";
+import "./visualVariablesUtils.cb58e4df.js";
+import "./CIMSymbolHelper.6546a069.js";
+import "./Rect.b51904ac.js";
+import "./BidiEngine.9b392b22.js";
+import "./mat4f32.a5cabe00.js";
+var p$1;
+let s$1 = p$1 = class extends n {
+  constructor() {
+    super(...arguments), this.isAggregate = true;
+  }
+  getEffectivePopupTemplate(e2 = false) {
+    if (this.popupTemplate)
+      return this.popupTemplate;
+    const r2 = this.sourceLayer && this.sourceLayer.featureReduction;
+    return r2 && "popupTemplate" in r2 && r2.popupEnabled ? r2.popupTemplate : null;
+  }
+  getObjectId() {
+    return this.objectId;
+  }
+  clone() {
+    return new p$1(__spreadValues({ objectId: this.objectId }, this.cloneProperties()));
+  }
+};
+e$1([y({ type: Boolean })], s$1.prototype, "isAggregate", void 0), e$1([y({ type: Number, json: { read: true } })], s$1.prototype, "objectId", void 0), s$1 = p$1 = e$1([i$1("esri.AggregateGraphic")], s$1);
+var c$1 = s$1;
+var d;
+const m = new t({ esriSpatialRelIntersects: "intersects", esriSpatialRelContains: "contains", esriSpatialRelCrosses: "crosses", esriSpatialRelDisjoint: "disjoint", esriSpatialRelEnvelopeIntersects: "envelope-intersects", esriSpatialRelIndexIntersects: "index-intersects", esriSpatialRelOverlaps: "overlaps", esriSpatialRelTouches: "touches", esriSpatialRelWithin: "within", esriSpatialRelRelation: "relation" }), u$1 = new t({ esriSRUnit_Meter: "meters", esriSRUnit_Kilometer: "kilometers", esriSRUnit_Foot: "feet", esriSRUnit_StatuteMile: "miles", esriSRUnit_NauticalMile: "nautical-miles", esriSRUnit_USNauticalMile: "us-nautical-miles" });
+let h = d = class extends a {
+  constructor(e2) {
+    super(e2), this.where = null, this.geometry = null, this.spatialRelationship = "intersects", this.hiddenIds = new Set(), this.distance = void 0, this.objectIds = null, this.units = null, this.timeExtent = null, this.enabled = false;
+  }
+  writeWhere(e2, t2) {
+    t2.where = e2 || "1=1";
+  }
+  enable() {
+    this._set("enabled", true);
+  }
+  createQuery(e2 = {}) {
+    const { where: r2, geometry: i2, spatialRelationship: s2, timeExtent: o2, objectIds: n2, units: a2, distance: p2 } = this;
+    return new R$1(__spreadValues({ geometry: y$1(i2), objectIds: y$1(n2), spatialRelationship: s2, timeExtent: y$1(o2), where: r2, units: a2, distance: p2 }, e2));
+  }
+  clone() {
+    const { where: e2, geometry: r2, spatialRelationship: i2, hiddenIds: s2, timeExtent: o2, objectIds: n2, units: a2, distance: p2 } = this, l2 = new Set();
+    return s2.forEach((e3) => l2.add(e3)), new d({ geometry: y$1(r2), hiddenIds: l2, objectIds: y$1(n2), spatialRelationship: i2, timeExtent: y$1(o2), where: e2, units: a2, distance: p2 });
+  }
+};
+e$1([y({ type: String })], h.prototype, "where", void 0), e$1([o("where")], h.prototype, "writeWhere", null), e$1([y({ types: i$2, json: { read: p$2, write: true } })], h.prototype, "geometry", void 0), e$1([y({ type: String, json: { read: { source: "spatialRel", reader: m.read }, write: { target: "spatialRel", writer: m.write } } })], h.prototype, "spatialRelationship", void 0), e$1([y({ json: { write: (e2, t2, r2) => t2[r2] = Array.from(e2), read: (e2) => new Set(e2) } })], h.prototype, "hiddenIds", void 0), e$1([y({ type: Number, json: { write: { overridePolicy: (e2) => ({ enabled: e2 > 0 }) } } })], h.prototype, "distance", void 0), e$1([y({ type: [Number], json: { write: true } })], h.prototype, "objectIds", void 0), e$1([y({ type: String, json: { read: u$1.read, write: { writer: u$1.write, overridePolicy(e2) {
+  return { enabled: e2 && this.distance > 0 };
+} } } })], h.prototype, "units", void 0), e$1([y({ type: d$1, json: { write: true } })], h.prototype, "timeExtent", void 0), e$1([y({ readOnly: true })], h.prototype, "enabled", void 0), h = d = e$1([i$1("esri.views.layers.support.FeatureFilter")], h);
+var j = h;
+var i;
+let c = i = class extends a {
+  constructor() {
+    super(...arguments), this.filter = null, this.includedEffect = null, this.excludedEffect = null, this.excludedLabelsVisible = false;
+  }
+  clone() {
+    return new i({ filter: this.filter && this.filter.clone(), includedEffect: this.includedEffect, excludedEffect: this.excludedEffect, excludedLabelsVisible: this.excludedLabelsVisible });
+  }
+};
+e$1([y({ type: j, json: { write: true } })], c.prototype, "filter", void 0), e$1([y({ json: { write: true } })], c.prototype, "includedEffect", void 0), e$1([y({ json: { write: true } })], c.prototype, "excludedEffect", void 0), e$1([y({ type: Boolean, json: { write: true } })], c.prototype, "excludedLabelsVisible", void 0), c = i = e$1([i$1("esri.views.layers.support.FeatureEffect")], c);
+var l$2 = c;
+const q = n$1.getLogger("esri.views.layers.FeatureLayerView"), R = (r$12) => {
+  let R2 = class extends r$12 {
+    constructor(...e2) {
+      super(...e2), this._updatingRequiredFieldsPromise = null, this.effect = null, this.filter = null, this.timeExtent = null, this.layer = null, this.requiredFields = [], this.view = null;
+    }
+    initialize() {
+      d$2(this, ["layer.renderer", "layer.labelingInfo", "layer.elevationInfo.featureExpressionInfo", "layer.displayField", "filter", "effect", "layer.timeInfo", "layer.floorInfo", "timeExtent"], () => this._handleRequiredFieldsChange(), true), C(this, "view.floors", "change", () => this._handleRequiredFieldsChange());
+    }
+    get availableFields() {
+      const { layer: e2, layer: { fields: t2 }, requiredFields: r2 } = this;
+      return "outFields" in e2 && e2.outFields ? y$2(t2, [...I(t2, e2.outFields), ...r2]) : y$2(t2, r2);
+    }
+    get maximumNumberOfFeatures() {
+      return 0;
+    }
+    set maximumNumberOfFeatures(e2) {
+      q.error("#maximumNumberOfFeatures=", "Setting maximum number of features is not supported");
+    }
+    get maximumNumberOfFeaturesExceeded() {
+      return false;
+    }
+    highlight(e2) {
+      throw new Error("missing implementation");
+    }
+    createQuery() {
+      const e2 = { outFields: ["*"], returnGeometry: true, outSpatialReference: this.view.spatialReference }, r$13 = r(this.filter) ? this.filter.createQuery(e2) : new R$1(e2);
+      return r(this.timeExtent) && (r$13.timeExtent = r(r$13.timeExtent) ? r$13.timeExtent.intersection(this.timeExtent) : this.timeExtent.clone()), r$13;
+    }
+    queryFeatures(e2, t2) {
+      throw new Error("missing implementation");
+    }
+    queryObjectIds(e2, t2) {
+      throw new Error("missing implementation");
+    }
+    queryFeatureCount(e2, t2) {
+      throw new Error("missing implementation");
+    }
+    queryExtent(e2, t2) {
+      throw new Error("missing implementation");
+    }
+    _loadArcadeModules(e2) {
+      if (e2.get("expressionInfos.length"))
+        return a$1();
+    }
+    _handleRequiredFieldsChange() {
+      const e2 = this._updateRequiredFields();
+      this._set("_updatingRequiredFieldsPromise", e2), e2.then(() => {
+        this._updatingRequiredFieldsPromise === e2 && this._set("_updatingRequiredFieldsPromise", null);
+      });
+    }
+    _updateRequiredFields() {
+      return __async(this, null, function* () {
+        if (!this.layer || !this.view)
+          return;
+        const e2 = this.view.type === "3d", { layer: r$13, layer: { fields: i2, objectIdField: s2, renderer: o2, displayField: a2 } } = this, n2 = r$13.featureReduction, u2 = new Set(), h2 = yield A([o2 ? o2.collectRequiredFields(u2, i2) : null, U(u2, r$13), e2 ? v(u2, r$13) : null, r(this.filter) ? L(u2, r$13, this.filter) : null, this.effect ? L(u2, r$13, this.effect.filter) : null, n2 ? V(u2, r$13, n2) : null]);
+        r$13.timeInfo && this.timeExtent && g(u2, r$13.fields, [r$13.timeInfo.startField, r$13.timeInfo.endField]), r$13.type === "feature" && r$13.floorInfo && g(u2, r$13.fields, [r$13.floorInfo.floorField]);
+        for (const t2 of h2)
+          t2.error && q.error(t2.error);
+        F(u2, i2, s2), e2 && a2 && F(u2, i2, a2);
+        const F$1 = Array.from(u2).sort();
+        this._set("requiredFields", F$1);
+      });
+    }
+    validateFetchPopupFeatures(e2) {
+      const { layer: t2, layer: { popupEnabled: r2 } } = this;
+      if (!r2)
+        return new s$2("featurelayerview:fetchPopupFeatures", "Popups are disabled", { layer: t2 });
+      return d$3(this.layer, e2) ? void 0 : new s$2("featurelayerview:fetchPopupFeatures", "Layer does not define a popup template", { layer: t2 });
+    }
+    fetchClientPopupFeatures(e2) {
+      return __async(this, null, function* () {
+        const r$13 = r(e2) ? e2.clientGraphics : null;
+        if (!r$13 || r$13.length === 0)
+          return Promise.resolve([]);
+        const i2 = [], s2 = [], { layer: o2 } = this, l2 = d$3(o2, e2);
+        if (!r(l2))
+          return Promise.resolve([]);
+        const a2 = yield this._loadArcadeModules(l2), n2 = a2 && a2.arcadeUtils.hasGeometryOperations(l2), p2 = yield this.createPopupQuery(e2), m2 = I(o2.fields, p2.outFields);
+        for (const t2 of r$13)
+          n2 || !ce(m2, t2) ? s2.push(t2) : i2.push(t2);
+        return o2.type === "stream" || s2.length === 0 ? Promise.resolve(i2) : (p2.objectIds = s2.map((e3) => e3.attributes[o2.objectIdField]), o2.queryFeatures(p2).then((e3) => i2.concat(e3.features)).catch(() => s2));
+      });
+    }
+    createPopupQuery(e2) {
+      return __async(this, null, function* () {
+        const r$13 = this.layer, i2 = r$13.createQuery(), s2 = d$3(r$13, e2), o2 = r(s2) && (yield this._loadArcadeModules(s2)), l2 = r(s2) && o2 && o2.arcadeUtils.hasGeometryOperations(s2), a2 = !(r$13.geometryType !== "point" && !l2);
+        return i2.returnGeometry = a2, i2.returnZ = a2, i2.returnM = a2, i2.outFields = yield i$3(this.layer, s2), i2.outSpatialReference = this.view.spatialReference, i2;
+      });
+    }
+    canResume() {
+      return !!super.canResume() && (!r(this.timeExtent) || !this.timeExtent.isEmpty);
+    }
+  };
+  return e$1([y()], R2.prototype, "_updatingRequiredFieldsPromise", void 0), e$1([y({ readOnly: true })], R2.prototype, "availableFields", null), e$1([y({ type: l$2 })], R2.prototype, "effect", void 0), e$1([y({ type: j })], R2.prototype, "filter", void 0), e$1([y(w)], R2.prototype, "timeExtent", void 0), e$1([y()], R2.prototype, "layer", void 0), e$1([y({ type: Number })], R2.prototype, "maximumNumberOfFeatures", null), e$1([y({ readOnly: true, type: Boolean })], R2.prototype, "maximumNumberOfFeaturesExceeded", null), e$1([y({ readOnly: true })], R2.prototype, "requiredFields", void 0), e$1([y()], R2.prototype, "suspended", void 0), e$1([y()], R2.prototype, "view", void 0), R2 = e$1([i$1("esri.views.layers.FeatureLayerView")], R2), R2;
+};
+function e(e2, a2) {
+  return __async(this, null, function* () {
+    if (!e2)
+      return null;
+    switch (e2.type) {
+      case "class-breaks":
+      case "simple":
+      case "unique-value":
+      case "dot-density":
+      case "dictionary":
+        return new (yield import("./SymbolTileRenderer.7b6cd256.js")).default(a2);
+      case "heatmap":
+        return new (yield import("./HeatmapTileRenderer.e497da71.js")).default(a2);
+    }
+  });
+}
+function l$1(e2) {
+  return Array.isArray(e2);
+}
+let u = class extends m$1 {
+  constructor(e2) {
+    super(e2), this._startupResolver = B$1(), this.isReady = false;
+  }
+  initialize() {
+    this._controller = h$1(), this.addResolvingPromise(this._startWorker(this._controller.signal));
+  }
+  destroy() {
+    this._controller.abort(), this._connection && this._connection.close();
+  }
+  set tileRenderer(e2) {
+    this.client.tileRenderer = e2;
+  }
+  get closed() {
+    return this._connection.closed;
+  }
+  startup(e2, t2, r2, s2) {
+    return __async(this, null, function* () {
+      yield this.when();
+      const o2 = this._controller.signal, i2 = l$1(r2.source) ? { transferList: r2.source, signal: o2 } : void 0, n2 = { service: r2, config: t2, tileInfo: e2.tileInfo.toJSON(), tiles: s2 };
+      yield this._connection.invoke("startup", n2, i2), this._startupResolver.resolve(), this._set("isReady", true);
+    });
+  }
+  updateTiles(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, y$3(this._connection.invoke("updateTiles", e2));
+    });
+  }
+  update(e2) {
+    return __async(this, null, function* () {
+      const t2 = { config: e2 };
+      return yield this._startupResolver.promise, this._connection.invoke("update", t2);
+    });
+  }
+  applyUpdate(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("applyUpdate", e2);
+    });
+  }
+  setHighlight(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, y$3(this._connection.invoke("controller.setHighlight", e2));
+    });
+  }
+  refresh() {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, y$3(this._connection.invoke("controller.refresh"));
+    });
+  }
+  queryFeatures(e2, t2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.queryFeatures", e2.toJSON(), t2);
+    });
+  }
+  queryObjectIds(e2, t2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.queryObjectIds", e2.toJSON(), t2);
+    });
+  }
+  queryFeatureCount(e2, t2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.queryFeatureCount", e2.toJSON(), t2);
+    });
+  }
+  queryExtent(e2, t2) {
+    return __async(this, null, function* () {
+      return this._connection.invoke("controller.queryExtent", e2.toJSON(), t2);
+    });
+  }
+  queryLatestObservations(e2, t2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.queryLatestObservations", e2.toJSON(), t2);
+    });
+  }
+  queryStatistics(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.queryStatistics", e2);
+    });
+  }
+  getObjectId(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.getObjectId", e2);
+    });
+  }
+  getDisplayId(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.getDisplayId", e2);
+    });
+  }
+  getFeature(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.getFeature", e2);
+    });
+  }
+  getAggregate(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.getAggregate", e2);
+    });
+  }
+  getAggregateValueRanges() {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.getAggregateValueRanges");
+    });
+  }
+  mapValidDisplayIds(e2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, this._connection.invoke("controller.mapValidDisplayIds", e2);
+    });
+  }
+  onEdits(e2) {
+    return __async(this, null, function* () {
+      yield this._startupResolver.promise;
+      const { addedFeatures: t2, deletedFeatures: r2, updatedFeatures: s2 } = e2;
+      return y$3(this._connection.invoke("controller.onEdits", { addedFeatures: t2, deletedFeatures: r2, updatedFeatures: s2 }));
+    });
+  }
+  enableEvent(e2, t2) {
+    return __async(this, null, function* () {
+      return yield this._startupResolver.promise, y$3(this._connection.invoke("controller.enableEvent", { name: e2, value: t2 }));
+    });
+  }
+  _startWorker(e2) {
+    return __async(this, null, function* () {
+      try {
+        this._connection = yield p$3("Pipeline", { client: this.client, strategy: "dedicated", signal: e2 });
+      } catch (t2) {
+        j$1(t2);
+      }
+    });
+  }
+};
+e$1([y()], u.prototype, "isReady", void 0), e$1([y()], u.prototype, "client", void 0), e$1([y()], u.prototype, "tileRenderer", null), u = e$1([i$1("esri.views.2d.layers.support.FeatureLayerProxy")], u);
+var p = u;
+const l = 1e-6;
+class s {
+  constructor(e2) {
+    this._tiles = new Map(), this.buffer = 0, this.acquireTile = e2.acquireTile, this.releaseTile = e2.releaseTile, this.tileInfoView = e2.tileInfoView, this.buffer = e2.buffer;
+  }
+  destroy() {
+  }
+  clear() {
+    this._tiles.forEach((e2) => this._releaseTile(e2));
+  }
+  tileKeys() {
+    const e2 = [];
+    return this._tiles.forEach((i2, t2) => e2.push(t2)), e2;
+  }
+  update(e2) {
+    const l2 = this.tileInfoView.getTileCoverage(e2.state, this.buffer, "closest"), { spans: s2, lodInfo: r2 } = l2, { level: a2 } = r2, o2 = [], d2 = [], h2 = new Set(), n2 = new Set();
+    for (const { row: t2, colFrom: c2, colTo: f2 } of s2)
+      for (let e3 = c2; e3 <= f2; e3++) {
+        const l3 = e$2.getId(a2, t2, r2.normalizeCol(e3), r2.getWorldForColumn(e3)), s3 = this._getOrAcquireTile(o2, l3);
+        h2.add(l3), s3.isReady ? s3.visible = true : n2.add(s3.key);
+      }
+    n2.forEach((e3) => this._addPlaceholders(h2, e3)), this._tiles.forEach((e3) => {
+      h2.has(e3.key.id) || (d2.push(e3.key.id), this._releaseTile(e3));
+    }), l$3.pool.release(l2);
+    return { hasMissingTiles: n2.size > 0, added: o2, removed: d2 };
+  }
+  _getOrAcquireTile(e2, t2) {
+    if (!this._tiles.has(t2)) {
+      const l2 = this.acquireTile(new e$2(t2));
+      e2.push(t2), this._tiles.set(t2, l2), l2.visible = false;
+    }
+    return this._tiles.get(t2);
+  }
+  _getTile(e2) {
+    return this._tiles.get(e2);
+  }
+  _releaseTile(e2) {
+    this._tiles.delete(e2.key.id), this.releaseTile(e2);
+  }
+  _addPlaceholders(e2, i2) {
+    const t2 = this._addPlaceholderChildren(e2, i2);
+    if (!(Math.abs(1 - t2) < l)) {
+      if (!this._addPlaceholderParent(e2, i2)) {
+        this._getTile(i2.id).visible = true;
+      }
+    }
+  }
+  _addPlaceholderChildren(e2, i2) {
+    let t2 = 0;
+    return this._tiles.forEach((l2) => {
+      t2 += this._addPlaceholderChild(e2, l2, i2);
+    }), t2;
+  }
+  _addPlaceholderChild(e2, i2, t2) {
+    if (i2.key.level <= t2.level || !i2.hasData || !t2.contains(i2.key))
+      return 0;
+    i2.visible = true, e2.add(i2.key.id);
+    return 1 / (1 << 2 * (i2.key.level - t2.level));
+  }
+  _addPlaceholderParent(i2, t2) {
+    let l2 = t2.getParentKey(), s2 = 0, r$12 = null;
+    for (; r(l2); ) {
+      if (i2.has(l2.id))
+        return true;
+      const e2 = this._getTile(l2.id);
+      if (e2 != null && e2.isReady)
+        return e2.visible = true, i2.add(e2.key.id), true;
+      e2 != null && e2.hasData && e2.patchCount > s2 && (s2 = e2.patchCount, r$12 = e2), l2 = l2.getParentKey();
+    }
+    return !!r$12 && (r$12.visible = true, i2.add(r$12.key.id), true);
+  }
+}
+const $ = 2147483648, Q = 1, B = (e2) => (e2 & $) >>> 31 === Q;
+function K(e2) {
+  return e2 && "openPorts" in e2;
+}
+const W = n$1.getLogger("esri.views.2d.layers.FeatureLayerView2D");
+let X = class extends R(i$4(l$4(d$5))) {
+  constructor() {
+    super(...arguments), this._pipelineIsUpdating = true, this._updatingPipelineConfig = false, this._onGoingEdits = 0, this._isRefreshing = false, this._visibilityOverrides = new Set(), this._effect = null, this._highlightIds = new Map(), this._lastPixelBuffer = 0, this.filter = null, this.effectLists = { included: new u$2(), excluded: new u$2() }, this.doRefresh = z(() => __async(this, null, function* () {
+      this.isUpdating() && (yield $$1(this, "updating")), this._set("_isRefreshing", true), this._lockGPUUploads();
+      try {
+        yield this._proxy.refresh();
+      } catch (e2) {
+        g$1(e2);
+      }
+      this._unlockGPUUploads(), this._set("_isRefreshing", false);
+    })), this._doUpdate = z(() => __async(this, null, function* () {
+      try {
+        if (this.destroyed || !this._hasRequiredSupport(this.layer))
+          return;
+        this._set("_updatingPipelineConfig", true), yield $$1(this, "_isRefreshing");
+        const { effect: t2, filter: i2 } = this;
+        yield this._updateRequiredFields();
+        const { renderer: r$12 } = this._getEffectiveRenderer();
+        this._set("_effectiveRenderer", r$12);
+        const s2 = this.layer.type === "feature" ? this.layer.historicMoment : null, n2 = this.layer.type === "feature" ? this.layer.gdbVersion : null, o2 = { renderer: this.layer.renderer, spatialReference: this.layer.spatialReference, timeExtent: this.layer.timeExtent, definitionExpression: this.layer.definitionExpression, featureReduction: this.layer.featureReduction, fields: this.layer.fields, geometryType: this.layer.geometryType, historicMoment: s2, labelsVisible: this.layer.labelsVisible, labelingInfo: this.layer.labelingInfo, availableFields: this.availableFields, effect: this.effect, filter: this.filter, gdbVersion: n2, pixelBuffer: 0 }, l2 = e$3(this.layer.geometryType), h2 = yield u$3(r$12, l2, this.layer.featureReduction), u2 = this._createConfiguration(o2, i2, t2);
+        this._lastPixelBuffer = h2 === 0 ? 0 : Math.max(h2, this._lastPixelBuffer), u2.schema.source.pixelBuffer = this._lastPixelBuffer;
+        const d2 = this._createTileRendererHash(r$12);
+        if (d2 !== this._tileRendererHash) {
+          yield this._initTileRenderer(r$12);
+          const e2 = this._serviceOptions;
+          this.effects.forEach((e3) => r(e3) && r(e3.filter) && e3.filter.enable()), this.tileRenderer.onConfigUpdate(r$12);
+          const t3 = { added: this._tileStrategy.tileKeys(), removed: [] }, i3 = this.layer;
+          i3.type !== "stream" && K(i3.source) && (e2.source = yield i3.source.openPorts()), yield this._proxy.startup(this.view.featuresTilingScheme, u2, e2, t3), this.hasHighlight() && (yield this._proxy.setHighlight(Array.from(this._highlightIds.keys()))), yield this._onceTilesUpdated(), this.tileRenderer.onConfigUpdate(r$12);
+        } else {
+          const t3 = yield this._proxy.update(u2);
+          (t3.mesh || t3.targets.aggregate) && this._lockGPUUploads();
+          try {
+            yield this._proxy.applyUpdate(t3);
+          } catch (e2) {
+            g$1(e2) || W.error(e2);
+          }
+          (t3.mesh || t3.targets.aggregate) && this._unlockGPUUploads(), this.effects.forEach((e2) => r(e2) && r(e2.filter) && e2.filter.enable()), this.tileRenderer.onConfigUpdate(r$12), this._forceAttributeTextureUpload();
+        }
+        this._tileRendererHash = d2, this.tileRenderer.invalidateLabels(), this.requestUpdate();
+      } catch (e2) {
+      }
+    })), this._updateHighlight = z(() => __async(this, null, function* () {
+      return this._proxy.setHighlight(Array.from(this._highlightIds.keys()));
+    }));
+  }
+  destroy() {
+    var e2, t2;
+    (e2 = this._proxy) == null || e2.destroy(), A$1(this._updateClusterSizeTask, (e3) => e3.remove()), (t2 = this.tileRenderer) == null || t2.destroy();
+  }
+  initialize() {
+    this.addResolvingPromise(Promise.all([this._initProxy(), this._initServiceOptions()])), this.handles.add([this.on("valueRangesChanged", (e2) => {
+      this._set("_aggregateValueRanges", e2.valueRanges);
+    }), d$2(this, "effect", (e2) => {
+      this.effectLists.included.effect = e2 == null ? void 0 : e2.includedEffect;
+    }), d$2(this, "effect", (e2) => {
+      this.effectLists.excluded.effect = e2 == null ? void 0 : e2.excludedEffect;
+    })]);
+  }
+  _initProxy() {
+    return __async(this, null, function* () {
+      if (this.layer.type !== "stream" && this.layer.type !== "ogc-feature" && this.layer.isTable)
+        throw new s$2("featurelayerview:table-not-supported", "table feature layer can't be displayed", { layer: this.layer });
+      this._proxy && this._proxy.destroy();
+      const e2 = this._createClientOptions();
+      return this._set("_proxy", new p({ client: e2 })), this._proxy.when();
+    });
+  }
+  _initServiceOptions() {
+    return __async(this, null, function* () {
+      this._set("_serviceOptions", yield this._createServiceOptions());
+    });
+  }
+  get labelsVisible() {
+    return !this.suspended && this.layer.labelingInfo && this.layer.labelsVisible;
+  }
+  get effect() {
+    return c$2(this._effect, null);
+  }
+  set effect(e2) {
+    const t2 = this._effect;
+    r(t2) && r(t2.filter) && t2.filter.enabled && r(e2) && r(e2.filter) && e2.filter.enable(), this._effect = e2, this.notifyChange("effect");
+  }
+  get effects() {
+    return this.effect && [this.effect] || [];
+  }
+  get queryMode() {
+    return this._serviceOptions.type;
+  }
+  get renderingConfigHash() {
+    if (!this.layer)
+      return null;
+    const e2 = this.availableFields, t2 = this.layer, i2 = this.view.floors, { definitionExpression: r$12, renderer: s2, labelingInfo: n2 } = t2, o2 = t2.type === "feature" ? t2.gdbVersion : void 0, l2 = t2.type === "feature" && t2.historicMoment ? t2.historicMoment.getTime() : void 0, { timeExtent: h2 } = this, u2 = t2.type === "stream" ? `${JSON.stringify(t2.geometryDefinition)}${t2.definitionExpression}` : null, d2 = JSON.stringify(this.clips), p2 = t2.featureReduction && t2.featureReduction.toJSON();
+    return JSON.stringify({ filterHash: r(this.filter) && this.filter.toJSON(), effectHash: r(this.effect) && this.effect.toJSON(), streamFilter: u2, gdbVersion: o2, definitionExpression: r$12, historicMoment: l2, availableFields: e2, renderer: s2, labelingInfo: t2.labelsVisible && n2, timeExtent: h2, floors: i2, clipsHash: d2, featureReduction: p2 });
+  }
+  get hasEffects() {
+    return this.effectLists.included.hasEffects || this.effectLists.excluded.hasEffects;
+  }
+  highlight(e2) {
+    let t2;
+    return e2 instanceof n ? t2 = [e2.getObjectId()] : typeof e2 == "number" || typeof e2 == "string" ? t2 = [e2] : L$1.isCollection(e2) ? t2 = e2.map((e3) => e3 && e3.getAttribute(this.layer.objectIdField)).toArray() : Array.isArray(e2) && e2.length > 0 && (t2 = typeof e2[0] == "number" || typeof e2[0] == "string" ? e2 : e2.map((e3) => e3 && e3.getAttribute(this.layer.objectIdField))), t2 && t2.length ? (t2 = t2.filter((e3) => e3 != null), this._addHighlight(t2), { remove: () => this._removeHighlight(t2) }) : { remove: () => {
+    } };
+  }
+  hasHighlight() {
+    return !!this._highlightIds.size;
+  }
+  hitTest(e2, t2) {
+    return this._hitTest(e2, t2);
+  }
+  queryStatistics() {
+    return this._proxy.queryStatistics();
+  }
+  queryFeatures(e2, t2) {
+    return this.queryFeaturesJSON(e2, t2).then((e3) => {
+      const t3 = g$2.fromJSON(e3);
+      return t3.features.forEach((e4) => {
+        e4.layer = this.layer, e4.sourceLayer = this.layer;
+      }), t3;
+    });
+  }
+  queryFeaturesJSON(e2, t2) {
+    return this._proxy.queryFeatures(this._cleanUpQuery(e2), t2);
+  }
+  queryObjectIds(e2, t2) {
+    return this._proxy.queryObjectIds(this._cleanUpQuery(e2), t2);
+  }
+  queryFeatureCount(e2, t2) {
+    return this._proxy.queryFeatureCount(this._cleanUpQuery(e2), t2);
+  }
+  queryExtent(e2, t2) {
+    return this._proxy.queryExtent(this._cleanUpQuery(e2), t2).then((e3) => ({ count: e3.count, extent: M.fromJSON(e3.extent) }));
+  }
+  setVisibility(e2, t2) {
+    t2 ? this._visibilityOverrides.delete(e2) : this._visibilityOverrides.add(e2), this._update();
+  }
+  update(e2) {
+    if (!this._tileStrategy || !this.tileRenderer)
+      return;
+    const { hasMissingTiles: t2, added: i2, removed: r2 } = this._tileStrategy.update(e2);
+    (i2.length || r2.length) && this._proxy.updateTiles({ added: i2, removed: r2 }), t2 && this.requestUpdate(), this.notifyChange("updating");
+  }
+  attach() {
+    this.view.timeline.record(`${this.layer.title} (FeatureLayer) Attach`), this._tileStrategy = new s({ acquireTile: (e2) => this._acquireTile(e2), releaseTile: (e2) => this._releaseTile(e2), tileInfoView: this.view.featuresTilingScheme, buffer: 0 }), this.handles.add(d$2(this, "renderingConfigHash", () => this._update()), "attach"), this.layer.type !== "stream" && this.handles.add(this.layer.on("edits", (e2) => __async(this, null, function* () {
+      this._set("_onGoingEdits", this._onGoingEdits + 1);
+      try {
+        const t2 = "globalIdField" in this.layer && this.layer.globalIdField, i2 = e2.deletedFeatures.some((e3) => e3.objectId === -1 || !e3.objectId), r2 = t2 && this.availableFields.includes(t2);
+        if (i2 && !r2)
+          return void W.error(new s$2("mapview-apply-edits", `Editing the specified service requires the layer's globalIdField, ${t2} to be included the layer's outFields for updates to be reflected on the map`));
+        yield this._proxy.onEdits(e2);
+      } catch (t2) {
+        g$1(t2);
+      }
+      this._set("_onGoingEdits", Math.max(0, this._onGoingEdits - 1));
+    })), "attach");
+  }
+  detach() {
+    this.container.removeAllChildren(), this.handles.remove("attach"), this._updatingPipelineConfig = false, this.tileRenderer && (this.tileRenderer.uninstall(this.container), this.tileRenderer = null), this._tileStrategy && (this._tileStrategy.destroy(), this._tileStrategy = null), this._tileRendererHash = null;
+  }
+  moveStart() {
+    this.requestUpdate();
+  }
+  viewChange() {
+    this.requestUpdate();
+  }
+  moveEnd() {
+    this.requestUpdate();
+  }
+  fetchPopupFeatures(e2, t2) {
+    return __async(this, null, function* () {
+      if (r(t2) && t2.clientGraphics.length) {
+        const e3 = t2.clientGraphics[0];
+        if (e3 instanceof c$1)
+          return [e3];
+      }
+      const i2 = this.validateFetchPopupFeatures(t2);
+      if (i2)
+        throw i2;
+      if (r(t2) && t2.clientGraphics.length === 0)
+        return [];
+      const r$12 = this.fetchClientPopupFeatures(t2);
+      if (!e2)
+        return r$12;
+      const s2 = this._fetchServicePopupFeatures(e2, t2);
+      return k([r$12, s2]).then(M$1);
+    });
+  }
+  _fetchServicePopupFeatures(e2, t2) {
+    return __async(this, null, function* () {
+      if (this.layer.type === "stream" || this.layer.type === "ogc-feature")
+        return [];
+      const i2 = yield this.createPopupQuery(t2), { layer: r$12 } = this, { renderer: s2 } = r$12, n2 = r(t2) ? t2.event : null, o2 = s$3({ renderer: s2, event: n2 });
+      i2.geometry = this.createFetchPopupFeaturesQueryGeometry(e2, o2);
+      const l2 = new Set(), { objectIdField: h2 } = r$12, u2 = r(t2) ? t2.clientGraphics : null;
+      if (u2)
+        for (const a2 of u2)
+          l2.add(a2.attributes[h2]);
+      return r$12.queryFeatures(i2).then((e3) => e3.features.filter((e4) => !l2.has(e4.attributes[h2])));
+    });
+  }
+  createFetchPopupFeaturesQueryGeometry(e2, t2) {
+    return a$2(e2, t2, this.view);
+  }
+  isUpdating() {
+    return this.layer.renderer != null && (this._updatingRequiredFieldsPromise != null || this.tileRenderer == null || !this._proxy || !this._proxy.isReady || this._pipelineIsUpdating || this._updatingPipelineConfig || this.tileRenderer.updating || this._onGoingEdits > 0);
+  }
+  _createClientOptions() {
+    return { setUpdating: (e2) => {
+      this._set("_pipelineIsUpdating", e2);
+    }, emitEvent: (e2) => {
+      this.emit(e2.name, e2.event);
+    } };
+  }
+  _detectQueryMode(e2) {
+    return __async(this, null, function* () {
+      if ("path" in e2 && w$1(e2.path) && this.layer.type === "feature" && this.layer.geometryType === "point" && !this.layer.capabilities.operations.supportsEditing && t$1("featurelayer-snapshot-enabled"))
+        try {
+          const e3 = yield this.layer.queryFeatureCount();
+          if (e3 <= t$1("featurelayer-snapshot-point-min-threshold"))
+            return { mode: "snapshot", featureCount: e3 };
+          const i2 = t$1("featurelayer-snapshot-point-max-threshold"), r2 = t$1("featurelayer-snapshot-point-coverage"), s2 = this.view.extent, a2 = this.layer.fullExtent, n2 = a2 == null ? void 0 : a2.clone().intersection(s2), o2 = (n2 == null ? void 0 : n2.width) * (n2 == null ? void 0 : n2.height), l2 = (a2 == null ? void 0 : a2.width) * (a2 == null ? void 0 : a2.height), h2 = l2 === 0 ? 0 : o2 / l2;
+          if (e3 <= i2 && h2 >= r2)
+            return { mode: "snapshot", featureCount: e3 };
+        } catch (i2) {
+          W.warn("mapview-feature-layer", "Encountered an error when querying for featureCount", { error: i2 });
+        }
+      return { mode: "on-demand" };
+    });
+  }
+  _createServiceOptions() {
+    return __async(this, null, function* () {
+      const e2 = this.layer;
+      if (e2.type === "stream")
+        return null;
+      const { capabilities: t2, objectIdField: r2 } = e2, s2 = e2.fields.map((e3) => e3.toJSON()), a2 = e2.fullExtent && e2.fullExtent.toJSON(), n2 = e$3(e2.geometryType), o2 = e2.timeInfo && e2.timeInfo.toJSON() || null, l2 = e2.spatialReference ? e2.spatialReference.toJSON() : null, h2 = e2.type === "feature" ? e2.customParameters : null, u2 = e2.type === "feature" ? e2.globalIdField : null;
+      let d2;
+      e2.type === "ogc-feature" ? d2 = e2.source.getFeatureDefinition() : K(e2.source) ? d2 = yield e2.source.openPorts() : e2.parsedUrl && (d2 = y$1(e2.parsedUrl), "dynamicDataSource" in e2 && e2.dynamicDataSource && (d2.query = { layer: JSON.stringify({ source: e2.dynamicDataSource }) }));
+      const { mode: p2, featureCount: c2 } = yield this._detectQueryMode(d2);
+      return { type: p2, featureCount: c2, globalIdField: u2, maxRecordCount: t2.query.maxRecordCount, tileMaxRecordCount: t2.query.tileMaxRecordCount, capabilities: t2, fields: s2, fullExtent: a2, geometryType: n2, objectIdField: r2, source: d2, timeInfo: o2, spatialReference: l2, customParameters: h2 };
+    });
+  }
+  _createMemoryServiceOptions(e2) {
+    return __async(this, null, function* () {
+      const t2 = yield e2.openPorts();
+      return __spreadProps(__spreadValues({}, this._createServiceOptions()), { type: "memory", source: t2 });
+    });
+  }
+  _cleanUpQuery(e2) {
+    const t2 = R$1.from(e2) || this.createQuery();
+    return t2.outSpatialReference || (t2.outSpatialReference = this.view.spatialReference), t2;
+  }
+  _createUpdateClusterSizeTask(e2, t2) {
+    return this.watch("_aggregateValueRanges", (i2) => __async(this, null, function* () {
+      this._updateClusterEffectiveRendererSizeVariable(e2, t2, i2), this._updatingPipelineConfig || this.tileRenderer.onConfigUpdate(this._effectiveRenderer);
+    }));
+  }
+  _updateClusterEffectiveRendererSizeVariable(e2, t2, i2) {
+    return __async(this, null, function* () {
+      if (e2.dynamicClusterSize && "visualVariables" in e2 && e2.visualVariables) {
+        const r$12 = d$4(e2.visualVariables);
+        if (r(r$12) && r$12.field === "cluster_count") {
+          const s2 = e2.visualVariables.indexOf(r$12);
+          e2.visualVariables[s2] = f(t2, i2);
+          const a2 = e2.clone();
+          a2.dynamicClusterSize = true, this._set("_effectiveRenderer", a2);
+        }
+      }
+    });
+  }
+  _getEffectiveRenderer() {
+    const e2 = this.layer.renderer, t2 = this.layer.featureReduction;
+    if (r(this._updateClusterSizeTask) && (this._updateClusterSizeTask.remove(), this._updateClusterSizeTask = null), t2 && t2.type === "cluster" && m$2(e2)) {
+      const i2 = t2, s2 = [], a2 = c$3(s2, e2, i2, this._aggregateValueRanges);
+      return A$1(this._updateClusterSizeTask, (e3) => e3.remove()), this._updateClusterSizeTask = this._createUpdateClusterSizeTask(a2, i2), { renderer: a2, aggregateFields: s2, featureReduction: t2 };
+    }
+    return { renderer: e2, aggregateFields: [], featureReduction: null };
+  }
+  _acquireTile(e2) {
+    const t2 = this.tileRenderer.acquireTile(e2);
+    return t2.once("attach", () => {
+      this.requestUpdate();
+    }), t2;
+  }
+  _releaseTile(e2) {
+    this.tileRenderer.releaseTile(e2);
+  }
+  _initTileRenderer(e$12) {
+    return __async(this, null, function* () {
+      const t2 = yield e(e$12, { layerView: this, tileInfoView: this.view.featuresTilingScheme, layer: this.layer });
+      return this.tileRenderer && (this._tileStrategy.clear(), this.tileRenderer.uninstall(this.container), this.tileRenderer.destroy(), this.tileRenderer = null), this.destroyed ? null : (this._proxy.tileRenderer = t2, this._set("tileRenderer", t2), this.tileRenderer.install(this.container), this.tileRenderer.onConfigUpdate(e$12), this.requestUpdate(), this.tileRenderer);
+    });
+  }
+  _createTileRendererHash(e2) {
+    return `${e2.type === "heatmap" ? "heatmap" : "symbol"}.${e2.type === "dot-density"}`;
+  }
+  _createFeatureDataHash(e2, t2, i2) {
+    const r$12 = e2.getAttributeHash(), s2 = JSON.stringify(t2), n2 = r(i2) && JSON.stringify(i2.filter), o2 = JSON.stringify(this.timeExtent);
+    let l2 = "";
+    return this._visibilityOverrides.forEach((e3) => l2 += e3), `${r$12}.${s2}.${n2}.${o2}.${l2}`;
+  }
+  get hasFilter() {
+    const e2 = !!("floorInfo" in this.layer && this.layer.floorInfo && this.view.floors && this.view.floors.length);
+    return !!this.filter || e2 || !!this._visibilityOverrides.size || !!this.timeExtent;
+  }
+  _injectOverrides(e2) {
+    const t2 = r(e2) ? e2.timeExtent : null, i2 = r(this.timeExtent) && r(t2) ? this.timeExtent.intersection(t2) : this.timeExtent || t2;
+    let r$12 = null;
+    const s2 = "floorInfo" in this.layer && this.layer.floorInfo;
+    if (s2) {
+      const t3 = r(e2) && e2.where;
+      r$12 = this._addFloorFilterClause(t3);
+    }
+    if (!this._visibilityOverrides.size && !i2 && !s2)
+      return e2;
+    const n2 = r(e2) && e2.clone() || new j();
+    return n2.hiddenIds = this._visibilityOverrides, n2.timeExtent = i2, r$12 && (n2.where = r$12), n2;
+  }
+  _addFloorFilterClause(e2) {
+    const t2 = this.layer;
+    let i2 = e2 || "";
+    if ("floorInfo" in t2 && t2.floorInfo) {
+      var r$12;
+      let e3 = this.view.floors;
+      if (!e3 || !e3.length)
+        return i2;
+      (r$12 = t2.floorInfo.viewAllLevelIds) != null && r$12.length && (e3 = t2.floorInfo.viewAllLevelIds);
+      const s2 = e3.filter((e4) => e4 !== "").map((e4) => "'" + e4 + "'");
+      s2.push("''");
+      const n2 = t2.floorInfo.floorField;
+      let o2 = "(" + n2 + " IN ({ids}) OR " + n2 + " IS NULL)";
+      if (o2 = o2.replace("{ids}", s2.join(", ")), r(i2) && i2.includes(n2)) {
+        let e4 = new RegExp("AND \\(" + n2 + ".*NULL\\)", "g");
+        i2 = i2.replace(e4, ""), e4 = new RegExp("\\(" + n2 + ".*NULL\\)", "g"), i2 = i2.replace(e4, ""), i2 = i2.replace(/\s+/g, " ").trim();
+      }
+      i2 = i2 !== "" ? "(" + i2 + ") AND " + o2 : o2;
+    }
+    return i2 !== "" ? i2 : null;
+  }
+  _createConfiguration(e2, t2, i2) {
+    const r$2 = this.layer.type === "feature" && this.layer.historicMoment ? this.layer.historicMoment.getTime() : void 0, s2 = this.layer.type === "feature" ? this.layer.gdbVersion : void 0, o2 = new Array(N), l2 = this._injectOverrides(t2);
+    o2[0] = r(l2) ? l2.toJSON() : null, o2[1] = r(i2) && i2.filter ? i2.filter.toJSON() : null;
+    const h2 = k$1(e2);
+    if (t$2(h2))
+      return null;
+    const u2 = r$1();
+    return { definitionExpression: this.layer.definitionExpression, availableFields: this.availableFields, gdbVersion: s2, historicMoment: r$2, devicePixelRatio: window.devicePixelRatio || 1, filters: o2, schema: h2, supportsTextureFloat: u2.supportsTextureFloat, maxTextureSize: u2.maxTextureSize };
+  }
+  _hasRequiredSupport(e2) {
+    var t2;
+    return !(((t2 = e2.renderer) == null ? void 0 : t2.type) === "dot-density" && !r$1().supportsTextureFloat) || (W.error(new s$2("webgl-missing-extension", "Missing WebGL extension OES_Texture_Float which is required for DotDensity")), false);
+  }
+  _onceTilesUpdated() {
+    return this.requestUpdate(), $$1(this, "_pipelineIsUpdating", false);
+  }
+  _lockGPUUploads() {
+    this.tileRenderer && this.tileRenderer.lockGPUUploads();
+  }
+  _unlockGPUUploads() {
+    this.tileRenderer && this.tileRenderer.unlockGPUUploads();
+  }
+  _forceAttributeTextureUpload() {
+    this.tileRenderer && this.tileRenderer.forceAttributeTextureUpload();
+  }
+  _update() {
+    this.view.timeline.begin(`${this.layer.title} (FeatureLayer) Initial Pipeline Config`);
+    const e2 = this._doUpdate();
+    this._updatingPromise = e2;
+    const t2 = () => {
+      e2 === this._updatingPromise && this._set("_updatingPipelineConfig", false), this.view && this.view.timeline.end(`${this.layer.title} (FeatureLayer) Initial Pipeline Config`);
+    };
+    e2.then(t2).catch((e3) => {
+      g$1(e3) || W.error(e3), t2();
+    });
+  }
+  _addHighlight(e2) {
+    for (const t2 of e2)
+      if (this._highlightIds.has(t2)) {
+        const e3 = this._highlightIds.get(t2);
+        this._highlightIds.set(t2, e3 + 1);
+      } else
+        this._highlightIds.set(t2, 1);
+    this._updateHighlight().catch((e3) => {
+      g$1(e3) || W.error(e3);
+    });
+  }
+  _removeHighlight(e2) {
+    for (const t2 of e2)
+      if (this._highlightIds.has(t2)) {
+        const e3 = this._highlightIds.get(t2) - 1;
+        e3 === 0 ? this._highlightIds.delete(t2) : this._highlightIds.set(t2, e3);
+      }
+    this._updateHighlight().catch((e3) => {
+      g$1(e3) || W.error(e3);
+    });
+  }
+  _createHittestResult(e2) {
+    return e2.layer = this.layer, e2.sourceLayer = this.layer, r(e2.geometry) && (e2.geometry.spatialReference = this.view.spatialReference), e2;
+  }
+  _hitTest(e2, t2) {
+    return __async(this, null, function* () {
+      if (this.suspended || !this.tileRenderer)
+        return null;
+      const i2 = yield this.tileRenderer.hitTest(e2, t2);
+      if (i2.length === 0)
+        return yield C$1(1), null;
+      const s2 = i2[0];
+      if (!B(s2)) {
+        const e3 = yield this._proxy.getFeature(s2);
+        return A$1(e3, (e4) => this._createHittestResult(n.fromJSON(e4)));
+      }
+      const o2 = yield this._proxy.getAggregate(s2);
+      if (t$2(o2))
+        return null;
+      if (r(o2.referenceId)) {
+        const e3 = yield this._proxy.getFeature(o2.referenceId);
+        return A$1(e3, (e4) => this._createHittestResult(n.fromJSON(e4)));
+      }
+      return this._createHittestResult(c$1.fromJSON(o2));
+    });
+  }
+};
+e$1([y()], X.prototype, "_serviceOptions", void 0), e$1([y()], X.prototype, "_proxy", void 0), e$1([y()], X.prototype, "_pipelineIsUpdating", void 0), e$1([y()], X.prototype, "_updatingPipelineConfig", void 0), e$1([y()], X.prototype, "_effectiveRenderer", void 0), e$1([y()], X.prototype, "_aggregateValueRanges", void 0), e$1([y()], X.prototype, "_onGoingEdits", void 0), e$1([y()], X.prototype, "_isRefreshing", void 0), e$1([y()], X.prototype, "labelsVisible", null), e$1([y({ type: j })], X.prototype, "filter", void 0), e$1([y({ type: l$2 })], X.prototype, "effect", null), e$1([y({ readOnly: true })], X.prototype, "effects", null), e$1([y({ readOnly: true })], X.prototype, "queryMode", null), e$1([y()], X.prototype, "renderingConfigHash", null), e$1([y()], X.prototype, "tileRenderer", void 0), e$1([y()], X.prototype, "updating", void 0), X = e$1([i$1("esri.views.2d.layers.FeatureLayerView2D")], X);
+var Y = X;
+export default Y;

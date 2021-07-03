@@ -1,1 +1,140 @@
-import{a as e}from"./geometryEngineBase.80eb2415.js";import{hydratedAdapter as n}from"./hydrated.6b35c055.js";import"./_commonjsHelpers.f2a458db.js";import"./vendor.74d5941c.js";function r(e){return Array.isArray(e)?e[0].spatialReference:e&&e.spatialReference}function t(n){return e.extendedSpatialReferenceInfo(n)}function i(t,i){return e.clip(n,r(t),t,i)}function o(t,i){return e.cut(n,r(t),t,i)}function s(t,i){return e.contains(n,r(t),t,i)}function a(t,i){return e.crosses(n,r(t),t,i)}function u(t,i,o){return e.distance(n,r(t),t,i,o)}function c(t,i){return e.equals(n,r(t),t,i)}function f(t,i){return e.intersects(n,r(t),t,i)}function l(t,i){return e.touches(n,r(t),t,i)}function p(t,i){return e.within(n,r(t),t,i)}function d(t,i){return e.disjoint(n,r(t),t,i)}function g(t,i){return e.overlaps(n,r(t),t,i)}function m(t,i,o){return e.relate(n,r(t),t,i,o)}function x(t){return e.isSimple(n,r(t),t)}function h(t){return e.simplify(n,r(t),t)}function w(t,i=!1){return e.convexHull(n,r(t),t,i)}function y(t,i){return e.difference(n,r(t),t,i)}function A(t,i){return e.symmetricDifference(n,r(t),t,i)}function E(t,i){return e.intersect(n,r(t),t,i)}function R(t,i=null){return e.union(n,r(t),t,i)}function v(t,i,o,s,a,u){return e.offset(n,r(t),t,i,o,s,a,u)}function I(t,i,o,s=!1){return e.buffer(n,r(t),t,i,o,s)}function j(t,i,o,s,a,u){return e.geodesicBuffer(n,r(t),t,i,o,s,a,u)}function S(t,i,o=!0){return e.nearestCoordinate(n,r(t),t,i,o)}function V(t,i){return e.nearestVertex(n,r(t),t,i)}function b(t,i,o,s){return e.nearestVertices(n,r(t),t,i,o,s)}function H(e){return"xmin"in e?"center"in e?e.center:null:"x"in e?e:"extent"in e?e.extent.center:null}function z(n,r,t){var i;if(null==n)throw new Error("Illegal Argument Exception");const o=n.spatialReference;if(null==(t=null!=(i=t)?i:H(n)))throw new Error("Illegal Argument Exception");const s=n.constructor.fromJSON(e.rotate(n,r,t));return s.spatialReference=o,s}function D(n,r){var t;if(null==n)throw new Error("Illegal Argument Exception");const i=n.spatialReference;if(null==(r=null!=(t=r)?t:H(n)))throw new Error("Illegal Argument Exception");const o=n.constructor.fromJSON(e.flipHorizontal(n,r));return o.spatialReference=i,o}function L(n,r){var t;if(null==n)throw new Error("Illegal Argument Exception");const i=n.spatialReference;if(null==(r=null!=(t=r)?t:H(n)))throw new Error("Illegal Argument Exception");const o=n.constructor.fromJSON(e.flipVertical(n,r));return o.spatialReference=i,o}function B(t,i,o,s){return e.generalize(n,r(t),t,i,o,s)}function J(t,i,o){return e.densify(n,r(t),t,i,o)}function N(t,i,o,s=0){return e.geodesicDensify(n,r(t),t,i,o,s)}function O(t,i){return e.planarArea(n,r(t),t,i)}function q(t,i){return e.planarLength(n,r(t),t,i)}function C(t,i,o){return e.geodesicArea(n,r(t),t,i,o)}function _(t,i,o){return e.geodesicLength(n,r(t),t,i,o)}export{I as buffer,i as clip,s as contains,w as convexHull,a as crosses,o as cut,J as densify,y as difference,d as disjoint,u as distance,c as equals,t as extendedSpatialReferenceInfo,D as flipHorizontal,L as flipVertical,B as generalize,C as geodesicArea,j as geodesicBuffer,N as geodesicDensify,_ as geodesicLength,E as intersect,f as intersects,x as isSimple,S as nearestCoordinate,V as nearestVertex,b as nearestVertices,v as offset,g as overlaps,O as planarArea,q as planarLength,m as relate,z as rotate,h as simplify,A as symmetricDifference,l as touches,R as union,p as within};
+import { a as i$1 } from "./geometryEngineBase.80eb2415.js";
+import { hydratedAdapter as r$1 } from "./hydrated.6b35c055.js";
+import "./_commonjsHelpers.f2a458db.js";
+import "./vendor.74d5941c.js";
+function r(n) {
+  return Array.isArray(n) ? n[0].spatialReference : n && n.spatialReference;
+}
+function t(e) {
+  return i$1.extendedSpatialReferenceInfo(e);
+}
+function u(t2, u2) {
+  return i$1.clip(r$1, r(t2), t2, u2);
+}
+function i(t2, u2) {
+  return i$1.cut(r$1, r(t2), t2, u2);
+}
+function o(t2, u2) {
+  return i$1.contains(r$1, r(t2), t2, u2);
+}
+function c(t2, u2) {
+  return i$1.crosses(r$1, r(t2), t2, u2);
+}
+function f(t2, u2, i2) {
+  return i$1.distance(r$1, r(t2), t2, u2, i2);
+}
+function l(t2, u2) {
+  return i$1.equals(r$1, r(t2), t2, u2);
+}
+function a(t2, u2) {
+  return i$1.intersects(r$1, r(t2), t2, u2);
+}
+function s(t2, u2) {
+  return i$1.touches(r$1, r(t2), t2, u2);
+}
+function p(t2, u2) {
+  return i$1.within(r$1, r(t2), t2, u2);
+}
+function g(t2, u2) {
+  return i$1.disjoint(r$1, r(t2), t2, u2);
+}
+function m(t2, u2) {
+  return i$1.overlaps(r$1, r(t2), t2, u2);
+}
+function d(t2, u2, i2) {
+  return i$1.relate(r$1, r(t2), t2, u2, i2);
+}
+function x(t2) {
+  return i$1.isSimple(r$1, r(t2), t2);
+}
+function w(t2) {
+  return i$1.simplify(r$1, r(t2), t2);
+}
+function E(t2, u2 = false) {
+  return i$1.convexHull(r$1, r(t2), t2, u2);
+}
+function h(t2, u2) {
+  return i$1.difference(r$1, r(t2), t2, u2);
+}
+function A(t2, u2) {
+  return i$1.symmetricDifference(r$1, r(t2), t2, u2);
+}
+function y(t2, u2) {
+  return i$1.intersect(r$1, r(t2), t2, u2);
+}
+function R(t2, u2 = null) {
+  return i$1.union(r$1, r(t2), t2, u2);
+}
+function I(t2, u2, i2, o2, c2, f2) {
+  return i$1.offset(r$1, r(t2), t2, u2, i2, o2, c2, f2);
+}
+function v(t2, u2, i2, o2 = false) {
+  return i$1.buffer(r$1, r(t2), t2, u2, i2, o2);
+}
+function S(t2, u2, i2, o2, c2, f2) {
+  return i$1.geodesicBuffer(r$1, r(t2), t2, u2, i2, o2, c2, f2);
+}
+function j(t2, u2, i2 = true) {
+  return i$1.nearestCoordinate(r$1, r(t2), t2, u2, i2);
+}
+function J(t2, u2) {
+  return i$1.nearestVertex(r$1, r(t2), t2, u2);
+}
+function N(t2, u2, i2, o2) {
+  return i$1.nearestVertices(r$1, r(t2), t2, u2, i2, o2);
+}
+function O(n) {
+  return "xmin" in n ? "center" in n ? n.center : null : "x" in n ? n : "extent" in n ? n.extent.center : null;
+}
+function V(e, r2, t2) {
+  var u2;
+  if (e == null)
+    throw new Error("Illegal Argument Exception");
+  const i2 = e.spatialReference;
+  if ((t2 = (u2 = t2) != null ? u2 : O(e)) == null)
+    throw new Error("Illegal Argument Exception");
+  const o2 = e.constructor.fromJSON(i$1.rotate(e, r2, t2));
+  return o2.spatialReference = i2, o2;
+}
+function z(e, r2) {
+  var t2;
+  if (e == null)
+    throw new Error("Illegal Argument Exception");
+  const u2 = e.spatialReference;
+  if ((r2 = (t2 = r2) != null ? t2 : O(e)) == null)
+    throw new Error("Illegal Argument Exception");
+  const i2 = e.constructor.fromJSON(i$1.flipHorizontal(e, r2));
+  return i2.spatialReference = u2, i2;
+}
+function B(e, r2) {
+  var t2;
+  if (e == null)
+    throw new Error("Illegal Argument Exception");
+  const u2 = e.spatialReference;
+  if ((r2 = (t2 = r2) != null ? t2 : O(e)) == null)
+    throw new Error("Illegal Argument Exception");
+  const i2 = e.constructor.fromJSON(i$1.flipVertical(e, r2));
+  return i2.spatialReference = u2, i2;
+}
+function D(t2, u2, i2, o2) {
+  return i$1.generalize(r$1, r(t2), t2, u2, i2, o2);
+}
+function H(t2, u2, i2) {
+  return i$1.densify(r$1, r(t2), t2, u2, i2);
+}
+function L(t2, u2, i2, o2 = 0) {
+  return i$1.geodesicDensify(r$1, r(t2), t2, u2, i2, o2);
+}
+function b(t2, u2) {
+  return i$1.planarArea(r$1, r(t2), t2, u2);
+}
+function k(t2, u2) {
+  return i$1.planarLength(r$1, r(t2), t2, u2);
+}
+function q(t2, u2, i2) {
+  return i$1.geodesicArea(r$1, r(t2), t2, u2, i2);
+}
+function C(t2, u2, i2) {
+  return i$1.geodesicLength(r$1, r(t2), t2, u2, i2);
+}
+export { v as buffer, u as clip, o as contains, E as convexHull, c as crosses, i as cut, H as densify, h as difference, g as disjoint, f as distance, l as equals, t as extendedSpatialReferenceInfo, z as flipHorizontal, B as flipVertical, D as generalize, q as geodesicArea, S as geodesicBuffer, L as geodesicDensify, C as geodesicLength, y as intersect, a as intersects, x as isSimple, j as nearestCoordinate, J as nearestVertex, N as nearestVertices, I as offset, m as overlaps, b as planarArea, k as planarLength, d as relate, V as rotate, w as simplify, A as symmetricDifference, s as touches, R as union, p as within };

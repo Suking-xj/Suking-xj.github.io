@@ -1,1 +1,1423 @@
-import{ff as e,fg as t,fh as r,bF as n,cE as s,fj as a,fk as i}from"./vendor.74d5941c.js";import{a4 as l,a8 as u,a9 as o,aa as h,ab as c,a2 as _,a0 as d,a1 as p,ac as f,ad as g,ae as m,af as S,ag as y}from"./arcadeUtils.f4f7c393.js";import{k as I,K as w,W as T,M as b,F as E,h as F,w as D,A as v,x,O as R,p as P,g as N}from"./geometryEngineAsync.6e91af62.js";import{WhereClause as C}from"./WhereClause.f27c6004.js";class A{constructor(){this._databaseTypeMetaData={},this._layerInfo={}}clearDatabaseType(e){void 0===this._databaseTypeMetaData[e]&&delete this._databaseTypeMetaData[e]}getDatabaseType(e){return"MUSTBESET"===e||void 0===this._databaseTypeMetaData[e]?null:this._databaseTypeMetaData[e]}setDatabaseType(e,t){this._databaseTypeMetaData[e]=t}getLayerInfo(e){return void 0===this._layerInfo[e]?null:this._layerInfo[e]}setLayerInfo(e,t){this._layerInfo[e]=t}clearLayerInfo(e){void 0!==this._layerInfo[e]&&delete this._layerInfo[e]}}A.applicationCache=null;class k{constructor(e,t,r,n){this._candidates=null,this._known=null,this._lastFetchedIndex=0,this._ordered=!1,this.pagesDefinition=null,this._candidates=e,this._known=t,this._ordered=r,this.pagesDefinition=n}}function O(e,t){return Y(e.parseTree,t,e.parameters)}function M(e,t,r){return Y(e,t,r)}function G(e,t,r,n){return C.create(Y(e.parseTree,l.Standardised,e.parameters,t,r),n)}function U(e,t,r="AND"){return C.create("(("+O(e,l.Standardised)+")"+r+"("+O(t,l.Standardised)+"))",e.fieldsIndex)}function Y(e,t,r,n=null,s=null){let a,i,l,u;switch(e.type){case"interval":return X(Y(e.value,t,r,n,s),e.qualifier,e.op);case"case_expression":{let a=" CASE ";"simple"===e.format&&(a+=Y(e.operand,t,r,n,s));for(let i=0;i<e.clauses.length;i++)a+=" WHEN "+Y(e.clauses[i].operand,t,r,n,s)+" THEN "+Y(e.clauses[i].value,t,r,n,s);return null!==e.else&&(a+=" ELSE "+Y(e.else,t,r,n,s)),a+=" END ",a}case"param":{const n=r[e.value.toLowerCase()];if("string"==typeof n)return"'"+r[e.value.toLowerCase()].toString().replace(/'/g,"''")+"'";if(n instanceof Date)return B(n,t);if(n instanceof Array){const e=[];for(let r=0;r<n.length;r++)"string"==typeof n[r]?e.push("'"+n[r].toString().replace(/'/g,"''")+"'"):n[r]instanceof Date?e.push(B(n[r],t)):e.push(n[r].toString());return e}return n.toString()}case"expr_list":i=[];for(const a of e.value)i.push(Y(a,t,r,n,s));return i;case"unary_expr":return" ( NOT "+Y(e.expr,t,r,n,s)+" ) ";case"binary_expr":switch(e.operator){case"AND":return" ("+Y(e.left,t,r,n,s)+" AND "+Y(e.right,t,r,n,s)+") ";case"OR":return" ("+Y(e.left,t,r,n,s)+" OR "+Y(e.right,t,r,n,s)+") ";case"IS":if("null"!==e.right.type)throw new Error("Unsupported RHS for IS");return" ("+Y(e.left,t,r,n,s)+" IS NULL )";case"ISNOT":if("null"!==e.right.type)throw new Error("Unsupported RHS for IS");return" ("+Y(e.left,t,r,n,s)+" IS NOT NULL )";case"IN":return a=[],"expr_list"===e.right.type?(a=Y(e.right,t,r,n,s)," ("+Y(e.left,t,r,n,s)+" IN ("+a.join(",")+")) "):(u=Y(e.right,t,r,n,s),u instanceof Array?" ("+Y(e.left,t,r,n,s)+" IN ("+u.join(",")+")) ":" ("+Y(e.left,t,r,n,s)+" IN ("+u+")) ");case"NOT IN":return a=[],"expr_list"===e.right.type?(a=Y(e.right,t,r,n,s)," ("+Y(e.left,t,r,n,s)+" NOT IN ("+a.join(",")+")) "):(u=Y(e.right,t,r,n,s),u instanceof Array?" ("+Y(e.left,t,r,n,s)+" NOT IN ("+u.join(",")+")) ":" ("+Y(e.left,t,r,n,s)+" NOT IN ("+u+")) ");case"BETWEEN":return l=Y(e.right,t,r,n,s)," ("+Y(e.left,t,r,n,s)+" BETWEEN "+l[0]+" AND "+l[1]+" ) ";case"NOTBETWEEN":return l=Y(e.right,t,r,n,s)," ("+Y(e.left,t,r,n,s)+" NOT BETWEEN "+l[0]+" AND "+l[1]+" ) ";case"LIKE":return""!==e.escape?" ("+Y(e.left,t,r,n,s)+" LIKE "+Y(e.right,t,r,n,s)+" ESCAPE '"+e.escape+"') ":" ("+Y(e.left,t,r,n,s)+" LIKE "+Y(e.right,t,r,n,s)+") ";case"NOT LIKE":return""!==e.escape?" ("+Y(e.left,t,r,n,s)+" NOT LIKE "+Y(e.right,t,r,n,s)+" ESCAPE '"+e.escape+"') ":" ("+Y(e.left,t,r,n,s)+" NOT LIKE "+Y(e.right,t,r,n,s)+") ";case"<>":case"<":case">":case">=":case"<=":case"=":case"*":case"-":case"+":case"/":return" ("+Y(e.left,t,r,n,s)+" "+e.operator+" "+Y(e.right,t,r,n,s)+") "}throw new Error("Not Supported Operator "+e.operator);case"null":return"null";case"bool":return!0===e.value?"1":"0";case"string":return"'"+e.value.toString().replace(/'/g,"''")+"'";case"timestamp":case"date":return B(e.value,t);case"number":return e.value.toString();case"current_time":return H("date"===e.mode,t);case"column_ref":return n&&n.toLowerCase()===e.column.toLowerCase()?"("+s+")":e.column;case"function":{const a=Y(e.args,t,r,n,s);return L(e.name,a,t)}}throw new Error("Unsupported sql syntax "+e.type)}function L(e,t,r){switch(e.toLowerCase().trim()){case"abs":if(1!==t.length)throw new Error("Invalid Parameter for call to ABS");return"abs("+t[0]+")";case"ceiling":case"ceil":if(1!==t.length)throw new Error("Invalid Parameter for call to CEILING");switch(r){case l.Standardised:case l.StandardisedNoInterval:default:return"CEILING("+t[0]+")"}case"floor":if(1!==t.length)throw new Error("Invalid Parameter for call to Floor");return"FLOOR("+t[0]+")";case"log":if(1!==t.length)throw new Error("Invalid Parameter for call to LOG");return"LOG("+t[0]+")";case"log10":if(1!==t.length)throw new Error("Invalid Parameter for call to LOG10");return"LOG10("+t[0]+")";case"power":if(2!==t.length)throw new Error("Invalid Parameter for call to POWER");return"POWER("+t[0]+","+t[1]+")";case"round":if(2===t.length)return"ROUND("+t[0]+","+t[1]+")";if(1===t.length)return"ROUND("+t[0]+")";throw new Error("Invalid Parameter for call to ROUND");case"truncate":if(t.length<1||t.length>2)throw new Error("Invalid Parameter for TRUNCATE function");switch(r){case l.SqlServer:return"ROUND("+t[0]+(1===t.length?"0":","+t[1])+",1)";default:return"TRUNCATE("+t[0]+(1===t.length?")":","+t[1]+")")}case"char_length":case"len":if(1!==t.length)throw new Error("Invalid Parameter for CHAR_LENGTH function");switch(r){case l.SqlServer:return"LEN("+t[0]+")";case l.Oracle:return"LENGTH("+t[0]+")";default:return"CHAR_LENGTH("+t[0]+")"}case"concat":if(t.length<1)throw new Error("Invalid Parameter for CONCAT function");{let e="CONCAT(";for(let r=0;r<t.length;r++)0!==r&&(e+=","),e+=t[r];return e+=")",e}case"lower":case"lcase":if(1!==t.length)throw new Error("Invalid Parameter for Lower function");return"LOWER("+t[0]+")";case"upper":case"ucase":if(1!==t.length)throw new Error("Invalid Parameter for Upper function");return"UPPER("+t[0]+")";case"substring":{let e="";switch(r){case l.Oracle:return e="SUBSTR("+t[0]+","+t[1],3===t.length&&(e+=","+t[2]),e+=")",e;case l.SqlServer:return e=3===t.length?"SUBSTRING("+t[0]+","+t[1]+","+t[2]+")":"SUBSTRING("+t[0]+",  "+t[1]+", LEN("+t[0]+") - "+t[1]+")",e;default:return e="SUBSTRING("+t[0]+" FROM "+t[1],3===t.length&&(e+=" FOR "+t[2]),e+=")",e}}case"extract":return"EXTRACT("+t[0].replace(/\'/g,"")+" FROM "+t[1]+")"}throw new Error("Function Not Recognised")}function B(e,t){const r=u.Moment(e),n=0===r.minute()&&0===r.hour()&&0===r.second()&&0===r.millisecond();switch(t){case l.FILEGDB:case l.Standardised:case l.StandardisedNoInterval:return n?"date '"+r.format("YYYY-MM-DD")+"'":"date '"+r.format("YYYY-MM-DD HH:mm:ss")+"'";case l.Oracle:return n?"TO_DATE('"+r.format("YYYY-MM-DD")+"','YYYY-MM-DD')":"TO_DATE('"+r.format("YYYY-MM-DD HH:mm:ss")+"','YYYY-MM-DD HH24:MI:SS')";case l.SqlServer:return"'"+r.format(n?"YYYY-MM-DD":"YYYY-MM-DD HH:mm:ss")+"'";case l.PGDB:return"#"+r.format(n?"MM-DD-YYYY":"MM-DD-YYYY HH:mm:ss")+"#";case l.Postgres:return"TIMESTAMP '"+r.format(n?"YYYY-MM-DD":"YYYY-MM-DD HH:mm:ss")+"'";default:return"date '"+r.format("YYYY-MM-DD HH:mm:ss")+"'"}}function H(e,t){switch(t){case l.FILEGDB:case l.Standardised:case l.StandardisedNoInterval:case l.Oracle:return e?"CURRENT_DATE":"CURRENT_TIMESTAMP";case l.SqlServer:return e?"CAST(GETDATE() AS DATE)":"GETDATE()";case l.PGDB:case l.Postgres:default:return e?"CURRENT_DATE":"CURRENT_TIMESTAMP"}}function Q(e,t,r={}){const n={},s={},a={esriFieldTypeSmallInteger:"integer",esriFieldTypeInteger:"integer",esriFieldTypeSingle:"double",esriFieldTypeDouble:"double",esriFieldTypeString:"string",esriFieldTypeDate:"date",esriFieldTypeOID:"integer",oid:"integer",long:"integer","small-integer":"integer",integer:"integer",single:"double",double:"double",date:"date",string:"string"};for(const i of t){const e=a[i.type];n[i.name.toLowerCase()]=void 0===e?"":e}for(const i in r){const e=a[r[i]];s[i.toLowerCase()]=void 0===e?"":e}switch(K(n,e.parseTree,e.parameters,s)){case"double":return"double";case"integer":return"integer";case"double":return"double";case"date":return"date";case"string":return"string"}return""}function K(e,t,r,n){let s;switch(t.type){case"interval":return"integer";case"case_expression":{const s=[];if("simple"===t.format){for(let a=0;a<t.clauses.length;a++)s.push(K(e,t.clauses[a].value,r,n));null!==t.else&&s.push(K(e,t.else,r,n))}else{for(let a=0;a<t.clauses.length;a++)s.push(K(e,t.else,r,n));null!==t.else&&s.push(K(e,t.else,r,n))}return q(s)}case"param":{const e=n[t.value.toLowerCase()];if(void 0===e&&r){const e=r[t.value.toLowerCase()];if(void 0===e)return"";if(null===e)return"";if("string"==typeof e||e instanceof String)return"string";if("boolean"==typeof e)return"boolean";if(e instanceof Date)return"date";if("number"==typeof e)return e%1==0?"integer":"double"}return void 0===e?"":e}case"expr_list":{const s=[];for(const a of t.value)s.push(K(e,a,r,n));return s}case"unary_expr":return"boolean";case"binary_expr":switch(t.operator){case"AND":case"OR":return"boolean";case"IS":case"ISNOT":if("null"!==t.right.type)throw new Error("Unsupported RHS for IS");return"boolean";case"IN":case"NOT IN":case"BETWEEN":case"NOTBETWEEN":case"LIKE":case"NOT LIKE":return"boolean";case"<>":case"<":case">":case">=":case"<=":case"=":return"boolean";case"*":case"-":case"+":case"/":return q([K(e,t.left,r,n),K(e,t.right,r,n)]);default:throw new Error("Not Supported Operator "+t.operator)}case"null":return"";case"bool":return"boolean";case"string":return"string";case"number":return null===t.value?"":t.value%1==0?"integer":"double";case"date":case"timestamp":case"current_time":return"date";case"column_ref":{const r=e[t.column.toLowerCase()];return void 0===r?"":r}case"function":switch(t.name.toLowerCase()){case"position":case"extract":case"char_length":return"integer";case"round":return s=K(e,t.args,r,n),s instanceof Array?s.length>0?s[0]:"":s;case"sign":return s=K(e,t.args,r,n),s instanceof Array&&(s=q(s)),"integer"===s||"double"===s?s:"double";case"ceiling":case"floor":case"abs":{const s=K(e,t.args,r,n);return s instanceof Array?q(s):s}case"area":case"length":case"log":case"log10":case"sin":case"cos":case"tan":case"asin":case"acos":case"atan":case"power":return"double";case"substring":case"trim":case"concat":case"lower":case"upper":return"string";case"truncate":return"double";case"round":return s=K(e,t.args,r,n),s instanceof Array?s.length>0?s[0]:"":s}return""}throw new Error("Unsupported sql syntax "+t.type)}const j={boolean:1,string:2,integer:3,double:4,date:5};function q(e){if(e){let t="";for(const r of e)""!==r&&(t=""===t||j[t]<j[r]?r:t);return t}return""}function W(e,t){return J(e.parseTree,t)}function V(e){return"column_ref"===e.parseTree.type}function J(e,t){if(null==e)return!1;switch(e.type){case"when_clause":return J(e.operand,t)||J(e.value,t);case"case_expression":for(const r of e.clauses)if(J(r,t))return!0;return!("simple"!==e.format||!J(e.operand,t))||!(null===e.else||!J(e.else,t));case"param":return!1;case"expr_list":for(const r of e.value)if(J(r,t))return!0;return!1;case"unary_expr":return J(e.expr,t);case"binary_expr":return J(e.left,t)||J(e.right,t);case"null":case"bool":case"date":case"timestamp":case"string":case"number":return!1;case"column_ref":return t.toLowerCase()===e.column.toLowerCase();case"function":return J(e.args,t)}return!1}function Z(e){let t="";return t+=e.period.toUpperCase(),t}function X(e,t,r){let n="";return n="interval-period"===t.type?Z(t):Z(t.start)+" TO "+Z(t.end),"INTERVAL "+r+" "+e+" "+n}class z{constructor(e,t){this._lastId=-1,this._progress=t,this._parent=e}reset(){this._lastId=-1}nextBatch(t){if(null!==this._parent._mainSetInUse)return this._parent._mainSetInUse.then((e=>this.nextBatch(t)),(e=>this.nextBatch(t)));const r={returnpromise:null,hasset:!1},n=[];return r.returnpromise=e(((e,s)=>{this._parent._getSet(this._progress).then((a=>{let i=a._known.length-1;if("GETPAGES"===a._known[a._known.length-1]&&(i-=1),this._lastId+t>i&&a._known.length>0&&"GETPAGES"===a._known[a._known.length-1])this._parent._expandPagedSet(a,this._parent._maxQueryRate(),0,0,this._progress).then((n=>{r.hasset=!0,this._parent._mainSetInUse=null,this.nextBatch(t).then(e,s)}),(e=>{r.hasset=!0,this._parent._mainSetInUse=null,s(e)}));else{if(i>=this._lastId+t||0===a._candidates.length){for(let e=0;e<t;e++){const t=e+this._lastId+1;if(t>=a._known.length)break;n[e]=a._known[t]}return this._lastId+=n.length,0===n.length&&(r.hasset=!0,this._parent._mainSetInUse=null,e([])),void this._parent._getFeatureBatch(n,this._progress).then((t=>{r.hasset=!0,this._parent._mainSetInUse=null,e(t)}),(e=>{r.hasset=!0,this._parent._mainSetInUse=null,s(e)}))}this._parent._refineSetBlock(a,this._parent._maxProcessingRate(),this._progress).then((()=>{r.hasset=!0,this._parent._mainSetInUse=null,this.nextBatch(t).then(e,s)}),(e=>{r.hasset=!0,this._parent._mainSetInUse=null,s(e)}))}}),(e=>{r.hasset=!0,this._parent._mainSetInUse=null,s(e)}))})),!1===r.hasset&&(this._parent._mainSetInUse=r.returnpromise,r.hasset=!0),r.returnpromise}next(){if(null!==this._parent._mainSetInUse)return this._parent._mainSetInUse.then((e=>this.next()),(e=>this.next()));const t={returnpromise:null,hasset:!1};return t.returnpromise=e(((e,r)=>{this._parent._getSet(this._progress).then((n=>{this._lastId<n._known.length-1?"GETPAGES"===n._known[this._lastId+1]?this._parent._expandPagedSet(n,this._parent._maxQueryRate(),0,0,this._progress).then((e=>(t.hasset=!0,this._parent._mainSetInUse=null,this.next()))).then(e,r):(this._lastId+=1,this._parent._getFeature(n,n._known[this._lastId],this._progress).then((r=>{t.hasset=!0,this._parent._mainSetInUse=null,e(r)}),(e=>{t.hasset=!0,this._parent._mainSetInUse=null,r(e)}))):n._candidates.length>0?this._parent._refineSetBlock(n,this._parent._maxProcessingRate(),this._progress).then((()=>{t.hasset=!0,this._parent._mainSetInUse=null,this.next().then(e,r)}),(e=>{t.hasset=!0,this._parent._mainSetInUse=null,r(e)})):(t.hasset=!0,this._parent._mainSetInUse=null,e(null))}),(e=>{t.hasset=!0,this._parent._mainSetInUse=null,r(e)}))})),!1===t.hasset&&(this._parent._mainSetInUse=t.returnpromise,t.hasset=!0),t.returnpromise}count(){return-1!==this._parent._totalCount?t(this._parent._totalCount):this._parent._getSet(this._progress).then((e=>this._refineAllSets(e))).then((e=>(this._parent._totalCount=e._known.length,t(this._parent._totalCount))))}_refineAllSets(e){return e._known.length>0&&"GETPAGES"===e._known[e._known.length-1]?this._parent._expandPagedSet(e,this._parent._maxQueryRate(),0,1,this._progress).then((t=>this._refineAllSets(e))).then((e=>t(e))):e._candidates.length>0?"GETPAGES"===e._known[e._candidates.length-1]?this._parent._expandPagedSet(e,this._parent._maxQueryRate(),0,2,this._progress).then((t=>this._refineAllSets(e))).then((e=>t(e))):this._parent._refineSetBlock(e,this._parent._maxProcessingRate(),this._progress).then((e=>e._candidates.length>0?this._refineAllSets(e):t(e))):t(e)}}function $(e){let t=0;for(let r=0;r<e.length;r++)t+=e[r];return t/e.length}function ee(e){const t=$(e);let r=0;for(let n=0;n<e.length;n++)r+=(t-e[n])**2;return r/e.length}function te(e){const t=$(e);let r=0;for(let n=0;n<e.length;n++)r+=(t-e[n])**2;return r/(e.length-1)}function re(e){let t=0;for(let r=0;r<e.length;r++)t+=e[r];return t}function ne(e){switch(e.toLowerCase()){case"distinct":return"distinct";case"avg":case"mean":return"avg";case"min":return"min";case"sum":return"sum";case"max":return"max";case"stdev":case"stddev":return"stddev";case"var":case"variance":return"var";case"count":return"count"}return""}function se(e,t,r=1e3){switch(e.toLowerCase()){case"distinct":return function(e,t){const r=[],n={},s=[];for(let a=0;a<e.length;a++){if(void 0!==e[a]&&null!==e[a]){const t=e[a];if(o(t)||h(t))void 0===n[t]&&(r.push(t),n[t]=1);else{let e=!1;for(let r=0;r<s.length;r++)!0===c(s[r],t)&&(e=!0);!1===e&&(s.push(t),r.push(t))}}if(r.length>=t&&-1!==t)return r}return r}(t,r);case"avg":case"mean":return $(t);case"min":return Math.min.apply(Math,t);case"sum":return re(t);case"max":return Math.max.apply(Math,t);case"stdev":case"stddev":return Math.sqrt(ee(t));case"var":case"variance":return ee(t);case"count":return t.length}return 0}function ae(e,t,r){let n="";return!1===V(t)&&(n=Q(t,e.fields,null)),ie(e,t,r,!0).then((e=>{if(0===e.length)return null;const t=$(e);return null===t?t:"integer"===n?function(e){return e=+e,isFinite(e)?e-e%1||(e<0?-0:0===e?e:0):e}(t):t}))}function ie(t,n,s,a=!1){try{const r=t.iterator(s);return e(((e,t)=>{le(r,[],n,a,e,t)}))}catch(i){return r(i)}}function le(e,t,r,n,s,a){_(e.next().then((i=>{try{if(null!==i){const l=r.calculateValue(i);return null===l?!1===n&&(t[t.length]=l):t[t.length]=l,le(e,t,r,n,s,a)}s(t)}catch(l){a(l)}}),a))}function ue(e,t,n=1e3,s=null){return function(e,t,n,s){try{return oe(e.iterator(s),{},[],t,n)}catch(a){return r(a)}}(e,t,n,s)}function oe(e,t,r,n,s){return e.next().then((a=>{if(null!==a){const i=n.calculateValue(a);return null!=i&&void 0===t[i]&&(r.push(i),t[i]=1),r.length>=s&&-1!==s?r:oe(e,t,r,n,s)}return r}))}class he{constructor(e){this.recentlyUsedQueries=null,this.featureSetQueryInterceptor=null,this._idstates=[],this._parent=null,this._wset=null,this._mainSetInUse=null,this._maxProcessing=200,this._maxQuery=500,this._totalCount=-1,this._databaseType=l.NotEvaluated,this._databaseTypeProbed=null,this.declaredRootClass="esri.arcade.featureset.support.FeatureSet",this._featureCache=[],this.types=null,this.fields=null,this.geometryType="",this.objectIdField="",this.globalIdField="",this.spatialReference=null,this.hasM=!1,this.hasZ=!1,this._transparent=!1,this.loaded=!1,this._loadPromise=null,this._fieldsIndex=null,e&&e.lrucache&&(this.recentlyUsedQueries=e.lrucache),e&&e.interceptor&&(this.featureSetQueryInterceptor=e.interceptor)}optimisePagingFeatureQueries(e){this._parent&&this._parent.optimisePagingFeatureQueries(e)}_hasMemorySource(){return!0}prop(e,t){return void 0===t?this[e]:(void 0!==this[e]&&(this[e]=t),this)}end(){return null!==this._parent&&!0===this._parent._transparent?this._parent.end():this._parent}_ensureLoaded(){return this.load()}load(){return null===this._loadPromise&&(this._loadPromise=e(((e,t)=>{if(!0===this._parent.loaded)return this._initialiseFeatureSet(),void e(this);this._parent.load().then((()=>{try{this._initialiseFeatureSet(),e(this)}catch(r){t(r)}}),t)}))),this._loadPromise}_initialiseFeatureSet(){null!==this._parent?(this.fields=this._parent.fields.slice(0),this.geometryType=this._parent.geometryType,this.objectIdField=this._parent.objectIdField,this.globalIdField=this._parent.globalIdField,this.spatialReference=this._parent.spatialReference,this.hasM=this._parent.hasM,this.hasZ=this._parent.hasZ,this.typeIdField=this._parent.typeIdField,this.types=this._parent.types):(this.fields=[],this.typeIdField="",this.objectIdField="",this.globalIdField="",this.spatialReference=new n({wkid:4326}),this.geometryType=d.point)}getField(e,t){let r;return(t=t||this.fields)&&(e=e.toLowerCase(),t.some((t=>(t&&t.name.toLowerCase()===e&&(r=t),!!r)))),r}getFieldsIndex(){return null===this._fieldsIndex&&(this._fieldsIndex=new s(this.fields)),this._fieldsIndex}_maxProcessingRate(){return null!==this._parent?Math.min(this._maxProcessing,this._parent._maxProcessingRate()):Math.min(this._maxProcessing,this._maxQueryRate())}_maxQueryRate(){return null!==this._parent?Math.max(this._maxQuery,this._parent._maxQueryRate()):this._maxQuery}_checkCancelled(e){if(null!==e&&e.aborted)throw new Error("Operation has been cancelled.")}nativeCapabilities(){return this._parent.nativeCapabilities()}_canDoAggregates(e,r,n,s,a){return null===this._parent?t(!1):this._parent._canDoAggregates(e,r,n,s,a)}_getAggregatePagesDataSourceDefinition(e,t,n,s,a,i,l){return null===this._parent?r(new Error("Should never be called")):this._parent._getAggregatePagesDataSourceDefinition(e,t,n,s,a,i,l)}_getAgregagtePhysicalPage(e,t,n){return null===this._parent?r(new Error("Should never be called")):this._parent._getAgregagtePhysicalPage(e,t,n)}databaseType(){if(this._databaseType===l.NotEvaluated){if(null!==A.applicationCache){const e=A.applicationCache.getDatabaseType(this._cacheableFeatureSetSourceKey());if(null!==e)return e}if(null!==this._databaseTypeProbed)return this._databaseTypeProbed;const t=[{thetype:l.SqlServer,testwhere:"(CAST( '2015-01-01' as DATETIME) = CAST( '2015-01-01' as DATETIME)) AND OBJECTID<0"},{thetype:l.Oracle,testwhere:"(TO_DATE('2003-11-18','YYYY-MM-DD') = TO_DATE('2003-11-18','YYYY-MM-DD')) AND OBJECTID<0"},{thetype:l.StandardisedNoInterval,testwhere:"(date '2015-01-01 10:10:10' = date '2015-01-01 10:10:10') AND OBJECTID<0"}];let r=e(((e,r)=>{this._getDatabaseTypeImpl(t,0).then((t=>{this._databaseType=t,e(this._databaseType)}),(e=>{r(e)}))}));return null!==A.applicationCache&&(A.applicationCache.setDatabaseType(this._cacheableFeatureSetSourceKey(),r),r=r.catch((e=>{throw A.applicationCache.clearDatabaseType(this._cacheableFeatureSetSourceKey()),e}))),this._databaseTypeProbed=r,this._databaseTypeProbed}return t(this._databaseType)}_cacheableFeatureSetSourceKey(){return"MUSTBESET"}_getDatabaseTypeImpl(e,r){return r>=e.length?t(l.StandardisedNoInterval):this._runDatabaseProbe(e[r].testwhere).then((t=>!0===t?e[r].thetype:this._getDatabaseTypeImpl(e,r+1)))}_runDatabaseProbe(e){return null!==this._parent?this._parent._runDatabaseProbe(e):r(new Error("Not Implemented"))}isTable(){return this._parent.isTable()}_featureFromCache(e){if(void 0!==this._featureCache[e])return this._featureCache[e]}_isInFeatureSet(e){return p.Unknown}_getSet(e){throw new Error("Not implemented in abstract class")}_getFeature(e,n,s){try{return this._checkCancelled(s),void 0!==this._featureFromCache(n)?t(this._featureFromCache(n)):this._getFeatures(e,n,this._maxProcessingRate(),s).then((()=>(this._checkCancelled(s),void 0!==this._featureFromCache(n)?this._featureFromCache(n):r(new Error("Feature Not Found")))))}catch(a){return r(a)}}_getFeatureBatch(e,t){try{this._checkCancelled(t);const r=new k([],e,!1,null),n=[];return this._getFeatures(r,-1,e.length,t).then((()=>{this._checkCancelled(t);for(const t of e)void 0!==this._featureFromCache(t)&&n.push(this._featureFromCache(t));return n}))}catch(n){return r(n)}}_getFeatures(e,r,n,s){return t("success")}_getFilteredSet(e,t,r,n,s){throw new Error("Not implemented in abstract class")}_refineSetBlock(e,n,s){try{if(!0===this._checkIfNeedToExpandCandidatePage(e,this._maxQueryRate()))return this._expandPagedSet(e,this._maxQueryRate(),0,0,s).then((()=>this._refineSetBlock(e,n,s)));this._checkCancelled(s);const r=e._candidates.length;this._refineKnowns(e,n);let a=r-e._candidates.length;return 0===e._candidates.length||a>=n?t(e):this._refineIfParentKnown(e,n-a,s).then((()=>{if(this._checkCancelled(s),this._refineKnowns(e,n-a),a=r-e._candidates.length,a<n&&e._candidates.length>0){const t=n-a,r=this._prepareFetchAndRefineSet(e._candidates);return this._fetchAndRefineFeatures(r,r.length>t?t:e._candidates.length,s).then((()=>(this._checkCancelled(s),this._refineKnowns(e,n-a),e)))}return e}))}catch(a){return r(a)}}_fetchAndRefineFeatures(e,t,r){return null}_prepareFetchAndRefineSet(e){const t=[];for(let r=0;r<e.length;r++)this._isPhysicalFeature(e[r])&&t.push(e[r]);return t}_isPhysicalFeature(e){return null===this._parent||this._parent._isPhysicalFeature(e)}_refineKnowns(e,t){let r=0,n=null;const s=[];t=this._maxQueryRate();for(let a=0;a<e._candidates.length&&"GETPAGES"!==e._candidates[a];a++){let i=!1;const l=this._candidateIdTransform(e._candidates[a]);l!==e._candidates[a]&&(i=!0);const u=this._isInFeatureSet(l);if(u===p.InFeatureSet)!0===i?e._known.indexOf(l)<0&&(e._known.push(l),r+=1):(e._known.push(e._candidates[a]),r+=1),null===n?n={start:a,end:a}:n.end===a-1?n.end=a:(s.push(n),n={start:a,end:a});else if(u===p.NotInFeatureSet)null===n?n={start:a,end:a}:n.end===a-1?n.end=a:(s.push(n),n={start:a,end:a}),r+=1;else if(u===p.Unknown&&(r+=1,!0===e._ordered))break;if(r>=t)break}null!==n&&s.push(n);for(let a=s.length-1;a>=0;a--)e._candidates.splice(s[a].start,s[a].end-s[a].start+1)}_refineIfParentKnown(e,t,r){const n=new k([],[],e._ordered,null);return n._candidates=e._candidates.slice(0),this._parent._refineSetBlock(n,t,r)}_candidateIdTransform(e){return this._parent._candidateIdTransform(e)}_checkIfNeedToExpandKnownPage(e,t){if(null===e.pagesDefinition)return!1;let r=0;for(let n=e._lastFetchedIndex;n<e._known.length;n++){if("GETPAGES"===e._known[n])return!0;if(void 0===this._featureCache[e._known[n]]&&(r+=1,r>=t))break}return!1}_checkIfNeedToExpandCandidatePage(e,t){if(null===e.pagesDefinition)return!1;let r=0;for(let n=0;n<e._candidates.length;n++){if("GETPAGES"===e._candidates[n])return!0;if(r+=1,r>=t)break}return!1}_expandPagedSet(e,t,n,s,a){return null===this._parent?r(new Error("Parent Paging not implemented")):this._parent._expandPagedSet(e,t,n,s,a)}_expandPagedSetFeatureSet(e,r,n,s,a){return e._known.length>0&&"GETPAGES"===e._known[e._known.length-1]&&(s=1),0===s&&e._candidates.length>0&&"GETPAGES"===e._candidates[e._candidates.length-1]&&(s=2),0===s?t("finished"):this._getPage(e,s,a).then((t=>n+t<r?this._expandPagedSet(e,r,n+t,0,a):"success"))}_getPage(e,r,n){const s=1===r?e._known:e._candidates;if(e.pagesDefinition.internal.set.length>e.pagesDefinition.resultOffset||!0===e.pagesDefinition.internal.fullyResolved){s.length=s.length-1;let r=0;for(let t=0;t<e.pagesDefinition.resultRecordCount&&!(e.pagesDefinition.resultOffset+t>=e.pagesDefinition.internal.set.length);t++)s[s.length]=e.pagesDefinition.internal.set[e.pagesDefinition.resultOffset+t],r++;e.pagesDefinition.resultOffset+=r;let n=!1;return!0===e.pagesDefinition.internal.fullyResolved&&e.pagesDefinition.internal.set.length<=e.pagesDefinition.resultOffset&&(n=!0),!1===n&&s.push("GETPAGES"),t(r)}return this._getPhysicalPage(e,r,n).then((()=>this._getPage(e,r,n)))}_getPhysicalPage(e,t,r){return null}_clonePageDefinition(e){return null===this._parent?null:this._parent._clonePageDefinition(e)}_first(e){return this.iterator(e).next()}first(e){return this._first(e)}calculateStatistic(e,t,r,n){return this._ensureLoaded().then((()=>this._stat(e,t,"",null,null,r,n).then((s=>!1===s.calculated?this._manualStat(e,t,r,n).then((e=>e.result)):s.result))))}_manualStat(e,n,s,a){switch(e.toLowerCase()){case"count":return function(e,t){try{return e.iterator(t).count()}catch(n){return r(n)}}(this,a).then((e=>({calculated:!0,result:e})));case"distinct":return ue(this,n,s).then((e=>({calculated:!0,result:e})));case"avg":case"mean":return ae(this,n,a).then((e=>({calculated:!0,result:e})));case"stdev":return function(e,t,r){return ie(e,t,r,!0).then((e=>0===e.length?null:Math.sqrt(te(e))))}(this,n,a).then((e=>({calculated:!0,result:e})));case"variance":return function(e,t,r){return ie(e,t,r,!0).then((e=>0===e.length?null:te(e)))}(this,n,a).then((e=>({calculated:!0,result:e})));case"sum":return function(e,t,r){return ie(e,t,r,!0).then((e=>0===e.length?null:re(e)))}(this,n,a).then((e=>({calculated:!0,result:e})));case"min":return function(e,t,r){return ie(e,t,r,!0).then((e=>0===e.length?null:Math.min.apply(Math,e)))}(this,n,a).then((e=>({calculated:!0,result:e})));case"max":return function(e,t,r){return ie(e,t,r,!0).then((e=>0===e.length?null:Math.max.apply(Math,e)))}(this,n,a).then((e=>({calculated:!0,result:e})));default:return t({calculated:!0,result:0})}}_stat(e,t,r,n,s,a,i){return this._parent._stat(e,t,r,n,s,a,i).then((l=>!1===l.calculated?null===s&&""===r&&null===n?this._manualStat(e,t,a,i):{calculated:!1}:l))}_unionAllGeomSelf(t){const r=this.iterator(this._defaultTracker(t)),n=[];return e(((e,t)=>{this._unionShapeInBatches(n,r,e,t)}))}_unionAllGeom(t){return e(((e,r)=>{const n=this.iterator(this._defaultTracker(t));this._unionShapeInBatches([],n,e,r)}))}_unionShapeInBatches(e,t,r,n){t.next().then((s=>{try{null!==s&&null!==s.geometry&&e.push(s.geometry),e.length>30||null===s&&e.length>1?I(e).then((a=>{try{null===s?r(a):(e=[a],this._unionShapeInBatches(e,t,r,n))}catch(i){n(i)}}),n):null===s?1===e.length?r(e[0]):r(null):this._unionShapeInBatches(e,t,r,n)}catch(a){n(a)}}),n)}iterator(e){return new z(this,e)}intersection(e,t=!1){return he._featuresetFunctions.intersection.bind(this)(e,t)}difference(e,t=!1,r=!0){return he._featuresetFunctions.difference.bind(this)(e,t,r)}symmetricDifference(e,t=!1,r=!0){return he._featuresetFunctions.symmetricDifference.bind(this)(e,t,r)}morphShape(e,t,r="unknown",n=null){return he._featuresetFunctions.morphShape.bind(this)(e,t,r,n)}morphShapeAndAttributes(e,t,r="unknown"){return he._featuresetFunctions.morphShapeAndAttributes.bind(this)(e,t,r)}union(e,t=!1){return he._featuresetFunctions.union.bind(this)(e,t)}intersects(e){return he._featuresetFunctions.intersects.bind(this)(e)}envelopeIntersects(e){return he._featuresetFunctions.envelopeIntersects.bind(this)(e)}contains(e){return he._featuresetFunctions.contains.bind(this)(e)}overlaps(e){return he._featuresetFunctions.overlaps.bind(this)(e)}relate(e,t){return he._featuresetFunctions.relate.bind(this)(e,t)}within(e){return he._featuresetFunctions.within.bind(this)(e)}touches(e){return he._featuresetFunctions.touches.bind(this)(e)}top(e){return he._featuresetFunctions.top.bind(this)(e)}crosses(e){return he._featuresetFunctions.crosses.bind(this)(e)}buffer(e,t,r,n=!0){return he._featuresetFunctions.buffer.bind(this)(e,t,r,n)}filter(e,t=null){return he._featuresetFunctions.filter.bind(this)(e,t)}orderBy(e){return he._featuresetFunctions.orderBy.bind(this)(e)}dissolve(e,t){return he._featuresetFunctions.dissolve.bind(this)(e,t)}groupby(e,t){return he._featuresetFunctions.groupby.bind(this)(e,t)}reduce(t,r=null,n){return e(((e,s)=>{this._reduceImpl(this.iterator(this._defaultTracker(n)),t,r,0,e,s,0)}))}_reduceImpl(e,t,r,n,s,i,l){try{if(++l>1e3)return void setTimeout((()=>{l=0,this._reduceImpl(e,t,r,n,s,i,l)}));e.next().then((u=>{try{if(null===u)s(r);else{const o=t(r,u,n,this);a(o)?o.then((r=>{this._reduceImpl(e,t,r,n+1,s,i,l)}),i):this._reduceImpl(e,t,o,n+1,s,i,l)}}catch(o){i(o)}}),i)}catch(u){i(u)}}removeField(e){return he._featuresetFunctions.removeField.bind(this)(e)}addField(e,t,r=null){return he._featuresetFunctions.addField.bind(this)(e,t,r)}sumArea(e,t=!1,r){const n=f(e);return this.reduce(((e,r)=>null===r.geometry?0:t?w(r.geometry,n).then((t=>e+t)):T(r.geometry,n).then((t=>e+t))),0,r)}sumLength(e,t=!1,r){const n=g(e);return this.reduce(((e,r)=>null===r.geometry?0:t?b(r.geometry,n).then((t=>e+t)):E(r.geometry,n).then((t=>e+t))),0,r)}_substituteVars(e,t){if(null!==t){const r={};for(const e in t)r[e.toLowerCase()]=t[e];e.parameters=r}}distinct(e,t=1e3,r=null,n){return this.load().then((()=>{const s=C.create(e,this.getFieldsIndex());return this._substituteVars(s,r),this.calculateStatistic("distinct",s,t,this._defaultTracker(n))}))}min(e,t=null,r){return this.load().then((()=>{const n=C.create(e,this.getFieldsIndex());return this._substituteVars(n,t),this.calculateStatistic("min",n,-1,this._defaultTracker(r))}))}max(e,t=null,r){return this.load().then((()=>{const n=C.create(e,this.getFieldsIndex());return this._substituteVars(n,t),this.calculateStatistic("max",n,-1,this._defaultTracker(r))}))}avg(e,t=null,r){return this.load().then((()=>{const n=C.create(e,this.getFieldsIndex());return this._substituteVars(n,t),this.calculateStatistic("avg",n,-1,this._defaultTracker(r))}))}sum(e,t=null,r){return this.load().then((()=>{const n=C.create(e,this.getFieldsIndex());return this._substituteVars(n,t),this.calculateStatistic("sum",n,-1,this._defaultTracker(r))}))}stdev(e,t=null,r){return this.load().then((()=>{const n=C.create(e,this.getFieldsIndex());return this._substituteVars(n,t),this.calculateStatistic("stdev",n,-1,this._defaultTracker(r))}))}variance(e,t=null,r){return this.load().then((()=>{const n=C.create(e,this.getFieldsIndex());return this._substituteVars(n,t),this.calculateStatistic("variance",n,-1,this._defaultTracker(r))}))}count(e){return this.load().then((()=>this.calculateStatistic("count",C.create("1",this.getFieldsIndex()),-1,this._defaultTracker(e))))}_defaultTracker(e){return e||{aborted:!1}}forEach(t,r){return e(((e,n)=>{this._forEachImpl(this.iterator(this._defaultTracker(r)),t,this,e,n,0)}))}_forEachImpl(e,t,r,n,s,i){try{if(++i>1e3)return void setTimeout((()=>{i=0,this._forEachImpl(e,t,r,n,s,i)}),0);e.next().then((l=>{try{if(null===l)n(r);else{const u=t(l);null==u?this._forEachImpl(e,t,r,n,s,i):a(u)?u.then((()=>{try{this._forEachImpl(e,t,r,n,s,i)}catch(a){s(a)}}),s):this._forEachImpl(e,t,r,n,s,i)}}catch(u){s(u)}}),s)}catch(l){s(l)}}convertToJSON(e){const t={layerDefinition:{geometryType:this.geometryType,fields:[]},featureSet:{features:[],geometryType:this.geometryType}};for(let r=0;r<this.fields.length;r++)t.layerDefinition.fields.push(m(this.fields[r]));return this.reduce(((e,r)=>{const n={geometry:r.geometry&&r.geometry.toJSON(),attributes:{}};for(const t in r.attributes)n.attributes[t]=r.attributes[t];return t.featureSet.features.push(n),1}),0,e).then((()=>t))}castToText(){return"object, FeatureSet"}queryAttachments(e,t,r,n){return this._parent.queryAttachments(e,t,r,n)}serviceUrl(){return this._parent.serviceUrl()}subtypes(){return this.typeIdField?{subtypeField:this.typeIdField,subtypes:this.types?this.types.map((e=>({name:e.name,code:e.id}))):[]}:null}relationshipMetaData(){return this._parent.relationshipMetaData()}get gdbVersion(){return this._parent?this._parent.gdbVersion:""}schema(){const e=[];for(const t of this.fields)e.push(m(t));return{objectIdField:this.objectIdField,globalIdField:this.globalIdField,geometryType:void 0===S[this.geometryType]?"":S[this.geometryType],fields:e}}convertToText(e,r){return"schema"===e?this._ensureLoaded().then((()=>JSON.stringify(this.schema()))):"featureset"===e?this._ensureLoaded().then((()=>{const e=[];return this.reduce(((t,r)=>{const n={geometry:r.geometry?r.geometry.toJSON():null,attributes:r.attributes};return null!==n.geometry&&n.geometry.spatialReference&&delete n.geometry.spatialReference,e.push(n),1}),0,r).then((()=>{const t=this.schema();return t.features=e,t.spatialReference=this.spatialReference.toJSON(),JSON.stringify(t)}))})):t(this.castToText())}getFeatureByObjectId(e,t){return this._parent.getFeatureByObjectId(e,t)}getOwningSystemUrl(){return this._parent.getOwningSystemUrl()}getIdentityUser(){return this._parent.getIdentityUser()}}he._featuresetFunctions={};class ce extends he{constructor(e){super(e),this.declaredClass="esri.layers.featureset.sources.Empty",this._maxProcessing=1e3,this._wset=new k([],[],!1,null),this._parent=e.parentfeatureset,this._databaseType=l.Standardised}_getSet(){return t(this._wset)}optimisePagingFeatureQueries(){}_isInFeatureSet(){return p.NotInFeatureSet}_getFeature(){return r(new Error("No Feature Found in EmptySet"))}queryAttachments(){return t([])}_getFeatures(){return t("success")}_featureFromCache(){return null}_fetchAndRefineFeatures(){return r(new Error("Fetch and Refine should not be called in this featureset"))}_getFilteredSet(){return t(new k([],[],!1,null))}_stat(e,t,r,n,s,a,i){return this._manualStat(e,t,a,i)}_canDoAggregates(){return t(!1)}}class _e extends he{constructor(e){super(e),this._relation="",this._relationGeom=null,this._relationString="",this.declaredClass="esri.arcade.featureset.actions.SpatialFilter",this._relationString=e.relationString,this._parent=e.parentfeatureset,this._maxProcessing=40,this._relation=e.relation,this._relationGeom=e.relationGeom}_getSet(e){return null===this._wset?this._ensureLoaded().then((()=>this._parent._getFilteredSet("esriSpatialRelRelation"!==this._relation?this._relation:this._relation+":"+this._relationString,this._relationGeom,null,null,e))).then((t=>(this._checkCancelled(e),this._wset=new k(t._candidates.slice(0),t._known.slice(0),t._ordered,this._clonePageDefinition(t.pagesDefinition)),this._wset))):t(this._wset)}_isInFeatureSet(e){let t=this._parent._isInFeatureSet(e);return t===p.NotInFeatureSet?t:(t=this._idstates[e],void 0===t?p.Unknown:t)}_getFeature(e,t,r){return this._parent._getFeature(e,t,r)}_getFeatures(e,t,r,n){return this._parent._getFeatures(e,t,r,n)}_featureFromCache(e){return this._parent._featureFromCache(e)}executeSpatialRelationTest(e){if(null===e.geometry)return t(!1);switch(this._relation){case"esriSpatialRelEnvelopeIntersects":{const t=y(this._relationGeom),r=y(e.geometry);return N(t,r)}case"esriSpatialRelIntersects":return N(this._relationGeom,e.geometry);case"esriSpatialRelContains":return P(this._relationGeom,e.geometry);case"esriSpatialRelOverlaps":return R(this._relationGeom,e.geometry);case"esriSpatialRelWithin":return x(this._relationGeom,e.geometry);case"esriSpatialRelTouches":return v(this._relationGeom,e.geometry);case"esriSpatialRelCrosses":return D(this._relationGeom,e.geometry);case"esriSpatialRelRelation":return F(this._relationGeom,e.geometry,this._relationString)}}_fetchAndRefineFeatures(e,t,r){const n=new k([],e,!1,null),s=Math.min(t,e.length);return this._parent._getFeatures(n,-1,s,r).then((()=>{this._checkCancelled(r);const t=[];for(let r=0;r<s;r++){const n=this._parent._featureFromCache(e[r]);t.push(this.executeSpatialRelationTest(n))}return i(t)})).then((r=>{for(let n=0;n<t;n++)!0===r[n]?this._idstates[e[n]]=p.InFeatureSet:this._idstates[e[n]]=p.NotInFeatureSet;return"success"}))}_getFilteredSet(e,t,r,n,s){return this._ensureLoaded().then((()=>this._parent._getFilteredSet("esriSpatialRelRelation"!==this._relation?this._relation:this._relation+":"+this._relationString,this._relationGeom,r,n,s))).then((e=>{let r;return this._checkCancelled(s),r=null!==t?new k(e._candidates.slice(0).concat(e._known.slice(0)),[],e._ordered,this._clonePageDefinition(e.pagesDefinition)):new k(e._candidates.slice(0),e._known.slice(0),e._ordered,this._clonePageDefinition(e.pagesDefinition)),r}))}_stat(e,r,n,s,a,i,l){return""!==n?t({calculated:!1}):this._parent._stat(e,r,"esriSpatialRelRelation"!==this._relation?this._relation:this._relation+":"+this._relationString,this._relationGeom,a,i,l).then((t=>!1===t.calculated?null===a&&""===n&&null===s?this._manualStat(e,r,i,l):{calculated:!1}:t))}_canDoAggregates(e,r,n,s,a){return""!==n||null!==s||null===this._parent?t(!1):this._parent._canDoAggregates(e,r,"esriSpatialRelRelation"!==this._relation?this._relation:this._relation+":"+this._relationString,this._relationGeom,a)}_getAggregatePagesDataSourceDefinition(e,t,n,s,a,i,l){return null===this._parent?r(new Error("Should never be called")):this._parent._getAggregatePagesDataSourceDefinition(e,t,"esriSpatialRelRelation"!==this._relation?this._relation:this._relation+":"+this._relationString,this._relationGeom,a,i,l)}static registerAction(){he._featuresetFunctions.intersects=function(e){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelIntersects",relationGeom:e})},he._featuresetFunctions.envelopeIntersects=function(e){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelEnvelopeIntersects",relationGeom:e})},he._featuresetFunctions.contains=function(e){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelContains",relationGeom:e})},he._featuresetFunctions.overlaps=function(e){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelOverlaps",relationGeom:e})},he._featuresetFunctions.within=function(e){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelWithin",relationGeom:e})},he._featuresetFunctions.touches=function(e){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelTouches",relationGeom:e})},he._featuresetFunctions.crosses=function(e){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelCrosses",relationGeom:e})},he._featuresetFunctions.relate=function(e,t){return null==e?new ce({parentfeatureset:this}):new _e({parentfeatureset:this,relation:"esriSpatialRelRelation",relationGeom:e,relationString:t})}}}export{V as E,M as a,A as b,ce as c,Q as f,_e as g,W as h,H as i,L as l,ne as m,O as n,U as o,se as p,G as s,k as t,B as u,he as v,X as w};
+var __pow = Math.pow;
+import { ff as l$1, fg as x$1, fh as L$1, bF as k, cE as e, fj as U$1, fk as s$2 } from "./vendor.74d5941c.js";
+import { a4 as o$2, a8 as de, a9 as c$1, aa as u$1, ab as f$3, a2 as he, a0 as I, a1 as l$2, ac as g$3, ad as G, ae as y$1, af as b, ag as F$1 } from "./arcadeUtils.f4f7c393.js";
+import { k as k$1, K, W, M as M$1, F, h as h$2, w as w$2, A, x as x$2, O, p as p$2, g as g$4 } from "./geometryEngineAsync.6e91af62.js";
+import { WhereClause as f$2 } from "./WhereClause.f27c6004.js";
+class a$1 {
+  constructor() {
+    this._databaseTypeMetaData = {}, this._layerInfo = {};
+  }
+  clearDatabaseType(a2) {
+    this._databaseTypeMetaData[a2] === void 0 && delete this._databaseTypeMetaData[a2];
+  }
+  getDatabaseType(a2) {
+    return a2 === "MUSTBESET" || this._databaseTypeMetaData[a2] === void 0 ? null : this._databaseTypeMetaData[a2];
+  }
+  setDatabaseType(a2, e2) {
+    this._databaseTypeMetaData[a2] = e2;
+  }
+  getLayerInfo(a2) {
+    return this._layerInfo[a2] === void 0 ? null : this._layerInfo[a2];
+  }
+  setLayerInfo(a2, e2) {
+    this._layerInfo[a2] = e2;
+  }
+  clearLayerInfo(a2) {
+    this._layerInfo[a2] !== void 0 && delete this._layerInfo[a2];
+  }
+}
+a$1.applicationCache = null;
+class t {
+  constructor(t2, i2, s2, e2) {
+    this._candidates = null, this._known = null, this._lastFetchedIndex = 0, this._ordered = false, this.pagesDefinition = null, this._candidates = t2, this._known = i2, this._ordered = s2, this.pagesDefinition = e2;
+  }
+}
+function n$2(e2, r) {
+  return c(e2.parseTree, r, e2.parameters);
+}
+function a(e2, r, t2) {
+  return c(e2, r, t2);
+}
+function s$1(e2, n2, a2, s2) {
+  return f$2.create(c(e2.parseTree, o$2.Standardised, e2.parameters, n2, a2), s2);
+}
+function o$1(e2, a2, s2 = "AND") {
+  return f$2.create("((" + n$2(e2, o$2.Standardised) + ")" + s2 + "(" + n$2(a2, o$2.Standardised) + "))", e2.fieldsIndex);
+}
+function c(e2, r, t2, n2 = null, a2 = null) {
+  let s2, o2, f2, g2;
+  switch (e2.type) {
+    case "interval":
+      return w$1(c(e2.value, r, t2, n2, a2), e2.qualifier, e2.op);
+    case "case_expression": {
+      let s3 = " CASE ";
+      e2.format === "simple" && (s3 += c(e2.operand, r, t2, n2, a2));
+      for (let o3 = 0; o3 < e2.clauses.length; o3++)
+        s3 += " WHEN " + c(e2.clauses[o3].operand, r, t2, n2, a2) + " THEN " + c(e2.clauses[o3].value, r, t2, n2, a2);
+      return e2.else !== null && (s3 += " ELSE " + c(e2.else, r, t2, n2, a2)), s3 += " END ", s3;
+    }
+    case "param": {
+      const n3 = t2[e2.value.toLowerCase()];
+      if (typeof n3 == "string") {
+        return "'" + t2[e2.value.toLowerCase()].toString().replace(/'/g, "''") + "'";
+      }
+      if (n3 instanceof Date)
+        return u(n3, r);
+      if (n3 instanceof Array) {
+        const e3 = [];
+        for (let t3 = 0; t3 < n3.length; t3++)
+          typeof n3[t3] == "string" ? e3.push("'" + n3[t3].toString().replace(/'/g, "''") + "'") : n3[t3] instanceof Date ? e3.push(u(n3[t3], r)) : e3.push(n3[t3].toString());
+        return e3;
+      }
+      return n3.toString();
+    }
+    case "expr_list":
+      o2 = [];
+      for (const s3 of e2.value)
+        o2.push(c(s3, r, t2, n2, a2));
+      return o2;
+    case "unary_expr":
+      return " ( NOT " + c(e2.expr, r, t2, n2, a2) + " ) ";
+    case "binary_expr":
+      switch (e2.operator) {
+        case "AND":
+          return " (" + c(e2.left, r, t2, n2, a2) + " AND " + c(e2.right, r, t2, n2, a2) + ") ";
+        case "OR":
+          return " (" + c(e2.left, r, t2, n2, a2) + " OR " + c(e2.right, r, t2, n2, a2) + ") ";
+        case "IS":
+          if (e2.right.type !== "null")
+            throw new Error("Unsupported RHS for IS");
+          return " (" + c(e2.left, r, t2, n2, a2) + " IS NULL )";
+        case "ISNOT":
+          if (e2.right.type !== "null")
+            throw new Error("Unsupported RHS for IS");
+          return " (" + c(e2.left, r, t2, n2, a2) + " IS NOT NULL )";
+        case "IN":
+          return s2 = [], e2.right.type === "expr_list" ? (s2 = c(e2.right, r, t2, n2, a2), " (" + c(e2.left, r, t2, n2, a2) + " IN (" + s2.join(",") + ")) ") : (g2 = c(e2.right, r, t2, n2, a2), g2 instanceof Array ? " (" + c(e2.left, r, t2, n2, a2) + " IN (" + g2.join(",") + ")) " : " (" + c(e2.left, r, t2, n2, a2) + " IN (" + g2 + ")) ");
+        case "NOT IN":
+          return s2 = [], e2.right.type === "expr_list" ? (s2 = c(e2.right, r, t2, n2, a2), " (" + c(e2.left, r, t2, n2, a2) + " NOT IN (" + s2.join(",") + ")) ") : (g2 = c(e2.right, r, t2, n2, a2), g2 instanceof Array ? " (" + c(e2.left, r, t2, n2, a2) + " NOT IN (" + g2.join(",") + ")) " : " (" + c(e2.left, r, t2, n2, a2) + " NOT IN (" + g2 + ")) ");
+        case "BETWEEN":
+          return f2 = c(e2.right, r, t2, n2, a2), " (" + c(e2.left, r, t2, n2, a2) + " BETWEEN " + f2[0] + " AND " + f2[1] + " ) ";
+        case "NOTBETWEEN":
+          return f2 = c(e2.right, r, t2, n2, a2), " (" + c(e2.left, r, t2, n2, a2) + " NOT BETWEEN " + f2[0] + " AND " + f2[1] + " ) ";
+        case "LIKE":
+          return e2.escape !== "" ? " (" + c(e2.left, r, t2, n2, a2) + " LIKE " + c(e2.right, r, t2, n2, a2) + " ESCAPE '" + e2.escape + "') " : " (" + c(e2.left, r, t2, n2, a2) + " LIKE " + c(e2.right, r, t2, n2, a2) + ") ";
+        case "NOT LIKE":
+          return e2.escape !== "" ? " (" + c(e2.left, r, t2, n2, a2) + " NOT LIKE " + c(e2.right, r, t2, n2, a2) + " ESCAPE '" + e2.escape + "') " : " (" + c(e2.left, r, t2, n2, a2) + " NOT LIKE " + c(e2.right, r, t2, n2, a2) + ") ";
+        case "<>":
+        case "<":
+        case ">":
+        case ">=":
+        case "<=":
+        case "=":
+        case "*":
+        case "-":
+        case "+":
+        case "/":
+          return " (" + c(e2.left, r, t2, n2, a2) + " " + e2.operator + " " + c(e2.right, r, t2, n2, a2) + ") ";
+      }
+      throw new Error("Not Supported Operator " + e2.operator);
+    case "null":
+      return "null";
+    case "bool":
+      return e2.value === true ? "1" : "0";
+    case "string":
+      return "'" + e2.value.toString().replace(/'/g, "''") + "'";
+    case "timestamp":
+    case "date":
+      return u(e2.value, r);
+    case "number":
+      return e2.value.toString();
+    case "current_time":
+      return i$1(e2.mode === "date", r);
+    case "column_ref":
+      return n2 && n2.toLowerCase() === e2.column.toLowerCase() ? "(" + a2 + ")" : e2.column;
+    case "function": {
+      const s3 = c(e2.args, r, t2, n2, a2);
+      return l(e2.name, s3, r);
+    }
+  }
+  throw new Error("Unsupported sql syntax " + e2.type);
+}
+function l(e2, t2, n2) {
+  switch (e2.toLowerCase().trim()) {
+    case "abs":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for call to ABS");
+      return "abs(" + t2[0] + ")";
+    case "ceiling":
+    case "ceil":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for call to CEILING");
+      switch (n2) {
+        case o$2.Standardised:
+        case o$2.StandardisedNoInterval:
+        default:
+          return "CEILING(" + t2[0] + ")";
+      }
+    case "floor":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for call to Floor");
+      return "FLOOR(" + t2[0] + ")";
+    case "log":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for call to LOG");
+      return "LOG(" + t2[0] + ")";
+    case "log10":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for call to LOG10");
+      return "LOG10(" + t2[0] + ")";
+    case "power":
+      if (t2.length !== 2)
+        throw new Error("Invalid Parameter for call to POWER");
+      return "POWER(" + t2[0] + "," + t2[1] + ")";
+    case "round":
+      if (t2.length === 2)
+        return "ROUND(" + t2[0] + "," + t2[1] + ")";
+      if (t2.length === 1)
+        return "ROUND(" + t2[0] + ")";
+      throw new Error("Invalid Parameter for call to ROUND");
+    case "truncate":
+      if (t2.length < 1 || t2.length > 2)
+        throw new Error("Invalid Parameter for TRUNCATE function");
+      switch (n2) {
+        case o$2.SqlServer:
+          return "ROUND(" + t2[0] + (t2.length === 1 ? "0" : "," + t2[1]) + ",1)";
+        default:
+          return "TRUNCATE(" + t2[0] + (t2.length === 1 ? ")" : "," + t2[1] + ")");
+      }
+    case "char_length":
+    case "len":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for CHAR_LENGTH function");
+      switch (n2) {
+        case o$2.SqlServer:
+          return "LEN(" + t2[0] + ")";
+        case o$2.Oracle:
+          return "LENGTH(" + t2[0] + ")";
+        default:
+          return "CHAR_LENGTH(" + t2[0] + ")";
+      }
+    case "concat":
+      if (t2.length < 1)
+        throw new Error("Invalid Parameter for CONCAT function");
+      {
+        let e3 = "CONCAT(";
+        for (let r = 0; r < t2.length; r++)
+          r !== 0 && (e3 += ","), e3 += t2[r];
+        return e3 += ")", e3;
+      }
+    case "lower":
+    case "lcase":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for Lower function");
+      return "LOWER(" + t2[0] + ")";
+    case "upper":
+    case "ucase":
+      if (t2.length !== 1)
+        throw new Error("Invalid Parameter for Upper function");
+      return "UPPER(" + t2[0] + ")";
+    case "substring": {
+      let e3 = "";
+      switch (n2) {
+        case o$2.Oracle:
+          return e3 = "SUBSTR(" + t2[0] + "," + t2[1], t2.length === 3 && (e3 += "," + t2[2]), e3 += ")", e3;
+        case o$2.SqlServer:
+          return e3 = t2.length === 3 ? "SUBSTRING(" + t2[0] + "," + t2[1] + "," + t2[2] + ")" : "SUBSTRING(" + t2[0] + ",  " + t2[1] + ", LEN(" + t2[0] + ") - " + t2[1] + ")", e3;
+        default:
+          return e3 = "SUBSTRING(" + t2[0] + " FROM " + t2[1], t2.length === 3 && (e3 += " FOR " + t2[2]), e3 += ")", e3;
+      }
+    }
+    case "extract":
+      return "EXTRACT(" + t2[0].replace(/\'/g, "") + " FROM " + t2[1] + ")";
+  }
+  throw new Error("Function Not Recognised");
+}
+function u(t2, n2) {
+  const a2 = de.Moment(t2), s2 = a2.minute() === 0 && a2.hour() === 0 && a2.second() === 0 && a2.millisecond() === 0;
+  switch (n2) {
+    case o$2.FILEGDB:
+    case o$2.Standardised:
+    case o$2.StandardisedNoInterval:
+      return s2 ? "date '" + a2.format("YYYY-MM-DD") + "'" : "date '" + a2.format("YYYY-MM-DD HH:mm:ss") + "'";
+    case o$2.Oracle:
+      return s2 ? "TO_DATE('" + a2.format("YYYY-MM-DD") + "','YYYY-MM-DD')" : "TO_DATE('" + a2.format("YYYY-MM-DD HH:mm:ss") + "','YYYY-MM-DD HH24:MI:SS')";
+    case o$2.SqlServer:
+      return "'" + a2.format(s2 ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm:ss") + "'";
+    case o$2.PGDB:
+      return "#" + a2.format(s2 ? "MM-DD-YYYY" : "MM-DD-YYYY HH:mm:ss") + "#";
+    case o$2.Postgres:
+      return "TIMESTAMP '" + a2.format(s2 ? "YYYY-MM-DD" : "YYYY-MM-DD HH:mm:ss") + "'";
+    default:
+      return "date '" + a2.format("YYYY-MM-DD HH:mm:ss") + "'";
+  }
+}
+function i$1(e2, t2) {
+  switch (t2) {
+    case o$2.FILEGDB:
+    case o$2.Standardised:
+    case o$2.StandardisedNoInterval:
+    case o$2.Oracle:
+      return e2 ? "CURRENT_DATE" : "CURRENT_TIMESTAMP";
+    case o$2.SqlServer:
+      return e2 ? "CAST(GETDATE() AS DATE)" : "GETDATE()";
+    case o$2.PGDB:
+    case o$2.Postgres:
+    default:
+      return e2 ? "CURRENT_DATE" : "CURRENT_TIMESTAMP";
+  }
+}
+function f$1(e2, r, t2 = {}) {
+  const n2 = {}, a2 = {}, s2 = { esriFieldTypeSmallInteger: "integer", esriFieldTypeInteger: "integer", esriFieldTypeSingle: "double", esriFieldTypeDouble: "double", esriFieldTypeString: "string", esriFieldTypeDate: "date", esriFieldTypeOID: "integer", oid: "integer", long: "integer", "small-integer": "integer", integer: "integer", single: "double", double: "double", date: "date", string: "string" };
+  for (const o2 of r) {
+    const e3 = s2[o2.type];
+    n2[o2.name.toLowerCase()] = e3 === void 0 ? "" : e3;
+  }
+  for (const o2 in t2) {
+    const e3 = s2[t2[o2]];
+    a2[o2.toLowerCase()] = e3 === void 0 ? "" : e3;
+  }
+  switch (g$2(n2, e2.parseTree, e2.parameters, a2)) {
+    case "double":
+      return "double";
+    case "integer":
+      return "integer";
+    case "double":
+      return "double";
+    case "date":
+      return "date";
+    case "string":
+      return "string";
+  }
+  return "";
+}
+function g$2(e2, r, t2, n2) {
+  let a2;
+  switch (r.type) {
+    case "interval":
+      return "integer";
+    case "case_expression": {
+      const a3 = [];
+      if (r.format === "simple") {
+        for (let s2 = 0; s2 < r.clauses.length; s2++)
+          a3.push(g$2(e2, r.clauses[s2].value, t2, n2));
+        r.else !== null && a3.push(g$2(e2, r.else, t2, n2));
+      } else {
+        for (let s2 = 0; s2 < r.clauses.length; s2++)
+          a3.push(g$2(e2, r.else, t2, n2));
+        r.else !== null && a3.push(g$2(e2, r.else, t2, n2));
+      }
+      return d$1(a3);
+    }
+    case "param": {
+      const e3 = n2[r.value.toLowerCase()];
+      if (e3 === void 0 && t2) {
+        const e4 = t2[r.value.toLowerCase()];
+        if (e4 === void 0)
+          return "";
+        if (e4 === null)
+          return "";
+        if (typeof e4 == "string" || e4 instanceof String)
+          return "string";
+        if (typeof e4 == "boolean")
+          return "boolean";
+        if (e4 instanceof Date)
+          return "date";
+        if (typeof e4 == "number")
+          return e4 % 1 == 0 ? "integer" : "double";
+      }
+      return e3 === void 0 ? "" : e3;
+    }
+    case "expr_list": {
+      const a3 = [];
+      for (const s2 of r.value)
+        a3.push(g$2(e2, s2, t2, n2));
+      return a3;
+    }
+    case "unary_expr":
+      return "boolean";
+    case "binary_expr":
+      switch (r.operator) {
+        case "AND":
+        case "OR":
+          return "boolean";
+        case "IS":
+        case "ISNOT":
+          if (r.right.type !== "null")
+            throw new Error("Unsupported RHS for IS");
+          return "boolean";
+        case "IN":
+        case "NOT IN":
+        case "BETWEEN":
+        case "NOTBETWEEN":
+        case "LIKE":
+        case "NOT LIKE":
+          return "boolean";
+        case "<>":
+        case "<":
+        case ">":
+        case ">=":
+        case "<=":
+        case "=":
+          return "boolean";
+        case "*":
+        case "-":
+        case "+":
+        case "/":
+          return d$1([g$2(e2, r.left, t2, n2), g$2(e2, r.right, t2, n2)]);
+        default:
+          throw new Error("Not Supported Operator " + r.operator);
+      }
+    case "null":
+      return "";
+    case "bool":
+      return "boolean";
+    case "string":
+      return "string";
+    case "number":
+      return r.value === null ? "" : r.value % 1 == 0 ? "integer" : "double";
+    case "date":
+    case "timestamp":
+    case "current_time":
+      return "date";
+    case "column_ref": {
+      const t3 = e2[r.column.toLowerCase()];
+      return t3 === void 0 ? "" : t3;
+    }
+    case "function":
+      switch (r.name.toLowerCase()) {
+        case "position":
+        case "extract":
+        case "char_length":
+          return "integer";
+        case "round":
+          return a2 = g$2(e2, r.args, t2, n2), a2 instanceof Array ? a2.length > 0 ? a2[0] : "" : a2;
+        case "sign":
+          return a2 = g$2(e2, r.args, t2, n2), a2 instanceof Array && (a2 = d$1(a2)), a2 === "integer" || a2 === "double" ? a2 : "double";
+        case "ceiling":
+        case "floor":
+        case "abs": {
+          const a3 = g$2(e2, r.args, t2, n2);
+          return a3 instanceof Array ? d$1(a3) : a3;
+        }
+        case "area":
+        case "length":
+        case "log":
+        case "log10":
+        case "sin":
+        case "cos":
+        case "tan":
+        case "asin":
+        case "acos":
+        case "atan":
+        case "power":
+          return "double";
+        case "substring":
+        case "trim":
+        case "concat":
+        case "lower":
+        case "upper":
+          return "string";
+        case "truncate":
+          return "double";
+        case "round":
+          return a2 = g$2(e2, r.args, t2, n2), a2 instanceof Array ? a2.length > 0 ? a2[0] : "" : a2;
+      }
+      return "";
+  }
+  throw new Error("Unsupported sql syntax " + r.type);
+}
+const p$1 = { boolean: 1, string: 2, integer: 3, double: 4, date: 5 };
+function d$1(e2) {
+  if (e2) {
+    let r = "";
+    for (const t2 of e2)
+      t2 !== "" && (r = r === "" || p$1[r] < p$1[t2] ? t2 : r);
+    return r;
+  }
+  return "";
+}
+function h$1(e2, r) {
+  return m$1(e2.parseTree, r);
+}
+function E(e2) {
+  return e2.parseTree.type === "column_ref";
+}
+function m$1(e2, r) {
+  if (e2 == null)
+    return false;
+  switch (e2.type) {
+    case "when_clause":
+      return m$1(e2.operand, r) || m$1(e2.value, r);
+    case "case_expression":
+      for (const t2 of e2.clauses)
+        if (m$1(t2, r))
+          return true;
+      return !(e2.format !== "simple" || !m$1(e2.operand, r)) || !(e2.else === null || !m$1(e2.else, r));
+    case "param":
+      return false;
+    case "expr_list":
+      for (const t2 of e2.value)
+        if (m$1(t2, r))
+          return true;
+      return false;
+    case "unary_expr":
+      return m$1(e2.expr, r);
+    case "binary_expr":
+      return m$1(e2.left, r) || m$1(e2.right, r);
+    case "null":
+    case "bool":
+    case "date":
+    case "timestamp":
+    case "string":
+    case "number":
+      return false;
+    case "column_ref":
+      return r.toLowerCase() === e2.column.toLowerCase();
+    case "function":
+      return m$1(e2.args, r);
+  }
+  return false;
+}
+function T(e2) {
+  let r = "";
+  return r += e2.period.toUpperCase(), r;
+}
+function w$1(e2, r, t2) {
+  let n2 = "";
+  return n2 = r.type === "interval-period" ? T(r) : T(r.start) + " TO " + T(r.end), "INTERVAL " + t2 + " " + e2 + " " + n2;
+}
+class n$1 {
+  constructor(t2, e2) {
+    this._lastId = -1, this._progress = e2, this._parent = t2;
+  }
+  reset() {
+    this._lastId = -1;
+  }
+  nextBatch(e2) {
+    if (this._parent._mainSetInUse !== null)
+      return this._parent._mainSetInUse.then((t2) => this.nextBatch(e2), (t2) => this.nextBatch(e2));
+    const n2 = { returnpromise: null, hasset: false }, s2 = [];
+    return n2.returnpromise = l$1((t2, a2) => {
+      this._parent._getSet(this._progress).then((h2) => {
+        let _ = h2._known.length - 1;
+        if (h2._known[h2._known.length - 1] === "GETPAGES" && (_ -= 1), this._lastId + e2 > _ && h2._known.length > 0 && h2._known[h2._known.length - 1] === "GETPAGES")
+          this._parent._expandPagedSet(h2, this._parent._maxQueryRate(), 0, 0, this._progress).then((s3) => {
+            n2.hasset = true, this._parent._mainSetInUse = null, this.nextBatch(e2).then(t2, a2);
+          }, (t3) => {
+            n2.hasset = true, this._parent._mainSetInUse = null, a2(t3);
+          });
+        else {
+          if (_ >= this._lastId + e2 || h2._candidates.length === 0) {
+            for (let t3 = 0; t3 < e2; t3++) {
+              const e3 = t3 + this._lastId + 1;
+              if (e3 >= h2._known.length)
+                break;
+              s2[t3] = h2._known[e3];
+            }
+            return this._lastId += s2.length, s2.length === 0 && (n2.hasset = true, this._parent._mainSetInUse = null, t2([])), void this._parent._getFeatureBatch(s2, this._progress).then((e3) => {
+              n2.hasset = true, this._parent._mainSetInUse = null, t2(e3);
+            }, (t3) => {
+              n2.hasset = true, this._parent._mainSetInUse = null, a2(t3);
+            });
+          }
+          this._parent._refineSetBlock(h2, this._parent._maxProcessingRate(), this._progress).then(() => {
+            n2.hasset = true, this._parent._mainSetInUse = null, this.nextBatch(e2).then(t2, a2);
+          }, (t3) => {
+            n2.hasset = true, this._parent._mainSetInUse = null, a2(t3);
+          });
+        }
+      }, (t3) => {
+        n2.hasset = true, this._parent._mainSetInUse = null, a2(t3);
+      });
+    }), n2.hasset === false && (this._parent._mainSetInUse = n2.returnpromise, n2.hasset = true), n2.returnpromise;
+  }
+  next() {
+    if (this._parent._mainSetInUse !== null)
+      return this._parent._mainSetInUse.then((t2) => this.next(), (t2) => this.next());
+    const e2 = { returnpromise: null, hasset: false };
+    return e2.returnpromise = l$1((t2, n2) => {
+      this._parent._getSet(this._progress).then((s2) => {
+        this._lastId < s2._known.length - 1 ? s2._known[this._lastId + 1] === "GETPAGES" ? this._parent._expandPagedSet(s2, this._parent._maxQueryRate(), 0, 0, this._progress).then((t3) => (e2.hasset = true, this._parent._mainSetInUse = null, this.next())).then(t2, n2) : (this._lastId += 1, this._parent._getFeature(s2, s2._known[this._lastId], this._progress).then((n3) => {
+          e2.hasset = true, this._parent._mainSetInUse = null, t2(n3);
+        }, (t3) => {
+          e2.hasset = true, this._parent._mainSetInUse = null, n2(t3);
+        })) : s2._candidates.length > 0 ? this._parent._refineSetBlock(s2, this._parent._maxProcessingRate(), this._progress).then(() => {
+          e2.hasset = true, this._parent._mainSetInUse = null, this.next().then(t2, n2);
+        }, (t3) => {
+          e2.hasset = true, this._parent._mainSetInUse = null, n2(t3);
+        }) : (e2.hasset = true, this._parent._mainSetInUse = null, t2(null));
+      }, (t3) => {
+        e2.hasset = true, this._parent._mainSetInUse = null, n2(t3);
+      });
+    }), e2.hasset === false && (this._parent._mainSetInUse = e2.returnpromise, e2.hasset = true), e2.returnpromise;
+  }
+  count() {
+    return this._parent._totalCount !== -1 ? x$1(this._parent._totalCount) : this._parent._getSet(this._progress).then((t2) => this._refineAllSets(t2)).then((t2) => (this._parent._totalCount = t2._known.length, x$1(this._parent._totalCount)));
+  }
+  _refineAllSets(t2) {
+    return t2._known.length > 0 && t2._known[t2._known.length - 1] === "GETPAGES" ? this._parent._expandPagedSet(t2, this._parent._maxQueryRate(), 0, 1, this._progress).then((e2) => this._refineAllSets(t2)).then((t3) => x$1(t3)) : t2._candidates.length > 0 ? t2._known[t2._candidates.length - 1] === "GETPAGES" ? this._parent._expandPagedSet(t2, this._parent._maxQueryRate(), 0, 2, this._progress).then((e2) => this._refineAllSets(t2)).then((t3) => x$1(t3)) : this._parent._refineSetBlock(t2, this._parent._maxProcessingRate(), this._progress).then((t3) => t3._candidates.length > 0 ? this._refineAllSets(t3) : x$1(t3)) : x$1(t2);
+  }
+}
+function s(t2) {
+  return t2 = +t2, isFinite(t2) ? t2 - t2 % 1 || (t2 < 0 ? -0 : t2 === 0 ? t2 : 0) : t2;
+}
+function i(t2) {
+  let n2 = 0;
+  for (let e2 = 0; e2 < t2.length; e2++)
+    n2 += t2[e2];
+  return n2 / t2.length;
+}
+function o(t2) {
+  const n2 = i(t2);
+  let e2 = 0;
+  for (let r = 0; r < t2.length; r++)
+    e2 += __pow(n2 - t2[r], 2);
+  return e2 / t2.length;
+}
+function h(t2) {
+  const n2 = i(t2);
+  let e2 = 0;
+  for (let r = 0; r < t2.length; r++)
+    e2 += __pow(n2 - t2[r], 2);
+  return e2 / (t2.length - 1);
+}
+function f(t2) {
+  let n2 = 0;
+  for (let e2 = 0; e2 < t2.length; e2++)
+    n2 += t2[e2];
+  return n2;
+}
+function g$1(t2, n2) {
+  const e2 = [], c2 = {}, a2 = [];
+  for (let s2 = 0; s2 < t2.length; s2++) {
+    if (t2[s2] !== void 0 && t2[s2] !== null) {
+      const n3 = t2[s2];
+      if (c$1(n3) || u$1(n3))
+        c2[n3] === void 0 && (e2.push(n3), c2[n3] = 1);
+      else {
+        let t3 = false;
+        for (let e3 = 0; e3 < a2.length; e3++)
+          f$3(a2[e3], n3) === true && (t3 = true);
+        t3 === false && (a2.push(n3), e2.push(n3));
+      }
+    }
+    if (e2.length >= n2 && n2 !== -1)
+      return e2;
+  }
+  return e2;
+}
+function m(t2) {
+  switch (t2.toLowerCase()) {
+    case "distinct":
+      return "distinct";
+    case "avg":
+    case "mean":
+      return "avg";
+    case "min":
+      return "min";
+    case "sum":
+      return "sum";
+    case "max":
+      return "max";
+    case "stdev":
+    case "stddev":
+      return "stddev";
+    case "var":
+    case "variance":
+      return "var";
+    case "count":
+      return "count";
+  }
+  return "";
+}
+function p(t2, n2, e2 = 1e3) {
+  switch (t2.toLowerCase()) {
+    case "distinct":
+      return g$1(n2, e2);
+    case "avg":
+    case "mean":
+      return i(n2);
+    case "min":
+      return Math.min.apply(Math, n2);
+    case "sum":
+      return f(n2);
+    case "max":
+      return Math.max.apply(Math, n2);
+    case "stdev":
+    case "stddev":
+      return Math.sqrt(o(n2));
+    case "var":
+    case "variance":
+      return o(n2);
+    case "count":
+      return n2.length;
+  }
+  return 0;
+}
+function d(t2, n2, e2) {
+  return q(t2, n2, e2, true).then((t3) => t3.length === 0 ? null : Math.min.apply(Math, t3));
+}
+function v$1(t2, n2, e2) {
+  return q(t2, n2, e2, true).then((t3) => t3.length === 0 ? null : Math.max.apply(Math, t3));
+}
+function M(t2, n2, e2) {
+  let r = "";
+  return E(n2) === false && (r = f$1(n2, t2.fields, null)), q(t2, n2, e2, true).then((t3) => {
+    if (t3.length === 0)
+      return null;
+    const n3 = i(t3);
+    return n3 === null ? n3 : r === "integer" ? s(n3) : n3;
+  });
+}
+function x(t2, n2, e2) {
+  return q(t2, n2, e2, true).then((t3) => t3.length === 0 ? null : h(t3));
+}
+function y(t2, n2, e2) {
+  return q(t2, n2, e2, true).then((t3) => t3.length === 0 ? null : Math.sqrt(h(t3)));
+}
+function j(t2, n2, e2) {
+  return q(t2, n2, e2, true).then((t3) => t3.length === 0 ? null : f(t3));
+}
+function w(n2, e2) {
+  try {
+    return n2.iterator(e2).count();
+  } catch (r) {
+    return L$1(r);
+  }
+}
+function q(e2, r, u2, l2 = false) {
+  try {
+    const t2 = e2.iterator(u2);
+    return l$1((n2, e3) => {
+      U(t2, [], r, l2, n2, e3);
+    });
+  } catch (c2) {
+    return L$1(c2);
+  }
+}
+function U(t2, n2, r, u2, l2, c2) {
+  he(t2.next().then((e2) => {
+    try {
+      if (e2 !== null) {
+        const a2 = r.calculateValue(e2);
+        return a2 === null ? u2 === false && (n2[n2.length] = a2) : n2[n2.length] = a2, U(t2, n2, r, u2, l2, c2);
+      }
+      l2(n2);
+    } catch (a2) {
+      c2(a2);
+    }
+  }, c2));
+}
+function C(t2, n2, e2 = 1e3, r = null) {
+  return L(t2, n2, e2, r);
+}
+function L(n2, e2, r, u2) {
+  try {
+    return V(n2.iterator(u2), {}, [], e2, r);
+  } catch (l2) {
+    return L$1(l2);
+  }
+}
+function V(t2, n2, e2, r, u2) {
+  return t2.next().then((l2) => {
+    if (l2 !== null) {
+      const c2 = r.calculateValue(l2);
+      return c2 != null && n2[c2] === void 0 && (e2.push(c2), n2[c2] = 1), e2.length >= u2 && u2 !== -1 ? e2 : V(t2, n2, e2, r, u2);
+    }
+    return e2;
+  });
+}
+class v {
+  constructor(e2) {
+    this.recentlyUsedQueries = null, this.featureSetQueryInterceptor = null, this._idstates = [], this._parent = null, this._wset = null, this._mainSetInUse = null, this._maxProcessing = 200, this._maxQuery = 500, this._totalCount = -1, this._databaseType = o$2.NotEvaluated, this._databaseTypeProbed = null, this.declaredRootClass = "esri.arcade.featureset.support.FeatureSet", this._featureCache = [], this.types = null, this.fields = null, this.geometryType = "", this.objectIdField = "", this.globalIdField = "", this.spatialReference = null, this.hasM = false, this.hasZ = false, this._transparent = false, this.loaded = false, this._loadPromise = null, this._fieldsIndex = null, e2 && e2.lrucache && (this.recentlyUsedQueries = e2.lrucache), e2 && e2.interceptor && (this.featureSetQueryInterceptor = e2.interceptor);
+  }
+  optimisePagingFeatureQueries(e2) {
+    this._parent && this._parent.optimisePagingFeatureQueries(e2);
+  }
+  _hasMemorySource() {
+    return true;
+  }
+  prop(e2, t2) {
+    return t2 === void 0 ? this[e2] : (this[e2] !== void 0 && (this[e2] = t2), this);
+  }
+  end() {
+    return this._parent !== null && this._parent._transparent === true ? this._parent.end() : this._parent;
+  }
+  _ensureLoaded() {
+    return this.load();
+  }
+  load() {
+    return this._loadPromise === null && (this._loadPromise = l$1((e2, t2) => {
+      if (this._parent.loaded === true)
+        return this._initialiseFeatureSet(), void e2(this);
+      this._parent.load().then(() => {
+        try {
+          this._initialiseFeatureSet(), e2(this);
+        } catch (r) {
+          t2(r);
+        }
+      }, t2);
+    })), this._loadPromise;
+  }
+  _initialiseFeatureSet() {
+    this._parent !== null ? (this.fields = this._parent.fields.slice(0), this.geometryType = this._parent.geometryType, this.objectIdField = this._parent.objectIdField, this.globalIdField = this._parent.globalIdField, this.spatialReference = this._parent.spatialReference, this.hasM = this._parent.hasM, this.hasZ = this._parent.hasZ, this.typeIdField = this._parent.typeIdField, this.types = this._parent.types) : (this.fields = [], this.typeIdField = "", this.objectIdField = "", this.globalIdField = "", this.spatialReference = new k({ wkid: 4326 }), this.geometryType = I.point);
+  }
+  getField(e2, t2) {
+    let r;
+    return (t2 = t2 || this.fields) && (e2 = e2.toLowerCase(), t2.some((t3) => (t3 && t3.name.toLowerCase() === e2 && (r = t3), !!r))), r;
+  }
+  getFieldsIndex() {
+    return this._fieldsIndex === null && (this._fieldsIndex = new e(this.fields)), this._fieldsIndex;
+  }
+  _maxProcessingRate() {
+    return this._parent !== null ? Math.min(this._maxProcessing, this._parent._maxProcessingRate()) : Math.min(this._maxProcessing, this._maxQueryRate());
+  }
+  _maxQueryRate() {
+    return this._parent !== null ? Math.max(this._maxQuery, this._parent._maxQueryRate()) : this._maxQuery;
+  }
+  _checkCancelled(e2) {
+    if (e2 !== null && e2.aborted)
+      throw new Error("Operation has been cancelled.");
+  }
+  nativeCapabilities() {
+    return this._parent.nativeCapabilities();
+  }
+  _canDoAggregates(e2, r, n2, s2, i2) {
+    return this._parent === null ? x$1(false) : this._parent._canDoAggregates(e2, r, n2, s2, i2);
+  }
+  _getAggregatePagesDataSourceDefinition(e2, t2, n2, s2, i2, a2, h2) {
+    return this._parent === null ? L$1(new Error("Should never be called")) : this._parent._getAggregatePagesDataSourceDefinition(e2, t2, n2, s2, i2, a2, h2);
+  }
+  _getAgregagtePhysicalPage(e2, t2, n2) {
+    return this._parent === null ? L$1(new Error("Should never be called")) : this._parent._getAgregagtePhysicalPage(e2, t2, n2);
+  }
+  databaseType() {
+    if (this._databaseType === o$2.NotEvaluated) {
+      if (a$1.applicationCache !== null) {
+        const e2 = a$1.applicationCache.getDatabaseType(this._cacheableFeatureSetSourceKey());
+        if (e2 !== null)
+          return e2;
+      }
+      if (this._databaseTypeProbed !== null)
+        return this._databaseTypeProbed;
+      const t2 = [{ thetype: o$2.SqlServer, testwhere: "(CAST( '2015-01-01' as DATETIME) = CAST( '2015-01-01' as DATETIME)) AND OBJECTID<0" }, { thetype: o$2.Oracle, testwhere: "(TO_DATE('2003-11-18','YYYY-MM-DD') = TO_DATE('2003-11-18','YYYY-MM-DD')) AND OBJECTID<0" }, { thetype: o$2.StandardisedNoInterval, testwhere: "(date '2015-01-01 10:10:10' = date '2015-01-01 10:10:10') AND OBJECTID<0" }];
+      let r = l$1((e2, r2) => {
+        this._getDatabaseTypeImpl(t2, 0).then((t3) => {
+          this._databaseType = t3, e2(this._databaseType);
+        }, (e3) => {
+          r2(e3);
+        });
+      });
+      return a$1.applicationCache !== null && (a$1.applicationCache.setDatabaseType(this._cacheableFeatureSetSourceKey(), r), r = r.catch((e2) => {
+        throw a$1.applicationCache.clearDatabaseType(this._cacheableFeatureSetSourceKey()), e2;
+      })), this._databaseTypeProbed = r, this._databaseTypeProbed;
+    }
+    return x$1(this._databaseType);
+  }
+  _cacheableFeatureSetSourceKey() {
+    return "MUSTBESET";
+  }
+  _getDatabaseTypeImpl(e2, r) {
+    return r >= e2.length ? x$1(o$2.StandardisedNoInterval) : this._runDatabaseProbe(e2[r].testwhere).then((t2) => t2 === true ? e2[r].thetype : this._getDatabaseTypeImpl(e2, r + 1));
+  }
+  _runDatabaseProbe(e2) {
+    return this._parent !== null ? this._parent._runDatabaseProbe(e2) : L$1(new Error("Not Implemented"));
+  }
+  isTable() {
+    return this._parent.isTable();
+  }
+  _featureFromCache(e2) {
+    if (this._featureCache[e2] !== void 0)
+      return this._featureCache[e2];
+  }
+  _isInFeatureSet(e2) {
+    return l$2.Unknown;
+  }
+  _getSet(e2) {
+    throw new Error("Not implemented in abstract class");
+  }
+  _getFeature(e2, n2, s2) {
+    try {
+      return this._checkCancelled(s2), this._featureFromCache(n2) !== void 0 ? x$1(this._featureFromCache(n2)) : this._getFeatures(e2, n2, this._maxProcessingRate(), s2).then(() => (this._checkCancelled(s2), this._featureFromCache(n2) !== void 0 ? this._featureFromCache(n2) : L$1(new Error("Feature Not Found"))));
+    } catch (i2) {
+      return L$1(i2);
+    }
+  }
+  _getFeatureBatch(e2, t$1) {
+    try {
+      this._checkCancelled(t$1);
+      const r = new t([], e2, false, null), n2 = [];
+      return this._getFeatures(r, -1, e2.length, t$1).then(() => {
+        this._checkCancelled(t$1);
+        for (const t2 of e2)
+          this._featureFromCache(t2) !== void 0 && n2.push(this._featureFromCache(t2));
+        return n2;
+      });
+    } catch (n2) {
+      return L$1(n2);
+    }
+  }
+  _getFeatures(e2, r, n2, s2) {
+    return x$1("success");
+  }
+  _getFilteredSet(e2, t2, r, n2, s2) {
+    throw new Error("Not implemented in abstract class");
+  }
+  _refineSetBlock(e2, n2, s2) {
+    try {
+      if (this._checkIfNeedToExpandCandidatePage(e2, this._maxQueryRate()) === true)
+        return this._expandPagedSet(e2, this._maxQueryRate(), 0, 0, s2).then(() => this._refineSetBlock(e2, n2, s2));
+      this._checkCancelled(s2);
+      const r = e2._candidates.length;
+      this._refineKnowns(e2, n2);
+      let i2 = r - e2._candidates.length;
+      return e2._candidates.length === 0 || i2 >= n2 ? x$1(e2) : this._refineIfParentKnown(e2, n2 - i2, s2).then(() => {
+        if (this._checkCancelled(s2), this._refineKnowns(e2, n2 - i2), i2 = r - e2._candidates.length, i2 < n2 && e2._candidates.length > 0) {
+          const t2 = n2 - i2, r2 = this._prepareFetchAndRefineSet(e2._candidates);
+          return this._fetchAndRefineFeatures(r2, r2.length > t2 ? t2 : e2._candidates.length, s2).then(() => (this._checkCancelled(s2), this._refineKnowns(e2, n2 - i2), e2));
+        }
+        return e2;
+      });
+    } catch (i2) {
+      return L$1(i2);
+    }
+  }
+  _fetchAndRefineFeatures(e2, t2, r) {
+    return null;
+  }
+  _prepareFetchAndRefineSet(e2) {
+    const t2 = [];
+    for (let r = 0; r < e2.length; r++)
+      this._isPhysicalFeature(e2[r]) && t2.push(e2[r]);
+    return t2;
+  }
+  _isPhysicalFeature(e2) {
+    return this._parent === null || this._parent._isPhysicalFeature(e2);
+  }
+  _refineKnowns(e2, t2) {
+    let r = 0, n2 = null;
+    const s2 = [];
+    t2 = this._maxQueryRate();
+    for (let i2 = 0; i2 < e2._candidates.length && e2._candidates[i2] !== "GETPAGES"; i2++) {
+      let a2 = false;
+      const l2 = this._candidateIdTransform(e2._candidates[i2]);
+      l2 !== e2._candidates[i2] && (a2 = true);
+      const u2 = this._isInFeatureSet(l2);
+      if (u2 === l$2.InFeatureSet)
+        a2 === true ? e2._known.indexOf(l2) < 0 && (e2._known.push(l2), r += 1) : (e2._known.push(e2._candidates[i2]), r += 1), n2 === null ? n2 = { start: i2, end: i2 } : n2.end === i2 - 1 ? n2.end = i2 : (s2.push(n2), n2 = { start: i2, end: i2 });
+      else if (u2 === l$2.NotInFeatureSet)
+        n2 === null ? n2 = { start: i2, end: i2 } : n2.end === i2 - 1 ? n2.end = i2 : (s2.push(n2), n2 = { start: i2, end: i2 }), r += 1;
+      else if (u2 === l$2.Unknown && (r += 1, e2._ordered === true))
+        break;
+      if (r >= t2)
+        break;
+    }
+    n2 !== null && s2.push(n2);
+    for (let i2 = s2.length - 1; i2 >= 0; i2--)
+      e2._candidates.splice(s2[i2].start, s2[i2].end - s2[i2].start + 1);
+  }
+  _refineIfParentKnown(e2, t$1, r) {
+    const n2 = new t([], [], e2._ordered, null);
+    return n2._candidates = e2._candidates.slice(0), this._parent._refineSetBlock(n2, t$1, r);
+  }
+  _candidateIdTransform(e2) {
+    return this._parent._candidateIdTransform(e2);
+  }
+  _checkIfNeedToExpandKnownPage(e2, t2) {
+    if (e2.pagesDefinition === null)
+      return false;
+    let r = 0;
+    for (let n2 = e2._lastFetchedIndex; n2 < e2._known.length; n2++) {
+      if (e2._known[n2] === "GETPAGES")
+        return true;
+      if (this._featureCache[e2._known[n2]] === void 0 && (r += 1, r >= t2))
+        break;
+    }
+    return false;
+  }
+  _checkIfNeedToExpandCandidatePage(e2, t2) {
+    if (e2.pagesDefinition === null)
+      return false;
+    let r = 0;
+    for (let n2 = 0; n2 < e2._candidates.length; n2++) {
+      if (e2._candidates[n2] === "GETPAGES")
+        return true;
+      if (r += 1, r >= t2)
+        break;
+    }
+    return false;
+  }
+  _expandPagedSet(e2, t2, n2, s2, i2) {
+    return this._parent === null ? L$1(new Error("Parent Paging not implemented")) : this._parent._expandPagedSet(e2, t2, n2, s2, i2);
+  }
+  _expandPagedSetFeatureSet(e2, r, n2, s2, i2) {
+    return e2._known.length > 0 && e2._known[e2._known.length - 1] === "GETPAGES" && (s2 = 1), s2 === 0 && e2._candidates.length > 0 && e2._candidates[e2._candidates.length - 1] === "GETPAGES" && (s2 = 2), s2 === 0 ? x$1("finished") : this._getPage(e2, s2, i2).then((t2) => n2 + t2 < r ? this._expandPagedSet(e2, r, n2 + t2, 0, i2) : "success");
+  }
+  _getPage(e2, r, n2) {
+    const s2 = r === 1 ? e2._known : e2._candidates;
+    if (e2.pagesDefinition.internal.set.length > e2.pagesDefinition.resultOffset || e2.pagesDefinition.internal.fullyResolved === true) {
+      s2.length = s2.length - 1;
+      let r2 = 0;
+      for (let t2 = 0; t2 < e2.pagesDefinition.resultRecordCount && !(e2.pagesDefinition.resultOffset + t2 >= e2.pagesDefinition.internal.set.length); t2++)
+        s2[s2.length] = e2.pagesDefinition.internal.set[e2.pagesDefinition.resultOffset + t2], r2++;
+      e2.pagesDefinition.resultOffset += r2;
+      let n3 = false;
+      return e2.pagesDefinition.internal.fullyResolved === true && e2.pagesDefinition.internal.set.length <= e2.pagesDefinition.resultOffset && (n3 = true), n3 === false && s2.push("GETPAGES"), x$1(r2);
+    }
+    return this._getPhysicalPage(e2, r, n2).then(() => this._getPage(e2, r, n2));
+  }
+  _getPhysicalPage(e2, t2, r) {
+    return null;
+  }
+  _clonePageDefinition(e2) {
+    return this._parent === null ? null : this._parent._clonePageDefinition(e2);
+  }
+  _first(e2) {
+    return this.iterator(e2).next();
+  }
+  first(e2) {
+    return this._first(e2);
+  }
+  calculateStatistic(e2, t2, r, n2) {
+    return this._ensureLoaded().then(() => this._stat(e2, t2, "", null, null, r, n2).then((s2) => s2.calculated === false ? this._manualStat(e2, t2, r, n2).then((e3) => e3.result) : s2.result));
+  }
+  _manualStat(e2, r, n2, s2) {
+    switch (e2.toLowerCase()) {
+      case "count":
+        return w(this, s2).then((e3) => ({ calculated: true, result: e3 }));
+      case "distinct":
+        return C(this, r, n2).then((e3) => ({ calculated: true, result: e3 }));
+      case "avg":
+      case "mean":
+        return M(this, r, s2).then((e3) => ({ calculated: true, result: e3 }));
+      case "stdev":
+        return y(this, r, s2).then((e3) => ({ calculated: true, result: e3 }));
+      case "variance":
+        return x(this, r, s2).then((e3) => ({ calculated: true, result: e3 }));
+      case "sum":
+        return j(this, r, s2).then((e3) => ({ calculated: true, result: e3 }));
+      case "min":
+        return d(this, r, s2).then((e3) => ({ calculated: true, result: e3 }));
+      case "max":
+        return v$1(this, r, s2).then((e3) => ({ calculated: true, result: e3 }));
+      default:
+        return x$1({ calculated: true, result: 0 });
+    }
+  }
+  _stat(e2, t2, r, n2, s2, i2, a2) {
+    return this._parent._stat(e2, t2, r, n2, s2, i2, a2).then((h2) => h2.calculated === false ? s2 === null && r === "" && n2 === null ? this._manualStat(e2, t2, i2, a2) : { calculated: false } : h2);
+  }
+  _unionAllGeomSelf(t2) {
+    const r = this.iterator(this._defaultTracker(t2)), n2 = [];
+    return l$1((e2, t3) => {
+      this._unionShapeInBatches(n2, r, e2, t3);
+    });
+  }
+  _unionAllGeom(t2) {
+    return l$1((e2, r) => {
+      const n2 = this.iterator(this._defaultTracker(t2)), s2 = [];
+      this._unionShapeInBatches(s2, n2, e2, r);
+    });
+  }
+  _unionShapeInBatches(e2, t2, r, n2) {
+    t2.next().then((s2) => {
+      try {
+        s2 !== null && s2.geometry !== null && e2.push(s2.geometry), e2.length > 30 || s2 === null && e2.length > 1 ? k$1(e2).then((i2) => {
+          try {
+            s2 === null ? r(i2) : (e2 = [i2], this._unionShapeInBatches(e2, t2, r, n2));
+          } catch (a2) {
+            n2(a2);
+          }
+        }, n2) : s2 === null ? e2.length === 1 ? r(e2[0]) : r(null) : this._unionShapeInBatches(e2, t2, r, n2);
+      } catch (i2) {
+        n2(i2);
+      }
+    }, n2);
+  }
+  iterator(e2) {
+    return new n$1(this, e2);
+  }
+  intersection(e2, t2 = false) {
+    return v._featuresetFunctions.intersection.bind(this)(e2, t2);
+  }
+  difference(e2, t2 = false, r = true) {
+    return v._featuresetFunctions.difference.bind(this)(e2, t2, r);
+  }
+  symmetricDifference(e2, t2 = false, r = true) {
+    return v._featuresetFunctions.symmetricDifference.bind(this)(e2, t2, r);
+  }
+  morphShape(e2, t2, r = "unknown", n2 = null) {
+    return v._featuresetFunctions.morphShape.bind(this)(e2, t2, r, n2);
+  }
+  morphShapeAndAttributes(e2, t2, r = "unknown") {
+    return v._featuresetFunctions.morphShapeAndAttributes.bind(this)(e2, t2, r);
+  }
+  union(e2, t2 = false) {
+    return v._featuresetFunctions.union.bind(this)(e2, t2);
+  }
+  intersects(e2) {
+    return v._featuresetFunctions.intersects.bind(this)(e2);
+  }
+  envelopeIntersects(e2) {
+    return v._featuresetFunctions.envelopeIntersects.bind(this)(e2);
+  }
+  contains(e2) {
+    return v._featuresetFunctions.contains.bind(this)(e2);
+  }
+  overlaps(e2) {
+    return v._featuresetFunctions.overlaps.bind(this)(e2);
+  }
+  relate(e2, t2) {
+    return v._featuresetFunctions.relate.bind(this)(e2, t2);
+  }
+  within(e2) {
+    return v._featuresetFunctions.within.bind(this)(e2);
+  }
+  touches(e2) {
+    return v._featuresetFunctions.touches.bind(this)(e2);
+  }
+  top(e2) {
+    return v._featuresetFunctions.top.bind(this)(e2);
+  }
+  crosses(e2) {
+    return v._featuresetFunctions.crosses.bind(this)(e2);
+  }
+  buffer(e2, t2, r, n2 = true) {
+    return v._featuresetFunctions.buffer.bind(this)(e2, t2, r, n2);
+  }
+  filter(e2, t2 = null) {
+    return v._featuresetFunctions.filter.bind(this)(e2, t2);
+  }
+  orderBy(e2) {
+    return v._featuresetFunctions.orderBy.bind(this)(e2);
+  }
+  dissolve(e2, t2) {
+    return v._featuresetFunctions.dissolve.bind(this)(e2, t2);
+  }
+  groupby(e2, t2) {
+    return v._featuresetFunctions.groupby.bind(this)(e2, t2);
+  }
+  reduce(t2, r = null, n2) {
+    return l$1((e2, s2) => {
+      this._reduceImpl(this.iterator(this._defaultTracker(n2)), t2, r, 0, e2, s2, 0);
+    });
+  }
+  _reduceImpl(e2, t2, r, s2, i2, a2, h2) {
+    try {
+      if (++h2 > 1e3)
+        return void setTimeout(() => {
+          h2 = 0, this._reduceImpl(e2, t2, r, s2, i2, a2, h2);
+        });
+      e2.next().then((l2) => {
+        try {
+          if (l2 === null)
+            i2(r);
+          else {
+            const u2 = t2(r, l2, s2, this);
+            U$1(u2) ? u2.then((r2) => {
+              this._reduceImpl(e2, t2, r2, s2 + 1, i2, a2, h2);
+            }, a2) : this._reduceImpl(e2, t2, u2, s2 + 1, i2, a2, h2);
+          }
+        } catch (u2) {
+          a2(u2);
+        }
+      }, a2);
+    } catch (l2) {
+      a2(l2);
+    }
+  }
+  removeField(e2) {
+    return v._featuresetFunctions.removeField.bind(this)(e2);
+  }
+  addField(e2, t2, r = null) {
+    return v._featuresetFunctions.addField.bind(this)(e2, t2, r);
+  }
+  sumArea(e2, t2 = false, r) {
+    const n2 = g$3(e2);
+    return this.reduce((e3, r2) => r2.geometry === null ? 0 : t2 ? K(r2.geometry, n2).then((t3) => e3 + t3) : W(r2.geometry, n2).then((t3) => e3 + t3), 0, r);
+  }
+  sumLength(e2, t2 = false, r) {
+    const n2 = G(e2);
+    return this.reduce((e3, r2) => r2.geometry === null ? 0 : t2 ? M$1(r2.geometry, n2).then((t3) => e3 + t3) : F(r2.geometry, n2).then((t3) => e3 + t3), 0, r);
+  }
+  _substituteVars(e2, t2) {
+    if (t2 !== null) {
+      const r = {};
+      for (const e3 in t2)
+        r[e3.toLowerCase()] = t2[e3];
+      e2.parameters = r;
+    }
+  }
+  distinct(e2, t2 = 1e3, r = null, n2) {
+    return this.load().then(() => {
+      const s2 = f$2.create(e2, this.getFieldsIndex());
+      return this._substituteVars(s2, r), this.calculateStatistic("distinct", s2, t2, this._defaultTracker(n2));
+    });
+  }
+  min(e2, t2 = null, r) {
+    return this.load().then(() => {
+      const n2 = f$2.create(e2, this.getFieldsIndex());
+      return this._substituteVars(n2, t2), this.calculateStatistic("min", n2, -1, this._defaultTracker(r));
+    });
+  }
+  max(e2, t2 = null, r) {
+    return this.load().then(() => {
+      const n2 = f$2.create(e2, this.getFieldsIndex());
+      return this._substituteVars(n2, t2), this.calculateStatistic("max", n2, -1, this._defaultTracker(r));
+    });
+  }
+  avg(e2, t2 = null, r) {
+    return this.load().then(() => {
+      const n2 = f$2.create(e2, this.getFieldsIndex());
+      return this._substituteVars(n2, t2), this.calculateStatistic("avg", n2, -1, this._defaultTracker(r));
+    });
+  }
+  sum(e2, t2 = null, r) {
+    return this.load().then(() => {
+      const n2 = f$2.create(e2, this.getFieldsIndex());
+      return this._substituteVars(n2, t2), this.calculateStatistic("sum", n2, -1, this._defaultTracker(r));
+    });
+  }
+  stdev(e2, t2 = null, r) {
+    return this.load().then(() => {
+      const n2 = f$2.create(e2, this.getFieldsIndex());
+      return this._substituteVars(n2, t2), this.calculateStatistic("stdev", n2, -1, this._defaultTracker(r));
+    });
+  }
+  variance(e2, t2 = null, r) {
+    return this.load().then(() => {
+      const n2 = f$2.create(e2, this.getFieldsIndex());
+      return this._substituteVars(n2, t2), this.calculateStatistic("variance", n2, -1, this._defaultTracker(r));
+    });
+  }
+  count(e2) {
+    return this.load().then(() => this.calculateStatistic("count", f$2.create("1", this.getFieldsIndex()), -1, this._defaultTracker(e2)));
+  }
+  _defaultTracker(e2) {
+    return e2 || { aborted: false };
+  }
+  forEach(t2, r) {
+    return l$1((e2, n2) => {
+      this._forEachImpl(this.iterator(this._defaultTracker(r)), t2, this, e2, n2, 0);
+    });
+  }
+  _forEachImpl(e2, t2, r, s2, i2, a2) {
+    try {
+      if (++a2 > 1e3)
+        return void setTimeout(() => {
+          a2 = 0, this._forEachImpl(e2, t2, r, s2, i2, a2);
+        }, 0);
+      e2.next().then((h2) => {
+        try {
+          if (h2 === null)
+            s2(r);
+          else {
+            const l2 = t2(h2);
+            l2 == null ? this._forEachImpl(e2, t2, r, s2, i2, a2) : U$1(l2) ? l2.then(() => {
+              try {
+                this._forEachImpl(e2, t2, r, s2, i2, a2);
+              } catch (n2) {
+                i2(n2);
+              }
+            }, i2) : this._forEachImpl(e2, t2, r, s2, i2, a2);
+          }
+        } catch (l2) {
+          i2(l2);
+        }
+      }, i2);
+    } catch (h2) {
+      i2(h2);
+    }
+  }
+  convertToJSON(e2) {
+    const t2 = { layerDefinition: { geometryType: this.geometryType, fields: [] }, featureSet: { features: [], geometryType: this.geometryType } };
+    for (let r = 0; r < this.fields.length; r++)
+      t2.layerDefinition.fields.push(y$1(this.fields[r]));
+    return this.reduce((e3, r) => {
+      const n2 = { geometry: r.geometry && r.geometry.toJSON(), attributes: {} };
+      for (const t3 in r.attributes)
+        n2.attributes[t3] = r.attributes[t3];
+      return t2.featureSet.features.push(n2), 1;
+    }, 0, e2).then(() => t2);
+  }
+  castToText() {
+    return "object, FeatureSet";
+  }
+  queryAttachments(e2, t2, r, n2) {
+    return this._parent.queryAttachments(e2, t2, r, n2);
+  }
+  serviceUrl() {
+    return this._parent.serviceUrl();
+  }
+  subtypes() {
+    return this.typeIdField ? { subtypeField: this.typeIdField, subtypes: this.types ? this.types.map((e2) => ({ name: e2.name, code: e2.id })) : [] } : null;
+  }
+  relationshipMetaData() {
+    return this._parent.relationshipMetaData();
+  }
+  get gdbVersion() {
+    return this._parent ? this._parent.gdbVersion : "";
+  }
+  schema() {
+    const e2 = [];
+    for (const t2 of this.fields)
+      e2.push(y$1(t2));
+    return { objectIdField: this.objectIdField, globalIdField: this.globalIdField, geometryType: b[this.geometryType] === void 0 ? "" : b[this.geometryType], fields: e2 };
+  }
+  convertToText(e2, r) {
+    return e2 === "schema" ? this._ensureLoaded().then(() => JSON.stringify(this.schema())) : e2 === "featureset" ? this._ensureLoaded().then(() => {
+      const e3 = [];
+      return this.reduce((t2, r2) => {
+        const n2 = { geometry: r2.geometry ? r2.geometry.toJSON() : null, attributes: r2.attributes };
+        return n2.geometry !== null && n2.geometry.spatialReference && delete n2.geometry.spatialReference, e3.push(n2), 1;
+      }, 0, r).then(() => {
+        const t2 = this.schema();
+        return t2.features = e3, t2.spatialReference = this.spatialReference.toJSON(), JSON.stringify(t2);
+      });
+    }) : x$1(this.castToText());
+  }
+  getFeatureByObjectId(e2, t2) {
+    return this._parent.getFeatureByObjectId(e2, t2);
+  }
+  getOwningSystemUrl() {
+    return this._parent.getOwningSystemUrl();
+  }
+  getIdentityUser() {
+    return this._parent.getIdentityUser();
+  }
+}
+v._featuresetFunctions = {};
+class n extends v {
+  constructor(e2) {
+    super(e2), this.declaredClass = "esri.layers.featureset.sources.Empty", this._maxProcessing = 1e3, this._wset = new t([], [], false, null), this._parent = e2.parentfeatureset, this._databaseType = o$2.Standardised;
+  }
+  _getSet() {
+    return x$1(this._wset);
+  }
+  optimisePagingFeatureQueries() {
+  }
+  _isInFeatureSet() {
+    return l$2.NotInFeatureSet;
+  }
+  _getFeature() {
+    return L$1(new Error("No Feature Found in EmptySet"));
+  }
+  queryAttachments() {
+    return x$1([]);
+  }
+  _getFeatures() {
+    return x$1("success");
+  }
+  _featureFromCache() {
+    return null;
+  }
+  _fetchAndRefineFeatures() {
+    return L$1(new Error("Fetch and Refine should not be called in this featureset"));
+  }
+  _getFilteredSet() {
+    return x$1(new t([], [], false, null));
+  }
+  _stat(e2, t2, r, s2, u2, a2, n2) {
+    return this._manualStat(e2, t2, a2, n2);
+  }
+  _canDoAggregates() {
+    return x$1(false);
+  }
+}
+class g extends v {
+  constructor(e2) {
+    super(e2), this._relation = "", this._relationGeom = null, this._relationString = "", this.declaredClass = "esri.arcade.featureset.actions.SpatialFilter", this._relationString = e2.relationString, this._parent = e2.parentfeatureset, this._maxProcessing = 40, this._relation = e2.relation, this._relationGeom = e2.relationGeom;
+  }
+  _getSet(t$1) {
+    return this._wset === null ? this._ensureLoaded().then(() => this._parent._getFilteredSet(this._relation !== "esriSpatialRelRelation" ? this._relation : this._relation + ":" + this._relationString, this._relationGeom, null, null, t$1)).then((e2) => (this._checkCancelled(t$1), this._wset = new t(e2._candidates.slice(0), e2._known.slice(0), e2._ordered, this._clonePageDefinition(e2.pagesDefinition)), this._wset)) : x$1(this._wset);
+  }
+  _isInFeatureSet(e2) {
+    let t2 = this._parent._isInFeatureSet(e2);
+    return t2 === l$2.NotInFeatureSet ? t2 : (t2 = this._idstates[e2], t2 === void 0 ? l$2.Unknown : t2);
+  }
+  _getFeature(e2, t2, r) {
+    return this._parent._getFeature(e2, t2, r);
+  }
+  _getFeatures(e2, t2, r, i2) {
+    return this._parent._getFeatures(e2, t2, r, i2);
+  }
+  _featureFromCache(e2) {
+    return this._parent._featureFromCache(e2);
+  }
+  executeSpatialRelationTest(t2) {
+    if (t2.geometry === null)
+      return x$1(false);
+    switch (this._relation) {
+      case "esriSpatialRelEnvelopeIntersects": {
+        const e2 = F$1(this._relationGeom), r = F$1(t2.geometry);
+        return g$4(e2, r);
+      }
+      case "esriSpatialRelIntersects":
+        return g$4(this._relationGeom, t2.geometry);
+      case "esriSpatialRelContains":
+        return p$2(this._relationGeom, t2.geometry);
+      case "esriSpatialRelOverlaps":
+        return O(this._relationGeom, t2.geometry);
+      case "esriSpatialRelWithin":
+        return x$2(this._relationGeom, t2.geometry);
+      case "esriSpatialRelTouches":
+        return A(this._relationGeom, t2.geometry);
+      case "esriSpatialRelCrosses":
+        return w$2(this._relationGeom, t2.geometry);
+      case "esriSpatialRelRelation":
+        return h$2(this._relationGeom, t2.geometry, this._relationString);
+    }
+  }
+  _fetchAndRefineFeatures(e2, r, n2) {
+    const a2 = new t([], e2, false, null), s2 = Math.min(r, e2.length);
+    return this._parent._getFeatures(a2, -1, s2, n2).then(() => {
+      this._checkCancelled(n2);
+      const r2 = [];
+      for (let t2 = 0; t2 < s2; t2++) {
+        const i2 = this._parent._featureFromCache(e2[t2]);
+        r2.push(this.executeSpatialRelationTest(i2));
+      }
+      return s$2(r2);
+    }).then((t2) => {
+      for (let n3 = 0; n3 < r; n3++)
+        t2[n3] === true ? this._idstates[e2[n3]] = l$2.InFeatureSet : this._idstates[e2[n3]] = l$2.NotInFeatureSet;
+      return "success";
+    });
+  }
+  _getFilteredSet(e2, t$1, r, i2, n2) {
+    return this._ensureLoaded().then(() => this._parent._getFilteredSet(this._relation !== "esriSpatialRelRelation" ? this._relation : this._relation + ":" + this._relationString, this._relationGeom, r, i2, n2)).then((e3) => {
+      let r2;
+      return this._checkCancelled(n2), r2 = t$1 !== null ? new t(e3._candidates.slice(0).concat(e3._known.slice(0)), [], e3._ordered, this._clonePageDefinition(e3.pagesDefinition)) : new t(e3._candidates.slice(0), e3._known.slice(0), e3._ordered, this._clonePageDefinition(e3.pagesDefinition)), r2;
+    });
+  }
+  _stat(t2, r, i2, n2, a2, s2, l2) {
+    return i2 !== "" ? x$1({ calculated: false }) : this._parent._stat(t2, r, this._relation !== "esriSpatialRelRelation" ? this._relation : this._relation + ":" + this._relationString, this._relationGeom, a2, s2, l2).then((e2) => e2.calculated === false ? a2 === null && i2 === "" && n2 === null ? this._manualStat(t2, r, s2, l2) : { calculated: false } : e2);
+  }
+  _canDoAggregates(t2, r, i2, n2, a2) {
+    return i2 !== "" || n2 !== null || this._parent === null ? x$1(false) : this._parent._canDoAggregates(t2, r, this._relation !== "esriSpatialRelRelation" ? this._relation : this._relation + ":" + this._relationString, this._relationGeom, a2);
+  }
+  _getAggregatePagesDataSourceDefinition(e2, t2, i2, n2, a2, s2, l2) {
+    return this._parent === null ? L$1(new Error("Should never be called")) : this._parent._getAggregatePagesDataSourceDefinition(e2, t2, this._relation !== "esriSpatialRelRelation" ? this._relation : this._relation + ":" + this._relationString, this._relationGeom, a2, s2, l2);
+  }
+  static registerAction() {
+    v._featuresetFunctions.intersects = function(e2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelIntersects", relationGeom: e2 });
+    }, v._featuresetFunctions.envelopeIntersects = function(e2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelEnvelopeIntersects", relationGeom: e2 });
+    }, v._featuresetFunctions.contains = function(e2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelContains", relationGeom: e2 });
+    }, v._featuresetFunctions.overlaps = function(e2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelOverlaps", relationGeom: e2 });
+    }, v._featuresetFunctions.within = function(e2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelWithin", relationGeom: e2 });
+    }, v._featuresetFunctions.touches = function(e2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelTouches", relationGeom: e2 });
+    }, v._featuresetFunctions.crosses = function(e2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelCrosses", relationGeom: e2 });
+    }, v._featuresetFunctions.relate = function(e2, t2) {
+      return e2 == null ? new n({ parentfeatureset: this }) : new g({ parentfeatureset: this, relation: "esriSpatialRelRelation", relationGeom: e2, relationString: t2 });
+    };
+  }
+}
+export { E, a, a$1 as b, n as c, f$1 as f, g, h$1 as h, i$1 as i, l, m, n$2 as n, o$1 as o, p, s$1 as s, t, u, v, w$1 as w };

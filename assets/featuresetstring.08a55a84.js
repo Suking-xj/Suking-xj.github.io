@@ -1,1 +1,88 @@
-import{J as n,k as e,K as t,X as r,i as o,al as a,l as i,am as c,an as d,ao as u,ap as s,M as m}from"./arcadeUtils.f4f7c393.js";import"./vendor.74d5941c.js";import"./number.c0719e5d.js";import"./FeatureSetReader.a91e3e2d.js";import"./centroid.93c1b848.js";function f(n){return n&&n.domain?"coded-value"===n.domain.type||"codedValue"===n.domain.type?o.convertObjectToArcadeDictionary({type:"codedValue",name:n.domain.name,dataType:a[n.field.type],codedValues:n.domain.codedValues.map((n=>({name:n.name,code:n.code})))}):o.convertObjectToArcadeDictionary({type:"range",name:n.domain.name,dataType:a[n.field.type],min:n.domain.min,max:n.domain.max}):null}function l(a){"async"===a.mode&&(a.functions.domain=function(o,d){return a.standardFunctionAsync(o,d,(function(o,a,d){if(n(d,2,3),d[0]instanceof e)return f(d[0].fullDomain(t(d[1]),void 0===d[2]?void 0:r(d[2])));if(i(d[0]))return d[0]._ensureLoaded().then((()=>f(c(t(d[1]),d[0],null,void 0===d[2]?void 0:r(d[2])))));throw new Error("Invalid Parameter")}))},a.functions.subtypes=function(t,r){return a.standardFunctionAsync(t,r,(function(t,r,a){if(n(a,1,1),a[0]instanceof e){const n=a[0].subtypes();return n?o.convertObjectToArcadeDictionary(n):null}if(i(a[0]))return a[0]._ensureLoaded().then((()=>{const n=a[0].subtypes();return n?o.convertObjectToArcadeDictionary(n):null}));throw new Error("Invalid Parameter")}))},a.functions.domainname=function(o,u){return a.standardFunctionAsync(o,u,(function(o,a,u){if(n(u,2,4),u[0]instanceof e)return u[0].domainValueLookup(t(u[1]),u[2],void 0===u[3]?void 0:r(u[3]));if(i(u[0]))return u[0]._ensureLoaded().then((()=>{const n=c(t(u[1]),u[0],null,void 0===u[3]?void 0:r(u[3]));return d(n,u[2])}));throw new Error("Invalid Parameter")}))},a.signatures.push({name:"domainname",min:"2",max:"4"}),a.functions.domaincode=function(o,d){return a.standardFunctionAsync(o,d,(function(o,a,d){if(n(d,2,4),d[0]instanceof e)return d[0].domainCodeLookup(t(d[1]),d[2],void 0===d[3]?void 0:r(d[3]));if(i(d[0]))return d[0]._ensureLoaded().then((()=>{const n=c(t(d[1]),d[0],null,void 0===d[3]?void 0:r(d[3]));return u(n,d[2])}));throw new Error("Invalid Parameter")}))},a.signatures.push({name:"domaincode",min:"2",max:"4"})),a.functions.text=function(e,t){return a.standardFunctionAsync(e,t,(function(e,t,r){if(n(r,1,2),!i(r[0]))return s(r[0],r[1]);{const n=m(r[1],"");if(""===n)return r[0].castToText();if("schema"===n.toLowerCase())return r[0].convertToText("schema",e.abortSignal);if("featureset"===n.toLowerCase())return r[0].convertToText("featureset",e.abortSignal)}}))},a.functions.gdbversion=function(t,r){return a.standardFunctionAsync(t,r,(function(t,r,o){if(n(o,1,1),o[0]instanceof e)return o[0].gdbVersion();if(i(o[0]))return o[0].load().then((n=>n.gdbVersion));throw new Error("Invalid Parameter")}))},a.functions.schema=function(t,r){return a.standardFunctionAsync(t,r,(function(t,r,a){if(n(a,1,1),i(a[0]))return a[0].load().then((()=>o.convertObjectToArcadeDictionary(a[0].schema())));if(a[0]instanceof e){const n=a[0].schema();return n?o.convertObjectToArcadeDictionary(n):null}throw new Error("Invalid Parameter")}))}}export{l as registerFunctions};
+import { J, k as g, K, X, i as h, al as D, l as k, am as oe, an as re, ao as ie, ap as H, M as O } from "./arcadeUtils.f4f7c393.js";
+import "./vendor.74d5941c.js";
+import "./number.c0719e5d.js";
+import "./FeatureSetReader.a91e3e2d.js";
+import "./centroid.93c1b848.js";
+function f(n) {
+  return n && n.domain ? n.domain.type === "coded-value" || n.domain.type === "codedValue" ? h.convertObjectToArcadeDictionary({ type: "codedValue", name: n.domain.name, dataType: D[n.field.type], codedValues: n.domain.codedValues.map((n2) => ({ name: n2.name, code: n2.code })) }) : h.convertObjectToArcadeDictionary({ type: "range", name: n.domain.name, dataType: D[n.field.type], min: n.domain.min, max: n.domain.max }) : null;
+}
+function l(s) {
+  s.mode === "async" && (s.functions.domain = function(a, i) {
+    return s.standardFunctionAsync(a, i, function(a2, i2, c) {
+      if (J(c, 2, 3), c[0] instanceof g) {
+        return f(c[0].fullDomain(K(c[1]), c[2] === void 0 ? void 0 : X(c[2])));
+      }
+      if (k(c[0]))
+        return c[0]._ensureLoaded().then(() => f(oe(K(c[1]), c[0], null, c[2] === void 0 ? void 0 : X(c[2]))));
+      throw new Error("Invalid Parameter");
+    });
+  }, s.functions.subtypes = function(e, t) {
+    return s.standardFunctionAsync(e, t, function(e2, t2, o) {
+      if (J(o, 1, 1), o[0] instanceof g) {
+        const n = o[0].subtypes();
+        return n ? h.convertObjectToArcadeDictionary(n) : null;
+      }
+      if (k(o[0]))
+        return o[0]._ensureLoaded().then(() => {
+          const n = o[0].subtypes();
+          return n ? h.convertObjectToArcadeDictionary(n) : null;
+        });
+      throw new Error("Invalid Parameter");
+    });
+  }, s.functions.domainname = function(i, c) {
+    return s.standardFunctionAsync(i, c, function(i2, c2, u) {
+      if (J(u, 2, 4), u[0] instanceof g)
+        return u[0].domainValueLookup(K(u[1]), u[2], u[3] === void 0 ? void 0 : X(u[3]));
+      if (k(u[0]))
+        return u[0]._ensureLoaded().then(() => {
+          const n = oe(K(u[1]), u[0], null, u[3] === void 0 ? void 0 : X(u[3]));
+          return re(n, u[2]);
+        });
+      throw new Error("Invalid Parameter");
+    });
+  }, s.signatures.push({ name: "domainname", min: "2", max: "4" }), s.functions.domaincode = function(a, c) {
+    return s.standardFunctionAsync(a, c, function(a2, c2, u) {
+      if (J(u, 2, 4), u[0] instanceof g)
+        return u[0].domainCodeLookup(K(u[1]), u[2], u[3] === void 0 ? void 0 : X(u[3]));
+      if (k(u[0]))
+        return u[0]._ensureLoaded().then(() => {
+          const n = oe(K(u[1]), u[0], null, u[3] === void 0 ? void 0 : X(u[3]));
+          return ie(n, u[2]);
+        });
+      throw new Error("Invalid Parameter");
+    });
+  }, s.signatures.push({ name: "domaincode", min: "2", max: "4" })), s.functions.text = function(e, t) {
+    return s.standardFunctionAsync(e, t, function(e2, t2, o) {
+      if (J(o, 1, 2), !k(o[0]))
+        return H(o[0], o[1]);
+      {
+        const n = O(o[1], "");
+        if (n === "")
+          return o[0].castToText();
+        if (n.toLowerCase() === "schema")
+          return o[0].convertToText("schema", e2.abortSignal);
+        if (n.toLowerCase() === "featureset")
+          return o[0].convertToText("featureset", e2.abortSignal);
+      }
+    });
+  }, s.functions.gdbversion = function(e, t) {
+    return s.standardFunctionAsync(e, t, function(e2, t2, o) {
+      if (J(o, 1, 1), o[0] instanceof g)
+        return o[0].gdbVersion();
+      if (k(o[0]))
+        return o[0].load().then((n) => n.gdbVersion);
+      throw new Error("Invalid Parameter");
+    });
+  }, s.functions.schema = function(e, t) {
+    return s.standardFunctionAsync(e, t, function(e2, t2, o) {
+      if (J(o, 1, 1), k(o[0]))
+        return o[0].load().then(() => h.convertObjectToArcadeDictionary(o[0].schema()));
+      if (o[0] instanceof g) {
+        const n = o[0].schema();
+        return n ? h.convertObjectToArcadeDictionary(n) : null;
+      }
+      throw new Error("Invalid Parameter");
+    });
+  };
+}
+export { l as registerFunctions };

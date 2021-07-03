@@ -1,1 +1,170 @@
-var e=Object.defineProperty,t=Object.getOwnPropertySymbols,s=Object.prototype.hasOwnProperty,n=Object.prototype.propertyIsEnumerable,o=(t,s,n)=>s in t?e(t,s,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[s]=n,r=(e,r)=>{for(var i in r||(r={}))s.call(r,i)&&o(e,i,r[i]);if(t)for(var i of t(r))n.call(r,i)&&o(e,i,r[i]);return e};import{c8 as i,a0 as l,a9 as a}from"./vendor.74d5941c.js";import{c as u}from"./definitions.6737c10c.js";import{w as c,A as f}from"./Utils.3f1577e5.js";import{o as p}from"./visualVariablesUtils.cb58e4df.js";function v(e,t=0,s=!1){const n=e[t+3];return e[t+0]*=n,e[t+1]*=n,e[t+2]*=n,s||(e[t+3]*=255),e}function m(e){if(!e)return 0;const{r:t,g:s,b:n,a:o}=e;return c(t*o,s*o,n*o,255*o)}function y(e){if(!e)return 0;const[t,s,n,o]=e;return c(t*(o/255),s*(o/255),n*(o/255),o)}const d=(e,t)=>e&&((...e)=>t.warn("DEBUG:",...e))||(()=>null),h=!1;function g(e,t){if(!e||!t)return e;switch(t){case"radius":case"distance":return 2*e;case"diameter":case"width":return e;case"area":return Math.sqrt(e)}return e}function z(e){return e.map((e=>function(e){return{value:e.value,size:i(e.size)}}(e)))}function b(e){if("string"==typeof e||"number"==typeof e)return i(e);const t=e;return{type:"size",expression:t.expression,stops:z(t.stops)}}const S=e=>{const t=[],s=[],n=z(e),o=n.length;for(let r=0;r<6;r++){const e=n[Math.min(r,o-1)];t.push(e.value),s.push(null==e.size?u:a(e.size))}return{values:new Float32Array(t),sizes:new Float32Array(s)}};function E(e){const t=e&&e.length>0?{}:null,s=t?{}:null;if(!t)return{vvFields:t,vvRanges:s};for(const n of e)if(n.field&&(t[n.type]=n.field),"size"===n.type){s.size||(s.size={});const e=n;switch(p(e)){case f.SIZE_MINMAX_VALUE:s.size.minMaxValue={minDataValue:e.minDataValue,maxDataValue:e.maxDataValue,minSize:b(e.minSize),maxSize:b(e.maxSize)};break;case f.SIZE_SCALE_STOPS:s.size.scaleStops={stops:z(e.stops)};break;case f.SIZE_FIELD_STOPS:if(e.levels){const t={};for(const s in e.levels)t[s]=S(e.levels[s]);s.size.fieldStops={type:"level-dependent",levels:t}}else s.size.fieldStops=r({type:"static"},S(e.stops));break;case f.SIZE_UNIT_VALUE:s.size.unitValue={unit:e.valueUnit,valueRepresentation:e.valueRepresentation}}}else if("color"===n.type)s.color=j(n);else if("opacity"===n.type)s.opacity=w(n);else if("rotation"===n.type){const e=n;s.rotation={type:e.rotationType}}return{vvFields:t,vvRanges:s}}function w(e){const t={values:[0,0,0,0,0,0,0,0],opacities:[0,0,0,0,0,0,0,0]};if("string"==typeof e.field){if(!e.stops)return null;{if(e.stops.length>8)return null;const s=e.stops;for(let e=0;e<8;++e){const n=s[Math.min(e,s.length-1)];t.values[e]=n.value,t.opacities[e]=n.opacity}}}else{if(!(e.stops&&e.stops.length>=0))return null;{const s=e.stops&&e.stops.length>=0&&e.stops[0].opacity;for(let e=0;e<8;e++)t.values[e]=1/0,t.opacities[e]=s}}return t}function V(e,t,s){e[4*t+0]=s.r/255,e[4*t+1]=s.g/255,e[4*t+2]=s.b/255,e[4*t+3]=s.a}function j(e){if(l(e))return null;if(e.normalizationField)return null;const t={field:null,values:[0,0,0,0,0,0,0,0],colors:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]};if("string"==typeof e.field){if(!e.stops)return null;{if(e.stops.length>8)return null;t.field=e.field;const s=e.stops;for(let e=0;e<8;++e){const n=s[Math.min(e,s.length-1)];t.values[e]=n.value,V(t.colors,e,n.color)}}}else{if(!(e.stops&&e.stops.length>=0))return null;{const s=e.stops&&e.stops.length>=0&&e.stops[0].color;for(let e=0;e<8;e++)t.values[e]=1/0,V(t.colors,e,s)}}for(let s=0;s<32;s+=4)v(t.colors,s,!0);return t}export{y as f,m as i,h as l,E as m,d as n,g as r};
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
+import { c8 as o$2, a0 as t, a9 as u$1 } from "./vendor.74d5941c.js";
+import { c as c$1 } from "./definitions.6737c10c.js";
+import { w, A } from "./Utils.3f1577e5.js";
+import { o as o$1 } from "./visualVariablesUtils.cb58e4df.js";
+function o(r2, n2 = 0, t2 = false) {
+  const u2 = r2[n2 + 3];
+  return r2[n2 + 0] *= u2, r2[n2 + 1] *= u2, r2[n2 + 2] *= u2, t2 || (r2[n2 + 3] *= 255), r2;
+}
+function i(n2) {
+  if (!n2)
+    return 0;
+  const { r: t2, g: u2, b: o2, a: c2 } = n2;
+  return w(t2 * c2, u2 * c2, o2 * c2, 255 * c2);
+}
+function f$1(n2) {
+  if (!n2)
+    return 0;
+  const [t2, u2, o2, c2] = n2;
+  return w(t2 * (c2 / 255), u2 * (c2 / 255), o2 * (c2 / 255), c2);
+}
+const n = (n2, l2) => n2 && ((...n3) => l2.warn("DEBUG:", ...n3)) || (() => null), l = false;
+function r(e, t2) {
+  if (!e || !t2)
+    return e;
+  switch (t2) {
+    case "radius":
+    case "distance":
+      return 2 * e;
+    case "diameter":
+    case "width":
+      return e;
+    case "area":
+      return Math.sqrt(e);
+  }
+  return e;
+}
+function a(e) {
+  return { value: e.value, size: o$2(e.size) };
+}
+function u(e) {
+  return e.map((e2) => a(e2));
+}
+function c(e) {
+  if (typeof e == "string" || typeof e == "number")
+    return o$2(e);
+  const s = e;
+  return { type: "size", expression: s.expression, stops: u(s.stops) };
+}
+const f = (e) => {
+  const t2 = [], o2 = [], i2 = u(e), l2 = i2.length;
+  for (let r2 = 0; r2 < 6; r2++) {
+    const e2 = i2[Math.min(r2, l2 - 1)];
+    t2.push(e2.value), o2.push(e2.size == null ? c$1 : u$1(e2.size));
+  }
+  return { values: new Float32Array(t2), sizes: new Float32Array(o2) };
+};
+function m(e) {
+  const t2 = e && e.length > 0 ? {} : null, s = t2 ? {} : null;
+  if (!t2)
+    return { vvFields: t2, vvRanges: s };
+  for (const n2 of e)
+    if (n2.field && (t2[n2.type] = n2.field), n2.type === "size") {
+      s.size || (s.size = {});
+      const e2 = n2;
+      switch (o$1(e2)) {
+        case A.SIZE_MINMAX_VALUE:
+          s.size.minMaxValue = { minDataValue: e2.minDataValue, maxDataValue: e2.maxDataValue, minSize: c(e2.minSize), maxSize: c(e2.maxSize) };
+          break;
+        case A.SIZE_SCALE_STOPS:
+          s.size.scaleStops = { stops: u(e2.stops) };
+          break;
+        case A.SIZE_FIELD_STOPS:
+          if (e2.levels) {
+            const t3 = {};
+            for (const s2 in e2.levels)
+              t3[s2] = f(e2.levels[s2]);
+            s.size.fieldStops = { type: "level-dependent", levels: t3 };
+          } else
+            s.size.fieldStops = __spreadValues({ type: "static" }, f(e2.stops));
+          break;
+        case A.SIZE_UNIT_VALUE:
+          s.size.unitValue = { unit: e2.valueUnit, valueRepresentation: e2.valueRepresentation };
+      }
+    } else if (n2.type === "color")
+      s.color = y(n2);
+    else if (n2.type === "opacity")
+      s.opacity = v(n2);
+    else if (n2.type === "rotation") {
+      const e2 = n2;
+      s.rotation = { type: e2.rotationType };
+    }
+  return { vvFields: t2, vvRanges: s };
+}
+function v(e) {
+  const t2 = { values: [0, 0, 0, 0, 0, 0, 0, 0], opacities: [0, 0, 0, 0, 0, 0, 0, 0] };
+  if (typeof e.field == "string") {
+    if (!e.stops)
+      return null;
+    {
+      if (e.stops.length > 8)
+        return null;
+      const s = e.stops;
+      for (let e2 = 0; e2 < 8; ++e2) {
+        const n2 = s[Math.min(e2, s.length - 1)];
+        t2.values[e2] = n2.value, t2.opacities[e2] = n2.opacity;
+      }
+    }
+  } else {
+    if (!(e.stops && e.stops.length >= 0))
+      return null;
+    {
+      const s = e.stops && e.stops.length >= 0 && e.stops[0].opacity;
+      for (let e2 = 0; e2 < 8; e2++)
+        t2.values[e2] = 1 / 0, t2.opacities[e2] = s;
+    }
+  }
+  return t2;
+}
+function g(e, t2, s) {
+  e[4 * t2 + 0] = s.r / 255, e[4 * t2 + 1] = s.g / 255, e[4 * t2 + 2] = s.b / 255, e[4 * t2 + 3] = s.a;
+}
+function y(t$1) {
+  if (t(t$1))
+    return null;
+  if (t$1.normalizationField)
+    return null;
+  const s = { field: null, values: [0, 0, 0, 0, 0, 0, 0, 0], colors: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] };
+  if (typeof t$1.field == "string") {
+    if (!t$1.stops)
+      return null;
+    {
+      if (t$1.stops.length > 8)
+        return null;
+      s.field = t$1.field;
+      const e = t$1.stops;
+      for (let t2 = 0; t2 < 8; ++t2) {
+        const n2 = e[Math.min(t2, e.length - 1)];
+        s.values[t2] = n2.value, g(s.colors, t2, n2.color);
+      }
+    }
+  } else {
+    if (!(t$1.stops && t$1.stops.length >= 0))
+      return null;
+    {
+      const e = t$1.stops && t$1.stops.length >= 0 && t$1.stops[0].color;
+      for (let t2 = 0; t2 < 8; t2++)
+        s.values[t2] = 1 / 0, g(s.colors, t2, e);
+    }
+  }
+  for (let e = 0; e < 32; e += 4)
+    o(s.colors, e, true);
+  return s;
+}
+export { f$1 as f, i, l, m, n, r };

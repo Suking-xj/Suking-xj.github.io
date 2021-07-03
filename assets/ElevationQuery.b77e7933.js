@@ -1,1 +1,601 @@
-var e=Object.defineProperty,t=Object.defineProperties,i=Object.getOwnPropertyDescriptors,s=Object.getOwnPropertySymbols,n=Object.prototype.hasOwnProperty,o=Object.prototype.propertyIsEnumerable,a=(t,i,s)=>i in t?e(t,i,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[i]=s,l=(e,t)=>{for(var i in t||(t={}))n.call(t,i)&&a(e,i,t[i]);if(s)for(var i of s(t))o.call(t,i)&&a(e,i,t[i]);return e},r=(e,s)=>t(e,i(s));import{a4 as c,_ as u,df as h,b6 as p,cn as m,dg as d,cT as f,dh as y,ay as x,aa as v,cq as T,di as g,dj as w,dk as R,dl as _,a5 as E,dd as q,dm as A,dn as I,dp as D,dq as b}from"./vendor.74d5941c.js";const C=c.getLogger("esri.layers.support.ElevationSampler");class M{queryElevation(e){return function(e,t){const i=O(e,t.spatialReference);if(!i)return null;switch(e.type){case"point":!function(e,t,i){e.z=x(i.elevationAt(t),0)}(e,i,t);break;case"polyline":!function(e,t,i){S.spatialReference=t.spatialReference;const s=e.hasM&&!e.hasZ;for(let n=0;n<e.paths.length;n++){const o=e.paths[n],a=t.paths[n];for(let e=0;e<o.length;e++){const t=o[e],n=a[e];S.x=n[0],S.y=n[1],s&&(t[3]=t[2]),t[2]=x(i.elevationAt(S),0)}}e.hasZ=!0}(e,i,t);break;case"multipoint":!function(e,t,i){S.spatialReference=t.spatialReference;const s=e.hasM&&!e.hasZ;for(let n=0;n<e.points.length;n++){const o=e.points[n],a=t.points[n];S.x=a[0],S.y=a[1],s&&(o[3]=o[2]),o[2]=x(i.elevationAt(S),0)}e.hasZ=!0}(e,i,t)}return e}(e.clone(),this)}on(){return k}projectIfRequired(e,t){return O(e,t)}}class F extends M{constructor(e,t,i){super(),this.tile=e,this.noDataValue=i,this.extent=h(e.tile.extent,t.spatialReference);const s=f(t.spatialReference),n=t.lodAt(e.tile.level).resolution*s;this.demResolution={min:n,max:n}}get spatialReference(){return this.extent.spatialReference}contains(e){const t=this.projectIfRequired(e,this.spatialReference);return y(this.extent,t)}elevationAt(e){const t=this.projectIfRequired(e,this.spatialReference);if(!t)return null;if(!this.contains(e)){const t=this.extent,i=`${t.xmin}, ${t.ymin}, ${t.xmax}, ${t.ymax}`;C.warn("#elevationAt()",`Point used to sample elevation (${e.x}, ${e.y}) is outside of the sampler extent (${i})`)}return this.tile.sample(t.x,t.y)}}class z extends M{constructor(e,t,i){let s;super(),"number"==typeof t?(this.noDataValue=t,s=null):(s=t,this.noDataValue=i),this.samplers=s?e.map((e=>new F(e,s,this.noDataValue))):e;const n=this.samplers[0];if(n){this.extent=n.extent.clone();const{min:e,max:t}=n.demResolution;this.demResolution={min:e,max:t};for(let i=1;i<this.samplers.length;i++){const e=this.samplers[i];this.extent.union(e.extent),this.demResolution.min=Math.min(this.demResolution.min,e.demResolution.min),this.demResolution.max=Math.max(this.demResolution.max,e.demResolution.max)}}else this.extent=h(p(),s.spatialReference),this.demResolution={min:0,max:0}}get spatialReference(){return this.extent.spatialReference}elevationAt(e){const t=this.projectIfRequired(e,this.spatialReference);if(!t)return null;for(const i of this.samplers)if(i.contains(t))return i.elevationAt(t);return C.warn("#elevationAt()",`Point used to sample elevation (${e.x}, ${e.y}) is outside of the sampler`),null}}function O(e,t){const i=e.spatialReference;return i.equals(t)?e:m(i,t)?d(e,t):(C.error(`Cannot project geometry spatial reference (wkid:${i.wkid}) to elevation sampler spatial reference (wkid:${t.wkid})`),null)}const S=new u,k={remove(){}};class ${constructor(e,t){if(this.tile=e,!t)return void(this.samplerData=null);const i=this.tile.extent;this.samplerData={pixelData:t.values,width:t.width,height:t.height,safeWidth:.99999999*(t.width-1),noDataValue:t.noDataValue,dx:(t.width-1)/(i[2]-i[0]),dy:(t.width-1)/(i[3]-i[1]),x0:i[0],y1:i[3]}}sample(e,t){if(this.samplerData)return function(e,t,i){const{safeWidth:s,width:n,pixelData:o,noDataValue:a}=e,l=j(e.dy*(e.y1-i),0,s),r=j(e.dx*(t-e.x0),0,s),c=Math.floor(l),u=Math.floor(r),h=c*n+u,p=h+n,m=o[h],d=o[p],f=o[h+1],y=o[p+1];if(m!==a&&d!==a&&f!==a&&y!==a){const e=r-u,t=m+(f-m)*e;return t+(d+(y-d)*e-t)*(l-c)}}(this.samplerData,e,t)}}function j(e,t,i){return e<t?t:e>i?i:e}class V{async queryAll(e,t,i){if(!(e=i&&i.ignoreInvisibleLayers?e.filter((e=>e.visible)):e.slice()).length)throw new v("elevation-query:invalid-layer","Elevation queries require at least one elevation layer to fetch tiles from");const s=L.fromGeometry(t);let n=!1;i&&i.returnSampleInfo||(n=!0);const o=r(l(l({},U),i),{returnSampleInfo:!0}),a=await this.query(e[e.length-1],s,o),c=await this._queryAllContinue(e,a,o);return c.geometry=c.geometry.export(),n&&delete c.sampleInfo,c}async query(e,t,i){if(!e)throw new v("elevation-query:invalid-layer","Elevation queries require an elevation layer to fetch tiles from");if(!t||!(t instanceof L)&&"point"!==t.type&&"multipoint"!==t.type&&"polyline"!==t.type)throw new v("elevation-query:invalid-geometry","Only point, polyline and multipoint geometries can be used to query elevation");const s=l(l({},U),i),n=new Z(e,t.spatialReference,s),o=s.signal;return await e.load({signal:o}),await this._createGeometryDescriptor(n,t,o),await this._selectTiles(n,o),await this._populateElevationTiles(n,o),this._sampleGeometryWithElevation(n),this._createQueryResult(n,o)}async createSampler(e,t,i){if(!e)throw new v("elevation-query:invalid-layer","Elevation queries require an elevation layer to fetch tiles from");if(!t||"extent"!==t.type)throw new v("elevation-query:invalid-extent","Invalid or undefined extent");const s=l(l({},U),i);return this._createSampler(e,t,s)}async createSamplerAll(e,t,i){if(!(e=i&&i.ignoreInvisibleLayers?e.filter((e=>e.visible)):e.slice()).length)throw new v("elevation-query:invalid-layer","Elevation queries require at least one elevation layer to fetch tiles from");if(!t||"extent"!==t.type)throw new v("elevation-query:invalid-extent","Invalid or undefined extent");const s=r(l(l({},U),i),{returnSampleInfo:!0}),n=await this._createSampler(e[e.length-1],t,s);return this._createSamplerAllContinue(e,t,n,s)}async _createSampler(e,t,i,s){const n=i.signal;await e.load({signal:n});const o=t.spatialReference,a=e.tileInfo.spatialReference;o.equals(a)||(await T([{source:o,dest:a}],{signal:n}),t=g(t,a));const l=new G(e,t,i,s);return await this._selectTiles(l,n),await this._populateElevationTiles(l,n),new z(l.elevationTiles,l.layer.tileInfo,l.options.noDataValue)}async _createSamplerAllContinue(e,t,i,s){if(e.pop(),!e.length)return i;const n=i.samplers.map((e=>w(e.extent))),o=await this._createSampler(e[e.length-1],t,s,n);if(0===o.samplers.length)return i;const a=i.samplers.concat(o.samplers),l=new z(a,s.noDataValue);return this._createSamplerAllContinue(e,t,l,s)}async _queryAllContinue(e,t,i){const s=e.pop(),n=t.geometry.coordinates,o=[],a=[];for(let c=0;c<n.length;c++){const i=t.sampleInfo[c];i.demResolution>=0?i.source||(i.source=s):e.length&&(o.push(n[c]),a.push(c))}if(!e.length||0===o.length)return t;const l=t.geometry.clone(o),r=await this.query(e[e.length-1],l,i);return a.forEach(((e,i)=>{n[e].z=r.geometry.coordinates[i].z,t.sampleInfo[e].demResolution=r.sampleInfo[i].demResolution})),this._queryAllContinue(e,t,i)}async _createQueryResult(e,t){const i={geometry:(await e.geometry.project(e.outSpatialReference,t)).export(),noDataValue:e.options.noDataValue};return e.options.returnSampleInfo&&(i.sampleInfo=this._extractSampleInfo(e)),e.geometry.coordinates.forEach((e=>{e.tile=null,e.elevationTile=null})),i}async _createGeometryDescriptor(e,t,i){let s;const n=e.layer.tileInfo.spatialReference;if(t instanceof L?s=await t.project(n,i):(await T([{source:t.spatialReference,dest:n}],{signal:i}),s=g(t,n)),!s)throw new v("elevation-query:spatial-reference-mismatch",`Cannot query elevation in '${t.spatialReference.wkid}' on an elevation service in '${n.wkid}'`);e.geometry=L.fromGeometry(s)}async _selectTiles(e,t){const i=e.options.demResolution;if("geometry"===e.type&&this._preselectOutsideLayerExtent(e),"number"==typeof i)this._selectTilesClosestResolution(e);else if("finest-contiguous"===i)await this._selectTilesFinestContiguous(e,t);else{if("auto"!==i)throw new v("elevation-query:invalid-dem-resolution",`Invalid dem resolution value '${i}', expected a number, "finest-contiguous" or "auto"`);await this._selectTilesAuto(e,t)}}_preselectOutsideLayerExtent(e){const t=new $(null);t.sample=()=>e.options.noDataValue,e.outsideExtentTile=t;const i=e.layer.fullExtent;e.geometry.coordinates.forEach((e=>{const s=e.x,n=e.y;(s<i.xmin||s>i.xmax||n<i.ymin||n>i.ymax)&&(e.elevationTile=t)}))}_selectTilesClosestResolution(e){const t=e.layer.tileInfo,i=this._findNearestDemResolutionLODIndex(t,e.options.demResolution);e.selectTilesAtLOD(i)}_findNearestDemResolutionLODIndex(e,t){const i=t/f(e.spatialReference);let s=e.lods[0],n=0;for(let o=1;o<e.lods.length;o++){const t=e.lods[o];Math.abs(t.resolution-i)<Math.abs(s.resolution-i)&&(s=t,n=o)}return n}async _selectTilesFinestContiguous(e,t){const i=N(e.layer.tileInfo,e.options.minDemResolution);await this._selectTilesFinestContiguousAt(e,i,t)}async _selectTilesFinestContiguousAt(e,t,i){const s=e.layer;if(e.selectTilesAtLOD(t),t<0)return;const n=s.tilemapCache,o=e.getTilesToFetch();try{if(n)await R(Promise.all(o.map((e=>n.fetchAvailability(e.level,e.row,e.col,{signal:i})))),i);else if(await this._populateElevationTiles(e,i),!e.allElevationTilesFetched())throw e.clearElevationTiles(),new v("elevation-query:has-unavailable-tiles")}catch(a){_(a),await this._selectTilesFinestContiguousAt(e,t-1,i)}}async _populateElevationTiles(e,t){const i=e.getTilesToFetch(),s={},n=e.options.cache,o=e.options.noDataValue,a=i.map((async i=>{const a=`${e.layer.uid}:${i.id}:${o}`,l=E(n)?n.get(a):null,r=E(l)?l:await e.layer.fetchTile(i.level,i.row,i.col,{noDataValue:o,signal:t});E(n)&&n.put(a,r),s[i.id]=new $(i,r)}));await R(q(a),t),e.populateElevationTiles(s)}async _selectTilesAuto(e,t){this._selectTilesAutoFinest(e),this._reduceTilesForMaximumRequests(e);const i=e.layer.tilemapCache;if(!i)return this._selectTilesAutoPrefetchUpsample(e,t);const s=e.getTilesToFetch(),n={},o=s.map((async e=>{const s={id:null,level:0,row:0,col:0,extent:p()},o=await A(i.fetchAvailabilityUpsample(e.level,e.row,e.col,s,{signal:t}));!1===o.ok?_(o.error):n[e.id]=s}));await R(Promise.all(o),t),e.remapTiles(n)}_reduceTilesForMaximumRequests(e){const t=e.layer.tileInfo;let i=0;const s={},n=e=>{e.id in s?s[e.id]++:(s[e.id]=1,i++)},o=e=>{const t=s[e.id];1===t?(delete s[e.id],i--):s[e.id]=t-1};e.forEachTileToFetch(n,o);let a=!0;for(;a&&(a=!1,e.forEachTileToFetch((s=>{i<=e.options.maximumAutoTileRequests||(o(s),t.upsampleTile(s)&&(a=!0),n(s))}),o),a););}_selectTilesAutoFinest(e){const t=N(e.layer.tileInfo,e.options.minDemResolution);e.selectTilesAtLOD(t,e.options.maximumAutoTileRequests)}async _selectTilesAutoPrefetchUpsample(e,t){const i=e.layer.tileInfo;await this._populateElevationTiles(e,t);let s=!1;e.forEachTileToFetch(((e,t)=>{i.upsampleTile(e)?s=!0:t()})),s&&await this._selectTilesAutoPrefetchUpsample(e,t)}_sampleGeometryWithElevation(e){e.geometry.coordinates.forEach((t=>{const i=t.elevationTile;let s=e.options.noDataValue;if(i){const e=i.sample(t.x,t.y);void 0!==e?s=e:t.elevationTile=null}t.z=s}))}_extractSampleInfo(e){const t=e.layer.tileInfo,i=f(t.spatialReference);return e.geometry.coordinates.map((s=>{let n=-1;return s.elevationTile&&s.elevationTile!==e.outsideExtentTile&&(n=t.lodAt(s.elevationTile.tile.level).resolution*i),{demResolution:n}}))}}class L{export(){return this._exporter(this.coordinates,this.spatialReference)}clone(e){const t=new L;return t.geometry=this.geometry,t.spatialReference=this.spatialReference,t.coordinates=e||this.coordinates.map((e=>this._cloneCoordinate(e))),t._exporter=this._exporter,t}async project(e,t){if(this.spatialReference.equals(e))return this.clone();await T([{source:this.spatialReference,dest:e}],{signal:t});const i=new I({spatialReference:this.spatialReference,points:this.coordinates.map((e=>[e.x,e.y]))}),s=g(i,e);if(!s)return null;const n=this.coordinates.map(((e,t)=>{const i=this._cloneCoordinate(e),n=s.points[t];return i.x=n[0],i.y=n[1],i})),o=this.clone(n);return o.spatialReference=e,o}_cloneCoordinate(e){return{x:e.x,y:e.y,z:e.z,m:e.m,tile:null,elevationTile:null}}static fromGeometry(e){const t=new L;if(t.geometry=e,t.spatialReference=e.spatialReference,e instanceof L)t.coordinates=e.coordinates.map((e=>t._cloneCoordinate(e))),t._exporter=(t,i)=>{const s=e.clone(t);return s.spatialReference=i,s};else switch(e.type){case"point":{const i=e,{hasZ:s,hasM:n}=i;t.coordinates=s&&n?[{x:i.x,y:i.y,z:i.z,m:i.m}]:s?[{x:i.x,y:i.y,z:i.z}]:n?[{x:i.x,y:i.y,m:i.m}]:[{x:i.x,y:i.y}],t._exporter=(t,i)=>e.hasM?new u(t[0].x,t[0].y,t[0].z,t[0].m,i):new u(t[0].x,t[0].y,t[0].z,i);break}case"multipoint":{const i=e,{hasZ:s,hasM:n}=i;t.coordinates=s&&n?i.points.map((e=>({x:e[0],y:e[1],z:e[2],m:e[3]}))):s?i.points.map((e=>({x:e[0],y:e[1],z:e[2]}))):n?i.points.map((e=>({x:e[0],y:e[1],m:e[2]}))):i.points.map((e=>({x:e[0],y:e[1]}))),t._exporter=(t,i)=>e.hasM?new I({points:t.map((e=>[e.x,e.y,e.z,e.m])),hasZ:!0,hasM:!0,spatiaReference:i}):new I(t.map((e=>[e.x,e.y,e.z])),i);break}case"polyline":{const i=e,s=[],n=[],{hasZ:o,hasM:a}=e;let l=0;for(const e of i.paths)if(n.push([l,l+e.length]),l+=e.length,o&&a)for(const t of e)s.push({x:t[0],y:t[1],z:t[2],m:t[3]});else if(o)for(const t of e)s.push({x:t[0],y:t[1],z:t[2]});else if(a)for(const t of e)s.push({x:t[0],y:t[1],m:t[2]});else for(const t of e)s.push({x:t[0],y:t[1]});t.coordinates=s,t._exporter=(t,i)=>{const s=e.hasM?t.map((e=>[e.x,e.y,e.z,e.m])):t.map((e=>[e.x,e.y,e.z])),o=n.map((e=>s.slice(e[0],e[1])));return new D({paths:o,hasM:e.hasM,hasZ:!0,spatialReference:i})};break}}return t}}class P{constructor(e,t){this.layer=e,this.options=t}}class Z extends P{constructor(e,t,i){super(e,i),this.outSpatialReference=t,this.type="geometry"}selectTilesAtLOD(e){if(e<0)this.geometry.coordinates.forEach((e=>e.tile=null));else{const t=this.layer.tileInfo,i=t.lods[e].level;this.geometry.coordinates.forEach((e=>{e.tile=t.tileAt(i,e.x,e.y)}))}}allElevationTilesFetched(){return!this.geometry.coordinates.some((e=>!e.elevationTile))}clearElevationTiles(){for(const e of this.geometry.coordinates)e.elevationTile!==this.outsideExtentTile&&(e.elevationTile=null)}populateElevationTiles(e){for(const t of this.geometry.coordinates)!t.elevationTile&&t.tile&&(t.elevationTile=e[t.tile.id])}remapTiles(e){for(const t of this.geometry.coordinates)t.tile=e[t.tile.id]}getTilesToFetch(){const e={},t=[];for(const i of this.geometry.coordinates){const s=i.tile;i.elevationTile||!i.tile||e[s.id]||(e[s.id]=s,t.push(s))}return t}forEachTileToFetch(e){for(const t of this.geometry.coordinates)t.tile&&!t.elevationTile&&e(t.tile,(()=>t.tile=null))}}class G extends P{constructor(e,t,i,s){super(e,i),this.type="extent",this.elevationTiles=[],this.candidateTiles=[],this.fetchedCandidates=new Set,this.extent=t.intersection(e.fullExtent),this.maskExtents=s}selectTilesAtLOD(e,t){const i=this._maximumLodForRequests(t),s=Math.min(i,e);s<0?this.candidateTiles.length=0:this._selectCandidateTilesCoveringExtentAt(s)}_maximumLodForRequests(e){const t=this.layer.tileInfo;if(!e)return t.lods.length-1;const i=this.extent;for(let s=t.lods.length-1;s>=0;s--){const n=t.lods[s],o=n.resolution*t.size[0],a=n.resolution*t.size[1];if(Math.ceil(i.width/o)*Math.ceil(i.height/a)<=e)return s}return-1}allElevationTilesFetched(){return this.candidateTiles.length===this.elevationTiles.length}clearElevationTiles(){this.elevationTiles.length=0,this.fetchedCandidates.clear()}populateElevationTiles(e){for(const t of this.candidateTiles){const i=e[t.id];i&&(this.fetchedCandidates.add(t),this.elevationTiles.push(i))}}remapTiles(e){this.candidateTiles=this._uniqueNonOverlappingTiles(this.candidateTiles.map((t=>e[t.id])))}getTilesToFetch(){return this.candidateTiles}forEachTileToFetch(e,t){const i=this.candidateTiles;this.candidateTiles=[],i.forEach((i=>{if(this.fetchedCandidates.has(i))return void(t&&t(i));let s=!1;e(i,(()=>s=!0)),s?t&&t(i):this.candidateTiles.push(i)})),this.candidateTiles=this._uniqueNonOverlappingTiles(this.candidateTiles,t)}_uniqueNonOverlappingTiles(e,t){const i={},s=[];for(const o of e)i[o.id]?t&&t(o):(i[o.id]=o,s.push(o));const n=s.sort(((e,t)=>e.level-t.level));return n.filter(((e,i)=>{for(let s=0;s<i;s++)if(b(n[s].extent,e.extent))return t&&t(e),!1;return!0}))}_selectCandidateTilesCoveringExtentAt(e){this.candidateTiles.length=0;const t=this.layer.tileInfo,i=t.lods[e],s=this.extent,n=t.tileAt(i.level,s.xmin,s.ymin),o=i.resolution*t.size[0],a=i.resolution*t.size[1],l=Math.ceil((s.xmax-n.extent[0])/o),r=Math.ceil((s.ymax-n.extent[1])/a);for(let c=0;c<r;c++)for(let e=0;e<l;e++){const i={id:null,level:n.level,row:n.row-c,col:n.col+e};t.updateTileInfo(i),this._tileIsMasked(i)||this.candidateTiles.push(i)}}_tileIsMasked(e){return!!this.maskExtents&&this.maskExtents.some((t=>b(t,e.extent)))}}function N(e,t){let i=e.lods.length-1;if(t>0){const s=e.lods.findIndex((e=>e.resolution<t));0===s?i=0:s>0&&(i=s-1)}return i}const U={maximumAutoTileRequests:20,noDataValue:0,returnSampleInfo:!1,demResolution:"auto",minDemResolution:0};export default V;export{V as ElevationQuery,L as GeometryDescriptor,N as getFinestLodIndex};
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a2, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a2, prop, b[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+import { a4 as n, _ as j, df as o, b6 as i, cn as x$2, dg as g$2, cT as G, dh as t$1, ay as c$1, aa as s, cq as en, di as H, dj as a$1, dk as d$1, dl as w$1, a5 as r, dd as A, dm as o$1, dn as m$1, dp as m$2, dq as q } from "./vendor.74d5941c.js";
+const c = n.getLogger("esri.layers.support.ElevationSampler");
+class m {
+  queryElevation(e2) {
+    return h(e2.clone(), this);
+  }
+  on() {
+    return g$1;
+  }
+  projectIfRequired(e2, t2) {
+    return f(e2, t2);
+  }
+}
+class p extends m {
+  constructor(e2, t2, n2) {
+    super(), this.tile = e2, this.noDataValue = n2, this.extent = o(e2.tile.extent, t2.spatialReference);
+    const s2 = G(t2.spatialReference), i2 = t2.lodAt(e2.tile.level).resolution * s2;
+    this.demResolution = { min: i2, max: i2 };
+  }
+  get spatialReference() {
+    return this.extent.spatialReference;
+  }
+  contains(e2) {
+    const t2 = this.projectIfRequired(e2, this.spatialReference);
+    return t$1(this.extent, t2);
+  }
+  elevationAt(e2) {
+    const t2 = this.projectIfRequired(e2, this.spatialReference);
+    if (!t2)
+      return null;
+    if (!this.contains(e2)) {
+      const t3 = this.extent, n2 = `${t3.xmin}, ${t3.ymin}, ${t3.xmax}, ${t3.ymax}`;
+      c.warn("#elevationAt()", `Point used to sample elevation (${e2.x}, ${e2.y}) is outside of the sampler extent (${n2})`);
+    }
+    return this.tile.sample(t2.x, t2.y);
+  }
+}
+class u extends m {
+  constructor(e2, t2, n2) {
+    let s2;
+    super(), typeof t2 == "number" ? (this.noDataValue = t2, s2 = null) : (s2 = t2, this.noDataValue = n2), this.samplers = s2 ? e2.map((e3) => new p(e3, s2, this.noDataValue)) : e2;
+    const i$1 = this.samplers[0];
+    if (i$1) {
+      this.extent = i$1.extent.clone();
+      const { min: e3, max: t3 } = i$1.demResolution;
+      this.demResolution = { min: e3, max: t3 };
+      for (let n3 = 1; n3 < this.samplers.length; n3++) {
+        const e4 = this.samplers[n3];
+        this.extent.union(e4.extent), this.demResolution.min = Math.min(this.demResolution.min, e4.demResolution.min), this.demResolution.max = Math.max(this.demResolution.max, e4.demResolution.max);
+      }
+    } else
+      this.extent = o(i(), s2.spatialReference), this.demResolution = { min: 0, max: 0 };
+  }
+  get spatialReference() {
+    return this.extent.spatialReference;
+  }
+  elevationAt(e2) {
+    const t2 = this.projectIfRequired(e2, this.spatialReference);
+    if (!t2)
+      return null;
+    for (const n2 of this.samplers)
+      if (n2.contains(t2))
+        return n2.elevationAt(t2);
+    return c.warn("#elevationAt()", `Point used to sample elevation (${e2.x}, ${e2.y}) is outside of the sampler`), null;
+  }
+}
+function h(e2, t2) {
+  const n2 = f(e2, t2.spatialReference);
+  if (!n2)
+    return null;
+  switch (e2.type) {
+    case "point":
+      x$1(e2, n2, t2);
+      break;
+    case "polyline":
+      R(e2, n2, t2);
+      break;
+    case "multipoint":
+      d(e2, n2, t2);
+  }
+  return e2;
+}
+function f(e2, t2) {
+  const i2 = e2.spatialReference;
+  return i2.equals(t2) ? e2 : x$2(i2, t2) ? g$2(e2, t2) : (c.error(`Cannot project geometry spatial reference (wkid:${i2.wkid}) to elevation sampler spatial reference (wkid:${t2.wkid})`), null);
+}
+function x$1(t2, n2, s2) {
+  t2.z = c$1(s2.elevationAt(n2), 0);
+}
+function R(t2, n2, s2) {
+  y.spatialReference = n2.spatialReference;
+  const i2 = t2.hasM && !t2.hasZ;
+  for (let o2 = 0; o2 < t2.paths.length; o2++) {
+    const r2 = t2.paths[o2], a2 = n2.paths[o2];
+    for (let t3 = 0; t3 < r2.length; t3++) {
+      const n3 = r2[t3], o3 = a2[t3];
+      y.x = o3[0], y.y = o3[1], i2 && (n3[3] = n3[2]), n3[2] = c$1(s2.elevationAt(y), 0);
+    }
+  }
+  t2.hasZ = true;
+}
+function d(t2, n2, s2) {
+  y.spatialReference = n2.spatialReference;
+  const i2 = t2.hasM && !t2.hasZ;
+  for (let o2 = 0; o2 < t2.points.length; o2++) {
+    const r2 = t2.points[o2], a2 = n2.points[o2];
+    y.x = a2[0], y.y = a2[1], i2 && (r2[3] = r2[2]), r2[2] = c$1(s2.elevationAt(y), 0);
+  }
+  t2.hasZ = true;
+}
+const y = new j(), g$1 = { remove() {
+} };
+class t {
+  constructor(t2, a2) {
+    if (this.tile = t2, !a2)
+      return void (this.samplerData = null);
+    const e2 = this.tile.extent;
+    this.samplerData = { pixelData: a2.values, width: a2.width, height: a2.height, safeWidth: 0.99999999 * (a2.width - 1), noDataValue: a2.noDataValue, dx: (a2.width - 1) / (e2[2] - e2[0]), dy: (a2.width - 1) / (e2[3] - e2[1]), x0: e2[0], y1: e2[3] };
+  }
+  sample(t2, e2) {
+    if (this.samplerData)
+      return a(this.samplerData, t2, e2);
+  }
+}
+function a(t2, a2, i2) {
+  const { safeWidth: h2, width: s2, pixelData: l, noDataValue: r2 } = t2, n2 = e(t2.dy * (t2.y1 - i2), 0, h2), o2 = e(t2.dx * (a2 - t2.x0), 0, h2), d2 = Math.floor(n2), u2 = Math.floor(o2), f2 = d2 * s2 + u2, p2 = f2 + s2, x2 = l[f2], D = l[p2], c2 = l[f2 + 1], w2 = l[p2 + 1];
+  if (x2 !== r2 && D !== r2 && c2 !== r2 && w2 !== r2) {
+    const t3 = o2 - u2, a3 = x2 + (c2 - x2) * t3;
+    return a3 + (D + (w2 - D) * t3 - a3) * (n2 - d2);
+  }
+}
+function e(t2, a2, e2) {
+  return t2 < a2 ? a2 : t2 > e2 ? e2 : t2;
+}
+class T {
+  queryAll(e2, i2, o2) {
+    return __async(this, null, function* () {
+      if (!(e2 = o2 && o2.ignoreInvisibleLayers ? e2.filter((e3) => e3.visible) : e2.slice()).length)
+        throw new s("elevation-query:invalid-layer", "Elevation queries require at least one elevation layer to fetch tiles from");
+      const s$1 = v.fromGeometry(i2);
+      let l = false;
+      o2 && o2.returnSampleInfo || (l = true);
+      const n2 = __spreadProps(__spreadValues(__spreadValues({}, E), o2), { returnSampleInfo: true }), a2 = yield this.query(e2[e2.length - 1], s$1, n2), r2 = yield this._queryAllContinue(e2, a2, n2);
+      return r2.geometry = r2.geometry.export(), l && delete r2.sampleInfo, r2;
+    });
+  }
+  query(e2, i2, o2) {
+    return __async(this, null, function* () {
+      if (!e2)
+        throw new s("elevation-query:invalid-layer", "Elevation queries require an elevation layer to fetch tiles from");
+      if (!i2 || !(i2 instanceof v) && i2.type !== "point" && i2.type !== "multipoint" && i2.type !== "polyline")
+        throw new s("elevation-query:invalid-geometry", "Only point, polyline and multipoint geometries can be used to query elevation");
+      const s$1 = __spreadValues(__spreadValues({}, E), o2), l = new g(e2, i2.spatialReference, s$1), n2 = s$1.signal;
+      return yield e2.load({ signal: n2 }), yield this._createGeometryDescriptor(l, i2, n2), yield this._selectTiles(l, n2), yield this._populateElevationTiles(l, n2), this._sampleGeometryWithElevation(l), this._createQueryResult(l, n2);
+    });
+  }
+  createSampler(e2, i2, o2) {
+    return __async(this, null, function* () {
+      if (!e2)
+        throw new s("elevation-query:invalid-layer", "Elevation queries require an elevation layer to fetch tiles from");
+      if (!i2 || i2.type !== "extent")
+        throw new s("elevation-query:invalid-extent", "Invalid or undefined extent");
+      const s$1 = __spreadValues(__spreadValues({}, E), o2);
+      return this._createSampler(e2, i2, s$1);
+    });
+  }
+  createSamplerAll(e2, i2, o2) {
+    return __async(this, null, function* () {
+      if (!(e2 = o2 && o2.ignoreInvisibleLayers ? e2.filter((e3) => e3.visible) : e2.slice()).length)
+        throw new s("elevation-query:invalid-layer", "Elevation queries require at least one elevation layer to fetch tiles from");
+      if (!i2 || i2.type !== "extent")
+        throw new s("elevation-query:invalid-extent", "Invalid or undefined extent");
+      const s$1 = __spreadProps(__spreadValues(__spreadValues({}, E), o2), { returnSampleInfo: true }), l = yield this._createSampler(e2[e2.length - 1], i2, s$1);
+      return this._createSamplerAllContinue(e2, i2, l, s$1);
+    });
+  }
+  _createSampler(e2, t2, i2, o2) {
+    return __async(this, null, function* () {
+      const s2 = i2.signal;
+      yield e2.load({ signal: s2 });
+      const l = t2.spatialReference, n2 = e2.tileInfo.spatialReference;
+      l.equals(n2) || (yield en([{ source: l, dest: n2 }], { signal: s2 }), t2 = H(t2, n2));
+      const a2 = new w(e2, t2, i2, o2);
+      return yield this._selectTiles(a2, s2), yield this._populateElevationTiles(a2, s2), new u(a2.elevationTiles, a2.layer.tileInfo, a2.options.noDataValue);
+    });
+  }
+  _createSamplerAllContinue(e2, t2, i2, o2) {
+    return __async(this, null, function* () {
+      if (e2.pop(), !e2.length)
+        return i2;
+      const s2 = i2.samplers.map((e3) => a$1(e3.extent)), l = yield this._createSampler(e2[e2.length - 1], t2, o2, s2);
+      if (l.samplers.length === 0)
+        return i2;
+      const n2 = i2.samplers.concat(l.samplers), a2 = new u(n2, o2.noDataValue);
+      return this._createSamplerAllContinue(e2, t2, a2, o2);
+    });
+  }
+  _queryAllContinue(e2, t2, i2) {
+    return __async(this, null, function* () {
+      const o2 = e2.pop(), s2 = t2.geometry.coordinates, l = [], n2 = [];
+      for (let c2 = 0; c2 < s2.length; c2++) {
+        const i3 = t2.sampleInfo[c2];
+        i3.demResolution >= 0 ? i3.source || (i3.source = o2) : e2.length && (l.push(s2[c2]), n2.push(c2));
+      }
+      if (!e2.length || l.length === 0)
+        return t2;
+      const a2 = t2.geometry.clone(l), r2 = yield this.query(e2[e2.length - 1], a2, i2);
+      return n2.forEach((e3, i3) => {
+        s2[e3].z = r2.geometry.coordinates[i3].z, t2.sampleInfo[e3].demResolution = r2.sampleInfo[i3].demResolution;
+      }), this._queryAllContinue(e2, t2, i2);
+    });
+  }
+  _createQueryResult(e2, t2) {
+    return __async(this, null, function* () {
+      const i2 = { geometry: (yield e2.geometry.project(e2.outSpatialReference, t2)).export(), noDataValue: e2.options.noDataValue };
+      return e2.options.returnSampleInfo && (i2.sampleInfo = this._extractSampleInfo(e2)), e2.geometry.coordinates.forEach((e3) => {
+        e3.tile = null, e3.elevationTile = null;
+      }), i2;
+    });
+  }
+  _createGeometryDescriptor(e2, i2, o2) {
+    return __async(this, null, function* () {
+      let s$1;
+      const l = e2.layer.tileInfo.spatialReference;
+      if (i2 instanceof v ? s$1 = yield i2.project(l, o2) : (yield en([{ source: i2.spatialReference, dest: l }], { signal: o2 }), s$1 = H(i2, l)), !s$1)
+        throw new s("elevation-query:spatial-reference-mismatch", `Cannot query elevation in '${i2.spatialReference.wkid}' on an elevation service in '${l.wkid}'`);
+      e2.geometry = v.fromGeometry(s$1);
+    });
+  }
+  _selectTiles(e2, i2) {
+    return __async(this, null, function* () {
+      const o2 = e2.options.demResolution;
+      if (e2.type === "geometry" && this._preselectOutsideLayerExtent(e2), typeof o2 == "number")
+        this._selectTilesClosestResolution(e2);
+      else if (o2 === "finest-contiguous")
+        yield this._selectTilesFinestContiguous(e2, i2);
+      else {
+        if (o2 !== "auto")
+          throw new s("elevation-query:invalid-dem-resolution", `Invalid dem resolution value '${o2}', expected a number, "finest-contiguous" or "auto"`);
+        yield this._selectTilesAuto(e2, i2);
+      }
+    });
+  }
+  _preselectOutsideLayerExtent(e2) {
+    const t$12 = new t(null);
+    t$12.sample = () => e2.options.noDataValue, e2.outsideExtentTile = t$12;
+    const i2 = e2.layer.fullExtent;
+    e2.geometry.coordinates.forEach((e3) => {
+      const o2 = e3.x, s2 = e3.y;
+      (o2 < i2.xmin || o2 > i2.xmax || s2 < i2.ymin || s2 > i2.ymax) && (e3.elevationTile = t$12);
+    });
+  }
+  _selectTilesClosestResolution(e2) {
+    const t2 = e2.layer.tileInfo, i2 = this._findNearestDemResolutionLODIndex(t2, e2.options.demResolution);
+    e2.selectTilesAtLOD(i2);
+  }
+  _findNearestDemResolutionLODIndex(e2, t2) {
+    const i2 = t2 / G(e2.spatialReference);
+    let o2 = e2.lods[0], s2 = 0;
+    for (let l = 1; l < e2.lods.length; l++) {
+      const t3 = e2.lods[l];
+      Math.abs(t3.resolution - i2) < Math.abs(o2.resolution - i2) && (o2 = t3, s2 = l);
+    }
+    return s2;
+  }
+  _selectTilesFinestContiguous(e2, t2) {
+    return __async(this, null, function* () {
+      const i2 = _(e2.layer.tileInfo, e2.options.minDemResolution);
+      yield this._selectTilesFinestContiguousAt(e2, i2, t2);
+    });
+  }
+  _selectTilesFinestContiguousAt(e2, s$1, l) {
+    return __async(this, null, function* () {
+      const n2 = e2.layer;
+      if (e2.selectTilesAtLOD(s$1), s$1 < 0)
+        return;
+      const a2 = n2.tilemapCache, r2 = e2.getTilesToFetch();
+      try {
+        if (a2)
+          yield d$1(Promise.all(r2.map((e3) => a2.fetchAvailability(e3.level, e3.row, e3.col, { signal: l }))), l);
+        else if (yield this._populateElevationTiles(e2, l), !e2.allElevationTilesFetched())
+          throw e2.clearElevationTiles(), new s("elevation-query:has-unavailable-tiles");
+      } catch (c2) {
+        w$1(c2), yield this._selectTilesFinestContiguousAt(e2, s$1 - 1, l);
+      }
+    });
+  }
+  _populateElevationTiles(t$12, o2) {
+    return __async(this, null, function* () {
+      const l = t$12.getTilesToFetch(), n2 = {}, a2 = t$12.options.cache, r$1 = t$12.options.noDataValue, c2 = l.map((i2) => __async(this, null, function* () {
+        const s2 = `${t$12.layer.uid}:${i2.id}:${r$1}`, l2 = r(a2) ? a2.get(s2) : null, c3 = r(l2) ? l2 : yield t$12.layer.fetchTile(i2.level, i2.row, i2.col, { noDataValue: r$1, signal: o2 });
+        r(a2) && a2.put(s2, c3), n2[i2.id] = new t(i2, c3);
+      }));
+      yield d$1(A(c2), o2), t$12.populateElevationTiles(n2);
+    });
+  }
+  _selectTilesAuto(e2, t2) {
+    return __async(this, null, function* () {
+      this._selectTilesAutoFinest(e2), this._reduceTilesForMaximumRequests(e2);
+      const s2 = e2.layer.tilemapCache;
+      if (!s2)
+        return this._selectTilesAutoPrefetchUpsample(e2, t2);
+      const l = e2.getTilesToFetch(), n2 = {}, a2 = l.map((e3) => __async(this, null, function* () {
+        const i$1 = { id: null, level: 0, row: 0, col: 0, extent: i() }, l2 = yield o$1(s2.fetchAvailabilityUpsample(e3.level, e3.row, e3.col, i$1, { signal: t2 }));
+        l2.ok === false ? w$1(l2.error) : n2[e3.id] = i$1;
+      }));
+      yield d$1(Promise.all(a2), t2), e2.remapTiles(n2);
+    });
+  }
+  _reduceTilesForMaximumRequests(e2) {
+    const t2 = e2.layer.tileInfo;
+    let i2 = 0;
+    const o2 = {}, s2 = (e3) => {
+      e3.id in o2 ? o2[e3.id]++ : (o2[e3.id] = 1, i2++);
+    }, l = (e3) => {
+      const t3 = o2[e3.id];
+      t3 === 1 ? (delete o2[e3.id], i2--) : o2[e3.id] = t3 - 1;
+    };
+    e2.forEachTileToFetch(s2, l);
+    let n2 = true;
+    for (; n2 && (n2 = false, e2.forEachTileToFetch((o3) => {
+      i2 <= e2.options.maximumAutoTileRequests || (l(o3), t2.upsampleTile(o3) && (n2 = true), s2(o3));
+    }, l), n2); )
+      ;
+  }
+  _selectTilesAutoFinest(e2) {
+    const t2 = _(e2.layer.tileInfo, e2.options.minDemResolution);
+    e2.selectTilesAtLOD(t2, e2.options.maximumAutoTileRequests);
+  }
+  _selectTilesAutoPrefetchUpsample(e2, t2) {
+    return __async(this, null, function* () {
+      const i2 = e2.layer.tileInfo;
+      yield this._populateElevationTiles(e2, t2);
+      let o2 = false;
+      e2.forEachTileToFetch((e3, t3) => {
+        i2.upsampleTile(e3) ? o2 = true : t3();
+      }), o2 && (yield this._selectTilesAutoPrefetchUpsample(e2, t2));
+    });
+  }
+  _sampleGeometryWithElevation(e2) {
+    e2.geometry.coordinates.forEach((t2) => {
+      const i2 = t2.elevationTile;
+      let o2 = e2.options.noDataValue;
+      if (i2) {
+        const e3 = i2.sample(t2.x, t2.y);
+        e3 !== void 0 ? o2 = e3 : t2.elevationTile = null;
+      }
+      t2.z = o2;
+    });
+  }
+  _extractSampleInfo(e2) {
+    const t2 = e2.layer.tileInfo, i2 = G(t2.spatialReference);
+    return e2.geometry.coordinates.map((o2) => {
+      let s2 = -1;
+      if (o2.elevationTile && o2.elevationTile !== e2.outsideExtentTile) {
+        s2 = t2.lodAt(o2.elevationTile.tile.level).resolution * i2;
+      }
+      return { demResolution: s2 };
+    });
+  }
+}
+class v {
+  export() {
+    return this._exporter(this.coordinates, this.spatialReference);
+  }
+  clone(e2) {
+    const t2 = new v();
+    return t2.geometry = this.geometry, t2.spatialReference = this.spatialReference, t2.coordinates = e2 || this.coordinates.map((e3) => this._cloneCoordinate(e3)), t2._exporter = this._exporter, t2;
+  }
+  project(e2, t2) {
+    return __async(this, null, function* () {
+      if (this.spatialReference.equals(e2))
+        return this.clone();
+      yield en([{ source: this.spatialReference, dest: e2 }], { signal: t2 });
+      const i2 = new m$1({ spatialReference: this.spatialReference, points: this.coordinates.map((e3) => [e3.x, e3.y]) }), o2 = H(i2, e2);
+      if (!o2)
+        return null;
+      const s2 = this.coordinates.map((e3, t3) => {
+        const i3 = this._cloneCoordinate(e3), s3 = o2.points[t3];
+        return i3.x = s3[0], i3.y = s3[1], i3;
+      }), l = this.clone(s2);
+      return l.spatialReference = e2, l;
+    });
+  }
+  _cloneCoordinate(e2) {
+    return { x: e2.x, y: e2.y, z: e2.z, m: e2.m, tile: null, elevationTile: null };
+  }
+  static fromGeometry(e2) {
+    const t2 = new v();
+    if (t2.geometry = e2, t2.spatialReference = e2.spatialReference, e2 instanceof v)
+      t2.coordinates = e2.coordinates.map((e3) => t2._cloneCoordinate(e3)), t2._exporter = (t3, i2) => {
+        const o2 = e2.clone(t3);
+        return o2.spatialReference = i2, o2;
+      };
+    else
+      switch (e2.type) {
+        case "point": {
+          const i2 = e2, { hasZ: o2, hasM: s2 } = i2;
+          t2.coordinates = o2 && s2 ? [{ x: i2.x, y: i2.y, z: i2.z, m: i2.m }] : o2 ? [{ x: i2.x, y: i2.y, z: i2.z }] : s2 ? [{ x: i2.x, y: i2.y, m: i2.m }] : [{ x: i2.x, y: i2.y }], t2._exporter = (t3, i3) => e2.hasM ? new j(t3[0].x, t3[0].y, t3[0].z, t3[0].m, i3) : new j(t3[0].x, t3[0].y, t3[0].z, i3);
+          break;
+        }
+        case "multipoint": {
+          const i2 = e2, { hasZ: o2, hasM: s2 } = i2;
+          t2.coordinates = o2 && s2 ? i2.points.map((e3) => ({ x: e3[0], y: e3[1], z: e3[2], m: e3[3] })) : o2 ? i2.points.map((e3) => ({ x: e3[0], y: e3[1], z: e3[2] })) : s2 ? i2.points.map((e3) => ({ x: e3[0], y: e3[1], m: e3[2] })) : i2.points.map((e3) => ({ x: e3[0], y: e3[1] })), t2._exporter = (t3, i3) => e2.hasM ? new m$1({ points: t3.map((e3) => [e3.x, e3.y, e3.z, e3.m]), hasZ: true, hasM: true, spatiaReference: i3 }) : new m$1(t3.map((e3) => [e3.x, e3.y, e3.z]), i3);
+          break;
+        }
+        case "polyline": {
+          const i2 = e2, o2 = [], s2 = [], { hasZ: l, hasM: n2 } = e2;
+          let r2 = 0;
+          for (const e3 of i2.paths)
+            if (s2.push([r2, r2 + e3.length]), r2 += e3.length, l && n2)
+              for (const t3 of e3)
+                o2.push({ x: t3[0], y: t3[1], z: t3[2], m: t3[3] });
+            else if (l)
+              for (const t3 of e3)
+                o2.push({ x: t3[0], y: t3[1], z: t3[2] });
+            else if (n2)
+              for (const t3 of e3)
+                o2.push({ x: t3[0], y: t3[1], m: t3[2] });
+            else
+              for (const t3 of e3)
+                o2.push({ x: t3[0], y: t3[1] });
+          t2.coordinates = o2, t2._exporter = (t3, i3) => {
+            const o3 = e2.hasM ? t3.map((e3) => [e3.x, e3.y, e3.z, e3.m]) : t3.map((e3) => [e3.x, e3.y, e3.z]), l2 = s2.map((e3) => o3.slice(e3[0], e3[1]));
+            return new m$2({ paths: l2, hasM: e2.hasM, hasZ: true, spatialReference: i3 });
+          };
+          break;
+        }
+      }
+    return t2;
+  }
+}
+class x {
+  constructor(e2, t2) {
+    this.layer = e2, this.options = t2;
+  }
+}
+class g extends x {
+  constructor(e2, t2, i2) {
+    super(e2, i2), this.outSpatialReference = t2, this.type = "geometry";
+  }
+  selectTilesAtLOD(e2) {
+    if (e2 < 0)
+      this.geometry.coordinates.forEach((e3) => e3.tile = null);
+    else {
+      const t2 = this.layer.tileInfo, i2 = t2.lods[e2].level;
+      this.geometry.coordinates.forEach((e3) => {
+        e3.tile = t2.tileAt(i2, e3.x, e3.y);
+      });
+    }
+  }
+  allElevationTilesFetched() {
+    return !this.geometry.coordinates.some((e2) => !e2.elevationTile);
+  }
+  clearElevationTiles() {
+    for (const e2 of this.geometry.coordinates)
+      e2.elevationTile !== this.outsideExtentTile && (e2.elevationTile = null);
+  }
+  populateElevationTiles(e2) {
+    for (const t2 of this.geometry.coordinates)
+      !t2.elevationTile && t2.tile && (t2.elevationTile = e2[t2.tile.id]);
+  }
+  remapTiles(e2) {
+    for (const t2 of this.geometry.coordinates)
+      t2.tile = e2[t2.tile.id];
+  }
+  getTilesToFetch() {
+    const e2 = {}, t2 = [];
+    for (const i2 of this.geometry.coordinates) {
+      const o2 = i2.tile;
+      i2.elevationTile || !i2.tile || e2[o2.id] || (e2[o2.id] = o2, t2.push(o2));
+    }
+    return t2;
+  }
+  forEachTileToFetch(e2) {
+    for (const t2 of this.geometry.coordinates)
+      t2.tile && !t2.elevationTile && e2(t2.tile, () => t2.tile = null);
+  }
+}
+class w extends x {
+  constructor(e2, t2, i2, o2) {
+    super(e2, i2), this.type = "extent", this.elevationTiles = [], this.candidateTiles = [], this.fetchedCandidates = new Set(), this.extent = t2.intersection(e2.fullExtent), this.maskExtents = o2;
+  }
+  selectTilesAtLOD(e2, t2) {
+    const i2 = this._maximumLodForRequests(t2), o2 = Math.min(i2, e2);
+    o2 < 0 ? this.candidateTiles.length = 0 : this._selectCandidateTilesCoveringExtentAt(o2);
+  }
+  _maximumLodForRequests(e2) {
+    const t2 = this.layer.tileInfo;
+    if (!e2)
+      return t2.lods.length - 1;
+    const i2 = this.extent;
+    for (let o2 = t2.lods.length - 1; o2 >= 0; o2--) {
+      const s2 = t2.lods[o2], l = s2.resolution * t2.size[0], n2 = s2.resolution * t2.size[1];
+      if (Math.ceil(i2.width / l) * Math.ceil(i2.height / n2) <= e2)
+        return o2;
+    }
+    return -1;
+  }
+  allElevationTilesFetched() {
+    return this.candidateTiles.length === this.elevationTiles.length;
+  }
+  clearElevationTiles() {
+    this.elevationTiles.length = 0, this.fetchedCandidates.clear();
+  }
+  populateElevationTiles(e2) {
+    for (const t2 of this.candidateTiles) {
+      const i2 = e2[t2.id];
+      i2 && (this.fetchedCandidates.add(t2), this.elevationTiles.push(i2));
+    }
+  }
+  remapTiles(e2) {
+    this.candidateTiles = this._uniqueNonOverlappingTiles(this.candidateTiles.map((t2) => e2[t2.id]));
+  }
+  getTilesToFetch() {
+    return this.candidateTiles;
+  }
+  forEachTileToFetch(e2, t2) {
+    const i2 = this.candidateTiles;
+    this.candidateTiles = [], i2.forEach((i3) => {
+      if (this.fetchedCandidates.has(i3))
+        return void (t2 && t2(i3));
+      let o2 = false;
+      e2(i3, () => o2 = true), o2 ? t2 && t2(i3) : this.candidateTiles.push(i3);
+    }), this.candidateTiles = this._uniqueNonOverlappingTiles(this.candidateTiles, t2);
+  }
+  _uniqueNonOverlappingTiles(e2, t2) {
+    const i2 = {}, o2 = [];
+    for (const l of e2)
+      i2[l.id] ? t2 && t2(l) : (i2[l.id] = l, o2.push(l));
+    const s2 = o2.sort((e3, t3) => e3.level - t3.level);
+    return s2.filter((e3, i3) => {
+      for (let o3 = 0; o3 < i3; o3++)
+        if (q(s2[o3].extent, e3.extent))
+          return t2 && t2(e3), false;
+      return true;
+    });
+  }
+  _selectCandidateTilesCoveringExtentAt(e2) {
+    this.candidateTiles.length = 0;
+    const t2 = this.layer.tileInfo, i2 = t2.lods[e2], o2 = this.extent, s2 = t2.tileAt(i2.level, o2.xmin, o2.ymin), l = i2.resolution * t2.size[0], n2 = i2.resolution * t2.size[1], a2 = Math.ceil((o2.xmax - s2.extent[0]) / l), r2 = Math.ceil((o2.ymax - s2.extent[1]) / n2);
+    for (let c2 = 0; c2 < r2; c2++)
+      for (let e3 = 0; e3 < a2; e3++) {
+        const i3 = { id: null, level: s2.level, row: s2.row - c2, col: s2.col + e3 };
+        t2.updateTileInfo(i3), this._tileIsMasked(i3) || this.candidateTiles.push(i3);
+      }
+  }
+  _tileIsMasked(e2) {
+    return !!this.maskExtents && this.maskExtents.some((t2) => q(t2, e2.extent));
+  }
+}
+function _(e2, t2) {
+  let i2 = e2.lods.length - 1;
+  if (t2 > 0) {
+    const o2 = e2.lods.findIndex((e3) => e3.resolution < t2);
+    o2 === 0 ? i2 = 0 : o2 > 0 && (i2 = o2 - 1);
+  }
+  return i2;
+}
+const E = { maximumAutoTileRequests: 20, noDataValue: 0, returnSampleInfo: false, demResolution: "auto", minDemResolution: 0 };
+export default T;
+export { T as ElevationQuery, v as GeometryDescriptor, _ as getFinestLodIndex };
